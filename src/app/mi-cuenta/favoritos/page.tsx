@@ -82,7 +82,7 @@ export default function FavoritosPage() {
 
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-zinc-900 via-zinc-900 to-black flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-zinc-900 via-zinc-900 to-zinc-950 flex items-center justify-center">
         <div className="animate-pulse text-zinc-500">Cargando...</div>
       </div>
     );
@@ -104,19 +104,19 @@ export default function FavoritosPage() {
   allUpcoming.sort((a, b) => a.date.localeCompare(b.date));
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-zinc-900 via-zinc-900 to-black">
+    <div className="min-h-screen bg-gradient-to-b from-zinc-900 via-zinc-900 to-zinc-950">
       <div className="max-w-2xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
           <Link 
             href="/mi-cuenta" 
-            className="inline-flex items-center gap-2 text-zinc-400 hover:text-white transition-colors mb-4"
+            className="inline-flex items-center gap-2 text-zinc-400 hover:text-ink transition-colors mb-4"
           >
             <ArrowLeft className="w-4 h-4" />
             Mi Cuenta
           </Link>
           
-          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-ink flex items-center gap-3">
             <Star className="w-6 h-6 text-amber-400 fill-current" />
             Mis Consignatarias
           </h1>
@@ -132,7 +132,7 @@ export default function FavoritosPage() {
         {!isLoggedIn && !isLoading && (
           <div className="bg-zinc-800/50 border border-zinc-700 rounded-xl p-8 text-center">
             <Star className="w-12 h-12 text-amber-400/50 mx-auto mb-4" />
-            <h2 className="text-lg font-semibold text-white mb-2">
+            <h2 className="text-lg font-semibold text-ink mb-2">
               Iniciá sesión para ver tus favoritos
             </h2>
             <p className="text-zinc-400 mb-6">
@@ -199,7 +199,7 @@ export default function FavoritosPage() {
                     <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
                     {countdown.text.toUpperCase()}
                   </div>
-                  <div className="text-white font-medium">{next.title}</div>
+                  <div className="text-ink font-medium">{next.title}</div>
                   <div className="text-sm text-zinc-400 mt-1">
                     {next.displayName} · {formatDate(next.date)} {next.time && `· ${next.time}`}
                   </div>
@@ -217,7 +217,7 @@ export default function FavoritosPage() {
               <div className="bg-zinc-800/50 border border-zinc-700 rounded-xl overflow-hidden">
                 <div className="px-4 py-3 border-b border-zinc-700 flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-emerald-400" />
-                  <span className="text-sm font-medium text-white">Próximos Remates</span>
+                  <span className="text-sm font-medium text-ink">Próximos Remates</span>
                 </div>
                 <div className="divide-y divide-zinc-700/50">
                   {allUpcoming.slice(0, 8).map((r, i) => {
@@ -231,7 +231,7 @@ export default function FavoritosPage() {
                         className="flex items-center justify-between px-4 py-3 hover:bg-zinc-700/30 transition-colors"
                       >
                         <div className="flex-1 min-w-0 mr-3">
-                          <div className="text-sm text-white truncate">{r.title}</div>
+                          <div className="text-sm text-ink truncate">{r.title}</div>
                           <div className="text-xs text-zinc-500">{r.displayName}</div>
                         </div>
                         <div className="text-right flex-shrink-0">
@@ -267,7 +267,7 @@ export default function FavoritosPage() {
                       <div>
                         <Link 
                           href={`/go/${fav.consignataria_slug}`}
-                          className="text-white font-medium hover:text-accent transition-colors flex items-center gap-2"
+                          className="text-ink font-medium hover:text-accent transition-colors flex items-center gap-2"
                         >
                           {profile?.displayName || fav.consignataria_slug}
                           <ExternalLink className="w-3.5 h-3.5 opacity-50" />
@@ -323,7 +323,7 @@ export default function FavoritosPage() {
 
         {/* Footer */}
         <div className="mt-8 text-center text-xs text-zinc-500">
-          <Link href="/consignatarias" className="hover:text-white transition-colors">
+          <Link href="/consignatarias" className="hover:text-ink transition-colors">
             Explorar más consignatarias →
           </Link>
         </div>

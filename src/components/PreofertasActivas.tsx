@@ -38,7 +38,7 @@ export default function PreofertasActivas({ compact = false }: { compact?: boole
                 <span className="text-[10px] font-terminal uppercase tracking-wider px-1.5 py-0.5 rounded bg-amber-400/15 text-amber-300 border border-amber-500/40">PRO</span>
               )}
             </div>
-            <div className="text-zinc-100 font-medium leading-snug group-hover:text-white">{p.remate}</div>
+            <div className="text-zinc-100 font-medium leading-snug group-hover:text-ink">{p.remate}</div>
             <div className="text-zinc-400 text-xs mt-1">
               {p.cabana} · {p.consignataria}
             </div>

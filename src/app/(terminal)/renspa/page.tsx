@@ -21,7 +21,7 @@ export default function RenspaPage() {
 
       <header className="mt-4 mb-6">
         <p className="text-xxs uppercase tracking-widest text-accent mb-2">Herramienta</p>
-        <h1 className="text-2xl sm:text-3xl font-semibold text-white text-balance">Validador de RENSPA</h1>
+        <h1 className="text-2xl sm:text-3xl font-semibold text-ink text-balance">Validador de RENSPA</h1>
         <p className="mt-3 text-zinc-400 max-w-2xl">
           Pegá un código RENSPA y te lo descompongo en sus segmentos. Se valida la estructura (17 caracteres,
           formato <span className="font-terminal text-zinc-300">00.000.0.00000.00</span>), no la vigencia.
@@ -32,7 +32,7 @@ export default function RenspaPage() {
 
       {/* Qué es */}
       <section className="mt-10">
-        <h2 className="text-lg font-semibold text-white mb-3">Qué es el RENSPA</h2>
+        <h2 className="text-lg font-semibold text-ink mb-3">Qué es el RENSPA</h2>
         <p className="text-data text-zinc-400">
           El <strong className="text-zinc-200">Registro Nacional Sanitario de Productores Agropecuarios</strong> asocia
           productor + establecimiento + actividad. Es la base del sistema sanitario: sin RENSPA vigente no se registra la
@@ -55,11 +55,11 @@ export default function RenspaPage() {
           rel="noopener noreferrer"
           className="group rounded-terminal border border-terminal-border bg-terminal-panel p-4 hover:border-accent transition-colors"
         >
-          <h3 className="text-data font-semibold text-white group-hover:text-accent">Consultar vigencia en SENASA ↗</h3>
+          <h3 className="text-data font-semibold text-ink group-hover:text-accent">Consultar vigencia en SENASA ↗</h3>
           <p className="mt-1 text-data text-zinc-400">Búsqueda pública de productores agropecuarios.</p>
         </a>
         <Link href="/sanidad" className="group rounded-terminal border border-terminal-border bg-terminal-panel p-4 hover:border-accent transition-colors">
-          <h3 className="text-data font-semibold text-white group-hover:text-accent">Sanidad ganadera →</h3>
+          <h3 className="text-data font-semibold text-ink group-hover:text-accent">Sanidad ganadera →</h3>
           <p className="mt-1 text-data text-zinc-400">Vacunación, requisitos de movimiento y DT-e.</p>
         </Link>
       </section>

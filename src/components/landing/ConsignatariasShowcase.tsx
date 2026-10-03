@@ -218,7 +218,7 @@ function Tile({ item, nameIndex }: { item: ShowcaseItem; nameIndex: number }) {
       <Link
         href={`/consignatarias/${item.slug}`}
         title={item.name}
-        className="group relative grid place-items-center overflow-hidden px-4 py-6 min-h-[104px] isolate bg-[#0c0c0e] transition-shadow duration-300 hover:z-[2] hover:[box-shadow:0_8px_28px_-10px_var(--brand)]"
+        className="group relative grid place-items-center overflow-hidden px-4 py-6 min-h-[104px] isolate bg-zinc-950 transition-shadow duration-300 hover:z-[2] hover:[box-shadow:0_8px_28px_-10px_var(--brand)]"
         style={{ ["--brand" as string]: color }}
       >
         <PixelCanvas colors={brandShimmer(color)} />
@@ -245,7 +245,7 @@ function Tile({ item, nameIndex }: { item: ShowcaseItem; nameIndex: number }) {
   return (
     <Link
       href={`/consignatarias/${item.slug}`}
-      className="group relative grid place-items-center overflow-hidden bg-[#0c0c0e] px-4 py-6 min-h-[104px] isolate transition-shadow duration-300 hover:z-[2] hover:shadow-[0_8px_24px_-8px_rgba(0,112,240,0.25)]"
+      className="group relative grid place-items-center overflow-hidden bg-zinc-950 px-4 py-6 min-h-[104px] isolate transition-shadow duration-300 hover:z-[2] hover:shadow-[0_8px_24px_-8px_rgba(0,112,240,0.25)]"
     >
       <PixelCanvas colors={NAME_PALETTES[nameIndex % NAME_PALETTES.length]} />
       {item.isPro && <ProBadge size="sm" className="absolute top-2 right-2 z-[2]" />}
@@ -266,7 +266,7 @@ export default function ConsignatariasShowcase({ items }: { items: ShowcaseItem[
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/marca/iconos-color/casa-remates.png" alt="" className="w-5 h-5" />
           </span>
-          <span className="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-zinc-900 border border-white/10 text-zinc-400">
+          <span className="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-zinc-900 border border-ink/10 text-zinc-400">
             El directorio
           </span>
         </div>
@@ -279,7 +279,7 @@ export default function ConsignatariasShowcase({ items }: { items: ShowcaseItem[
         </p>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-px bg-white/5 border border-white/5 rounded-lg overflow-hidden">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-px bg-white/5 border border-ink/5 rounded-lg overflow-hidden">
         {items.map((item, i) => (
           <Tile key={item.slug} item={item} nameIndex={i} />
         ))}

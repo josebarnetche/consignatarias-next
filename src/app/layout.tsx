@@ -119,8 +119,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es-AR" className={`dark ${inter.variable}`}>
+    <html lang="es-AR" className={inter.variable}>
       <head>
+        {/* Tema: lee localStorage.theme ANTES de pintar y, si dice 'dark', pone
+            data-theme=dark en <html>. Sin esto hay flash: el HTML se sirve en
+            claro (default) y quien eligió oscuro vería un parpadeo claro→oscuro
+            al hidratar. El default claro manda siempre — prefers-color-scheme
+            del sistema NO se consulta (decisión Jose, docs/PLAN-TEMA-WHITE.md). */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(localStorage.getItem('theme')==='dark'){document.documentElement.setAttribute('data-theme','dark')}}catch(e){}`,
+          }}
+        />
         {/* Google tag (gtag.js) — async per Google docs. `send_page_view:false`
             so the SPA-aware AnalyticsProvider is the SOLE source of page_view
             (the inline config used to emit a duplicate pageview on first load). */}

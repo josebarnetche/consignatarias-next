@@ -132,7 +132,7 @@ export default function ArrendamientoLiniersPage() {
           <span className="text-sm text-zinc-500">Referencia Liniers / Mercado Agroganadero</span>
         </div>
 
-        <h1 className="text-3xl lg:text-4xl font-bold text-white tracking-tight mb-6">
+        <h1 className="text-3xl lg:text-4xl font-bold text-ink tracking-tight mb-6">
           Índice Novillo Arrendamiento — Mercado de Liniers
         </h1>
 
@@ -140,10 +140,10 @@ export default function ArrendamientoLiniersPage() {
         <p className="speakable-content text-lg text-zinc-300 leading-relaxed mb-6">
           El índice novillo para arrendamiento de referencia Liniers/Mercado Agroganadero es de{' '}
           <strong className="text-accent">${fmt2(arrendamiento.index)}/kg</strong> al {arrendamiento.date}.
-          Tras el cierre del histórico <strong className="text-white">Mercado de Liniers</strong>, la
+          Tras el cierre del histórico <strong className="text-ink">Mercado de Liniers</strong>, la
           referencia migró al <Link href="/mercado/liniers" className="text-accent hover:underline">Mercado
           Agroganadero</Link> (Cañuelas), y este índice —el <Link href="/mercado/inmag" className="text-accent hover:underline">INMAG</Link>— es
-          su <strong className="text-white">sucesor operativo</strong>: cuando un contrato cita el
+          su <strong className="text-ink">sucesor operativo</strong>: cuando un contrato cita el
           &ldquo;índice novillo Liniers&rdquo;, en la práctica se liquida con este valor.
         </p>
 
@@ -159,12 +159,12 @@ export default function ArrendamientoLiniersPage() {
         <div className="grid sm:grid-cols-2 gap-4 mb-10">
           <div className="bg-gradient-to-br from-sky-500/10 to-transparent border border-sky-500/20 rounded-2xl p-6">
             <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Índice arrendamiento</div>
-            <div className="text-3xl font-bold text-white tabular-nums">${fmt2(arrendamiento.index)}<span className="text-lg text-zinc-500">/kg</span></div>
+            <div className="text-3xl font-bold text-ink tabular-nums">${fmt2(arrendamiento.index)}<span className="text-lg text-zinc-500">/kg</span></div>
             <div className="text-xs text-zinc-500 mt-1">al {arrendamiento.date}</div>
           </div>
           <div className="bg-zinc-900/40 border border-zinc-800/60 rounded-2xl p-6">
             <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">Kilo vivo novillo (INMAG)</div>
-            <div className="text-3xl font-bold text-white tabular-nums">
+            <div className="text-3xl font-bold text-ink tabular-nums">
               ${fmt(inmag.current)}<span className="text-lg text-zinc-500">/kg</span>
             </div>
             <div className={`text-xs mt-1 ${inmag.change >= 0 ? 'text-positive' : 'text-negative'}`}>
@@ -175,10 +175,10 @@ export default function ArrendamientoLiniersPage() {
 
         {/* Contexto */}
         <section className="mb-10">
-          <h2 className="text-xl font-semibold text-white mb-4">¿Sigue existiendo el índice de Liniers?</h2>
+          <h2 className="text-xl font-semibold text-ink mb-4">¿Sigue existiendo el índice de Liniers?</h2>
           <div className="space-y-4 text-zinc-400 leading-relaxed">
             <p>
-              El <strong className="text-white">Mercado de Liniers</strong> fue durante décadas la principal
+              El <strong className="text-ink">Mercado de Liniers</strong> fue durante décadas la principal
               referencia de precio del novillo en pie de la Argentina, y muchos contratos de arrendamiento rural
               todavía citan &ldquo;el índice de Liniers&rdquo; para fijar el canon. Con su cierre, la operatoria de
               remate en pie de la zona de Buenos Aires se concentró en el{' '}
@@ -188,9 +188,9 @@ export default function ArrendamientoLiniersPage() {
             <p>
               Por eso, el índice que hoy hace de referencia para esos contratos es el{' '}
               <Link href="/mercado/inmag" className="text-accent hover:underline">INMAG</Link> del Mercado
-              Agroganadero: es el <strong className="text-white">sucesor operativo</strong> del viejo índice de
+              Agroganadero: es el <strong className="text-ink">sucesor operativo</strong> del viejo índice de
               Liniers. El valor sugerido para arrendamientos rurales es de{' '}
-              <strong className="text-white">${fmt2(arrendamiento.index)}/kg</strong> al {arrendamiento.date}
+              <strong className="text-ink">${fmt2(arrendamiento.index)}/kg</strong> al {arrendamiento.date}
               {' '}(promedio del período {arrendamiento.periodStart} al {arrendamiento.periodEnd}:{' '}
               ${fmt2(arrendamiento.periodIndex)}/kg).
             </p>
@@ -199,7 +199,7 @@ export default function ArrendamientoLiniersPage() {
 
         {/* Cómo se calcula */}
         <section className="mb-10 bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-6">
-          <h2 className="text-lg font-semibold text-white mb-3">Cómo se calcula el canon</h2>
+          <h2 className="text-lg font-semibold text-ink mb-3">Cómo se calcula el canon</h2>
           <p className="text-zinc-400 leading-relaxed mb-3">
             El arrendamiento en kilos de novillo se liquida así:
           </p>
@@ -216,12 +216,12 @@ export default function ArrendamientoLiniersPage() {
 
         {/* FAQ */}
         <section className="mb-10">
-          <h2 className="text-xl font-semibold text-white mb-6">Preguntas frecuentes</h2>
+          <h2 className="text-xl font-semibold text-ink mb-6">Preguntas frecuentes</h2>
           <div className="space-y-4">
             {FAQ.map((faq, i) => (
               <details key={i} className="group bg-zinc-900/30 border border-zinc-800/50 rounded-xl overflow-hidden">
                 <summary className="flex items-center justify-between p-5 cursor-pointer hover:bg-zinc-800/20 transition-colors">
-                  <h3 className="text-white font-medium pr-4">{faq.question}</h3>
+                  <h3 className="text-ink font-medium pr-4">{faq.question}</h3>
                   <svg className="w-5 h-5 text-zinc-500 flex-shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
@@ -256,11 +256,11 @@ export default function ArrendamientoLiniersPage() {
         {/* Related */}
         <section className="grid sm:grid-cols-2 gap-4 mb-10">
           <Link href="/mercado/arrendamiento" className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-6 hover:border-sky-500/30 transition-all group">
-            <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-accent-bright transition-colors">Índice Novillo Arrendamiento</h3>
+            <h3 className="text-lg font-semibold text-ink mb-1 group-hover:text-accent-bright transition-colors">Índice Novillo Arrendamiento</h3>
             <p className="text-sm text-zinc-500">Serie completa, cierre mensual oficial y calculadora de canon.</p>
           </Link>
           <Link href="/mercado/liniers" className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-6 hover:border-sky-500/30 transition-all group">
-            <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-accent-bright transition-colors">Mercado de Liniers</h3>
+            <h3 className="text-lg font-semibold text-ink mb-1 group-hover:text-accent-bright transition-colors">Mercado de Liniers</h3>
             <p className="text-sm text-zinc-500">Precios por categoría y remate del día en el Mercado Agroganadero.</p>
           </Link>
         </section>

@@ -115,7 +115,7 @@ export default async function QualitySegmentPage({
           question={`Precio observado del ${cat.singular} ${lbl} (MAG ${magDate})`}
           answer={
             <>
-              El {cat.singular} {lbl.toLowerCase()} promedió <strong className="text-white">${fmt(avg)}/kg</strong> vivo
+              El {cat.singular} {lbl.toLowerCase()} promedió <strong className="text-ink">${fmt(avg)}/kg</strong> vivo
               (rango ${fmt(row.minPrice)}–${fmt(row.maxPrice)}, {fmt(row.cabezas)} cabezas) en el remate observado del
               Mercado Agroganadero del {magDate}. Es el promedio realizado por categoría — precio observado, no estimado.
             </>

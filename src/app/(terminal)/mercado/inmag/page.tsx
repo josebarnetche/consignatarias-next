@@ -302,7 +302,7 @@ export default function InmagPage() {
             </div>
             {/* Answer-first H1: opens with the exact term + the live value, so the
                 insignia query "inmag" / "inmag hoy" is answered in the heading itself. */}
-            <h1 className="text-4xl lg:text-5xl font-bold text-white tracking-tight mb-3">
+            <h1 className="text-4xl lg:text-5xl font-bold text-ink tracking-tight mb-3">
               <span className="block text-accent">
                 INMAG hoy: ${fmt(inmag.current)}/kg vivo ({inmag.change >= 0 ? '+' : ''}{inmag.change.toFixed(1)}%)
               </span>
@@ -359,7 +359,7 @@ export default function InmagPage() {
         {/* Chart Section */}
         <section className="max-w-6xl mx-auto px-4 py-12">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-white">Evolución del Precio</h2>
+            <h2 className="text-xl font-semibold text-ink">Evolución del Precio</h2>
             <Link 
               href="/api-docs" 
               className="text-sm text-zinc-500 hover:text-accent-bright transition-colors flex items-center gap-1"
@@ -394,14 +394,14 @@ export default function InmagPage() {
             "INMAG en dólares", "INMAG arrendamiento" and "INMAG vs maíz"
             queries discover the right sibling.                              */}
         <section className="max-w-6xl mx-auto px-4 pb-12">
-          <h2 className="text-xl font-semibold text-white mb-4">Variantes del INMAG</h2>
+          <h2 className="text-xl font-semibold text-ink mb-4">Variantes del INMAG</h2>
           <div className="grid sm:grid-cols-3 gap-3">
             <Link
               href="/mercado/inmag-dolares"
               className="block bg-zinc-900/40 border border-zinc-800 rounded-xl p-5 hover:border-sky-500/30 transition-colors group"
             >
               <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">INMAG en dólares</div>
-              <div className="text-base font-medium text-white group-hover:text-accent-bright transition-colors mb-1">
+              <div className="text-base font-medium text-ink group-hover:text-accent-bright transition-colors mb-1">
                 INMAG / USD blue
               </div>
               <p className="text-sm text-zinc-500 leading-relaxed">
@@ -414,7 +414,7 @@ export default function InmagPage() {
               className="block bg-zinc-900/40 border border-zinc-800 rounded-xl p-5 hover:border-sky-500/30 transition-colors group"
             >
               <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">INMAG para arrendamiento</div>
-              <div className="text-base font-medium text-white group-hover:text-accent-bright transition-colors mb-1">
+              <div className="text-base font-medium text-ink group-hover:text-accent-bright transition-colors mb-1">
                 Índice novillo arrendamiento
               </div>
               <p className="text-sm text-zinc-500 leading-relaxed">
@@ -427,7 +427,7 @@ export default function InmagPage() {
               className="block bg-zinc-900/40 border border-zinc-800 rounded-xl p-5 hover:border-sky-500/30 transition-colors group"
             >
               <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">INMAG vs maíz FOB</div>
-              <div className="text-base font-medium text-white group-hover:text-accent-bright transition-colors mb-1">
+              <div className="text-base font-medium text-ink group-hover:text-accent-bright transition-colors mb-1">
                 Spread maíz–novillo
               </div>
               <p className="text-sm text-zinc-500 leading-relaxed">
@@ -461,7 +461,7 @@ export default function InmagPage() {
             <div className="flex items-center justify-between gap-4">
               <div>
                 <div className="text-xs text-accent uppercase tracking-wider mb-1">Tu hacienda al INMAG</div>
-                <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-accent-bright transition-colors">¿Cuánto vale tu rodeo hoy?</h3>
+                <h3 className="text-lg font-semibold text-ink mb-1 group-hover:text-accent-bright transition-colors">¿Cuánto vale tu rodeo hoy?</h3>
                 <p className="text-sm text-zinc-400 max-w-xl">
                   Cargá tu hacienda una vez en <strong className="text-zinc-200">Mi Ganado</strong> y mirá su
                   valor actualizado a este mismo INMAG cada día — en pesos y en dólares. Gratis con tu cuenta.
@@ -476,7 +476,7 @@ export default function InmagPage() {
 
         {/* El novillo año por año — internal links to the historical year pages */}
         <section className="max-w-6xl mx-auto px-4 pb-12">
-          <h2 className="text-xl font-semibold text-white mb-4">El novillo año por año</h2>
+          <h2 className="text-xl font-semibold text-ink mb-4">El novillo año por año</h2>
           <p className="text-sm text-zinc-500 mb-4">
             ¿Cuánto valía el novillo cada año? Promedio del INMAG en pesos y en dólares, desde 2015.
           </p>
@@ -498,7 +498,7 @@ export default function InmagPage() {
             del mes en curso) visible para todos; la década completa, el ranking
             mes a mes y la descarga CSV viven gated en <ProReveal>. */}
         <section id="decada-completa" className="max-w-6xl mx-auto px-4 pb-12">
-          <h2 className="text-xl font-semibold text-white mb-2">La década completa</h2>
+          <h2 className="text-xl font-semibold text-ink mb-2">La década completa</h2>
           <p className="text-sm text-zinc-500 mb-6 max-w-2xl">
             ¿Qué mes históricamente conviene vender el novillo? El INMAG desde 2015,
             mes contra mes, sin el ruido de la inflación — más la serie completa en CSV.
@@ -512,7 +512,7 @@ export default function InmagPage() {
 
         {/* Historical Data Table */}
         <section className="max-w-6xl mx-auto px-4 pb-12">
-          <h2 className="text-xl font-semibold text-white mb-6">Histórico de Precios</h2>
+          <h2 className="text-xl font-semibold text-ink mb-6">Histórico de Precios</h2>
 
           <div className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl overflow-hidden">
             <DataTable
@@ -541,7 +541,7 @@ export default function InmagPage() {
             Each Q&A is a featured-snippet candidate. Headings use <h3>
             with the literal question text so Google can match query→answer. */}
         <section className="max-w-6xl mx-auto px-4 pb-12">
-          <h2 className="text-xl font-semibold text-white mb-6">Preguntas frecuentes sobre el INMAG</h2>
+          <h2 className="text-xl font-semibold text-ink mb-6">Preguntas frecuentes sobre el INMAG</h2>
           <div className="space-y-4">
             {INMAG_FAQS.map(faq => (
               <details
@@ -549,7 +549,7 @@ export default function InmagPage() {
                 className="group bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-5 hover:border-zinc-700/50 transition-colors"
               >
                 <summary className="cursor-pointer list-none flex items-start justify-between gap-3">
-                  <h3 className="text-base font-medium text-white">{faq.question}</h3>
+                  <h3 className="text-base font-medium text-ink">{faq.question}</h3>
                   <span className="text-zinc-500 text-xl leading-none mt-0.5 group-open:rotate-45 transition-transform">+</span>
                 </summary>
                 <p className="text-sm text-zinc-400 leading-relaxed mt-3">{faq.answer}</p>
@@ -563,7 +563,7 @@ export default function InmagPage() {
           <div className="grid md:grid-cols-2 gap-8">
             {/* What is INMAG */}
             <div className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-6">
-              <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <h3 className="text-lg font-semibold text-ink mb-4 flex items-center gap-2">
                 <span className="w-8 h-8 bg-sky-500/10 rounded-lg flex items-center justify-center">
                   <svg className="w-4 h-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -598,7 +598,7 @@ export default function InmagPage() {
               >
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-accent-bright transition-colors">
+                    <h3 className="text-lg font-semibold text-ink mb-2 group-hover:text-accent-bright transition-colors">
                       API de Precios
                     </h3>
                     <p className="text-sm text-zinc-500">
@@ -621,7 +621,7 @@ export default function InmagPage() {
               >
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-accent-bright transition-colors">
+                    <h3 className="text-lg font-semibold text-ink mb-2 group-hover:text-accent-bright transition-colors">
                       Metodología
                     </h3>
                     <p className="text-sm text-zinc-500">

@@ -21,7 +21,7 @@ export default function BuenasPracticasPage() {
 
       <header className="mt-4 mb-6">
         <p className="text-xxs uppercase tracking-widest text-accent mb-2">Guía · Buenas Prácticas Ganaderas</p>
-        <h1 className="text-2xl sm:text-3xl font-semibold text-white text-balance">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-ink text-balance">
           Buenas Prácticas Ganaderas para vacunos de carne
         </h1>
         <p className="mt-3 text-zinc-400 max-w-2xl">{BPG_INTRO}</p>
@@ -49,7 +49,7 @@ export default function BuenasPracticasPage() {
                 >
                   <div className="flex items-baseline gap-2">
                     <span className="text-xxs font-terminal text-zinc-600">{String(t.n).padStart(2, '0')}</span>
-                    <h3 className="text-data font-semibold text-white group-hover:text-accent">{t.titulo} →</h3>
+                    <h3 className="text-data font-semibold text-ink group-hover:text-accent">{t.titulo} →</h3>
                   </div>
                   <p className="mt-1 text-data text-zinc-400">{t.resumen}</p>
                 </Link>
@@ -60,7 +60,7 @@ export default function BuenasPracticasPage() {
       </section>
 
       <section className="mt-10 rounded-terminal border border-accent/30 bg-accent/5 p-5">
-        <h2 className="text-base font-semibold text-white">Sanidad obligatoria vs. buenas prácticas</h2>
+        <h2 className="text-base font-semibold text-ink">Sanidad obligatoria vs. buenas prácticas</h2>
         <p className="mt-2 text-data text-zinc-300">
           Las BPG son <strong className="text-zinc-100">voluntarias</strong> y abarcan toda la producción. Los planes
           sanitarios <strong className="text-zinc-100">obligatorios</strong> de SENASA (aftosa, brucelosis, tuberculosis,

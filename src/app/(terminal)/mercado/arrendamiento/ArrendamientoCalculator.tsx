@@ -49,7 +49,7 @@ function Field({ label, value, onChange, suffix, min = 0 }: {
           onChange={onChange}
           min={min}
           ariaLabel={label}
-          className="w-full bg-transparent text-white font-mono text-lg outline-none"
+          className="w-full bg-transparent text-ink font-mono text-lg outline-none"
         />
         {suffix && <span className="text-zinc-500 text-sm whitespace-nowrap">{suffix}</span>}
       </div>
@@ -163,7 +163,7 @@ export default function ArrendamientoCalculator({ priceToday }: { priceToday: nu
         <div className="space-y-2 text-sm">
           <div className="flex justify-between text-zinc-400">
             <span>Valor total del contrato ({anios} {anios === 1 ? 'año' : 'años'})</span>
-            <span className="text-white font-mono">${fmt(totalContrato)}</span>
+            <span className="text-ink font-mono">${fmt(totalContrato)}</span>
           </div>
           <div className="flex justify-between text-zinc-400">
             <span>Sellos ({sellos}%)</span>
@@ -202,12 +202,12 @@ export default function ArrendamientoCalculator({ priceToday }: { priceToday: nu
                 placeholder="tu@email.com"
                 value={email}
                 onChange={(e) => { setEmail(e.target.value); if (subState === 'error') setSubState('idle') }}
-                className="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-sky-500/60"
+                className="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-ink text-sm outline-none focus:border-sky-500/60"
               />
               <button
                 type="submit"
                 disabled={subState === 'loading'}
-                className="bg-zinc-800 hover:bg-zinc-700 text-white px-4 rounded-lg text-sm transition-colors disabled:opacity-50 shrink-0"
+                className="bg-zinc-800 hover:bg-zinc-700 text-ink px-4 rounded-lg text-sm transition-colors disabled:opacity-50 shrink-0"
               >
                 {subState === 'loading' ? '…' : 'Recibir'}
               </button>

@@ -79,7 +79,7 @@ export function MarketHero({
             <div className="bg-zinc-900/80 backdrop-blur-sm border border-zinc-800 rounded-2xl p-6 lg:p-8 w-full lg:w-auto lg:min-w-[400px]">
               <div className="text-sm text-zinc-500 mb-2 font-medium">{priceLabel}</div>
               <div className="flex items-baseline gap-2 sm:gap-3">
-                <span className="text-4xl sm:text-5xl font-bold text-white font-terminal tracking-tight tabular-nums">
+                <span className="text-4xl sm:text-5xl font-bold text-ink font-terminal tracking-tight tabular-nums">
                   <AnimatedPrice value={priceValue} duration={2800} prefix="$" decimals={2} />
                 </span>
                 <span className="text-zinc-500 text-lg shrink-0">/kg</span>

@@ -186,7 +186,7 @@ export default function ArrendamientoCanuelasPage() {
           <span className="text-sm text-zinc-500">Mercado Agroganadero de Cañuelas</span>
         </div>
 
-        <h1 className="text-3xl lg:text-4xl font-bold text-white tracking-tight mb-5">
+        <h1 className="text-3xl lg:text-4xl font-bold text-ink tracking-tight mb-5">
           Índice Novillo Arrendamiento
           <span className="block text-accent">Mercado de Cañuelas</span>
         </h1>
@@ -194,7 +194,7 @@ export default function ArrendamientoCanuelasPage() {
         {/* Answer-first: primera oración citable con el número vivo */}
         <p className="speakable-content text-lg text-zinc-300 leading-relaxed max-w-2xl">
           El índice novillo arrendamiento del Mercado Agroganadero de Cañuelas es de{' '}
-          <strong className="text-white">${fmt(arrendamientoOficial.index)}/kg vivo</strong> al{' '}
+          <strong className="text-ink">${fmt(arrendamientoOficial.index)}/kg vivo</strong> al{' '}
           {arrendamientoOficial.date}; se basa en el{' '}
           <Link href="/mercado/inmag" className="text-accent hover:underline">INMAG</Link>{' '}
           (${fmt(inmag.current)}/kg, {inmagChangeStr}).
@@ -219,7 +219,7 @@ export default function ArrendamientoCanuelasPage() {
           </div>
           <div className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-6">
             <div className="text-xs text-zinc-500 uppercase tracking-wider mb-2">INMAG (fuente del índice)</div>
-            <div className="text-3xl font-terminal tabular-nums text-white">${fmt3(inmag.current)}</div>
+            <div className="text-3xl font-terminal tabular-nums text-ink">${fmt3(inmag.current)}</div>
             <div className={`text-sm mt-1 ${inmag.change >= 0 ? 'text-positive' : 'text-negative'}`}>
               {inmagChangeStr} vs. jornada previa
             </div>
@@ -231,10 +231,10 @@ export default function ArrendamientoCanuelasPage() {
 
         {/* INMAG ↔ arrendamiento */}
         <section className="mt-12">
-          <h2 className="text-2xl font-bold text-white mb-4">Por qué Cañuelas manda el índice de arrendamiento</h2>
+          <h2 className="text-2xl font-bold text-ink mb-4">Por qué Cañuelas manda el índice de arrendamiento</h2>
           <div className="space-y-4 text-zinc-400 leading-relaxed max-w-2xl">
             <p>
-              El <strong className="text-white">Mercado Agroganadero de Cañuelas</strong> es donde se opera físicamente
+              El <strong className="text-ink">Mercado Agroganadero de Cañuelas</strong> es donde se opera físicamente
               la hacienda en pie que fija el precio de referencia del novillo argentino. Es el sucesor operativo del
               histórico <strong className="text-zinc-200">Mercado de Liniers</strong>: cuando Liniers cerró, la
               operatoria se trasladó a Cañuelas, y con ella el índice que ata los contratos de arrendamiento.
@@ -253,7 +253,7 @@ export default function ArrendamientoCanuelasPage() {
 
         {/* Cómo calcular el canon en kg/ha */}
         <section className="mt-12">
-          <h2 className="text-2xl font-bold text-white mb-4">Cómo calcular el canon en kg/ha/mes</h2>
+          <h2 className="text-2xl font-bold text-ink mb-4">Cómo calcular el canon en kg/ha/mes</h2>
           <div className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-6 max-w-2xl">
             <p className="text-zinc-300 font-medium mb-3">
               Canon MENSUAL = kg/ha/mes × índice novillo × hectáreas
@@ -279,12 +279,12 @@ export default function ArrendamientoCanuelasPage() {
 
         {/* FAQ visible (paridad con el FAQPage schema) */}
         <section className="mt-12">
-          <h2 className="text-xl font-semibold text-white mb-6">Preguntas frecuentes</h2>
+          <h2 className="text-xl font-semibold text-ink mb-6">Preguntas frecuentes</h2>
           <div className="space-y-4">
             {FAQ.map((f) => (
               <details key={f.question} className="group bg-zinc-900/30 border border-zinc-800/50 rounded-xl overflow-hidden">
                 <summary className="flex items-center justify-between p-5 cursor-pointer hover:bg-zinc-800/20 transition-colors">
-                  <h3 className="text-white font-medium pr-4">{f.question}</h3>
+                  <h3 className="text-ink font-medium pr-4">{f.question}</h3>
                   <svg className="w-5 h-5 text-zinc-500 flex-shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
@@ -315,14 +315,14 @@ export default function ArrendamientoCanuelasPage() {
 
         {/* Links internos fuertes */}
         <section className="mt-12">
-          <h2 className="text-lg font-semibold text-white mb-6">Información relacionada</h2>
+          <h2 className="text-lg font-semibold text-ink mb-6">Información relacionada</h2>
           <div className="grid sm:grid-cols-3 gap-4">
             <Link href="/mercado/inmag" className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-5 hover:border-sky-500/30 transition-all group">
-              <h3 className="text-white font-semibold mb-1 group-hover:text-accent-bright transition-colors">INMAG · índice oficial</h3>
+              <h3 className="text-ink font-semibold mb-1 group-hover:text-accent-bright transition-colors">INMAG · índice oficial</h3>
               <p className="text-sm text-zinc-500">Cotización diaria del novillo en Cañuelas y serie histórica.</p>
             </Link>
             <Link href="/mercado/canuelas" className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-5 hover:border-sky-500/30 transition-all group">
-              <h3 className="text-white font-semibold mb-1 group-hover:text-accent-bright transition-colors">Mercado de Cañuelas</h3>
+              <h3 className="text-ink font-semibold mb-1 group-hover:text-accent-bright transition-colors">Mercado de Cañuelas</h3>
               <p className="text-sm text-zinc-500">Precios por categoría y operatoria del Mercado Agroganadero.</p>
             </Link>
             <Link href="/mercado/arrendamiento" className="bg-sky-500/10 border border-sky-500/20 rounded-2xl p-5 hover:bg-sky-500/15 transition-all group">

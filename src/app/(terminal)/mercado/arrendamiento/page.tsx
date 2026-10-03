@@ -432,7 +432,7 @@ export default async function ArrendamientoPage() {
               </span>
               <span className="text-sm text-zinc-500">Mercado Agroganadero</span>
             </div>
-            <h1 className="text-4xl lg:text-5xl font-bold text-white tracking-tight mb-3">
+            <h1 className="text-4xl lg:text-5xl font-bold text-ink tracking-tight mb-3">
               Índice Novillo{' '}
               <span className="block text-accent">Arrendamiento</span>
             </h1>
@@ -446,7 +446,7 @@ export default async function ArrendamientoPage() {
                 Número oficial de arrendamiento + período vigente + fecha de actualización. */}
             <div className="mt-6 max-w-xl rounded-xl border border-sky-500/20 bg-sky-500/[0.06] p-4">
               <p className="text-zinc-200 text-base leading-relaxed">
-                <strong className="text-white">Precio novillo para arrendamiento hoy: ${fmt(arr.index)}/kg.</strong>{' '}
+                <strong className="text-ink">Precio novillo para arrendamiento hoy: ${fmt(arr.index)}/kg.</strong>{' '}
                 Índice oficial sugerido para arrendamientos rurales del Mercado Agroganadero.
                 Período {fmtFecha(arr.periodStart)}–{fmtFecha(arr.periodEnd)} (promedio ${fmt(arr.periodIndex)}/kg,
                 el valor que se liquida). Actualizado {fmtFecha(arr.date)}.
@@ -480,8 +480,8 @@ export default async function ArrendamientoPage() {
               {cierre ? (
                 <>
                   El índice novillo arrendamiento mensual de{' '}
-                  <strong className="text-white">{cierre.label}</strong> cerró en{' '}
-                  <strong className="text-white">${fmt(cierre.inmag)} por kilo vivo</strong> —el
+                  <strong className="text-ink">{cierre.label}</strong> cerró en{' '}
+                  <strong className="text-ink">${fmt(cierre.inmag)} por kilo vivo</strong> —el
                   valor oficial que publica el Mercado Agroganadero para el mes completo, sobre{' '}
                   {cierre.cabezas?.toLocaleString('es-AR') ?? '—'} cabezas—. Ese es el número con el que se
                   liquidan los contratos de arrendamiento rural: se usa el cierre del mes y no el
@@ -490,7 +490,7 @@ export default async function ArrendamientoPage() {
               ) : (
                 <>
                   El índice novillo arrendamiento mensual vigente es de{' '}
-                  <strong className="text-white">${fmt(arr.periodIndex)} por kilo vivo</strong>,
+                  <strong className="text-ink">${fmt(arr.periodIndex)} por kilo vivo</strong>,
                   promedio del período {fmtFecha(arr.periodStart)}–{fmtFecha(arr.periodEnd)}. Ese es
                   el valor con el que se liquidan los contratos: se usa el promedio del período y no
                   el precio de un día suelto.
@@ -534,12 +534,12 @@ export default async function ArrendamientoPage() {
               Índice de arrendamiento hoy: ${fmt(arr.index)}/kg
             </h2>
             <p className="speakable-content text-zinc-200 text-base leading-relaxed mb-3">
-              El <strong className="text-white">índice de arrendamiento</strong> —índice de arrendamiento
+              El <strong className="text-ink">índice de arrendamiento</strong> —índice de arrendamiento
               rural, o índice novillo arrendamiento— es el precio del kilo vivo de novillo que publica el
               Mercado Agroganadero para pasar a pesos los contratos de campo pactados en kilos de novillo
-              por hectárea. Hoy vale <strong className="text-white">${fmt(arr.index)} por kilo</strong>{' '}
+              por hectárea. Hoy vale <strong className="text-ink">${fmt(arr.index)} por kilo</strong>{' '}
               (actualizado el {fmtFecha(arr.date)}); el promedio del período, que es el que se liquida,{' '}
-              <strong className="text-white">${fmt(arr.periodIndex)}/kg</strong>.
+              <strong className="text-ink">${fmt(arr.periodIndex)}/kg</strong>.
             </p>
             <p className="text-zinc-500 text-xs">
               No es un índice agrícola en quintales de soja: es la referencia ganadera de los contratos
@@ -598,13 +598,13 @@ export default async function ArrendamientoPage() {
         {/* What is the Index */}
         <section className="max-w-6xl mx-auto px-4 py-12">
           <div className="bg-gradient-to-br from-sky-500/5 to-transparent border border-sky-500/10 rounded-2xl p-6 lg:p-8">
-            <h2 className="text-2xl font-bold text-white mb-4">
+            <h2 className="text-2xl font-bold text-ink mb-4">
               ¿Qué es el Índice Novillo Arrendamiento?
             </h2>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-4 text-zinc-400">
                 <p>
-                  El <strong className="text-white">índice novillo arrendamiento</strong> es el valor de referencia 
+                  El <strong className="text-ink">índice novillo arrendamiento</strong> es el valor de referencia 
                   más utilizado en Argentina para calcular el canon de los contratos de arrendamiento rural.
                 </p>
                 <p>
@@ -649,7 +649,7 @@ export default async function ArrendamientoPage() {
         {/* Chart Section */}
         <section className="max-w-6xl mx-auto px-4 py-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-white">Evolución del Índice (90 días)</h2>
+            <h2 className="text-xl font-semibold text-ink">Evolución del Índice (90 días)</h2>
             <Link 
               href="/api-docs" 
               className="text-sm text-zinc-500 hover:text-accent-bright transition-colors flex items-center gap-1"
@@ -680,7 +680,7 @@ export default async function ArrendamientoPage() {
         {/* Últimas ruedas: la tabla con FECHAS que la búsqueda "…hoy" espera. GSC 20-09-2026: la
             página no tenía una sola fecha en el cuerpo; los que rankean arriba son archivos por fecha. */}
         <section className="max-w-6xl mx-auto px-4 pb-12">
-          <h2 className="text-xl font-semibold text-white mb-2">Precio del novillo para arrendamiento: últimas ruedas</h2>
+          <h2 className="text-xl font-semibold text-ink mb-2">Precio del novillo para arrendamiento: últimas ruedas</h2>
           <p className="text-zinc-500 text-sm mb-4">
             INMAG del novillo por rueda en el Mercado Agroganadero, la base del índice. El valor sugerido vigente para
             arrendamientos es <strong className="text-zinc-300">${fmt(arr.index)}/kg</strong> ({fmtFecha(arr.date)}); el que se
@@ -701,7 +701,7 @@ export default async function ArrendamientoPage() {
                 {ultimasRuedas.map((r) => (
                   <tr key={r.date} className="border-t border-zinc-800/50">
                     <td className="px-5 py-2.5 text-zinc-300"><time dateTime={r.date}>{fmtFecha(r.date)}</time></td>
-                    <td className="px-5 py-2.5 text-right tabular-nums text-white">${fmt(r.value)}/kg</td>
+                    <td className="px-5 py-2.5 text-right tabular-nums text-ink">${fmt(r.value)}/kg</td>
                     <td className={`px-5 py-2.5 text-right tabular-nums ${r.change == null ? 'text-zinc-600' : r.change >= 0 ? 'text-positive' : 'text-negative'}`}>
                       {r.change == null ? '—' : `${r.change >= 0 ? '+' : ''}${r.change.toFixed(1)}%`}
                     </td>
@@ -754,7 +754,7 @@ export default async function ArrendamientoPage() {
             </div>
           )}
 
-          <h2 className="text-xl font-semibold text-white mb-2">Cierre mensual del INMAG</h2>
+          <h2 className="text-xl font-semibold text-ink mb-2">Cierre mensual del INMAG</h2>
           <p className="text-zinc-500 text-sm mb-4">
             Los contratos de arrendamiento se liquidan con el cierre mensual del índice. Estos son los promedios
             oficiales del MAG, mes a mes.
@@ -787,7 +787,7 @@ export default async function ArrendamientoPage() {
 
         {/* FAQ Section */}
         <section className="max-w-6xl mx-auto px-4 pb-12">
-          <h2 className="text-xl font-semibold text-white mb-6">Preguntas Frecuentes</h2>
+          <h2 className="text-xl font-semibold text-ink mb-6">Preguntas Frecuentes</h2>
           
           <div className="space-y-4">
             {[
@@ -829,7 +829,7 @@ export default async function ArrendamientoPage() {
                 className="group bg-zinc-900/30 border border-zinc-800/50 rounded-xl overflow-hidden"
               >
                 <summary className="flex items-center justify-between p-5 cursor-pointer hover:bg-zinc-800/20 transition-colors">
-                  <h3 className="text-white font-medium pr-4">{faq.q}</h3>
+                  <h3 className="text-ink font-medium pr-4">{faq.q}</h3>
                   <svg 
                     className="w-5 h-5 text-zinc-500 flex-shrink-0 transition-transform group-open:rotate-180" 
                     fill="none" 
@@ -851,7 +851,7 @@ export default async function ArrendamientoPage() {
             ("índice novillo arrendamiento Liniers/Cañuelas") sin canibalizar la página
             madre. Landings dedicadas por mercado de origen. */}
         <section className="max-w-6xl mx-auto px-4 pb-12">
-          <h2 className="text-lg font-semibold text-white mb-2">Índice de arrendamiento por fuente</h2>
+          <h2 className="text-lg font-semibold text-ink mb-2">Índice de arrendamiento por fuente</h2>
           <p className="text-zinc-500 text-sm mb-6">
             El índice de arrendamiento integra las operaciones del Mercado Agroganadero. Consultá el detalle
             por mercado de origen.
@@ -863,7 +863,7 @@ export default async function ArrendamientoPage() {
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-accent-bright transition-colors">
+                  <h3 className="text-lg font-semibold text-ink mb-2 group-hover:text-accent-bright transition-colors">
                     Índice arrendamiento Liniers
                   </h3>
                   <p className="text-sm text-zinc-500">
@@ -882,7 +882,7 @@ export default async function ArrendamientoPage() {
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-accent-bright transition-colors">
+                  <h3 className="text-lg font-semibold text-ink mb-2 group-hover:text-accent-bright transition-colors">
                     Índice arrendamiento Cañuelas
                   </h3>
                   <p className="text-sm text-zinc-500">
@@ -899,7 +899,7 @@ export default async function ArrendamientoPage() {
 
         {/* Related Links */}
         <section className="max-w-6xl mx-auto px-4 pb-16">
-          <h2 className="text-lg font-semibold text-white mb-6">Información Relacionada</h2>
+          <h2 className="text-lg font-semibold text-ink mb-6">Información Relacionada</h2>
           
           <div className="grid md:grid-cols-3 gap-4">
             <Link 
@@ -908,7 +908,7 @@ export default async function ArrendamientoPage() {
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-accent-bright transition-colors">
+                  <h3 className="text-lg font-semibold text-ink mb-2 group-hover:text-accent-bright transition-colors">
                     INMAG - Índice Oficial
                   </h3>
                   <p className="text-sm text-zinc-500">
@@ -927,7 +927,7 @@ export default async function ArrendamientoPage() {
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-accent-bright transition-colors">
+                  <h3 className="text-lg font-semibold text-ink mb-2 group-hover:text-accent-bright transition-colors">
                     Mercado de Liniers
                   </h3>
                   <p className="text-sm text-zinc-500">
@@ -976,7 +976,7 @@ export default async function ArrendamientoPage() {
             <div className="flex items-center justify-between gap-4">
               <div>
                 <div className="text-xs text-accent uppercase tracking-wider mb-1">Tu hacienda al INMAG</div>
-                <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-accent-bright transition-colors">¿Cuánto vale tu rodeo hoy?</h3>
+                <h3 className="text-lg font-semibold text-ink mb-1 group-hover:text-accent-bright transition-colors">¿Cuánto vale tu rodeo hoy?</h3>
                 <p className="text-sm text-zinc-400 max-w-xl">
                   Cargá tu hacienda una vez en <strong className="text-zinc-200">Mi Ganado</strong> y mirá su
                   valor actualizado al INMAG cada día hábil — en pesos y en dólares. Gratis con tu cuenta.
@@ -995,7 +995,7 @@ export default async function ArrendamientoPage() {
         <section className="max-w-6xl mx-auto px-4 pb-12">
           <div className="border border-terminal-border bg-terminal-panel/40 rounded-2xl p-6">
             <div className="text-xs text-accent uppercase tracking-wider mb-1">Insertá este índice en tu web</div>
-            <h3 className="text-lg font-semibold text-white mb-2">Índice del novillo para arrendamiento, siempre actualizado</h3>
+            <h3 className="text-lg font-semibold text-ink mb-2">Índice del novillo para arrendamiento, siempre actualizado</h3>
             <p className="text-sm text-zinc-400 max-w-2xl mb-4">
               Pegá este código en tu sitio y mostrá el valor del día — se actualiza solo cada día hábil.
               Uso libre con atribución. Ideal para consignatarias, estudios contables y medios del agro.

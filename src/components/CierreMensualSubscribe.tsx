@@ -90,7 +90,7 @@ export default function CierreMensualSubscribe({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/marca/iconos-color/indice.png" alt="" className="w-5 h-5" />
           </span>
-          <h3 className="text-xl font-bold text-white">{title}</h3>
+          <h3 className="text-xl font-bold text-ink">{title}</h3>
         </div>
         <p className="text-zinc-400 text-sm mb-5 leading-relaxed">{subtitle}</p>
 
@@ -108,7 +108,7 @@ export default function CierreMensualSubscribe({
                 placeholder="tu@email.com"
                 value={email}
                 onChange={(e) => { setEmail(e.target.value); if (state === 'error') setState('idle') }}
-                className="w-full bg-transparent text-white outline-none placeholder:text-zinc-600"
+                className="w-full bg-transparent text-ink outline-none placeholder:text-zinc-600"
               />
             </div>
             <button

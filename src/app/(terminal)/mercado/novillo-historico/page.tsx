@@ -191,7 +191,7 @@ export default async function NovilloHistoricoPage() {
       {/* CTA Enterprise — la serie completa por API */}
       <section className="rounded-xl border border-sky-500/30 bg-sky-500/[0.05] p-6 sm:flex sm:items-center sm:justify-between sm:gap-6">
         <div>
-          <h2 className="text-lg font-semibold text-white">La serie completa, por API</h2>
+          <h2 className="text-lg font-semibold text-ink">La serie completa, por API</h2>
           <p className="text-sm text-zinc-400 mt-1">
             {serie.length.toLocaleString('es-AR')} días (2006→hoy) en ARS, USD oficial y USD blue:{' '}
             <code className="text-sky-300 text-xs">GET /api/precios?historico=7700&serie=novillitos</code>.

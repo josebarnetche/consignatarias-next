@@ -64,7 +64,7 @@ export function AddToCalendarButton({
   return (
     <button
       onClick={handleDownload}
-      className={`flex items-center justify-center gap-2 px-4 py-2.5 bg-zinc-700 hover:bg-zinc-600 text-white font-medium rounded-lg transition-colors ${className}`}
+      className={`flex items-center justify-center gap-2 px-4 py-2.5 bg-zinc-700 hover:bg-zinc-600 text-ink font-medium rounded-lg transition-colors ${className}`}
       title="Agregar a tu calendario (iOS, Android, Google, Outlook)"
     >
       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

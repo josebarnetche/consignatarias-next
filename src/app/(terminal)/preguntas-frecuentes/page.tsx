@@ -112,27 +112,27 @@ export default function FAQPage() {
         cssSelectors={['h1', 'h2', '.faq-question', '.faq-answer']}
       />
       
-      <div className="min-h-screen bg-gradient-to-b from-gray-950 to-black">
+      <div className="min-h-screen bg-zinc-950">
         {/* Header */}
-        <section className="relative py-16 border-b border-gray-800">
+        <section className="relative py-16 border-b border-zinc-800">
           <div className="container mx-auto px-4">
             {/* Breadcrumb */}
             <nav className="mb-6" aria-label="Breadcrumb">
-              <ol className="flex items-center gap-2 text-sm text-gray-400">
+              <ol className="flex items-center gap-2 text-sm text-zinc-400">
                 <li>
-                  <Link href="/" className="hover:text-white transition-colors">
+                  <Link href="/" className="hover:text-ink transition-colors">
                     Inicio
                   </Link>
                 </li>
-                <li className="text-gray-600">/</li>
-                <li className="text-white">Preguntas Frecuentes</li>
+                <li className="text-zinc-600">/</li>
+                <li className="text-ink">Preguntas Frecuentes</li>
               </ol>
             </nav>
 
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold text-ink mb-4">
               Preguntas Frecuentes
             </h1>
-            <p className="text-xl text-gray-400 max-w-3xl">
+            <p className="text-xl text-zinc-400 max-w-3xl">
               Todo lo que necesitás saber sobre remates de ganado, consignatarias y el mercado ganadero argentino.
             </p>
           </div>
@@ -145,12 +145,12 @@ export default function FAQPage() {
               {FAQS.map((faq, index) => (
                 <article
                   key={index}
-                  className="bg-gray-900/50 border border-gray-800 rounded-xl p-6 hover:border-gray-700 transition-colors"
+                  className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6 hover:border-zinc-700 transition-colors"
                 >
-                  <h2 className="text-xl font-semibold text-white mb-3">
+                  <h2 className="text-xl font-semibold text-ink mb-3">
                     {faq.question}
                   </h2>
-                  <p className="text-gray-300 leading-relaxed mb-4">
+                  <p className="text-zinc-300 leading-relaxed mb-4">
                     {faq.answer}
                   </p>
                   {faq.links && faq.links.length > 0 && (
@@ -174,18 +174,18 @@ export default function FAQPage() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-16 border-t border-gray-800">
+        <section className="py-16 border-t border-zinc-800">
           <div className="container mx-auto px-4 text-center">
-            <h2 className="text-2xl font-bold text-white mb-4">
+            <h2 className="text-2xl font-bold text-ink mb-4">
               ¿Tenés más preguntas?
             </h2>
-            <p className="text-gray-400 mb-6 max-w-xl mx-auto">
+            <p className="text-zinc-400 mb-6 max-w-xl mx-auto">
               Explorá nuestro glosario ganadero con más de 38 términos técnicos, o contactanos directamente.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link
                 href="/glosario"
-                className="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors"
+                className="px-6 py-3 bg-zinc-800 hover:bg-zinc-700 text-ink rounded-lg transition-colors"
               >
                 Ver Glosario
               </Link>

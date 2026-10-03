@@ -105,7 +105,7 @@ export default function LiveHero(p: LiveHeroProps) {
           {p.bandas.slice(0, 4).map((b) => (
             <Link key={b.slug} href={`/vr/${b.slug}`} className="group block">
               <div className="text-[11px] font-terminal uppercase tracking-[0.18em] text-zinc-500 mb-1">{b.categoria}</div>
-              <div className="font-terminal tabular-nums text-2xl md:text-3xl text-zinc-100 leading-none group-hover:text-white transition-colors">
+              <div className="font-terminal tabular-nums text-2xl md:text-3xl text-zinc-100 leading-none group-hover:text-ink transition-colors">
                 ${ar(b.mediana)}<span className="text-zinc-600 text-xs">/kg</span>
               </div>
               <div className="text-[11px] font-terminal tabular-nums text-zinc-500 mt-1">
@@ -135,8 +135,8 @@ export default function LiveHero(p: LiveHeroProps) {
           {p.enVivo > 0 && (
             <>
               <span className="text-zinc-800">|</span>
-              <Link href="/remates/en-vivo" className="inline-flex items-center gap-1.5 text-[#f87171] hover:text-[#fca5a5] transition-colors">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#f87171] animate-pulse" />
+              <Link href="/remates/en-vivo" className="inline-flex items-center gap-1.5 text-negative hover:text-negative/80 transition-colors">
+                <span className="w-1.5 h-1.5 rounded-full bg-negative animate-pulse" />
                 <span className="tabular-nums">{p.enVivo}</span> en vivo
               </Link>
             </>
@@ -151,7 +151,7 @@ export default function LiveHero(p: LiveHeroProps) {
         <Link
           href="/mi-ganado"
           onClick={() => trackCTA('valuar_rodeo', 'hero', { context: 'landing-hero', variant: 'vr' })}
-          className="group inline-flex items-center justify-center gap-2 text-sm font-medium text-[#0b0b0e] bg-accent hover:bg-sky-300 transition-colors rounded py-3 px-6"
+          className="group inline-flex items-center justify-center gap-2 text-sm font-medium text-terminal-bg bg-accent hover:bg-accent-bright transition-colors rounded py-3 px-6"
         >
           Valuar mi rodeo gratis
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-200 ease-out group-hover:translate-x-1"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
@@ -159,7 +159,7 @@ export default function LiveHero(p: LiveHeroProps) {
         <Link
           href="/vr"
           onClick={() => trackCTA('ver_vr', 'hero', { context: 'landing-hero', variant: 'vr' })}
-          className="inline-flex items-center justify-center gap-2 text-sm font-medium text-zinc-200 border border-zinc-700 hover:border-zinc-500 hover:text-white transition-colors rounded py-3 px-6"
+          className="inline-flex items-center justify-center gap-2 text-sm font-medium text-zinc-200 border border-zinc-700 hover:border-zinc-500 hover:text-ink transition-colors rounded py-3 px-6"
         >
           Ver el Valor de Referencia
         </Link>
@@ -169,14 +169,14 @@ export default function LiveHero(p: LiveHeroProps) {
         <Link
           href="/consignatarias"
           onClick={() => trackCTA('ver_directorio', 'hero', { context: 'landing-hero', variant: 'vr' })}
-          className="text-zinc-300 underline decoration-zinc-700 underline-offset-4 hover:text-white hover:decoration-zinc-400 transition-colors"
+          className="text-zinc-300 underline decoration-zinc-700 underline-offset-4 hover:text-ink hover:decoration-zinc-400 transition-colors"
         >
           {p.consignatarias} consignatarias
         </Link>
         <Link
           href="/remates/semana"
           onClick={() => trackCTA('calendario_semana', 'hero', { context: 'landing-hero', variant: 'default' })}
-          className="text-zinc-300 underline decoration-zinc-700 underline-offset-4 hover:text-white hover:decoration-zinc-400 transition-colors"
+          className="text-zinc-300 underline decoration-zinc-700 underline-offset-4 hover:text-ink hover:decoration-zinc-400 transition-colors"
         >
           Remates de la semana
         </Link>

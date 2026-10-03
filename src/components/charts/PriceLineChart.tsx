@@ -56,7 +56,7 @@ function fmtDateLong(iso: string): string {
 export function PriceLineChart({
   data,
   height = 200,
-  accentColor = '#34d399',
+  accentColor = 'rgb(var(--positive))',
   decimals = 0,
   prefix = '$',
   suffix = '',
@@ -116,8 +116,11 @@ export function PriceLineChart({
 
   const handleLeave = useCallback(() => setHoverIdx(null), [])
 
+  // El id del gradiente va en un url(#id) — accentColor puede ser un hex o un
+  // "rgb(var(--tono))" (temático); se sanea a solo alfanumérico para que el id
+  // sea válido como fragmento de URL en ambos casos.
   const gradId = useMemo(
-    () => `plc-${accentColor.replace('#', '')}-${Math.round(height)}`,
+    () => `plc-${accentColor.replace(/[^a-zA-Z0-9]/g, '')}-${Math.round(height)}`,
     [accentColor, height]
   )
 
@@ -187,7 +190,7 @@ export function PriceLineChart({
             y1={height * f}
             x2={VW}
             y2={height * f}
-            stroke="#27272a"
+            stroke="rgb(var(--t-border))"
             strokeWidth="1"
             strokeDasharray="3,4"
             vectorEffect="non-scaling-stroke"
@@ -236,7 +239,7 @@ export function PriceLineChart({
           height: 8,
           background: accentColor,
           transform: `translate(-50%, -50%) scale(${hovered ? 1.15 : 0.85})`,
-          boxShadow: hovered ? '0 0 0 2px #0a0a0f' : 'none',
+          boxShadow: hovered ? '0 0 0 2px rgb(var(--t-bg))' : 'none',
           transition: 'transform 120ms cubic-bezier(0.22,1,0.36,1), box-shadow 120ms cubic-bezier(0.22,1,0.36,1)',
         }}
       />

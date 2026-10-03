@@ -156,11 +156,11 @@ function AuctionCard({ auction }: { auction: Auction }) {
               </span>
             )}
           </div>
-          <h3 className="text-white font-medium truncate">{auction.consignatariaName}</h3>
+          <h3 className="text-ink font-medium truncate">{auction.consignatariaName}</h3>
           <p className="text-sm text-zinc-400">{getCity(auction.location)}, {getProvinceCode(auction.province)}</p>
         </div>
         <div className="text-right shrink-0">
-          <div className="text-sm font-medium text-white">{formatDateShort(auction.date)}</div>
+          <div className="text-sm font-medium text-ink">{formatDateShort(auction.date)}</div>
           {auction.estimatedHeads && (
             <div className="text-xs text-zinc-500">{auction.estimatedHeads.toLocaleString('es-AR')} cab.</div>
           )}
@@ -203,7 +203,7 @@ export default async function TipoRematesPage({ params }: Props) {
             <span className="text-zinc-300">Remates de {config.displayName}</span>
           </nav>
 
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
+          <h1 className="text-3xl md:text-4xl font-bold text-ink mb-4">
             Remates de {config.displayName} en Argentina
           </h1>
 
@@ -211,15 +211,15 @@ export default async function TipoRematesPage({ params }: Props) {
           <div className="flex flex-wrap gap-4 md:gap-8 text-sm">
             <div>
               <span className="text-zinc-500">Próximos remates:</span>{' '}
-              <span className="text-white font-medium">{upcoming.length}</span>
+              <span className="text-ink font-medium">{upcoming.length}</span>
             </div>
             <div>
               <span className="text-zinc-500">Cabezas estimadas:</span>{' '}
-              <span className="text-white font-medium">{totalHeads.toLocaleString('es-AR')}</span>
+              <span className="text-ink font-medium">{totalHeads.toLocaleString('es-AR')}</span>
             </div>
             <div>
               <span className="text-zinc-500">Provincias:</span>{' '}
-              <span className="text-white font-medium">{provinces}</span>
+              <span className="text-ink font-medium">{provinces}</span>
             </div>
           </div>
         </div>
@@ -233,7 +233,7 @@ export default async function TipoRematesPage({ params }: Props) {
 
         {/* Auction List */}
         <section className="mb-12">
-          <h2 className="text-xl font-semibold text-white mb-4">
+          <h2 className="text-xl font-semibold text-ink mb-4">
             Próximos remates de {config.name}
           </h2>
           
@@ -269,7 +269,7 @@ export default async function TipoRematesPage({ params }: Props) {
 
         {/* FAQ Section */}
         <section className="mb-12">
-          <h2 className="text-xl font-semibold text-white mb-4">
+          <h2 className="text-xl font-semibold text-ink mb-4">
             Preguntas frecuentes sobre remates de {config.name}
           </h2>
           <div className="space-y-4">
@@ -279,7 +279,7 @@ export default async function TipoRematesPage({ params }: Props) {
                 className="group bg-zinc-900/50 border border-zinc-800 rounded-lg"
               >
                 <summary className="flex items-center justify-between p-4 cursor-pointer hover:bg-zinc-800/50">
-                  <span className="font-medium text-white">{faq.question}</span>
+                  <span className="font-medium text-ink">{faq.question}</span>
                   <svg 
                     className="w-5 h-5 text-zinc-500 group-open:rotate-180 transition-transform" 
                     fill="none" 
@@ -314,7 +314,7 @@ export default async function TipoRematesPage({ params }: Props) {
           
           return (
             <section className="mb-12">
-              <h2 className="text-xl font-semibold text-white mb-4">
+              <h2 className="text-xl font-semibold text-ink mb-4">
                 Remates de {config.name} por provincia
               </h2>
               <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-4">
@@ -340,7 +340,7 @@ export default async function TipoRematesPage({ params }: Props) {
 
         {/* Other Types */}
         <section>
-          <h2 className="text-xl font-semibold text-white mb-4">
+          <h2 className="text-xl font-semibold text-ink mb-4">
             Otros tipos de remate
           </h2>
           <div className="flex flex-wrap gap-2">

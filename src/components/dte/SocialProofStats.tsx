@@ -50,7 +50,7 @@ export function SocialProofStats() {
       <div className="flex items-center gap-2 text-gray-400">
         <FileText className="w-4 h-4 text-accent" />
         <span>
-          <span className="font-semibold text-white">{stats.totalDtes.toLocaleString('es-AR')}</span>
+          <span className="font-semibold text-ink">{stats.totalDtes.toLocaleString('es-AR')}</span>
           {' '}guías procesadas
         </span>
       </div>
@@ -59,7 +59,7 @@ export function SocialProofStats() {
         <div className="flex items-center gap-2 text-gray-400">
           <Users className="w-4 h-4 text-accent" />
           <span>
-            <span className="font-semibold text-white">{stats.uniqueUsers}</span>
+            <span className="font-semibold text-ink">{stats.uniqueUsers}</span>
             {' '}productores activos
           </span>
         </div>
@@ -69,7 +69,7 @@ export function SocialProofStats() {
         <div className="flex items-center gap-2 text-gray-400">
           <TrendingUp className="w-4 h-4 text-accent" />
           <span>
-            <span className="font-semibold text-white">{stats.totalCabezas.toLocaleString('es-AR')}</span>
+            <span className="font-semibold text-ink">{stats.totalCabezas.toLocaleString('es-AR')}</span>
             {' '}cabezas registradas
           </span>
         </div>

@@ -3,6 +3,84 @@
 @tailwind utilities;
 
 /* ============================================================
+   TEMA — variables CSS (docs/PLAN-TEMA-WHITE.md)
+
+   Dos juegos de variables:
+   · :root           → tema CLARO, el default. Blanco puro + rampa zinc
+                        invertida (50↔950, 100↔900, …, 500 self) + acentos
+                        bajados a -600/-700 por contraste (≥4.5:1 sobre blanco).
+   · [data-theme=dark] → tema OSCURO, PIXEL A PIXEL igual al de siempre:
+                          cada variable lleva el hex que ya estaba hardcodeado.
+
+   `zinc` se usa en el código siempre en el mismo sentido (número bajo =
+   texto claro, número alto = fondo oscuro) → invertir la rampa mantiene el
+   significado de cada clase sin tocar un componente. Canales sueltos
+   ("R G B", sin rgb()) para que tailwind.config.js los pueda componer como
+   rgb(var(--x) / <alpha-value>) y sigan funcionando los /NN de opacidad.
+   ============================================================ */
+:root {
+  /* escala zinc — invertida (claro) */
+  --z-50: 9 9 11;
+  --z-100: 24 24 27;
+  --z-200: 39 39 42;
+  --z-300: 63 63 70;
+  --z-400: 82 82 91;
+  --z-500: 113 113 122;
+  --z-600: 161 161 170;
+  --z-700: 212 212 216;
+  --z-800: 228 228 231;
+  --z-900: 244 244 245;
+  --z-950: 250 250 250;
+
+  /* fondo/panel/borde terminal — blanco puro (decisión Jose 01-10-2026) */
+  --t-bg: 255 255 255;
+  --t-panel: 255 255 255;
+  --t-border: 228 228 231;
+  --t-border-light: 212 212 216;
+
+  /* texto "fuerte" (antes text-white a secas) — casi negro en claro */
+  --ink: 24 24 27;
+
+  /* semánticos — bajados a -600/-700 para 4.5:1 sobre blanco (el -400/-500
+     original da ~1.9:1, ilegible). Ver docs/PLAN-TEMA-WHITE.md §4. */
+  --positive: 5 150 105;       /* emerald-600 */
+  --negative: 220 38 38;       /* red-600 */
+  --warning: 217 119 6;        /* amber-600 */
+  --accent: 29 78 216;         /* blue-700 — reemplaza al sky-400 (1.9:1) */
+  --accent-bright: 30 64 175;  /* blue-800 */
+  --live: 4 120 87;            /* emerald-700 */
+}
+
+[data-theme='dark'] {
+  /* escala zinc — tal cual estaba (sin invertir) */
+  --z-50: 250 250 250;
+  --z-100: 244 244 245;
+  --z-200: 228 228 231;
+  --z-300: 212 212 216;
+  --z-400: 161 161 170;
+  --z-500: 113 113 122;
+  --z-600: 82 82 91;
+  --z-700: 63 63 70;
+  --z-800: 39 39 42;
+  --z-900: 24 24 27;
+  --z-950: 9 9 11;
+
+  --t-bg: 10 10 15;
+  --t-panel: 22 22 29;
+  --t-border: 39 39 42;
+  --t-border-light: 63 63 70;
+
+  --ink: 255 255 255;
+
+  --positive: 52 211 153;      /* emerald-400 */
+  --negative: 248 113 113;     /* red-400 */
+  --warning: 251 191 36;       /* amber-400 */
+  --accent: 56 189 248;        /* sky-400 */
+  --accent-bright: 14 165 233; /* sky-500 */
+  --live: 16 185 129;          /* emerald-500 */
+}
+
+/* ============================================================
    GANADO TERMINAL — Shared base + Terminal + Landing styles
    ============================================================ */
 
@@ -11,12 +89,12 @@
   *,
   *::before,
   *::after {
-    border-color: #27272a; /* zinc-800 default border */
+    border-color: rgb(var(--t-border)); /* borde sutil default */
   }
 
   html {
-    background-color: #0a0a0f;
-    color: #d4d4d8;
+    background-color: rgb(var(--t-bg));
+    color: rgb(var(--z-300));
     font-feature-settings: 'tnum' 1, 'ss01' 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -25,18 +103,18 @@
   }
 
   body {
-    background-color: #0a0a0f;
+    background-color: rgb(var(--t-bg));
     min-height: 100vh;
   }
 
   :focus-visible {
-    outline: 2px solid #38bdf8;
+    outline: 2px solid rgb(var(--accent));
     outline-offset: 1px;
   }
 
   ::selection {
-    background-color: rgba(161, 161, 170, 0.2);
-    color: #fafafa;
+    background-color: rgb(var(--z-500) / 0.2);
+    color: rgb(var(--z-950));
   }
 }
 
@@ -47,25 +125,25 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #0a0a0f;
+  background: rgb(var(--t-bg));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #3f3f46;
+  background: rgb(var(--t-border-light));
   border-radius: 0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #52525b;
+  background: rgb(var(--z-600));
 }
 
 ::-webkit-scrollbar-corner {
-  background: #0a0a0f;
+  background: rgb(var(--t-bg));
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #3f3f46 #0a0a0f;
+  scrollbar-color: rgb(var(--t-border-light)) rgb(var(--t-bg));
 }
 
 /* --- Reduced motion --------------------------------------- */
@@ -113,7 +191,7 @@
 
   .terminal-table thead {
     @apply sticky top-0 z-10;
-    background-color: #16161d;
+    background-color: rgb(var(--t-panel));
   }
 
   .terminal-table th {
@@ -135,13 +213,13 @@
   }
 
   .terminal-table tbody tr:hover {
-    background-color: rgba(56, 189, 248, 0.05);
+    background-color: rgb(var(--accent) / 0.05);
     /* barra de acento a la izquierda (inset) — fila "enfocada", cero layout shift */
-    box-shadow: inset 2px 0 0 0 #38bdf8;
+    box-shadow: inset 2px 0 0 0 rgb(var(--accent));
   }
 
   .terminal-table tbody tr:hover td {
-    color: #f1f5f9;
+    color: rgb(var(--ink));
   }
 
   .terminal-table td.num,
@@ -199,13 +277,13 @@
   .terminal-btn:hover {
     @apply border-accent text-accent bg-accent/5;
     transform: translateY(-1px);
-    box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.18), 0 4px 14px -6px rgba(56, 189, 248, 0.35);
+    box-shadow: 0 0 0 1px rgb(var(--accent) / 0.18), 0 4px 14px -6px rgb(var(--accent) / 0.35);
   }
 
   .terminal-btn:active {
     @apply bg-accent/10;
     transform: translateY(0) scale(0.975);
-    box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.22);
+    box-shadow: 0 0 0 1px rgb(var(--accent) / 0.22);
   }
 
   .terminal-btn-primary {
@@ -226,7 +304,7 @@
   /* Focus con anillo de acento suave (glow), no solo el borde. */
   .terminal-input:focus {
     @apply border-accent outline-none;
-    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12);
+    box-shadow: 0 0 0 3px rgb(var(--accent) / 0.12);
   }
 
   /* --- Nav link ------------------------------------------- */
@@ -244,7 +322,7 @@
     right: 12px;
     bottom: 0;
     height: 2px;
-    background-color: #38bdf8;
+    background-color: rgb(var(--accent));
     transform: scaleX(0);
     transform-origin: center;
     transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -256,7 +334,7 @@
 
   .terminal-nav-link:hover::after {
     transform: scaleX(0.6);
-    background-color: #52525b;
+    background-color: rgb(var(--z-600));
   }
 
   .terminal-nav-link-active {
@@ -310,7 +388,7 @@
   /* --- Grid layout helpers -------------------------------- */
   .terminal-grid {
     @apply grid gap-px;
-    background-color: #27272a;
+    background-color: rgb(var(--t-border));
   }
 
   .terminal-grid > * {
@@ -336,13 +414,13 @@
      El manual pide el pulse en --accent; el verde queda para "live/verified". */
   .live-indicator-accent {
     @apply relative inline-block w-2.5 h-2.5 rounded-full flex-shrink-0;
-    background-color: #38bdf8;
+    background-color: rgb(var(--accent));
     animation: dot-blink 1.4s ease-in-out infinite;
   }
   .live-indicator-accent::after {
     content: '';
     @apply absolute inset-0 rounded-full;
-    background-color: #38bdf8;
+    background-color: rgb(var(--accent));
     animation: ring-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
   @keyframes dot-blink {
@@ -355,18 +433,18 @@
     @apply inline-flex items-center gap-1.5 px-2 py-0.5
            text-xxs font-terminal uppercase tracking-wider
            border rounded-terminal;
-    border-color: rgba(16, 185, 129, 0.4);
-    color: #10b981;
-    background: rgba(16, 185, 129, 0.08);
-    box-shadow: 0 0 12px rgba(16, 185, 129, 0.15);
+    border-color: rgb(var(--live) / 0.4);
+    color: rgb(var(--live));
+    background: rgb(var(--live) / 0.08);
+    box-shadow: 0 0 12px rgb(var(--live) / 0.15);
   }
 
   .live-badge-amber {
     @apply live-badge;
-    border-color: rgba(251, 191, 36, 0.4);
-    color: #fbbf24;
-    background: rgba(251, 191, 36, 0.08);
-    box-shadow: 0 0 12px rgba(251, 191, 36, 0.12);
+    border-color: rgb(var(--warning) / 0.4);
+    color: rgb(var(--warning));
+    background: rgb(var(--warning) / 0.08);
+    box-shadow: 0 0 12px rgb(var(--warning) / 0.12);
   }
 
   /* --- Activity bar --------------------------------------- */
@@ -374,13 +452,13 @@
     @apply relative overflow-hidden flex items-center h-7
            px-4 text-xxs font-terminal tabular-nums
            border-b border-terminal-border;
-    background: linear-gradient(90deg, #16161d 0%, #0a0a0f 50%, #16161d 100%);
+    background: linear-gradient(90deg, rgb(var(--t-panel)) 0%, rgb(var(--t-bg)) 50%, rgb(var(--t-panel)) 100%);
   }
 
   .activity-bar::after {
     content: '';
     @apply absolute inset-0 pointer-events-none;
-    background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.03), transparent);
+    background: linear-gradient(90deg, transparent, rgb(var(--live) / 0.03), transparent);
     animation: scan-line 8s linear infinite;
   }
 
@@ -388,7 +466,7 @@
   .glass-panel {
     @apply bg-terminal-panel border border-terminal-border;
     border-radius: 2px;
-    background: linear-gradient(135deg, rgba(22, 22, 29, 0.95), rgba(10, 10, 15, 0.9));
+    background: linear-gradient(135deg, rgb(var(--t-panel) / 0.95), rgb(var(--t-bg) / 0.9));
     backdrop-filter: blur(8px);
   }
 
@@ -396,41 +474,41 @@
   .gradient-bar {
     @apply relative h-2.5 overflow-hidden;
     border-radius: 1px;
-    background: rgba(39, 39, 42, 0.5);
+    background: rgb(var(--t-border) / 0.5);
   }
 
   .gradient-bar-fill {
     @apply absolute inset-y-0 left-0;
     border-radius: 1px;
-    background: linear-gradient(90deg, #10b981, #38bdf8);
+    background: linear-gradient(90deg, rgb(var(--live)), rgb(var(--accent)));
     transition: width 0.4s ease-out;
   }
 
   .gradient-bar-fill-amber {
     @apply absolute inset-y-0 left-0;
     border-radius: 1px;
-    background: linear-gradient(90deg, #f59e0b, #fbbf24);
+    background: linear-gradient(90deg, rgb(var(--warning) / 0.8), rgb(var(--warning)));
     transition: width 0.4s ease-out;
   }
 
   .gradient-bar-fill-positive {
     @apply absolute inset-y-0 left-0;
     border-radius: 1px;
-    background: linear-gradient(90deg, #059669, #34d399);
+    background: linear-gradient(90deg, rgb(var(--positive) / 0.75), rgb(var(--positive)));
     transition: width 0.4s ease-out;
   }
 
   .gradient-bar-fill-negative {
     @apply absolute inset-y-0 left-0;
     border-radius: 1px;
-    background: linear-gradient(90deg, #dc2626, #f87171);
+    background: linear-gradient(90deg, rgb(var(--negative) / 0.75), rgb(var(--negative)));
     transition: width 0.4s ease-out;
   }
 
   .gradient-bar-fill-warning {
     @apply absolute inset-y-0 left-0;
     border-radius: 1px;
-    background: linear-gradient(90deg, #d97706, #fbbf24);
+    background: linear-gradient(90deg, rgb(var(--warning) / 0.75), rgb(var(--warning)));
     transition: width 0.4s ease-out;
   }
 
@@ -472,13 +550,13 @@
   50% { opacity: 0.5; }
 }
 
-/* PRO badge glow animation — cielo (accent de marca v2.0) */
+/* PRO badge glow animation — acento de marca */
 @keyframes pro-glow {
   0%, 100% {
-    box-shadow: 0 0 8px rgba(56, 189, 248, 0.2), 0 0 16px rgba(56, 189, 248, 0.1);
+    box-shadow: 0 0 8px rgb(var(--accent) / 0.2), 0 0 16px rgb(var(--accent) / 0.1);
   }
   50% {
-    box-shadow: 0 0 12px rgba(56, 189, 248, 0.35), 0 0 24px rgba(56, 189, 248, 0.15);
+    box-shadow: 0 0 12px rgb(var(--accent) / 0.35), 0 0 24px rgb(var(--accent) / 0.15);
   }
 }
 
@@ -617,11 +695,11 @@
   100% { background-position: 250% 0; }
 }
 .terminal-skeleton {
-  background-color: #1f1f27; /* zinc-800-ish sobre panel */
+  background-color: rgb(var(--z-800)); /* zinc-800 sobre panel */
   background-image: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(63, 63, 70, 0.45) 50%,
+    rgb(var(--z-700) / 0.45) 50%,
     transparent 100%
   );
   background-size: 200% 100%;
@@ -638,16 +716,16 @@
        contenedor cuando un dato vivo cambia/carga. El número
        (tabular-nums) queda fijo: nunca salta el layout. -------- */
 @keyframes delta-flash-positive {
-  0%   { background-color: rgba(52, 211, 153, 0.10); }
-  100% { background-color: rgba(52, 211, 153, 0); }
+  0%   { background-color: rgb(var(--positive) / 0.10); }
+  100% { background-color: rgb(var(--positive) / 0); }
 }
 @keyframes delta-flash-negative {
-  0%   { background-color: rgba(248, 113, 113, 0.10); }
-  100% { background-color: rgba(248, 113, 113, 0); }
+  0%   { background-color: rgb(var(--negative) / 0.10); }
+  100% { background-color: rgb(var(--negative) / 0); }
 }
 @keyframes delta-flash-live {
-  0%   { background-color: rgba(16, 185, 129, 0.10); }
-  100% { background-color: rgba(16, 185, 129, 0); }
+  0%   { background-color: rgb(var(--live) / 0.10); }
+  100% { background-color: rgb(var(--live) / 0); }
 }
 .delta-flash-positive { animation: delta-flash-positive 400ms cubic-bezier(0.22, 1, 0.36, 1) both; }
 .delta-flash-negative { animation: delta-flash-negative 400ms cubic-bezier(0.22, 1, 0.36, 1) both; }
@@ -720,7 +798,7 @@
 /* Foco de teclado visible y consistente (accesibilidad + prolijidad).
    :where() = especificidad 0 → cualquier componente lo puede pisar. */
 :where(a, button, [role='button'], input, select, textarea, summary):focus-visible {
-  outline: 2px solid rgba(56, 189, 248, 0.55);
+  outline: 2px solid rgb(var(--accent) / 0.55);
   outline-offset: 2px;
   border-radius: 2px;
 }
@@ -743,6 +821,6 @@
   }
   .hover-lift:hover {
     transform: translateY(-2px);
-    box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.18), 0 10px 30px -12px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 0 0 1px rgb(var(--accent) / 0.18), 0 10px 30px -12px rgba(0, 0, 0, 0.6);
   }
 }

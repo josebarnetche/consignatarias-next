@@ -103,7 +103,7 @@ export default function ValorCalculator() {
   return (
     <div className="py-4">
       <div className="mb-4">
-        <h1 className="text-xl font-semibold text-white">Calculadora de valor</h1>
+        <h1 className="text-xl font-semibold text-ink">Calculadora de valor</h1>
         <p className="text-sm text-zinc-500">Venta de hacienda · originás → conectás al colega → cobrás el punto. Jugá con las palancas.</p>
       </div>
 

@@ -127,7 +127,7 @@ export default function NovilloEnDolares({
         <div className="text-xs font-mono uppercase tracking-[0.22em] text-sky-400 font-semibold mb-4">
           · Del ISO-8859-1 a la serie completa · {series.length} meses
         </div>
-        <h1 className="text-4xl md:text-6xl font-mono font-bold text-white tracking-tight leading-[0.95]">
+        <h1 className="text-4xl md:text-6xl font-mono font-bold text-ink tracking-tight leading-[0.95]">
           El novillo argentino,
           <br />
           en dólares.
@@ -209,7 +209,7 @@ export default function NovilloEnDolares({
             }`}
           >
             <div className="text-xs font-mono uppercase tracking-widest text-sky-400/80 mb-2">{fmtDate(d.date)}</div>
-            <h2 className="text-2xl md:text-4xl font-mono font-bold text-white tracking-tight mb-3">{d.label}</h2>
+            <h2 className="text-2xl md:text-4xl font-mono font-bold text-ink tracking-tight mb-3">{d.label}</h2>
             <div className="text-4xl md:text-6xl font-mono font-bold text-sky-400 tabular-nums mb-4">
               {fmtUsd(d.usd_blue)}
             </div>
@@ -222,7 +222,7 @@ export default function NovilloEnDolares({
 
       {/* CTA — pb generoso para despejar el banner de cookies + el FAB de WhatsApp */}
       <section className="pt-20 pb-44 text-center border-t border-zinc-800 mt-10">
-        <h2 className="text-2xl md:text-3xl font-mono font-bold text-white tracking-tight mb-4">
+        <h2 className="text-2xl md:text-3xl font-mono font-bold text-ink tracking-tight mb-4">
           Esto es un puñado de días. Tenemos los {totalDays.toLocaleString('es-AR')}.
         </h2>
         <p className="text-zinc-400 font-mono text-sm max-w-xl mx-auto mb-8 leading-relaxed">

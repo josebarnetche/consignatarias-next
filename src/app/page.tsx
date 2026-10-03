@@ -1,4 +1,5 @@
 import { PromoGuiaBanner } from '@/components/PromoGuiaBanner'
+import ThemeToggle from "@/components/ThemeToggle";
 import Link from "next/link";
 import Image from "next/image";
 import { Metadata } from "next";
@@ -336,7 +337,7 @@ export default async function LandingPage() {
       {/* ============================================================ */}
       {/*  NAVBAR                                                       */}
       {/* ============================================================ */}
-      <nav className="fixed top-0 w-full z-50 border-b border-white/5 bg-[#09090b]/80 backdrop-blur-md">
+      <nav className="fixed top-0 w-full z-50 border-b border-ink/5 bg-zinc-950/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Image src="/icon-32.png" alt="Consignatarias.com.ar" width={32} height={32} className="rounded" />
@@ -362,12 +363,15 @@ export default async function LandingPage() {
             <Link href="/planes" className="hover:text-zinc-100 transition-colors">Planes</Link>
           </div>
 
-          <Link
-            href="/mi-ganado"
-            className="text-xs font-medium text-zinc-950 bg-accent hover:bg-sky-300 transition-colors rounded py-2 px-4"
-          >
-            Valuar mi rodeo
-          </Link>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <Link
+              href="/mi-ganado"
+              className="text-xs font-medium text-zinc-950 bg-accent hover:bg-sky-300 transition-colors rounded py-2 px-4"
+            >
+              Valuar mi rodeo
+            </Link>
+          </div>
         </div>
       </nav>
 
@@ -400,8 +404,8 @@ export default async function LandingPage() {
                 fetchPriority="high"
               />
             </picture>
-            <div className="absolute inset-0 bg-gradient-to-r from-[#09090b] via-[#09090b]/70 to-[#09090b]/30" />
-            <div className="absolute inset-0 bg-gradient-to-b from-[#09090b]/60 via-transparent to-[#09090b]" />
+            <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/70 to-zinc-950/30" />
+            <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/60 via-transparent to-zinc-950" />
           </div>
           {/* El martillazo — motivo animado de marca (golpe → onda → dato → sonda) */}
           <div className="absolute bottom-6 right-6 z-[1] w-[340px] xl:w-[420px] opacity-70 pointer-events-none hidden lg:block" aria-hidden="true">
@@ -417,7 +421,7 @@ export default async function LandingPage() {
               backgroundSize: "64px 64px",
             }}
           >
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#09090b]/80 to-[#09090b]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-950/80 to-zinc-950" />
           </div>
 
           <LiveHero
@@ -458,7 +462,7 @@ export default async function LandingPage() {
               </p>
               <Link
                 href="/mercado/vender-ahora"
-                className="shrink-0 inline-flex items-center justify-center gap-2 text-sm font-medium text-zinc-100 border border-sky-500/40 hover:border-sky-400 hover:text-white transition-colors rounded py-2.5 px-5 whitespace-nowrap"
+                className="shrink-0 inline-flex items-center justify-center gap-2 text-sm font-medium text-zinc-100 border border-sky-500/40 hover:border-sky-400 hover:text-ink transition-colors rounded py-2.5 px-5 whitespace-nowrap"
               >
                 ¿Vendo ahora?
                 <IconArrowRight />
@@ -598,7 +602,7 @@ export default async function LandingPage() {
                 <span className="inline-flex items-center gap-2 rounded-full border border-sky-500/40 bg-sky-500/[0.08] px-3 py-1 text-xs font-mono uppercase tracking-widest text-sky-300">
                   <span className="h-1.5 w-1.5 rounded-full bg-accent" /> Para empresas · API y MCP
                 </span>
-                <h2 className="mt-5 text-3xl sm:text-4xl font-bold text-white leading-tight">
+                <h2 className="mt-5 text-3xl sm:text-4xl font-bold text-ink leading-tight">
                   El Valor de Referencia, dentro de tu sistema
                 </h2>
                 <p className="mt-4 text-zinc-400 leading-relaxed max-w-xl">
@@ -657,12 +661,12 @@ export default async function LandingPage() {
                 </span>
               </div>
 
-              <h2 className="font-mono font-bold uppercase tracking-tight text-white text-4xl md:text-5xl leading-[0.95] mb-5">
+              <h2 className="font-mono font-bold uppercase tracking-tight text-ink text-4xl md:text-5xl leading-[0.95] mb-5">
                 El Corredor
               </h2>
 
               <p className="text-base md:text-lg text-zinc-300 leading-relaxed mb-6 font-mono max-w-2xl">
-                El cierre mensual del mercado bovino argentino. <span className="text-white">12 páginas</span> con
+                El cierre mensual del mercado bovino argentino. <span className="text-ink">12 páginas</span> con
                 INMAG en USD reales, comparable interanual, 18 categorías de hacienda del MAG, lectura del ciclo y tesis del
                 mes próximo. <span className="text-sky-400">PDF gratuito con email.</span>
               </p>
@@ -826,7 +830,7 @@ export default async function LandingPage() {
       {/* ============================================================ */}
       {/*  FOOTER                                                       */}
       {/* ============================================================ */}
-      <footer className="border-t border-zinc-800 bg-[#09090b]">
+      <footer className="border-t border-zinc-800 bg-zinc-950">
         <div className="max-w-7xl mx-auto px-6 py-12">
           <div className="flex flex-col gap-6">
             <div className="flex flex-col md:flex-row justify-between items-center gap-6">

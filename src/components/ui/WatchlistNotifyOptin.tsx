@@ -68,7 +68,7 @@ export default function WatchlistNotifyOptin({
 
   return (
     <div className={`bg-zinc-900 border border-sky-500/20 rounded-xl p-4 ${className}`}>
-      <h4 className="text-sm font-bold text-white mb-1">Sumate al resumen semanal</h4>
+      <h4 className="text-sm font-bold text-ink mb-1">Sumate al resumen semanal</h4>
       <p className="text-zinc-400 text-xs mb-3 leading-relaxed">{subtitle}</p>
 
       {state === 'ok' ? (
@@ -85,7 +85,7 @@ export default function WatchlistNotifyOptin({
               placeholder="tu@email.com"
               value={email}
               onChange={(e) => { setEmail(e.target.value); if (state === 'error') setState('idle'); }}
-              className="w-full bg-transparent text-white text-sm outline-none placeholder:text-zinc-600"
+              className="w-full bg-transparent text-ink text-sm outline-none placeholder:text-zinc-600"
             />
           </div>
           <button

@@ -175,7 +175,7 @@ export default function LeadCapture({
   }
 
   const inputCls =
-    'w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-white outline-none placeholder:text-zinc-600 focus:border-sky-500/60'
+    'w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-ink outline-none placeholder:text-zinc-600 focus:border-sky-500/60'
   const labelCls = 'mb-1 block text-xs text-zinc-500'
 
   const formEl = (
@@ -263,7 +263,7 @@ export default function LeadCapture({
           <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-sky-500/15 text-2xl">{emoji}</span>
           <div className="min-w-0 flex-1">
             {badge && <span className="inline-block rounded-full bg-sky-500/20 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-sky-300">{badge}</span>}
-            <h3 className={`text-xl font-bold text-white ${badge ? 'mt-2' : ''}`}>{title}</h3>
+            <h3 className={`text-xl font-bold text-ink ${badge ? 'mt-2' : ''}`}>{title}</h3>
             <p className="mt-1 text-sm text-zinc-400">{subtitle}</p>
           </div>
         </div>
@@ -283,7 +283,7 @@ export default function LeadCapture({
       >
         <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-sky-500/15 text-xl">{emoji}</span>
         <span className="min-w-0 flex-1">
-          <span className="block font-semibold text-white">{title}</span>
+          <span className="block font-semibold text-ink">{title}</span>
           <span className="mt-0.5 block text-sm text-zinc-400">{subtitle}</span>
         </span>
         {!open && (

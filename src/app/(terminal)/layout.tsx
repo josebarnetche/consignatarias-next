@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import AuthButton from "@/components/auth/AuthButton";
+import ThemeToggle from "@/components/ThemeToggle";
 import OnboardingPrompt from "@/components/onboarding/OnboardingPrompt";
 import PageTransition from "@/components/ui/PageTransition";
 import SmartWelcome from "@/components/SmartWelcome";
@@ -420,6 +421,7 @@ export default function TerminalLayout({
             <span className="text-terminal-border hidden sm:inline">|</span>
             <TerminalClock />
             <span className="text-terminal-border hidden sm:inline">|</span>
+            <ThemeToggle />
             <OnboardingPrompt />
             <AuthButton />
           </div>
@@ -436,7 +438,7 @@ export default function TerminalLayout({
             style={{
               width: 24,
               background:
-                "linear-gradient(to right, #16161d, transparent)",
+                "linear-gradient(to right, rgb(var(--t-panel)), transparent)",
             }}
           />
           {/* Right gradient shadow for swipe hint */}
@@ -445,7 +447,7 @@ export default function TerminalLayout({
             style={{
               width: 24,
               background:
-                "linear-gradient(to left, #16161d, transparent)",
+                "linear-gradient(to left, rgb(var(--t-panel)), transparent)",
             }}
           />
 

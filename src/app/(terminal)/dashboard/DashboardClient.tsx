@@ -882,7 +882,7 @@ export default function DashboardClient({
                           trackEvent('referral_link_copy', { consignataria_slug: consignataria.canonical_slug, surface: 'dashboard_qr' })
                           alert('Link copiado!')
                         }}
-                        className="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 text-white text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors"
+                        className="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 text-ink text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors"
                       >
                         📋 Copiar
                       </button>
@@ -944,7 +944,7 @@ export default function DashboardClient({
                       trackEvent('widget_code_copy', { consignataria_slug: consignataria.canonical_slug })
                       alert('Código copiado!')
                     }}
-                    className="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 text-white text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors"
+                    className="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 text-ink text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors"
                   >
                     📋 Copiar código
                   </button>
@@ -960,7 +960,7 @@ export default function DashboardClient({
                     href={`/api/widget/${consignataria.canonical_slug}?theme=dark`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-white text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors"
+                    className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-ink text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors"
                   >
                     🌙 Tema oscuro
                   </a>

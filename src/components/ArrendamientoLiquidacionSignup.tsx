@@ -102,7 +102,7 @@ export default function ArrendamientoLiquidacionSignup({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/marca/iconos-color/arrendamiento.png" alt="" className="w-5 h-5" />
           </span>
-          <h3 className="text-xl font-bold text-white">Tu canon, ya liquidado, cada cierre de mes</h3>
+          <h3 className="text-xl font-bold text-ink">Tu canon, ya liquidado, cada cierre de mes</h3>
         </div>
         <p className="text-zinc-400 text-sm mb-5 leading-relaxed">
           Cargá tu contrato una vez y, apenas cierra el mes, te llega <strong className="text-zinc-200">el canon exacto
@@ -128,7 +128,7 @@ export default function ArrendamientoLiquidacionSignup({
                     value={kgHa}
                     onChange={(n) => { setKgHa(n); if (state === 'error') setState('idle') }}
                     ariaLabel="Kg novillo por hectárea por mes"
-                    className="w-full bg-transparent text-white font-mono outline-none"
+                    className="w-full bg-transparent text-ink font-mono outline-none"
                   />
                   <span className="text-zinc-500 text-sm">kg</span>
                 </div>
@@ -140,7 +140,7 @@ export default function ArrendamientoLiquidacionSignup({
                     value={hectareas}
                     onChange={(n) => { setHectareas(n); if (state === 'error') setState('idle') }}
                     ariaLabel="Superficie en hectáreas"
-                    className="w-full bg-transparent text-white font-mono outline-none"
+                    className="w-full bg-transparent text-ink font-mono outline-none"
                   />
                   <span className="text-zinc-500 text-sm">ha</span>
                 </div>
@@ -161,7 +161,7 @@ export default function ArrendamientoLiquidacionSignup({
                   type="email" inputMode="email" autoComplete="email" placeholder="tu@email.com"
                   value={email}
                   onChange={(e) => { setEmail(e.target.value); if (state === 'error') setState('idle') }}
-                  className="w-full bg-transparent text-white outline-none placeholder:text-zinc-600"
+                  className="w-full bg-transparent text-ink outline-none placeholder:text-zinc-600"
                 />
               </div>
               <button
@@ -235,7 +235,7 @@ function CuantosCampos({ email }: { email: string }) {
             key={r}
             type="button"
             onClick={() => responder(r)}
-            className="rounded border border-zinc-700 px-3 py-1.5 text-xs text-zinc-300 transition-colors hover:border-accent/60 hover:text-white"
+            className="rounded border border-zinc-700 px-3 py-1.5 text-xs text-zinc-300 transition-colors hover:border-accent/60 hover:text-ink"
           >
             {r}
           </button>

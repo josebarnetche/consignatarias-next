@@ -71,14 +71,14 @@ export default function QRCode({
           <button
             onClick={() => handleDownload('png')}
             disabled={downloading}
-            className="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 text-white text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
+            className="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 text-ink text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
           >
             {downloading ? '...' : '📥 PNG'}
           </button>
           <button
             onClick={() => handleDownload('svg')}
             disabled={downloading}
-            className="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 text-white text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
+            className="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 text-ink text-xs font-medium rounded-lg transition-colors disabled:opacity-50"
           >
             {downloading ? '...' : '📥 SVG'}
           </button>

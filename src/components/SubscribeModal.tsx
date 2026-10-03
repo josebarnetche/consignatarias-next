@@ -286,7 +286,7 @@ export default function SubscribeModal() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={state === 'submitting'}
-                    className="flex-1 rounded border border-zinc-700 bg-zinc-900 px-4 py-2.5 font-mono text-sm text-white placeholder:text-zinc-600 transition-colors focus:border-sky-400 focus:outline-none focus:ring-1 focus:ring-sky-400 disabled:opacity-60"
+                    className="flex-1 rounded border border-zinc-700 bg-zinc-900 px-4 py-2.5 font-mono text-sm text-ink placeholder:text-zinc-600 transition-colors focus:border-sky-400 focus:outline-none focus:ring-1 focus:ring-sky-400 disabled:opacity-60"
                   />
                   <button
                     type="submit"

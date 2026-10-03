@@ -469,7 +469,7 @@ export default async function RematesEnVivoPage() {
 
         {/* CTA */}
         <div className="mt-8 bg-gradient-to-r from-red-900/30 to-sky-900/30 border border-red-800/30 rounded-lg p-6 text-center">
-          <p className="text-lg font-semibold text-white mb-2">
+          <p className="text-lg font-semibold text-ink mb-2">
             ¿Tu consignataria transmite en vivo?
           </p>
           <p className="text-zinc-300 mb-4">

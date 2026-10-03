@@ -196,9 +196,9 @@ export default async function MonthRematesPage({ params }: { params: Promise<{ m
         <div className="mx-auto max-w-6xl px-4 py-12">
           {/* Breadcrumb */}
           <nav className="mb-6 flex items-center gap-2 text-sm text-zinc-500">
-            <Link href="/" className="hover:text-white transition-colors">Inicio</Link>
+            <Link href="/" className="hover:text-ink transition-colors">Inicio</Link>
             <ChevronRight className="h-4 w-4" />
-            <Link href="/remates" className="hover:text-white transition-colors">Remates</Link>
+            <Link href="/remates" className="hover:text-ink transition-colors">Remates</Link>
             <ChevronRight className="h-4 w-4" />
             <span className="text-zinc-300">{monthConfig.name} {year}</span>
           </nav>
@@ -207,21 +207,21 @@ export default async function MonthRematesPage({ params }: { params: Promise<{ m
           <div className="mb-6 flex items-center justify-between">
             <Link
               href={`/remates/mes/${prev}`}
-              className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors"
+              className="flex items-center gap-2 text-sm text-zinc-400 hover:text-ink transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
               {MONTHS[prev!].name}
             </Link>
             <Link
               href={`/remates/mes/${next}`}
-              className="flex items-center gap-2 text-sm text-zinc-400 hover:text-white transition-colors"
+              className="flex items-center gap-2 text-sm text-zinc-400 hover:text-ink transition-colors"
             >
               {MONTHS[next!].name}
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
 
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
+          <h1 className="text-3xl md:text-4xl font-bold text-ink mb-4">
             Remates Ganaderos en {monthConfig.name} {year}
           </h1>
 
@@ -239,7 +239,7 @@ export default async function MonthRematesPage({ params }: { params: Promise<{ m
           {stats.count > 0 && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
-                <div className="text-2xl font-bold text-white">{stats.count}</div>
+                <div className="text-2xl font-bold text-ink">{stats.count}</div>
                 <div className="text-sm text-zinc-500">Remates</div>
               </div>
               {stats.totalHeads > 0 && (
@@ -249,11 +249,11 @@ export default async function MonthRematesPage({ params }: { params: Promise<{ m
                 </div>
               )}
               <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
-                <div className="text-2xl font-bold text-white">{stats.provinces}</div>
+                <div className="text-2xl font-bold text-ink">{stats.provinces}</div>
                 <div className="text-sm text-zinc-500">Provincias</div>
               </div>
               <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4">
-                <div className="text-2xl font-bold text-white">{stats.consignatarias}</div>
+                <div className="text-2xl font-bold text-ink">{stats.consignatarias}</div>
                 <div className="text-sm text-zinc-500">Consignatarias</div>
               </div>
             </div>
@@ -313,7 +313,7 @@ export default async function MonthRematesPage({ params }: { params: Promise<{ m
 
         {/* Quick Links */}
         <div className="mt-12 pt-8 border-t border-zinc-800">
-          <h3 className="text-lg font-semibold text-white mb-4">Ver otros meses</h3>
+          <h3 className="text-lg font-semibold text-ink mb-4">Ver otros meses</h3>
           <div className="flex flex-wrap gap-2">
             {MONTH_SLUGS.map(m => {
               const isActive = m === mes
@@ -325,7 +325,7 @@ export default async function MonthRematesPage({ params }: { params: Promise<{ m
                   className={`px-4 py-2 rounded-lg text-sm transition-colors ${
                     isActive
                       ? 'bg-accent text-zinc-950'
-                      : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-white'
+                      : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-ink'
                   }`}
                 >
                   {MONTHS[m].name}

@@ -106,7 +106,7 @@ export function FollowButton({ slug, displayName, className = '', size = 'md' }:
         className={`inline-flex items-center ${sizeClasses[size]} rounded-lg font-medium transition-all ${
           isFollowing
             ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500/30'
-            : 'bg-zinc-800 hover:bg-zinc-700 text-white border border-transparent'
+            : 'bg-zinc-800 hover:bg-zinc-700 text-ink border border-transparent'
         } ${isProcessing ? 'opacity-50 cursor-wait' : ''}`}
       >
         {/* Star icon */}

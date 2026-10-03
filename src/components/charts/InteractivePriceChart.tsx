@@ -439,7 +439,7 @@ export function InteractivePriceChart({
               }}
             >
               <div className="text-xs text-zinc-400 mb-1">{fmtDate(hoveredPoint.date)}</div>
-              <div className="text-xl font-semibold text-white font-mono">
+              <div className="text-xl font-semibold text-ink font-mono">
                 ${fmt(hoveredPoint.value)}
                 <span className="text-sm text-zinc-400 ml-1">/kg</span>
               </div>

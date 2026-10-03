@@ -169,7 +169,7 @@ export default function McpPage() {
         <span className="inline-flex items-center gap-2 rounded-full border border-sky-500/40 bg-sky-500/[0.07] px-3 py-1 text-xxs font-terminal uppercase tracking-widest text-sky-300">
           <span className="h-1.5 w-1.5 rounded-full bg-accent" /> Servidor MCP oficial
         </span>
-        <h1 className="mt-5 text-3xl sm:text-4xl font-bold text-white leading-tight">
+        <h1 className="mt-5 text-3xl sm:text-4xl font-bold text-ink leading-tight">
           Tu IA responde con el mercado ganadero real
         </h1>
         <p className="mt-4 text-zinc-400 leading-relaxed max-w-2xl">
@@ -294,7 +294,7 @@ export default function McpPage() {
       <section className="max-w-4xl mx-auto px-4 pb-16">
         <div className="rounded-xl border border-sky-500/30 bg-sky-500/[0.05] p-6 sm:flex sm:items-center sm:justify-between sm:gap-6">
           <div>
-            <h2 className="text-lg font-semibold text-white">¿Construís sobre datos ganaderos?</h2>
+            <h2 className="text-lg font-semibold text-ink">¿Construís sobre datos ganaderos?</h2>
             <p className="text-sm text-zinc-400 mt-1">
               La lectura es libre. Las alertas avisan por email o webhook. Para volumen y alertas sin límite, una API key de un plan.
             </p>

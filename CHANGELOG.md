@@ -7,6 +7,42 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.217.0] — 2026-10-02
+
+### Tema claro por defecto
+
+Fases 1 y 2 de [`docs/PLAN-TEMA-WHITE.md`](docs/PLAN-TEMA-WHITE.md): el sitio abre en
+claro, con un botón en el header para pasar al terminal oscuro de siempre. La elección
+se recuerda en el navegador (`localStorage`, sin cookie) y un script inline en el
+`<head>` la aplica antes de pintar — no hay flash para quien eligió oscuro.
+
+- **La inversión, no la reescritura.** `zinc` deja de ser hex fijo y pasa a leer
+  variables CSS (`src/app/globals.css`): `:root` (claro, default) trae la rampa
+  **invertida** (50↔950, 100↔900, …, 500 self), `[data-theme="dark"]` trae los hex de
+  siempre, sin tocar un componente. Mismo mecanismo para `terminal.bg/panel/border`
+  (blanco puro `#ffffff` en claro) y para los semánticos.
+- **Contraste del acento.** El cielo `sky-400` sobre blanco da ~1,9:1 — ilegible.
+  En claro el acento baja a `blue-700` (`#1d4ed8`, ≥4,5:1), y `positive`/`negative`
+  a su `-600`. Extendimos el mismo criterio a `warning`/`live`/`accent-bright`, que
+  el plan no nombraba pero tenían el mismo problema de contraste.
+- **`text-white` → `text-ink`.** El texto fuerte sobre superficies temáticas
+  (terminal-panel/zinc) pasa a un token nuevo que sí invierte (casi negro en claro);
+  se dejó literal donde el fondo NO es temático (WhatsApp, reproductores de video,
+  scrims de modal, badges sólidos) — se audita uno por uno, no hay regla mecánica.
+- **Charts y SVG.** `SEMANTIC_HEX` (`src/lib/ui/tokens.ts`) deja de ser hex y pasa a
+  `rgb(var(--tono))`; como los SVG de `lib/charts/svg.ts` se inyectan inline, heredan
+  la cascada de la página y se repintan solos según `data-theme`, sin JS, incluso en
+  páginas SSG.
+- **Botón de cambio** (`src/components/ThemeToggle.tsx`) en el header del terminal y
+  en el nav de la home. Sin librerías de temas — tres líneas de `localStorage` +
+  atributo `data-theme` en `<html>`.
+
+**Lo que quedó afuera (Fase 3, barrido visual):** las imágenes (logos, isotipo,
+hero-pampa, íconos con fondo oscuro) no se tocaron. Varias piezas con hex arbitrarios
+en vez de tokens (el nav/hero de la home, el modal de `SubscribeModal`, paneles
+`bg-[#0b0b0e]`) quedan visualmente oscuras en claro — funcionan, no quedaron prolijas.
+Las sombras/glows decorativos (`glow-white`, `glow-bar`) no se revisaron.
+
 ## [1.216.0] — 2026-09-30
 
 ### Las fallas que salían en verde
