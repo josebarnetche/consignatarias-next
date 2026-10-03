@@ -19,6 +19,12 @@
    rgb(var(--x) / <alpha-value>) y sigan funcionando los /NN de opacidad.
    ============================================================ */
 :root {
+  /* Declara el esquema: sin esto, Chrome/Samsung Internet en Android con el
+     teléfono en modo oscuro aplican su "oscurecido automático" y pintan de negro
+     una página que el CSS dice blanca. Junto con <meta name="color-scheme"
+     content="only light"> (layout.tsx) es lo que lo apaga. */
+  color-scheme: only light;
+
   /* escala zinc — invertida (claro) */
   --z-50: 9 9 11;
   --z-100: 24 24 27;
@@ -32,8 +38,26 @@
   --z-900: 244 244 245;
   --z-950: 250 250 250;
 
-  /* fondo/panel/borde terminal — blanco puro (decisión Jose 01-10-2026) */
-  --t-bg: 255 255 255;
+  /* Lenguaje visual del claro (03-10-2026): el claro NO es la terminal dada
+     vuelta. Letra de lectura (Inter, cifras tabulares por 'tnum' en html) en vez
+     de mono; superficies con jerarquía (fondo gris muy claro, paneles blancos con
+     sombra suave) en vez de líneas de 1px sobre blanco; esquinas suaves. El
+     oscuro conserva la mono, los 2px y el panel plano: ver [data-theme=dark]. */
+  --font-ui: var(--font-inter), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* código (API, MCP, snippets) sigue en mono en los dos temas */
+  --font-code: 'SF Mono', 'Cascadia Code', 'JetBrains Mono', 'Fira Code', Consolas, Monaco,
+    'Liberation Mono', 'Courier New', monospace;
+  --radius-ui: 10px;
+  --radius-ctl: 6px;
+  --shadow-panel: 0 1px 2px rgb(16 24 40 / 0.05), 0 2px 10px rgb(16 24 40 / 0.04);
+  --tracking-wide: 0.01em;
+  --tracking-wider: 0.02em;
+  --tracking-widest: 0.04em;
+
+  /* fondo/panel/borde terminal — el fondo de página es un gris apenas tintado
+     para que el panel blanco se lea como superficie (con todo blanco, el sitio
+     quedaba "planilla": líneas finas sin jerarquía). */
+  --t-bg: 245 246 248;
   --t-panel: 255 255 255;
   --t-border: 228 228 231;
   --t-border-light: 212 212 216;
@@ -52,6 +76,18 @@
 }
 
 [data-theme='dark'] {
+  color-scheme: dark;
+
+  /* la terminal de siempre: mono, 2px, panel plano, tracking ancho */
+  --font-ui: 'SF Mono', 'Cascadia Code', 'JetBrains Mono', 'Fira Code', Consolas, Monaco,
+    'Liberation Mono', 'Courier New', monospace;
+  --radius-ui: 2px;
+  --radius-ctl: 2px;
+  --shadow-panel: none;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+
   /* escala zinc — tal cual estaba (sin invertir) */
   --z-50: 250 250 250;
   --z-100: 244 244 245;
@@ -116,6 +152,12 @@
     background-color: rgb(var(--z-500) / 0.2);
     color: rgb(var(--z-950));
   }
+
+  /* El código sí es mono en los dos temas, aunque lleve font-mono/font-terminal
+     (que en claro resuelven a Inter). !important porque la clase le gana al tag. */
+  pre, code, kbd, samp {
+    font-family: var(--font-code) !important;
+  }
 }
 
 /* --- Scrollbar -------------------------------------------- */
@@ -170,7 +212,8 @@
   /* --- Panel / Card --------------------------------------- */
   .terminal-panel {
     @apply bg-terminal-panel border border-terminal-border;
-    border-radius: 2px;
+    border-radius: var(--radius-ui);
+    box-shadow: var(--shadow-panel);
   }
 
   .terminal-panel-header {
@@ -246,7 +289,7 @@
     @apply inline-flex items-center px-1.5 py-0.5
            text-xxs font-terminal uppercase tracking-wider
            border border-terminal-border text-zinc-400;
-    border-radius: 2px;
+    border-radius: var(--radius-ctl);
   }
 
   .terminal-tag-live {
@@ -265,7 +308,7 @@
            px-3 py-1.5 text-label font-terminal uppercase
            tracking-wider border border-terminal-border
            text-zinc-300 bg-terminal-panel;
-    border-radius: 2px;
+    border-radius: var(--radius-ctl);
     min-height: 36px;
     transition: color 120ms cubic-bezier(0.22, 1, 0.36, 1),
                 background-color 120ms cubic-bezier(0.22, 1, 0.36, 1),
@@ -295,7 +338,7 @@
     @apply w-full px-3 py-1.5 text-data font-terminal
            bg-terminal-bg border border-terminal-border
            text-zinc-100 placeholder-zinc-500;
-    border-radius: 2px;
+    border-radius: var(--radius-ctl);
     min-height: 36px;
     transition: border-color 120ms cubic-bezier(0.22, 1, 0.36, 1),
                 box-shadow 160ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -465,7 +508,8 @@
   /* --- Glass panel ---------------------------------------- */
   .glass-panel {
     @apply bg-terminal-panel border border-terminal-border;
-    border-radius: 2px;
+    border-radius: var(--radius-ui);
+    box-shadow: var(--shadow-panel);
     background: linear-gradient(135deg, rgb(var(--t-panel) / 0.95), rgb(var(--t-bg) / 0.9));
     backdrop-filter: blur(8px);
   }
@@ -597,14 +641,13 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* mono en oscuro, Inter en claro — ver --font-ui */
   .font-terminal {
-    font-family: 'SF Mono', 'Cascadia Code', 'JetBrains Mono', 'Fira Code',
-      Consolas, Monaco, 'Liberation Mono', 'Courier New', monospace;
+    font-family: var(--font-ui);
   }
 
   .text-mono {
-    font-family: 'SF Mono', 'Cascadia Code', 'JetBrains Mono', 'Fira Code',
-      Consolas, Monaco, 'Liberation Mono', 'Courier New', monospace;
+    font-family: var(--font-ui);
   }
 
   .cell-truncate {
@@ -704,7 +747,7 @@
   );
   background-size: 200% 100%;
   background-repeat: no-repeat;
-  border-radius: 2px;
+  border-radius: var(--radius-ctl);
   animation: skeleton-sweep 1.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 @media (prefers-reduced-motion: reduce) {
@@ -800,7 +843,7 @@
 :where(a, button, [role='button'], input, select, textarea, summary):focus-visible {
   outline: 2px solid rgb(var(--accent) / 0.55);
   outline-offset: 2px;
-  border-radius: 2px;
+  border-radius: var(--radius-ctl);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -823,4 +866,68 @@
     transform: translateY(-2px);
     box-shadow: 0 0 0 1px rgb(var(--accent) / 0.18), 0 10px 30px -12px rgba(0, 0, 0, 0.6);
   }
+}
+
+/* ============================================================
+   TEMA CLARO — lenguaje de lectura, no de terminal (03-10-2026)
+   La terminal (mayúsculas, tracking ancho, mono) es la identidad del
+   OSCURO y ahí queda intacta. En claro el mismo markup se lee como un
+   producto editorial: sentence case, pesos en vez de mayúsculas para
+   jerarquía. Estas reglas van al final y con html:not(...) para ganarle
+   en especificidad a las utilidades y a los @apply de los componentes.
+   ============================================================ */
+html:not([data-theme='dark']) .uppercase {
+  text-transform: none;
+}
+
+/* Rótulo de panel: muchos títulos están escritos en MAYÚSCULAS en el código
+   ("DIRECTORIO DE CONSIGNATARIAS") y en negrita grande gritaban. Como rótulo
+   (chico, gris, versalitas espaciadas) funcionan igual escritos de cualquier
+   forma, y el contenido del panel queda como lo más fuerte. */
+html:not([data-theme='dark']) .terminal-panel-header {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgb(var(--z-500));
+  padding-top: 0.875rem;
+  padding-bottom: 0.875rem;
+}
+
+/* El título adentro del header suele traer su propio tamaño y color
+   (`section-heading text-label`, `text-zinc-300`): en claro hereda el rótulo.
+   Los números/contadores (tabular-nums) quedan como están. */
+html:not([data-theme='dark']) .terminal-panel-header :is(h1, h2, h3, h4, .section-heading, .text-label):not(.tabular-nums) {
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  line-height: 1.25;
+  color: inherit;
+}
+
+html:not([data-theme='dark']) .terminal-table th {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgb(var(--z-500));
+  background-color: rgb(var(--t-bg) / 0.6);
+}
+
+html:not([data-theme='dark']) .terminal-tag,
+html:not([data-theme='dark']) .terminal-btn,
+html:not([data-theme='dark']) .terminal-nav-link,
+html:not([data-theme='dark']) .terminal-stat-label,
+html:not([data-theme='dark']) .live-badge {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+html:not([data-theme='dark']) .terminal-btn {
+  font-weight: 500;
+  font-size: 0.8125rem;
+}
+
+html:not([data-theme='dark']) .terminal-input {
+  border-color: rgb(var(--z-700));
 }

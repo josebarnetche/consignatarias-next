@@ -10,6 +10,14 @@ import { useEffect, useState } from "react";
 /*  este componente solo sincroniza su propio estado visual al montar */
 /*  y maneja el click.                                                 */
 /* ------------------------------------------------------------------ */
+// La barra del navegador en el celular toma el <meta name="theme-color"> (blanco
+// por default en layout.tsx); tiene que acompañar al fondo del tema activo. Se
+// lee del CSS ya aplicado para no duplicar el hex del token acá.
+function syncThemeColor() {
+  const bg = getComputedStyle(document.body).backgroundColor;
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", bg);
+}
+
 export default function ThemeToggle({ className = "" }: { className?: string }) {
   // Empieza en null (no se sabe aún en server) para no desincronizar el HTML
   // SSR (claro por default) del primer render cliente — recién se fija en el
@@ -18,6 +26,7 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
 
   useEffect(() => {
     setIsDark(document.documentElement.getAttribute("data-theme") === "dark");
+    syncThemeColor();
   }, []);
 
   const toggle = () => {
@@ -38,6 +47,7 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
         /* idem */
       }
     }
+    syncThemeColor();
   };
 
   return (

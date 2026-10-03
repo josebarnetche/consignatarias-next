@@ -67,7 +67,7 @@ export default function LoginClient() {
         aria-hidden="true"
         className="absolute inset-0 h-full w-full object-cover opacity-25"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#09090b] via-[#09090b]/60 to-[#09090b]" aria-hidden="true" />
+      <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 via-zinc-950/60 to-zinc-950" aria-hidden="true" />
     <div className="relative max-w-md mx-auto px-4 py-16 text-sm">
       <div className="terminal-panel rounded-xl p-6 sm:p-8 bg-[#0b0b0e]/90 backdrop-blur-sm">
       <div className="mb-8 text-center">

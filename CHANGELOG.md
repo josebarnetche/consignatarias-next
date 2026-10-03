@@ -7,6 +7,94 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.219.0] — 2026-10-03
+
+### Tema claro — lenguaje propio (sin tipografía de terminal) + fix del celular
+
+El claro dejaba ver que era la terminal oscura con los colores invertidos: mono en
+todo el texto, mayúsculas espaciadas, esquinas de 2px y paneles chatos sobre blanco.
+Ahora cada tema tiene su lenguaje; **el oscuro no cambia** (verificado con capturas
+lado a lado, escritorio y Pixel 7).
+
+- **Tipografía por tema.** `font-terminal` y `font-mono` leen `--font-ui`: Inter en
+  claro, el stack mono de siempre en oscuro. El código real (`pre`, `code`, `kbd`,
+  `samp`) usa `--font-code`, que es mono en los dos.
+- **Mayúsculas y tracking.** En claro, `.uppercase` no transforma el texto, y
+  `tracking-wide/wider/widest` leen `--tracking-*`, más cerrados en una sans.
+  - Excepción: los títulos de panel (`.terminal-panel-header`) pasan a **rótulo**
+    (12px, peso 600, gris, versalitas). Su `h2`/`.section-heading`/`.text-label`
+    heredan ese estilo, porque muchos están escritos en MAYÚSCULAS en el código y
+    en negrita grande gritaban.
+  - Tablas, tags, botones y nav sin versalitas.
+- **Superficies.** En claro, fondo gris muy claro (`--t-bg` 245 246 248) con paneles
+  blancos, `--radius-ui` de 10px y `--shadow-panel` sutil; los controles usan
+  `--radius-ctl` de 6px. En oscuro: 2px y sin sombra, como siempre.
+- **Header.** Etiquetas del nav en minúscula ("Valor", "Mercado"…; el oscuro las sigue
+  mostrando en mayúsculas vía `uppercase`), 56px de alto, ítem activo con fondo de
+  acento suave, sin separadores `|`/`/` ni reloj.
+- **Variantes de Tailwind `claro:` y `oscuro:`** (plugin en `tailwind.config.js`). El
+  tema vive en `<html data-theme>`, así que el `dark:` de Tailwind no aplica. Sirven
+  para lo que difiere entre temas; los colores ya invierten solos vía tokens.
+- **Celular (antes PR #48).** En Android con el teléfono en modo oscuro, Chrome y
+  Samsung Internet oscurecían el claro: se agrega `color-scheme: only light` (CSS +
+  meta) y `theme-color` sincronizado con el tema. También se corrigen el banner de
+  cookies, que era negro fijo, y el isotipo de la home, que desaparecía.
+- Incluye la Fase 3 parcial y la Fase 4 (antes PR #47, ver 1.218.0).
+
+**Pendiente:** el rediseño por plantilla (home, listado de remates, directorio, fichas)
+siguiendo la maqueta. Las tablas densas todavía usan siglas de terminal ("ESPEC",
+"SRC WA"), que piden su propio componente.
+
+## [1.218.0] — 2026-10-03
+
+### Tema claro — Fase 3 (barrido visual) y Fase 4 (guardarraíl)
+
+Continuación de v1.217.0 ([`docs/PLAN-TEMA-WHITE.md`](docs/PLAN-TEMA-WHITE.md)).
+
+- **La isla oscura no era solo la home.** El fix de v1.217.0 (post-release, commit
+  `9cef51f1`) corrigió `src/app/page.tsx`; el mismo patrón — un velo
+  `bg-gradient-to-r from-[#09090b] via-[#09090b]/80 to-[#09090b]/25` sobre la foto de
+  cabecera, con el texto ya temático (`text-zinc-100`/`text-zinc-400`) — se repetía
+  **tal cual, copiado**, en otras 15 plantillas: `/consignatarias`, `/el-oraculo`,
+  `/enterprise`, `/quienes-somos`, `/exportar`, `/mercado/pulso`, `/mercado/internacional`,
+  `/mercado/arrendamiento`, `/mercado` (cliente), `/mercado/novillo-historico`,
+  `/mercado/inmag`, `/login`, `/dte`, `/mcp`, `/remates/expo-rural-mercedes` y el pie
+  móvil de `MuroEnVivo`. En claro, el velo se quedaba negro (hex fijo) mientras el texto
+  sí invertía a casi-negro — título ilegible, texto-sobre-texto. Las 16 pasan a
+  `zinc-950`, que es el mismo `#09090b` en oscuro (cero cambio ahí) e invierte
+  correctamente en claro. Verificado con Playwright antes/después en `/consignatarias`.
+- **Guardarraíl (Fase 4):** `scripts/check-no-hardcoded-hex.mjs`, nuevo, parte de
+  `pnpm check`. Es un *ratchet* contra los 25 hex exactos de los tokens (zinc, terminal.*,
+  semánticos oscuro y claro) — falla si aparece un archivo nuevo con alguno, o si sube
+  el conteo en uno de los 65 ya heredados (`scripts/hardcoded-hex-baseline.json`); nunca
+  si baja. Mails, imágenes OG/favicons y badges/widgets para terceros quedan exentos
+  (no tienen `<html data-theme>`).
+- **Barrido visual:** se recorrieron con Playwright (claro y oscuro) las 15 plantillas
+  del plan — home, mercado, arrendamiento, precios por categoría, remates (listado y
+  ficha), consignatarias (listado y ficha), frigoríficos (listado y vista provincial),
+  campos, guías, informes, planes, cuenta y admin. El listado de remates, el directorio
+  de frigoríficos y el de consignatarias (ya con el fix de arriba) quedan prolijos en
+  los dos temas, sin un solo fondo oscuro hardcodeado visible.
+
+**Lo que impidió terminar el barrido al 100%:** este entorno de verificación no tiene
+credenciales reales de Supabase (`NEXT_PUBLIC_SUPABASE_URL`/`ANON_KEY`/service-role) —
+`src/middleware.ts` crea un cliente de Supabase sin guard para TODO el tráfico que
+matchea su `matcher` (incluye `/consignatarias/:slug`, `/remates/:slug`, todo `/api/*`),
+y revienta con "Your project's URL and Key are required...". Es anterior a este PR, no
+lo toca, y no es arreglable sin credenciales reales — confirmado con el stack trace
+exacto apuntando a `middleware.ts:135`. Bloqueó la verificación visual en vivo de
+`/mercado`, `/mercado/arrendamiento`, `/precios/[categoria]`, las fichas de remate y
+consignataria, `/campos`, `/guías`, `/informes`, `/planes`, `/cuenta` y `/admin` en este
+sandbox — sí se revisó su código fuente (sin el patrón `#09090b` ni `text-white` fuera
+de lugar) y el `pnpm build` (SSG) los generó sin error. Pendiente: confirmarlos a ojo
+en un entorno con credenciales (o en el preview de Vercel, que sí las tiene).
+
+Fase 3 queda sin terminar: faltan las fichas de consignataria/remate/frigorífico y las
+páginas de cuenta/admin a ojo (bloqueadas arriba), y los paneles con hex a propósito
+(`SubscribeModal`, `/mcp` endpoint box, el nav/hero no migrado de la home) siguen sin
+tocar — ver v1.217.0. Fase 4 completa pero como ratchet, no como estado final: los 65
+archivos heredados siguen pendientes de migrar a tokens cuando se toquen por otro motivo.
+
 ## [1.217.0] — 2026-10-02
 
 ### Tema claro por defecto

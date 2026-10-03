@@ -1,5 +1,5 @@
 import "./globals.css";
-import { Metadata } from 'next';
+import { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import Script from 'next/script';
@@ -24,6 +24,15 @@ const GA_ID = 'G-6CZMZH9S6Y';
 const ANALYTICS_ENABLED = process.env.VERCEL_ENV === 'production';
 
 const rematesCount = rematesData.length;
+
+// "only light" apaga el oscurecido automático de Chrome/Samsung Internet en
+// Android (teléfono en modo oscuro): sin esto el tema claro se veía negro en el
+// celular. El oscuro propio sigue andando: [data-theme=dark] declara
+// color-scheme: dark en el CSS, que pisa a este meta.
+export const viewport: Viewport = {
+  colorScheme: 'only light',
+  themeColor: '#ffffff',
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.consignatarias.com.ar'),

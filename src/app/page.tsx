@@ -340,7 +340,9 @@ export default async function LandingPage() {
       <nav className="fixed top-0 w-full z-50 border-b border-ink/5 bg-zinc-950/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Image src="/icon-32.png" alt="Consignatarias.com.ar" width={32} height={32} className="rounded" />
+            {/* El isotipo es blanco sobre transparente: sobre el nav claro desaparecía.
+                Va sobre un chip negro fijo (bg-black no invierte) en los dos temas. */}
+            <Image src="/icon-32.png" alt="Consignatarias.com.ar" width={32} height={32} className="rounded bg-black" />
             <span className="text-sm font-medium text-zinc-100 tracking-tight">
               consignatarias.com.ar
             </span>

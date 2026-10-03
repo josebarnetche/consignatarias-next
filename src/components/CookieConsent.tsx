@@ -34,21 +34,17 @@ export default function CookieConsent() {
   if (!show) return null
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-[60] border-t border-terminal-border bg-black/90 backdrop-blur px-4 py-3">
+    <div className="fixed bottom-0 inset-x-0 z-[60] border-t border-terminal-border bg-terminal-panel/95 backdrop-blur px-4 py-3 shadow-[0_-4px_16px_rgba(0,0,0,0.08)]">
       <div className="max-w-4xl mx-auto flex items-center gap-4">
         <p className="text-zinc-400 text-xxs leading-relaxed flex-1">
           Usamos cookies propias para que el sitio funcione, medir el uso y personalizar tu experiencia. Al seguir
           navegando, aceptás su uso.{' '}
-          <Link href="/privacidad" className="text-sky-400 hover:underline">
+          <Link href="/privacidad" className="text-accent hover:underline">
             Política de privacidad
           </Link>
           .
         </p>
-        <button
-          onClick={accept}
-          className="terminal-btn text-xxs shrink-0"
-          style={{ borderColor: 'rgba(56,189,248,0.5)', color: '#38bdf8' }}
-        >
+        <button onClick={accept} className="terminal-btn-primary text-xxs shrink-0">
           Aceptar
         </button>
       </div>
