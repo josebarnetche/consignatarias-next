@@ -107,9 +107,9 @@ const TERMINOS = [
 export const metadata: Metadata = {
   // Gana el cluster "cuánto pesa una media res (de novillo / vaca / ternero)".
   // Cruce consumidor + carnicero + trade; puente hacia rinde al gancho y precio por kg.
-  title: 'Cuánto Pesa una Media Res de Novillo, Vaca y Ternero (kg y rinde)',
+  title: 'Cuánto pesa una media res de novillo, vaca y ternero',
   description:
-    'Una media res de novillo pesa entre 100 y 130 kg (res entera 200–260 kg), un rinde del 56–58% sobre un animal de 450 kg vivos. Tabla por categoría, cuántos kg de carne salen y a cuánto sale la media res.',
+    'Una media res de novillo pesa de 100 a 130 kg: el 56–58 % de un animal de 450 kg vivo. Tabla por categoría, cuánta carne sale y a cuánto sale la media res hoy.',
   keywords: [
     'cuanto pesa una media res',
     'cuanto pesa una media res de novillo',

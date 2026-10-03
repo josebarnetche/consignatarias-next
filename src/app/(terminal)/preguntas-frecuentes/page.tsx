@@ -71,7 +71,7 @@ const FAQS: FAQ[] = [
   {
     question: '¿Cómo crear alertas de remates de ganado?',
     answer: 'En Consignatarias.com.ar podés configurar alertas para recibir notificaciones cuando se publiquen remates que cumplan tus criterios: provincia, tipo de ganado, consignataria específica, etc. Los usuarios PRO tienen acceso a alertas avanzadas con mayor frecuencia y filtros adicionales.',
-    links: [{ href: '/alertas', text: 'Configurar alertas' }],
+    links: [{ href: '/planes', text: 'Configurar alertas' }],
   },
   {
     question: '¿Qué significa "hacienda en pie"?',

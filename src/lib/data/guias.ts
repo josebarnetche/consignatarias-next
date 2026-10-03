@@ -25,9 +25,9 @@ export const GUIAS: GrupoGuias[] = [
     titulo: 'Vender hacienda',
     bajada: 'Cómo se vende, con quién, cuánto se lleva cada uno y qué queda de neto.',
     guias: [
-      { href: '/vender-hacienda-guia', label: 'Cómo vender hacienda', hint: 'La guía completa del productor' },
-      { href: '/como-vender-hacienda', label: 'Consignación, remate o venta directa', hint: 'Los tres caminos y cuándo conviene cada uno' },
-      { href: '/vender-en-remate-vs-venta-directa-vs-consignacion', label: 'Comparativa de los tres canales', hint: 'Costos, tiempos y riesgo, lado a lado' },
+      { href: '/vender-hacienda-guia', label: 'Cómo vender hacienda paso a paso', hint: 'Papeles, gastos y cobro, de la tropa a la liquidación' },
+      { href: '/como-vender-hacienda', label: 'Por dónde vender tu hacienda', hint: 'Cómo elegir entre consignación, remate o venta directa' },
+      { href: '/vender-en-remate-vs-venta-directa-vs-consignacion', label: 'Remate, venta directa o consignación', hint: 'Comparativa de costos, tiempos y riesgo, lado a lado' },
       { href: '/senal-o-ruido-precio-hacienda', label: '¿El precio se movió de verdad?', hint: 'Separar el movimiento real del ruido de la serie' },
       { href: '/conviene-vender-la-hacienda-ahora-o-esperar', label: '¿Conviene vender ahora o esperar?', hint: 'Qué mirar antes de decidir' },
       { href: '/como-leer-una-liquidacion-de-hacienda', label: 'Cómo leer una liquidación', hint: 'Renglón por renglón, qué te descuentan' },

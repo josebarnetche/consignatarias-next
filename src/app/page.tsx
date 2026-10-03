@@ -215,13 +215,12 @@ const FAQ_ITEMS = [
 export const revalidate = 900 // ISR 15 min — la cinta (USD blue en vivo) se refresca entre rebuilds
 
 export const metadata: Metadata = {
-  // Lead with the site's strongest branded query "consignatarias" (12-17% CTR at pos 3.3,
-  // previously buried as the domain at the title's end), then remates + precios. Description
-  // injects the live INMAG price as a freshness hook. v1.40 CTR pass.
-  title: "Consignatarias de Hacienda Argentina | Remates y Precios",
-  // El título se queda (es la query de marca que más rinde); la descripción ahora dice
-  // primero qué resuelve el sitio: cuánto vale la hacienda, medido en lo que se vendió.
-  description: `Cuánto vale tu hacienda hoy: el Valor de Referencia por categoría y peso, medido en ${fmt(VR_COBERTURA.lotes)} lotes vendidos en el Mercado Agroganadero. Directorio de ${totalConsignatarias} consignatarias de hacienda y ${rematesProximos.length} remates próximos. Gratis.`,
+  // La promesa va en el title (v1.221): antes decía "Consignatarias de Hacienda
+  // Argentina | Remates y Precios" y competía con /consignatarias por la misma
+  // búsqueda. La marca queda al final para la búsqueda de marca. `absolute` para
+  // no sumar el sufijo de la plantilla y pasarse de largo.
+  title: { absolute: 'Precio de la hacienda hoy, medido en lo que se vendió | Consignatarias' },
+  description: `Cuánto vale tu hacienda hoy, por categoría y por peso, medido en ${fmt(VR_COBERTURA.lotes)} lotes vendidos en el Mercado Agroganadero. Más ${rematesProximos.length} remates próximos y ${totalConsignatarias} consignatarias. Gratis.`,
   alternates: {
     canonical: 'https://www.consignatarias.com.ar',
   },
@@ -859,8 +858,10 @@ export default async function LandingPage() {
                 </span>
               </div>
 
-              <div className="flex items-center gap-6 text-xs text-zinc-400">
-                <Link href="/overview" className="hover:text-zinc-300 transition-colors">Terminal</Link>
+              <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-zinc-400">
+                <Link href="/vr" className="hover:text-zinc-300 transition-colors">Precio por categoría y peso</Link>
+                <Link href="/valuar-hacienda" className="hover:text-zinc-300 transition-colors">Cuánto vale mi hacienda</Link>
+                <Link href="/overview" className="hover:text-zinc-300 transition-colors">Panel</Link>
                 <Link href="/remates" className="hover:text-zinc-300 transition-colors">Remates</Link>
                 <Link href="/consignatarias" className="hover:text-zinc-300 transition-colors">Directorio</Link>
                 <Link href="/frigorificos" className="hover:text-zinc-300 transition-colors">Frigoríficos</Link>

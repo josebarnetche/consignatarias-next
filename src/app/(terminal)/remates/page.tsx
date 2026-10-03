@@ -8,38 +8,43 @@ import { SectionBreadcrumbSchema, FAQPageSchema, RematesListSchema, DatasetSchem
 import { LICENCIA_PROPIA } from '@/lib/seo/schemas'
 import NewsletterSignup from '@/components/NewsletterSignup'
 import { Breadcrumb } from '@/components/ui'
+import { FaqList } from '@/components/seo/FaqList'
+import { remateHref } from '@/lib/remates-enlaces'
+import { FECHA_DATOS, fechaLarga } from '@/lib/datos-frescura'
 import { EXPO, REMATES_EXPO, expoVigente, posicionNacional } from '@/lib/data/expo-mercedes'
 
 // Regenerate hourly for fresh TODAY
 export const revalidate = 3600
 
-// Month names in Spanish
-const MONTHS_ES = [
-  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-]
+const MESES_SLUG = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
 
+function proximosRemates() {
+  const today = new Date().toISOString().slice(0, 10)
+  return rematesData.filter((r) => r.date >= today && r.status === 'scheduled')
+}
+
+// Title atemporal: el mes y el año los lleva /remates/mes/[mes], que es la
+// página que tiene que salir para "remates de octubre".
 export async function generateMetadata(): Promise<Metadata> {
-  const now = new Date()
-  const monthName = MONTHS_ES[now.getMonth()]
-  const year = now.getFullYear()
-  const totalAuctions = rematesData.length
-  
+  const proximos = proximosRemates().length
+  const title = 'Remates ganaderos: calendario de remates de hacienda en Argentina'
+  const description = `${proximos.toLocaleString('es-AR')} remates de hacienda por venir, con día, hora y lugar. Buscá por provincia, tipo de remate o consignataria. Se actualiza todos los días.`
+
   return {
-    title: `Remates Ganaderos ${monthName} ${year} — Calendario Argentina`,
-    description: `Calendario de ${totalAuctions} remates ganaderos en Argentina, ${monthName} ${year}. Filtrá por provincia, tipo de remate y fecha. Actualizado diariamente.`,
+    title: { absolute: title },
+    description,
     keywords: [
       'remates ganaderos',
       'calendario remates',
-      `remates ${monthName.toLowerCase()} ${year}`,
+      'remates de hacienda',
       'subastas hacienda',
       'remates invernada',
       'remates cria',
       'consignatarias argentina',
     ],
     openGraph: {
-      title: `Remates Ganaderos ${monthName} ${year}`,
-      description: `Calendario de ${totalAuctions} remates ganaderos en Argentina. Filtros por provincia, tipo y fecha.`,
+      title,
+      description,
       url: 'https://www.consignatarias.com.ar/remates',
       type: 'website',
       images: [{ url: '/og-remates.png', width: 1200, height: 630 }],
@@ -78,6 +83,17 @@ export default function RematesPage() {
   const totalProfiles = getAllProfiles().length
   const provinces = new Set(rematesData.map((r) => r.province))
   const totalProvinces = provinces.size
+  const actualizado = fechaLarga()
+
+  // Remates de los próximos 7 días y meses con remates (enlaces a /remates/mes/*,
+  // solo los que tienen algo: los meses vacíos no tienen contenido que mostrar).
+  const proximos = proximosRemates()
+  const enSieteDias = new Date(Date.now() + 7 * 86_400_000).toISOString().slice(0, 10)
+  const rematesSemana = proximos.filter((r) => r.date <= enSieteDias).length
+  const anio = String(new Date().getFullYear())
+  const mesesConRemates = Array.from(
+    new Set(proximos.filter((r) => r.date.startsWith(anio)).map((r) => Number(r.date.slice(5, 7)) - 1)),
+  ).sort((a, b) => a - b)
   
   // Get upcoming remates for structured data
   const today = new Date().toISOString().slice(0, 10)
@@ -109,6 +125,7 @@ export default function RematesPage() {
         time: next.time ?? undefined,
         province: next.province || undefined,
         slug: getCanonicalSlug(next.consignatariaSlug) ?? next.consignatariaSlug,
+        href: remateHref(next) ?? undefined,
       }
     : null
 
@@ -133,11 +150,17 @@ export default function RematesPage() {
           tipo y el newsletter bajaron al pie — siguen enlazados para Google, pero
           ya no se interponen entre el productor y la lista. */}
       <header className="mx-auto max-w-5xl px-4 pt-4 pb-2 sm:px-6">
-        <h1 className="text-2xl font-semibold text-ink sm:text-3xl">Remates de hacienda</h1>
+        <h1 className="text-2xl font-semibold text-ink sm:text-3xl">Calendario de remates de hacienda</h1>
         <p className="mt-2 max-w-2xl text-base leading-relaxed text-zinc-400">
-          Los remates de todo el país con día, hora y lugar. {totalProfiles} consignatarias en{' '}
-          {totalProvinces} provincias, actualizado todos los días.
+          Los remates ganaderos de todo el país con día, hora y lugar:{' '}
+          {rematesSemana === 1 ? 'hay 1 remate' : `hay ${rematesSemana} remates`} en los próximos 7 días.{' '}
+          {totalProfiles} consignatarias en {totalProvinces} provincias.
         </p>
+        {actualizado && (
+          <p className="mt-1 text-sm text-zinc-500">
+            Actualizado el <time dateTime={FECHA_DATOS ?? undefined}>{actualizado}</time>.
+          </p>
+        )}
         {nextRemate && (
           <div className="mt-3">
             <NextRemateCountdown nextRemate={nextRemate} />
@@ -182,6 +205,15 @@ export default function RematesPage() {
                 { href: '/remates/anteriores', label: 'Anteriores' },
               ],
             },
+            ...(mesesConRemates.length
+              ? [{
+                  titulo: 'Remates por mes',
+                  links: mesesConRemates.map((m) => ({
+                    href: `/remates/mes/${MESES_SLUG[m]}`,
+                    label: `Remates de ${MESES_SLUG[m]}`,
+                  })),
+                }]
+              : []),
             {
               titulo: 'Remates por provincia',
               links: [
@@ -219,7 +251,7 @@ export default function RematesPage() {
             </nav>
           ))}
 
-          <div className="border-t border-terminal-border pt-5">
+          <div id="recibir-remates" className="scroll-mt-20 border-t border-terminal-border pt-5">
             <h2 className="text-sm font-semibold text-ink">Recibí los remates de la semana por mail</h2>
             <div className="mt-2">
               <NewsletterSignup source="remates" buttonText="Suscribirme" placeholder="tu@email.com" compact />
@@ -227,6 +259,10 @@ export default function RematesPage() {
           </div>
         </div>
       </section>
+
+      <div className="mx-auto max-w-5xl px-4 pb-10 sm:px-6">
+        <FaqList items={FAQ_ITEMS} />
+      </div>
     </>
   )
 }

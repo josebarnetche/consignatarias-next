@@ -142,8 +142,9 @@ const FAQ = [
 ]
 
 export const metadata: Metadata = {
-  title: 'Qué es la aparcería: contrato rural vs arrendamiento y capitalización',
-  description: `La aparcería es el contrato rural donde una parte aporta el campo o la hacienda y la otra el trabajo, y reparten los frutos por un porcentaje —a diferencia del arrendamiento, que paga un canon fijo. Diferencias con arrendamiento y capitalización, y quién asume el riesgo. Referencia ${lastUpdate}.`,
+  title: 'Qué es la aparcería rural y cómo se diferencia del arriendo',
+  description:
+    'En la aparcería uno pone el campo o la hacienda y el otro el trabajo, y se reparten lo producido. Diferencias con el arrendamiento y la capitalización, y quién corre el riesgo.',
   keywords: [
     'que es la aparceria',
     'que es la aparceria contrato',

@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import { GuiasVentaHacienda } from '@/components/guias/GuiasVentaHacienda'
 import { OfrecerGuia } from '@/components/guias/OfrecerGuia'
 import {
   SectionBreadcrumbSchema,
@@ -122,7 +123,9 @@ const FAQ = [
 ]
 
 export const metadata: Metadata = {
-  title: `Cómo vender hacienda en Argentina: consignación, remate feria o venta directa`,
+  // Cómo ELEGIR el canal. El paso a paso está en /vender-hacienda-guia y la
+  // comparativa lado a lado en /vender-en-remate-vs-venta-directa-vs-consignacion.
+  title: '¿Por dónde vender tu hacienda? Cómo elegir el canal',
   description: `Para vender hacienda hay tres canales: consignación, remate feria o venta directa a frigorífico o invernador. Precio de referencia hoy $${fmt(novillo)}/kg vivo para el novillo (INMAG del ${INMAG_DATE}). Comisión de referencia 3-5%, documentación necesaria y cómo elegir consignataria.`,
   keywords: [
     'cómo vender hacienda',
@@ -139,7 +142,7 @@ export const metadata: Metadata = {
     'vender vacas argentina',
   ],
   openGraph: {
-    title: 'Cómo vender hacienda: consignación, remate feria o venta directa',
+    title: '¿Por dónde vender tu hacienda? Cómo elegir el canal',
     description: `Los tres canales para vender hacienda en Argentina, la comisión de referencia (3-5%), la documentación necesaria y cómo elegir consignataria. Precio de referencia del novillo hoy: $${fmt(novillo)}/kg vivo (INMAG del ${INMAG_DATE}).`,
     url: PAGE_URL,
     type: 'article',
@@ -175,7 +178,7 @@ export default function ComoVenderHaciendaPage() {
       <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">
         {/* Title */}
         <h1 className="text-zinc-100 text-2xl font-medium mb-6">
-          Cómo vender hacienda: consignación, remate feria o venta directa
+          Por dónde vender tu hacienda: cómo elegir entre consignación, remate o venta directa
         </h1>
 
         {/* Answer-first: respuesta extraíble por asistentes IA en la 1ª oración */}
@@ -295,6 +298,8 @@ export default function ComoVenderHaciendaPage() {
             para la liquidación; la consignataria emite la liquidación de venta con los descuentos.
           </li>
         </ul>
+
+        <GuiasVentaHacienda actual="/como-vender-hacienda" />
 
         {/* FAQ visible */}
         <h2 className="text-zinc-200 text-lg font-medium mb-3">Preguntas frecuentes</h2>

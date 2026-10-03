@@ -1,6 +1,8 @@
 import type { Auction } from '@/lib/db/schema'
 import { typeLabels, categoryLabels, statusLabels } from '@/lib/db/schema'
+import Link from 'next/link'
 import { normalizeUrl } from '@/lib/utils/url'
+import { remateAnchor, remateHref } from '@/lib/remates-enlaces'
 
 interface AuctionCardProps {
   auction: Auction
@@ -43,6 +45,10 @@ export default function AuctionCard({ auction }: AuctionCardProps) {
   // statusConfig[undefined].bg). Cae a defaults seguros.
   const status = statusConfig[auction.status] ?? statusConfig.completed
   const accent = typeAccent[auction.type] ?? typeAccent.general ?? ''
+  const ficha = remateHref(auction)
+  const catalogo = normalizeUrl(auction.catalogUrl)
+  const youtube = normalizeUrl(auction.youtubeUrl)
+  const fuente = normalizeUrl(auction.sourceUrl)
 
   return (
     <article
@@ -66,7 +72,13 @@ export default function AuctionCard({ auction }: AuctionCardProps) {
       {/* Title */}
       <div className="px-5 pb-1">
         <h3 className="font-bold text-stone-900 leading-snug">
-          {auction.title}
+          {ficha ? (
+            <Link href={ficha} aria-label={remateAnchor(auction)} title={remateAnchor(auction)} className="hover:underline">
+              {auction.title}
+            </Link>
+          ) : (
+            auction.title
+          )}
         </h3>
         <p className="text-sm text-tierra-700 font-medium mt-0.5">
           {auction.consignatariaName}
@@ -102,11 +114,11 @@ export default function AuctionCard({ auction }: AuctionCardProps) {
       </div>
 
       {/* Actions footer */}
-      {(auction.catalogUrl || auction.youtubeUrl) && (
+      {(catalogo || youtube) && (
         <div className="px-5 py-2.5 bg-stone-50 border-t border-stone-100 flex items-center gap-4">
-          {auction.catalogUrl && (
+          {catalogo && (
             <a
-              href={normalizeUrl(auction.catalogUrl) || '#'}
+              href={catalogo}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-xs font-semibold text-campo-700 hover:text-campo-900 transition-colors"
@@ -117,9 +129,9 @@ export default function AuctionCard({ auction }: AuctionCardProps) {
               Cat&aacute;logo
             </a>
           )}
-          {auction.youtubeUrl && (
+          {youtube && (
             <a
-              href={normalizeUrl(auction.youtubeUrl) || '#'}
+              href={youtube}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 hover:text-red-800 transition-colors"
@@ -130,14 +142,14 @@ export default function AuctionCard({ auction }: AuctionCardProps) {
               Transmisi&oacute;n
             </a>
           )}
-          {auction.sourceUrl && (
+          {fuente && (
             <a
-              href={normalizeUrl(auction.sourceUrl) || '#'}
+              href={fuente}
               target="_blank"
               rel="noopener noreferrer"
               className="ml-auto text-[10px] text-stone-400 hover:text-stone-600 transition-colors"
             >
-              {(() => { try { return new URL(normalizeUrl(auction.sourceUrl) || '').hostname } catch { return 'fuente' } })()}
+              {(() => { try { return new URL(fuente).hostname } catch { return 'fuente' } })()}
             </a>
           )}
         </div>

@@ -112,7 +112,7 @@ const FAQ = [
   {
     question: '¿Qué se hace con el ternero después del destete?',
     answer:
-      `Después del destete el ternero pasa a recría en el mismo campo o se vende como ternero de invernada a un engordador. El ternero es la categoría de mayor precio por kilo del mercado: el precio de referencia del ternero está en $${fmt(ternero)}/kg vivo (INMAG/MAG, no fijado por esta página). Es el ingreso principal del criador y por eso el destete se planifica en función de a qué peso y en qué momento conviene vender.`,
+      `Después del destete el ternero pasa a recría en el mismo campo o se vende como ternero de invernada a un engordador. En los remates de invernada el ternero suele ser la categoría de mayor precio por kilo; el Mercado Agroganadero no lo opera y nuestra estimación es de $${fmt(ternero)}/kg vivo (estimado) (INMAG/MAG, no fijado por esta página). Es el ingreso principal del criador y por eso el destete se planifica en función de a qué peso y en qué momento conviene vender.`,
   },
 ]
 
@@ -250,7 +250,7 @@ export default function QueEsElDestetePage() {
           Terminado el destete, el ternero pasa a recría en el mismo campo o se vende como ternero de
           invernada. El ternero es la categoría de mayor precio por kilo del mercado: el precio de
           referencia está hoy en{' '}
-          <span className="text-zinc-300">${fmt(ternero)}/kg vivo</span> (INMAG/MAG, precio de
+          <span className="text-zinc-300">${fmt(ternero)}/kg vivo (estimado)</span> (INMAG/MAG, precio de
           referencia del mercado, no fijado por esta página). Ese valor es el ingreso principal del
           criador, por eso el destete se planifica en función de a qué peso y en qué momento conviene
           vender el ternero.

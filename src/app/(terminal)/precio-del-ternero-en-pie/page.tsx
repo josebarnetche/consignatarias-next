@@ -10,6 +10,7 @@ import {
 import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
+import { RematesDeInvernada, TERNERO_ESTIMADO_NOTA } from '@/components/precios/TerneroEstimado'
 
 export const revalidate = 86400 // rebuild diario vía Vercel; el JSON lo commitea el scraper 14:00 ART
 
@@ -31,7 +32,9 @@ const novillo = price('novillos')
 const vaquillona = price('vaquillonas')
 const vaca = price('vacas')
 
-// Valor de referencia de un ternero tipo de destete (180 kg de peso vivo).
+// `ternero` NO es un precio observado: el Mercado Agroganadero no opera terneros y el
+// scraper lo calcula como INMAG × 1,10. Toda la página lo presenta como estimación.
+// Ternero tipo de destete (180 kg de peso vivo).
 const PESO_TERNERO = 180
 const valorTernero = ternero * PESO_TERNERO
 
@@ -121,21 +124,21 @@ const TERMINOS = [
 const FAQ = [
   {
     question: '¿A cuánto está el kilo de ternero hoy?',
-    answer: `El kilo de ternero vivo en pie está hoy (${INMAG_DATE}) a $${fmt(ternero)}/kg como precio de referencia del Mercado Agroganadero (INMAG/MAG). Es la categoría que más vale por kilo del panel, por encima del novillito ($${fmt(novillito)}) y el novillo ($${fmt(novillo)}). Un ternero tipo de destete de ${PESO_TERNERO} kg equivale así a unos $${fmt(valorTernero)} de referencia. Es un valor de referencia del mercado, no fijado por esta página.`,
+    answer: `No hay un precio observado del ternero en el Mercado Agroganadero, porque ahí no se operan terneros. Nuestra estimación de hoy (${INMAG_DATE}) es $${fmt(ternero)} por kilo vivo, calculada como INMAG × 1,10: un ternero de destete de ${PESO_TERNERO} kg rondaría los $${fmt(valorTernero)}. El precio real lo marcan los remates de invernada, y cambia con el peso, la raza, la sanidad y la zona.`,
   },
   {
     question: '¿Cuándo conviene vender terneros?',
-    answer: `Conviene vender terneros fuera del pico de la zafra, que en Argentina se concentra entre marzo y mayo: en esos meses se desteta y sale a la venta la mayor cantidad de terneros y la oferta concentrada presiona el $/kg a la baja. En invierno (junio–agosto), con menos ternero disponible, el precio por kilo tiende a sostenerse o firmar. Hoy el ternero cotiza $${fmt(ternero)}/kg vivo de referencia (${lastUpdate}); la decisión también depende de la carga de pasto y del costo de retener el animal.`,
+    answer: 'Conviene vender terneros fuera del pico de la zafra, que en Argentina se concentra entre marzo y mayo: en esos meses se desteta y sale a la venta la mayor cantidad de terneros y la oferta concentrada presiona el precio por kilo a la baja. En invierno (junio–agosto), con menos ternero disponible, el precio tiende a sostenerse o firmar. La decisión también depende del pasto que tengas y de lo que cuesta retener el animal.',
   },
   {
-    question: '¿Por qué el ternero vale más por kg que el novillo?',
-    answer: `El ternero vale más por kilo que el novillo porque es hacienda de invernada con potencial de crecimiento por delante, no un animal terminado para faena. Hoy el ternero cotiza $${fmt(ternero)}/kg vivo y el novillo $${fmt(novillo)}/kg (referencia INMAG/MAG, ${INMAG_DATE}). El comprador paga la promesa de kilos futuros: cada kilo de ternero se convierte en varios kilos de novillo durante la recría y el engorde, y esa expectativa se refleja en el precio por kilo.`,
+    question: '¿Por qué el ternero suele valer más por kilo que el novillo?',
+    answer: 'Porque es hacienda de invernada, con crecimiento por delante, y no un animal terminado para faena. El que compra paga los kilos que el animal todavía va a ganar en la recría y el engorde. Por eso en los remates de invernada el ternero liviano suele pagarse más por kilo que el novillo gordo, aunque la diferencia cambia con el año y con la relación entre el maíz y la carne.',
   },
 ]
 
 export const metadata: Metadata = {
-  title: `Precio del ternero en pie hoy: $${fmt(ternero)}/kg vivo (${lastUpdate}) y estacionalidad`,
-  description: `El kilo de ternero vivo en pie está hoy (${INMAG_DATE}) a $${fmt(ternero)}/kg como precio de referencia del Mercado Agroganadero (INMAG/MAG): es la categoría de invernada más buscada por el criador que vende post-destete. Cuánto está el ternero por kilo, cómo lo mueve la zafra de terneros (marzo–mayo) y por qué el invierno sostiene el precio.`,
+  title: 'Precio del ternero en pie: cómo se forma, la zafra y los remates de invernada',
+  description: 'Cómo se forma el precio del ternero en pie: por qué se vende en remates de invernada y no en el Mercado Agroganadero, cómo lo mueve la zafra de marzo a mayo, una estimación diaria rotulada como tal y los próximos remates.',
   keywords: [
     'cuanto esta el kilo de ternero vivo en pie',
     'cuanto esta el kilo de ternero vivo',
@@ -149,8 +152,8 @@ export const metadata: Metadata = {
     'precio ternero de destete',
   ],
   openGraph: {
-    title: `Precio del ternero en pie hoy: $${fmt(ternero)}/kg vivo`,
-    description: `El kilo de ternero vivo en pie está hoy a $${fmt(ternero)}/kg de referencia (INMAG/MAG, ${INMAG_DATE}). Precio por kilo, estacionalidad y por qué la invernada vale más que la hacienda gorda.`,
+    title: 'Precio del ternero en pie: cómo se forma y cuándo conviene vender',
+    description: 'Por qué el ternero se vende en remates de invernada, cómo lo mueve la zafra y una estimación diaria rotulada como tal.',
     url: PAGE_URL,
     type: 'article',
     images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
@@ -184,7 +187,7 @@ export default function PrecioDelTerneroEnPiePage() {
       <FAQPageSchema items={FAQ} />
       <SpeakableSchema
         url={PAGE_URL}
-        headline="Precio del ternero en pie hoy: $/kg vivo y estacionalidad"
+        headline="Precio del ternero en pie: cómo se forma y cuándo conviene vender"
       />
 
       <article className="px-4 pt-4 pb-8 max-w-3xl mx-auto text-zinc-300 text-sm leading-relaxed">
@@ -196,26 +199,31 @@ export default function PrecioDelTerneroEnPiePage() {
         </nav>
 
         <h1 className="text-zinc-100 text-2xl font-medium mb-3">
-          Precio del ternero en pie hoy: $/kg vivo y estacionalidad
+          Precio del ternero en pie: cómo se forma y cuándo conviene vender
         </h1>
 
-        {/* Answer-first: primera oración autocontenida y citable */}
+        {/* Answer-first: primera oración autocontenida y citable, sin vender la
+            estimación como dato observado. */}
         <p className="speakable-content text-zinc-200 text-base mb-4">
-          El kilo de ternero vivo en pie está hoy ({INMAG_DATE}) a{' '}
-          <strong>${fmt(ternero)}/kg</strong> como precio de referencia del Mercado Agroganadero
-          (INMAG/MAG); es la categoría que más vale por kilo, por encima del novillito (
-          ${fmt(novillito)}) y el novillo (${fmt(novillo)}).
+          El precio del ternero se forma en los remates de invernada y las ferias de campo: el Mercado
+          Agroganadero no opera terneros, así que no hay un precio observado ahí. Nuestra estimación de
+          hoy ({INMAG_DATE}) es <strong>${fmt(ternero)} por kilo vivo</strong>.
         </p>
+        <p className="text-xs text-zinc-500 mb-4">{TERNERO_ESTIMADO_NOTA}</p>
 
         <p className="mb-4">
-          Es un <strong>precio de referencia del mercado (INMAG/MAG), no fijado por esta página</strong>:
-          se mide por kilo vivo en el Mercado Agroganadero de Buenos Aires y se actualiza a diario. Un
-          ternero tipo de destete de {PESO_TERNERO} kg equivale, a ese valor, a unos{' '}
-          <strong>${fmt(valorTernero)}</strong> de referencia. El ternero es la <strong>salida del
-          criador</strong>: cuando termina la etapa de cría, el productor lo desteta y lo vende como
-          invernada para que otro lo recríe y engorde. Por eso es la categoría más buscada por quien
-          vende hacienda, y su precio por kilo se mueve fuerte con la estación del año.
+          A ese valor, un ternero de destete de {PESO_TERNERO} kg rondaría los{' '}
+          <strong>${fmt(valorTernero)}</strong>, pero tomalo como orientación, no como precio. El ternero
+          es la <strong>salida del criador</strong>: cuando termina la etapa de cría, el productor lo
+          desteta y lo vende como invernada para que otro lo recríe y engorde. Lo que se paga de verdad
+          depende del peso, la raza, la sanidad, la zona y el momento del año. Para el número del día y
+          su explicación, mirá el{' '}
+          <Link href="/precios/terneros" className="text-accent hover:text-accent-bright">precio del ternero hoy</Link>;
+          para lo que realmente se pagó por las demás categorías, por peso, el{' '}
+          <Link href="/vr" className="text-accent hover:text-accent-bright">precio por categoría y peso</Link>.
         </p>
+
+        <RematesDeInvernada />
 
         <h2 className="text-zinc-100 text-lg font-medium mb-2">
           Por qué el ternero vale más por kilo
@@ -224,10 +232,9 @@ export default function PrecioDelTerneroEnPiePage() {
           El ternero es <strong>invernada</strong>, no hacienda terminada: el comprador paga por los
           kilos que el animal todavía va a ganar durante la recría y el engorde. Cada kilo de ternero
           se convierte en varios kilos de novillo, y esa promesa de crecimiento se refleja en el
-          precio por kilo. Por eso hoy el ternero (${fmt(ternero)}/kg vivo) cotiza por encima del
-          novillito (${fmt(novillito)}), el novillo (${fmt(novillo)}) y la vaquillona (
-          ${fmt(vaquillona)}), y muy por arriba de la vaca de descarte (${fmt(vaca)}), que es un
-          animal adulto camino a faena.
+          precio por kilo. Por eso en los remates de invernada el ternero liviano suele pagarse más
+          por kilo que el novillito, el novillo y la vaquillona, y bastante más que la vaca de
+          descarte, que es un animal adulto camino a faena.
         </p>
 
         <h2 className="text-zinc-100 text-lg font-medium mb-2">
@@ -295,19 +302,19 @@ export default function PrecioDelTerneroEnPiePage() {
               <tr className="border-b border-terminal-border/60 align-top">
                 <td className="px-3 py-2 text-zinc-200 font-medium">
                   <Link
-                    href="/mercado/terneros"
+                    href="/precios/terneros"
                     className="text-accent hover:text-accent-bright transition-colors"
                   >
                     Ternero / Ternera
                   </Link>
                 </td>
                 <td className="px-3 py-2 text-zinc-400">Invernada (recría y engorde)</td>
-                <td className="px-3 py-2 text-right text-zinc-200">${fmt(ternero)}</td>
+                <td className="px-3 py-2 text-right text-zinc-200">~${fmt(ternero)} (estimado)</td>
               </tr>
               <tr className="border-b border-terminal-border/60 align-top">
                 <td className="px-3 py-2 text-zinc-200 font-medium">
                   <Link
-                    href="/mercado/novillitos"
+                    href="/precios/novillitos"
                     className="text-accent hover:text-accent-bright transition-colors"
                   >
                     Novillito
@@ -319,7 +326,7 @@ export default function PrecioDelTerneroEnPiePage() {
               <tr className="border-b border-terminal-border/60 align-top">
                 <td className="px-3 py-2 text-zinc-200 font-medium">
                   <Link
-                    href="/mercado/novillos"
+                    href="/precios/novillos"
                     className="text-accent hover:text-accent-bright transition-colors"
                   >
                     Novillo
@@ -331,7 +338,7 @@ export default function PrecioDelTerneroEnPiePage() {
               <tr className="border-b border-terminal-border/60 align-top">
                 <td className="px-3 py-2 text-zinc-200 font-medium">
                   <Link
-                    href="/mercado/vaquillonas"
+                    href="/precios/vaquillonas"
                     className="text-accent hover:text-accent-bright transition-colors"
                   >
                     Vaquillona
@@ -343,7 +350,7 @@ export default function PrecioDelTerneroEnPiePage() {
               <tr className="border-b border-terminal-border/60 align-top">
                 <td className="px-3 py-2 text-zinc-200 font-medium">
                   <Link
-                    href="/mercado/vacas"
+                    href="/precios/vacas"
                     className="text-accent hover:text-accent-bright transition-colors"
                   >
                     Vaca
@@ -356,9 +363,9 @@ export default function PrecioDelTerneroEnPiePage() {
           </table>
         </div>
         <p className="text-xxs text-zinc-500 mb-4">
-          Precio por kilo vivo del Mercado Agroganadero (INMAG y panel de categorías, {INMAG_DATE}).
-          Precio de referencia del mercado (INMAG/MAG), no fijado por esta página; cada firma acuerda
-          el precio final con el productor.
+          Precio por kilo vivo del Mercado Agroganadero (INMAG y panel de categorías, {INMAG_DATE}),
+          salvo el ternero, que es una estimación (INMAG × 1,10). Cada firma acuerda el precio final
+          con el productor.
         </p>
 
         {/* FAQ visible — mismo array que el schema */}
@@ -392,8 +399,16 @@ export default function PrecioDelTerneroEnPiePage() {
             </Link>
           </p>
           <p className="text-data text-zinc-300 pt-1">
+            <Link href="/precios/terneros" className="text-accent hover:text-accent-bright transition-colors">
+              Precio del ternero hoy →
+            </Link>{' '}
+            ·{' '}
+            <Link href="/vr" className="text-accent hover:text-accent-bright transition-colors">
+              Lo que realmente se pagó, por categoría y peso →
+            </Link>{' '}
+            ·{' '}
             <Link href="/mercado/terneros" className="text-accent hover:text-accent-bright transition-colors">
-              Precio del ternero en vivo →
+              Evolución y estacionalidad →
             </Link>{' '}
             ·{' '}
             <Link href="/mercado" className="text-accent hover:text-accent-bright transition-colors">
@@ -404,8 +419,8 @@ export default function PrecioDelTerneroEnPiePage() {
 
         <footer className="mt-6 pt-4 border-t border-terminal-border text-xxs text-zinc-500">
           <p>
-            Precio de referencia del mercado (Mercado Agroganadero / INMAG); no lo fija esta página.
-            El ternero se comercializa por kilo vivo y su valor final se acuerda en cada operación.
+            El valor del ternero de esta página es una estimación sobre el INMAG (× 1,10), no un precio
+            observado. El ternero se comercializa por kilo vivo y su valor final se acuerda en cada remate.
           </p>
           <p className="mt-1">Actualizado: {lastUpdate} · Memola Medios S.A.S.</p>
         </footer>

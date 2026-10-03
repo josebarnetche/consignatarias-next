@@ -59,8 +59,11 @@ const VACA_TERMS = [
 export const metadata: Metadata = {
   // Gana el cluster "cuanto sale/cuesta/vale una vaca (viva) en argentina 2026".
   // Distinta de /mercado/vacas y /precios/vacas (intención mayorista/serie) para no canibalizar.
-  title: `Cuánto vale una vaca viva: $${fmt(vacaKg)}/kg`,
-  description: `Una vaca viva vale hoy $${fmt(vacaKg)} el kilo vivo, en pesos (Mercado Agroganadero, ${lastUpdate}): una de 420 kg ronda los $${fmt(vaca420)}, unos USD ${fmt(Math.round(vaca420 / usdBlue))}.`,
+  // Search Console (28 días a sep-2026): esta página GANA "cuánto vale una vaca"
+  // (posición 4,7, 12.629 impresiones) con CTR de 0,72 %. Se queda con la intención de
+  // precio; el title lleva el número del día y "kg vivo, hoy" para subir el CTR.
+  title: { absolute: `Cuánto vale una vaca hoy: $${fmt(vacaKg)} el kg vivo` },
+  description: `Una vaca de 420 kg vale hoy unos $${fmt(vaca420)} (US$ ${fmt(Math.round(vaca420 / usdBlue))}): $${fmt(vacaKg)} el kilo vivo en el Mercado Agroganadero. Tabla por peso, de 380 a 450 kg.`,
   keywords: [
     'cuanto vale una vaca',
     'cuanto sale una vaca viva en argentina',
@@ -74,7 +77,7 @@ export const metadata: Metadata = {
     'precio vaca kilo vivo',
   ],
   openGraph: {
-    title: `Cuánto vale una vaca en Argentina 2026 — $${fmt(vacaKg)}/kg vivo`,
+    title: `Cuánto vale una vaca hoy: $${fmt(vacaKg)} el kg vivo`,
     description: `Una vaca de 420 kg ronda los $${fmt(vaca420)} al valor del Mercado Agroganadero (${lastUpdate}). Tabla por peso + valor en dólares.`,
     url: PAGE_URL,
     type: 'article',
@@ -216,16 +219,22 @@ export default function CuantoValeUnaVacaPage() {
             Seguir con el dato
           </p>
           <p className="text-data text-zinc-300">
-            <Link href="/mercado/vacas" className="text-accent hover:text-accent-bright transition-colors">
-              Precio de la vaca en el Mercado Agroganadero →
+            <Link href="/precios/vacas" className="text-accent hover:text-accent-bright transition-colors">
+              Precio de la vaca hoy →
             </Link>{' '}
-            serie diaria del kilo vivo, histórico y variación.
+            el kilo vivo del día y el rango de lo que realmente se pagó.
           </p>
           <p className="text-data text-zinc-300">
-            <Link href="/precios/vacas" className="text-accent hover:text-accent-bright transition-colors">
-              Precios por categoría: vacas →
+            <Link href="/vr/vaca" className="text-accent hover:text-accent-bright transition-colors">
+              A cuánto se vendió la vaca, por peso →
             </Link>{' '}
-            comparación con novillo, vaquillona, ternero y toro, actualizado a diario desde el MAG.
+            lotes vendidos en el Mercado Agroganadero, separados por rango de peso.
+          </p>
+          <p className="text-data text-zinc-300">
+            <Link href="/mercado/vacas" className="text-accent hover:text-accent-bright transition-colors">
+              Evolución del precio de la vaca →
+            </Link>{' '}
+            serie histórica y estacionalidad.
           </p>
         </div>
       </article>

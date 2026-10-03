@@ -85,6 +85,8 @@ const categoryColumns: DataColumn<CategoryRow>[] = [
           />
         </span>
         {cat.name}
+        {/* El ternero es INMAG × 1,10 (el MAG no opera terneros): no es observado. */}
+        {cat.name === 'TERNEROS' && <span className="text-xxs font-normal text-zinc-500 normal-case" title="INMAG × 1,10. El Mercado Agroganadero no opera terneros; no es un precio observado.">estimado</span>}
       </Link>
     ),
   },
@@ -147,9 +149,10 @@ export default function MercadoPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-zinc-950/80 via-zinc-950/50 to-zinc-950/80" aria-hidden="true" />
         <div className="relative terminal-panel-header flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
-          <h1 className="section-heading">
-            MERCADO <span className="text-zinc-500 mx-1">&mdash;</span> INDICES Y PRECIOS DE REFERENCIA
-          </h1>
+          {/* h2: el H1 de la página lo pone page.tsx (server), antes de este panel. */}
+          <h2 className="section-heading">
+            MERCADO <span className="text-zinc-500 mx-1">&mdash;</span> ÍNDICES Y PRECIOS DE REFERENCIA
+          </h2>
           <span className="text-zinc-500 tabular-nums normal-case tracking-normal">
             Ult: {fmtUpdate(lastUpdate)}
           </span>

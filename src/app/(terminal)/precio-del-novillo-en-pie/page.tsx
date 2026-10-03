@@ -112,7 +112,9 @@ const FAQ = [
 ]
 
 export const metadata: Metadata = {
-  title: `Precio del novillo en pie hoy: $${fmt(inmagPrice)}/kg vivo (${INMAG_DATE}) — Liniers/Cañuelas`,
+  // Página informativa: dónde y cómo se forma el precio del novillo. "Precio del
+  // novillo hoy" lo responde /precios/novillos (la canónica); el title no promete el número.
+  title: 'Precio del novillo en pie: cómo se forma, de Liniers a Cañuelas',
   description: `A cuánto está el kilo de novillo en pie hoy (${INMAG_DATE}): $${fmt(inmagPrice)} por kilo vivo según el INMAG del Mercado Agroganadero (ex-Liniers, Cañuelas). Precio de referencia en pesos, actualizado a diario. Novillo de panel $${fmt(novillo)}/kg.`,
   keywords: [
     'a cuanto esta el kilo de novillo en pie hoy',
@@ -298,13 +300,21 @@ export default function PrecioDelNovilloEnPiePage() {
               Todos los índices →
             </Link>
           </p>
+          <p className="text-data text-zinc-300 flex flex-wrap gap-x-3 gap-y-1">
+            <Link href="/precios/novillos" className="text-accent hover:text-accent-bright transition-colors">
+              Precio del novillo hoy →
+            </Link>
+            <Link href="/vr/novillo" className="text-accent hover:text-accent-bright transition-colors">
+              A cuánto se vendió el novillo, por peso →
+            </Link>
+          </p>
           <p className="text-data text-zinc-300 pt-1">
             <Link href="/que-es-el-mag" className="text-accent hover:text-accent-bright transition-colors">
               ¿Qué es el MAG? →
             </Link>{' '}
             ·{' '}
             <Link href="/mercado/novillos" className="text-accent hover:text-accent-bright transition-colors">
-              Novillo en vivo →
+              Evolución del precio y estacionalidad →
             </Link>{' '}
             ·{' '}
             <Link href="/categorias-de-hacienda" className="text-accent hover:text-accent-bright transition-colors">

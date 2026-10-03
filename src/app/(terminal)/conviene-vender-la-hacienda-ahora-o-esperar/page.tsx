@@ -230,7 +230,7 @@ export default function ConvieneVenderLaHaciendaAhoraOEsperarPage() {
                 </td>
               </tr>
               <tr className="align-top">
-                <td className="px-3 py-2 text-zinc-200 font-medium">Ternero</td>
+                <td className="px-3 py-2 text-zinc-200 font-medium">Ternero (estimado)</td>
                 <td className="px-3 py-2 text-right text-zinc-300">${fmt(ternero)}</td>
                 <td className="px-3 py-2 text-zinc-400">
                   <Link

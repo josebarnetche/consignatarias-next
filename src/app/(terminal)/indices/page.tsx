@@ -24,7 +24,7 @@ const BADGES = [
   { slug: 'vaquillonas', label: 'Vaquillona', value: BADGE_CATS.vaquillonas.current, href: '/mercado/vaquillonas' },
   { slug: 'vacas', label: 'Vaca', value: BADGE_CATS.vacas.current, href: '/mercado/vacas' },
   { slug: 'toros', label: 'Toro', value: BADGE_CATS.toros.current, href: '/mercado/toros' },
-  { slug: 'terneros', label: 'Ternero', value: BADGE_CATS.terneros.current, href: '/mercado/terneros' },
+  { slug: 'terneros', label: 'Ternero (estimado)', value: BADGE_CATS.terneros.current, href: '/mercado/terneros' },
 ]
 
 export const metadata: Metadata = {

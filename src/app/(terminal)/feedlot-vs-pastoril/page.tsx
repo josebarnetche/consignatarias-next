@@ -281,7 +281,7 @@ export default function FeedlotVsPastorilPage() {
 
         <p className="mb-4">
           El punto de partida de ambos sistemas es la misma hacienda de reposición —el ternero, que
-          hoy se referencia en ${fmt(ternero)}/kg vivo ({lastUpdate})— que viene de la{' '}
+          hoy se referencia en ${fmt(ternero)}/kg vivo (estimado) ({lastUpdate})— que viene de la{' '}
           <Link href="/que-es-la-cria-y-recria" className="text-accent hover:text-accent-bright transition-colors">
             cría y recría
           </Link>

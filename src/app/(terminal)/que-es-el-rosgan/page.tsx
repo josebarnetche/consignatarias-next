@@ -120,7 +120,7 @@ const FAQ = [
   {
     question: '¿Cómo comprar en el ROSGAN?',
     answer:
-      'Para comprar en el ROSGAN te inscribís con el organizador o una consignataria, revisás el catálogo de lotes, te registrás como comprador acreditando CUIT y RENSPA de destino, y pujás durante la transmisión televisada —en general a través de tu consignataria—. Cerrada la subasta, la consignataria liquida la operación y coordina el traslado. Es hacienda de invernada: como referencia de mercado, el ternero cotiza hoy $${fmt(ternero)}/kg vivo y el novillito $${fmt(novillito)}/kg vivo (precio de referencia del mercado INMAG/MAG, no fijado por esta página ni por el ROSGAN).',
+      'Para comprar en el ROSGAN te inscribís con el organizador o una consignataria, revisás el catálogo de lotes, te registrás como comprador acreditando CUIT y RENSPA de destino, y pujás durante la transmisión televisada —en general a través de tu consignataria—. Cerrada la subasta, la consignataria liquida la operación y coordina el traslado. Es hacienda de invernada: como referencia de mercado, el ternero cotiza hoy $${fmt(ternero)}/kg vivo (estimado) y el novillito $${fmt(novillito)}/kg vivo (precio de referencia del mercado INMAG/MAG, no fijado por esta página ni por el ROSGAN).',
   },
   {
     question: '¿Dónde se ve el catálogo del ROSGAN?',
@@ -250,7 +250,7 @@ export default function QueEsElRosganPage() {
           El ROSGAN concentra hacienda de invernada, la categoría que mejor se adapta al remate por
           pantalla porque son lotes homogéneos de recría. Como referencia de mercado —no como
           resultado del ROSGAN— el ternero cotiza hoy{' '}
-          <span className="text-zinc-300">${fmt(ternero)}/kg vivo</span> y el novillito{' '}
+          <span className="text-zinc-300">${fmt(ternero)}/kg vivo (estimado)</span> y el novillito{' '}
           <span className="text-zinc-300">${fmt(novillito)}/kg vivo</span>. Es precio de referencia
           del mercado (INMAG/MAG), no fijado por esta página ni por el ROSGAN: el valor de cada lote
           lo forma la puja en la subasta.

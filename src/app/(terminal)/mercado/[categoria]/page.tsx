@@ -16,6 +16,7 @@ import SellZoneBadge from '@/components/SellZoneBadge'
 import { FAQPageSchema, DefinedTermSetSchema, SpeakableSchema, DatasetSchema } from '@/components/seo/JsonLd'
 import { DESCARGA_PRECIOS, FUENTE_MAG, LICENCIA_PROPIA } from '@/lib/seo/schemas'
 import { FaqList } from '@/components/seo/FaqList'
+import { PRECIO_A_VR } from '@/components/precios/BandaVrCategoria'
 
 export const revalidate = 86400 // daily rebuild via Vercel (mirrors scraper cadence)
 
@@ -210,6 +211,31 @@ const CATEGORY_CONFIG: Record<string, CategoryConfig> = {
 
 const VALID_CATEGORIES = Object.keys(CATEGORY_CONFIG)
 
+const fmtTitulo = (n: number) => n.toLocaleString('es-AR')
+
+/** Title, description y H1 por categoría. Cortos (≤60 / ≤155) y con el dato concreto. */
+function tituloMercado(categoria: string, config: CategoryConfig, price: number) {
+  if (categoria === 'toros') {
+    return {
+      title: `Precio del toro hoy: $${fmtTitulo(price)}/kg vivo y cuánto vale uno`,
+      description: `Cuánto vale un toro hoy: $${fmtTitulo(price)} por kilo vivo en el Mercado Agroganadero; uno de 600 kg ronda los $${fmtTitulo(price * 600)}. Qué mueve el precio y cómo vino el año.`,
+      h1: `Precio del toro hoy: $${fmtTitulo(price)}/kg vivo`,
+    }
+  }
+  if (categoria === 'terneros') {
+    return {
+      title: 'Precio del ternero en el año: la zafra y cuándo vender',
+      description: 'En qué meses baja y sube el precio del ternero, por qué la zafra de marzo a mayo lo aprieta y dónde se forma el precio de verdad: los remates de invernada.',
+      h1: 'Terneros: cómo se mueve el precio en el año',
+    }
+  }
+  return {
+    title: `${config.namePlural}: evolución del precio y estacionalidad`,
+    description: `Cómo se movió el precio del ${config.name.toLowerCase()} en el Mercado Agroganadero, qué lo mueve y en qué meses suele subir o bajar. Con el precio de hoy.`,
+    h1: `${config.namePlural}: evolución del precio y estacionalidad`,
+  }
+}
+
 /* ================================================================== */
 /*  METADATA                                                           */
 /* ================================================================== */
@@ -228,21 +254,23 @@ export async function generateMetadata({
   if (!config) return {}
 
   const cat = marketData.categories[categoria as keyof typeof marketData.categories]
-  const price = cat?.current ?? 0
-  const priceFormatted = price.toLocaleString('es-AR', { maximumFractionDigits: 0 })
-  // Question-format title matches the dominant PAA/voice query "¿cuánto vale un/una <cat>?"
-  // — these carry impressions at ~0% CTR because the old declarative title didn't mirror
-  // the question. Article agrees in gender (vaca/vaquillona = "una"). v1.40 CTR pass.
-  const article = categoria === 'vacas' || categoria === 'vaquillonas' ? 'una' : 'un'
+  const price = Math.round(cat?.current ?? 0)
+
+  // Esta página es la de histórico y estacionalidad. "Precio del X hoy" lo
+  // responde /precios/[categoria] (la canónica, con la banda de lo que se pagó).
+  // Excepción: TOROS. Search Console (28 días a sep-2026) muestra que /mercado/toros
+  // es la que gana "precio del toro" (3.746 impresiones, posición 4,7) y /precios/toros
+  // casi no aparece: esa se queda con la intención de precio.
+  const { title, description } = tituloMercado(categoria, config, price)
 
   return {
-    title: `¿Cuánto vale ${article} ${config.name.toLowerCase()}? $${priceFormatted}/kg hoy`,
-    description: `¿Cuánto vale ${article} ${config.name.toLowerCase()} en Argentina hoy? Cotiza $${priceFormatted}/kg vivo en el Mercado Agroganadero, actualizado a diario. Histórico y rango por categoría.`,
+    title,
+    description,
     keywords: config.keywords,
     openGraph: {
       images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
-      title: `Precio ${config.name} Hoy: $${priceFormatted}/kg`,
-      description: `Cotización actualizada de ${config.namePlural.toLowerCase()} en Argentina. Precio por kilo vivo, histórico y análisis del mercado ganadero.`,
+      title,
+      description,
       url: `https://www.consignatarias.com.ar/mercado/${categoria}`,
       type: 'website',
     },
@@ -310,13 +338,20 @@ export default async function CategoriaPage({
   const nameLower = config.name.toLowerCase()
   const pluralLower = config.namePlural.toLowerCase()
   // Answer-first sentence: the exact number + date up front, optimized for featured snippet / voz.
-  const answerFirst = `Hoy ${article} ${nameLower} cotiza a $${fmt(price)} por kilo vivo en el Mercado Agroganadero (${changeStr} semanal). Actualizado el ${lastUpdate}.`
+  // El ternero no es un precio observado (INMAG × 1,10: el MAG no opera terneros).
+  const esEstimado = categoria === 'terneros'
+  const answerFirst = esEstimado
+    ? `El Mercado Agroganadero no opera terneros, así que no hay un precio observado ahí. Nuestra estimación de hoy es $${fmt(price)} por kilo vivo (INMAG × 1,10). Actualizado el ${lastUpdate}.`
+    : `Hoy ${article} ${nameLower} cotiza a $${fmt(price)} por kilo vivo en el Mercado Agroganadero (${changeStr} semanal). Actualizado el ${lastUpdate}.`
+  const slugVr = PRECIO_A_VR[categoria]
 
   // FAQ — questions mirror the head-query strings; answers lead with the live number + date.
   const faqItems = [
     {
       question: `¿Cuánto vale ${article} ${nameLower} hoy en Argentina?`,
-      answer: `${answerFirst} Precio observado del Mercado Agroganadero de Cañuelas, en pesos por kilo vivo.`,
+      answer: esEstimado
+        ? `${answerFirst} El precio real del ternero lo marcan los remates de invernada.`
+        : `${answerFirst} Precio observado del Mercado Agroganadero de Cañuelas, en pesos por kilo vivo.`,
     },
     {
       question: `¿Qué determina el precio ${article === 'una' ? 'de la' : 'del'} ${nameLower}?`,
@@ -368,7 +403,7 @@ export default async function CategoriaPage({
           />
 
           <h1 className="text-2xl md:text-3xl font-bold text-zinc-100 mb-2">
-            Precio {config.name} Argentina
+            {tituloMercado(categoria, config, Math.round(price)).h1}
           </h1>
 
           {/* Answer-first: la respuesta a "¿cuánto sale/cuesta ...?" en la 1ª oración,
@@ -380,12 +415,23 @@ export default async function CategoriaPage({
           <p className="text-zinc-400 max-w-2xl">
             {config.description}
           </p>
+          <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+            {/* En toros esta página ES la de "precio de hoy" (ver tituloMercado). */}
+            {categoria !== 'toros' && (
+              <Link href={`/precios/${categoria}`} className="font-medium text-accent hover:underline">
+                Precio {article === 'una' ? 'de la' : 'del'} {nameLower} hoy →
+              </Link>
+            )}
+            <Link href={slugVr ? `/vr/${slugVr}` : '/vr'} className="text-accent hover:underline">
+              {slugVr ? `A cuánto se vendió ${article === 'una' ? 'la' : 'el'} ${nameLower}, por peso →` : 'Lo que realmente se pagó, por categoría y peso →'}
+            </Link>
+          </p>
         </header>
 
         {/* Price Card */}
         <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-6 mb-6">
           <Stat
-            label={`${config.name} — kg vivo`}
+            label={esEstimado ? `${config.name} — estimado, kg vivo` : `${config.name} — kg vivo`}
             value={`$${priceFormatted}`}
             sub="/kg vivo"
             delta={change !== 0 ? change : null}
@@ -395,14 +441,18 @@ export default async function CategoriaPage({
 
           <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-zinc-500">
             <div>
-              Fuente: <span className="text-zinc-400">Mercado Agroganadero</span>
+              {esEstimado ? (
+                <>Estimación: <span className="text-zinc-400">INMAG × 1,10 — el Mercado Agroganadero no opera terneros; no es un precio observado</span></>
+              ) : (
+                <>Fuente: <span className="text-zinc-400">Mercado Agroganadero</span></>
+              )}
             </div>
             {volume && (
               <div>
                 Volumen: <span className="text-zinc-400">{volume.toLocaleString('es-AR')} cab.</span>
               </div>
             )}
-            {vsInmag && (
+            {vsInmag && !esEstimado && (
               <div className="flex items-center gap-1">
                 vs INMAG: <Delta change={Number(vsInmag)} format={(abs) => abs.toFixed(1)} />
               </div>

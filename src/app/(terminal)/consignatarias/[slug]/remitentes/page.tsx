@@ -3,6 +3,7 @@ import { notFound, permanentRedirect } from 'next/navigation'
 import Link from 'next/link'
 import { getCanonicalSlug, getProfile } from '@/lib/data/consignataria-slugs'
 import marketData from '@/lib/data/market-prices.json'
+import { nombrePropio } from '@/lib/ui/tokens'
 import type { MagEntryData } from '../page'
 
 /* ------------------------------------------------------------------ */
@@ -98,6 +99,9 @@ export default async function RemitentesPage({ params }: Props) {
           <span className="text-xxs text-zinc-500 font-terminal">{magEntry.period}</span>
         </div>
         <div className="px-panel py-4">
+          <h1 className="text-lg font-semibold text-ink mb-3">
+            De dónde viene la hacienda que remite {nombrePropio(profile.displayName)}
+          </h1>
           <div className="flex flex-wrap items-baseline gap-4 mb-4">
             <div>
               <span className="text-3xl font-terminal text-positive tabular-nums">
