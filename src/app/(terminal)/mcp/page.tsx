@@ -17,6 +17,16 @@ export const revalidate = 3600
 
 const ENDPOINT = 'https://www.consignatarias.com.ar/api/mcp'
 
+// Instalación en un clic. Los dos clientes usan el mismo payload (la config del server
+// en JSON) con codificación distinta: Cursor lo quiere en base64, VS Code URL-encoded.
+const MCP_CONFIG = JSON.stringify({ url: ENDPOINT })
+const CURSOR_DEEPLINK =
+  'cursor://anysphere.cursor-deeplink/mcp/install?name=consignatarias&config=' +
+  Buffer.from(MCP_CONFIG).toString('base64')
+const VSCODE_DEEPLINK =
+  'https://insiders.vscode.dev/redirect/mcp/install?name=consignatarias&config=' +
+  encodeURIComponent(JSON.stringify({ type: 'http', url: ENDPOINT }))
+
 const TOOL_ICONS: Record<string, string> = {
   get_indice_novillo: 'indice', get_inmag_historico: 'indice', get_precios_hacienda: 'bascula',
   get_precios_detallados: 'bascula', get_contexto_macro: 'dolar-billete', list_remates: 'calendario',
@@ -249,6 +259,31 @@ export default function McpPage() {
     "url": "${ENDPOINT}"
   }
 }`}</pre>
+          <p className="text-sm text-zinc-400 mt-5 mb-2">O en un clic, según tu cliente:</p>
+          <div className="flex flex-wrap gap-2">
+            <a
+              href={CURSOR_DEEPLINK}
+              className="rounded-lg border border-terminal-border bg-black/40 px-3 py-2 text-xs font-terminal uppercase tracking-wider text-zinc-300 hover:border-sky-500/60 hover:text-sky-300 transition-colors"
+            >
+              Agregar a Cursor
+            </a>
+            <a
+              href={VSCODE_DEEPLINK}
+              className="rounded-lg border border-terminal-border bg-black/40 px-3 py-2 text-xs font-terminal uppercase tracking-wider text-zinc-300 hover:border-sky-500/60 hover:text-sky-300 transition-colors"
+            >
+              Agregar a VS Code
+            </a>
+            <a
+              href="https://glama.ai/mcp/connectors/ar.com.consignatarias/cattle-market"
+              className="rounded-lg border border-terminal-border bg-black/40 px-3 py-2 text-xs font-terminal uppercase tracking-wider text-zinc-300 hover:border-sky-500/60 hover:text-sky-300 transition-colors"
+            >
+              Ver en Glama
+            </a>
+          </div>
+          <p className="text-sm text-zinc-400 mt-4 mb-2">Claude Code, desde la terminal:</p>
+          <code className="block bg-black/40 border border-terminal-border rounded-lg px-4 py-3 text-sky-300 font-mono text-xs break-all">
+            claude mcp add --transport http consignatarias {ENDPOINT}
+          </code>
           <p className="text-xs text-zinc-600 mt-3">
             Listado en el registry oficial de MCP como <code className="text-zinc-400">ar.com.consignatarias/cattle-market</code>.
           </p>
@@ -280,14 +315,13 @@ export default function McpPage() {
           ))}
         </div>
         <p className="text-xs text-zinc-500 mt-3">
-          Todos los tools son públicos y gratis. Lo que tiene techo es la PROFUNDIDAD histórica, no el acceso:{' '}
-          <code className="text-zinc-400">get_inmag_historico</code> es libre hasta 365 días de ventana y{' '}
-          <code className="text-zinc-400">get_vr_historico</code> hasta 30 (los últimos 30 son los que ya publicamos
-          en <code className="text-zinc-400">/mercado</code> y <code className="text-zinc-400">/vr</code>); más allá
-          recortan y lo declaran, nunca niegan. Las valuaciones tienen cupo diario; sin cupo, la misma consulta cuesta
-          centavos en USDC real (red Base) vía <code className="text-zinc-400">x402</code> — el protocolo de pagos para
-          agentes. Con una API key Enterprise (<code className="text-zinc-400">Bearer cnsg_live_…</code>): alertas
-          ilimitadas, históricos bulk y soporte.
+          Las {TOOLS.length} tools responden gratis y sin cupo, a cualquier profundidad, y sin API key: la serie del
+          INMAG completa desde 2015, la serie de dispersión entera y las valuaciones sin tope diario. Lo que se paga es
+          la DESCARGA MASIVA fila por fila —para cargar la serie en un modelo propio— por request en USDC real (red
+          Base) vía <code className="text-zinc-400">x402</code>, el protocolo de pagos para agentes, o con una API key
+          Enterprise; y la REDISTRIBUCIÓN, que tiene su{' '}
+          <a href="/licencia-datos" className="text-zinc-400 underline hover:text-sky-300">licencia</a>. Citarnos es
+          gratis y siempre lo va a ser.
         </p>
       </section>
 
