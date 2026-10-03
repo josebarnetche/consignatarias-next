@@ -1,3 +1,4 @@
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import { PromoGuiaBanner } from '@/components/PromoGuiaBanner'
 import { Metadata } from 'next'
 import { PROVINCIAS_CON_DATO } from '@/lib/campos-seo'
@@ -401,7 +402,7 @@ export default async function ArrendamientoPage() {
         {/* Hero Section — número-hero compartido con /mercado/inmag (MarketHero),
             envuelto con el render de marca del arrendamiento (universo v2.0) */}
         <section className="relative overflow-hidden">
-          <img
+          <ImagenTema
             src="/marca/features/feat-arrendamiento.jpg"
             alt=""
             aria-hidden="true"

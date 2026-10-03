@@ -1,3 +1,4 @@
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import { PromoGuiaBanner } from '@/components/PromoGuiaBanner'
 import { Metadata } from 'next'
 import Link from 'next/link'
@@ -268,7 +269,7 @@ export default function InmagPage() {
         {/* Hero Section — número-hero compartido con /mercado/arrendamiento (MarketHero),
             envuelto con el render de marca del INMAG en vivo (universo v2.0) */}
         <section className="relative overflow-hidden">
-          <img
+          <ImagenTema
             src="/marca/features/feat-inmag-vivo.jpg"
             alt=""
             aria-hidden="true"

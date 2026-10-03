@@ -1,5 +1,6 @@
 'use client';
 
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import { Star, Zap, Crown, Trophy, CheckCircle, Share2 } from 'lucide-react';
 import { trackMilestoneShare } from '@/lib/analytics';
 
@@ -112,8 +113,7 @@ export function MilestoneBadges({ dteCount, showAll = false, showShare = true }:
                 className={`inline-flex w-5 h-5 rounded bg-zinc-100 items-center justify-center select-none shrink-0 ${earned ? '' : 'opacity-40 grayscale'}`}
                 aria-hidden="true"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/marca/iconos-color/guia-dte.png" alt="" className="w-3.5 h-3.5" />
+                                <ImagenTema src="/marca/iconos-color/guia-dte.png" alt="" className="w-3.5 h-3.5" />
               </span>
               <span className={earned ? 'font-medium' : 'opacity-50'}>
                 {badge.name}

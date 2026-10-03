@@ -931,3 +931,12 @@ html:not([data-theme='dark']) .terminal-btn {
 html:not([data-theme='dark']) .terminal-input {
   border-color: rgb(var(--z-700));
 }
+
+/* ============================================================
+   IMÁGENES POR TEMA — <ImagenTema> (src/components/ui/ImagenTema.tsx)
+   Cada imagen de marca tiene su variante -claro; se muestra la del tema activo.
+   ============================================================ */
+html[data-theme='dark'] .solo-claro,
+html:not([data-theme='dark']) .solo-oscuro {
+  display: none !important;
+}

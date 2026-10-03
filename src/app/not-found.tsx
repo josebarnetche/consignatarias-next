@@ -1,3 +1,4 @@
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import { Metadata } from 'next'
 import Link from 'next/link'
 
@@ -17,7 +18,7 @@ export default function NotFound() {
         {/* Error code */}
         <div className="mb-6 flex flex-col items-center gap-4">
           <span className="w-20 h-20 rounded-lg bg-zinc-100 flex items-center justify-center select-none" aria-hidden="true">
-            <img src="/marca/iconos-color/buscador-lupa.png" alt="" className="w-14 h-14" />
+            <ImagenTema src="/marca/iconos-color/buscador-lupa.png" alt="" className="w-14 h-14" />
           </span>
           <span className="text-6xl font-mono font-bold text-zinc-700">404</span>
         </div>

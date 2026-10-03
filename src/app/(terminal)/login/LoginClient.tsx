@@ -1,5 +1,6 @@
 'use client'
 
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase-browser'
@@ -61,7 +62,7 @@ export default function LoginClient() {
   return (
     <div className="relative overflow-hidden">
       {/* Fondo de marca: el arreo (linocut), sutil detrás del panel del form */}
-      <img
+      <ImagenTema
         src="/marca/ilus/ilu-hero-arreo.jpg"
         alt=""
         aria-hidden="true"
@@ -69,7 +70,7 @@ export default function LoginClient() {
       />
       <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 via-zinc-950/60 to-zinc-950" aria-hidden="true" />
     <div className="relative max-w-md mx-auto px-4 py-16 text-sm">
-      <div className="terminal-panel rounded-xl p-6 sm:p-8 bg-[#0b0b0e]/90 backdrop-blur-sm">
+      <div className="terminal-panel rounded-xl p-6 sm:p-8 bg-[#0b0b0e]/90 claro:bg-terminal-panel/95 backdrop-blur-sm">
       <div className="mb-8 text-center">
         <h1 className="text-zinc-100 text-2xl font-medium mb-2">Ingresá</h1>
         <p className="text-zinc-500 text-xs font-mono">

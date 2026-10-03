@@ -1,5 +1,6 @@
 'use client'
 
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import { useState } from 'react'
 import { trackAlertSubscribe } from '@/lib/analytics'
 
@@ -86,8 +87,7 @@ export default function PriceAlertSignup({
       <div className="max-w-2xl">
         <div className="flex items-center gap-3 mb-2">
           <span className="inline-flex w-8 h-8 rounded bg-zinc-100 items-center justify-center select-none shrink-0" aria-hidden="true">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/marca/iconos-color/alerta.png" alt="" className="w-5 h-5" />
+                        <ImagenTema src="/marca/iconos-color/alerta.png" alt="" className="w-5 h-5" />
           </span>
           <h3 className="text-xl font-bold text-ink">{title}</h3>
         </div>

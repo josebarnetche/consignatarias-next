@@ -1,5 +1,6 @@
 'use client'
 
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import { useState } from 'react'
 import { trackValueEvent } from '@/lib/analytics'
 
@@ -66,8 +67,7 @@ export default function NewsletterSignup({
       {!compact && promise && (
         <div className="flex items-start gap-2.5 mb-3">
           <span className="inline-flex w-8 h-8 rounded bg-zinc-100 items-center justify-center select-none shrink-0" aria-hidden="true">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/marca/iconos-color/campana.png" alt="" className="w-5 h-5" />
+                        <ImagenTema src="/marca/iconos-color/campana.png" alt="" className="w-5 h-5" />
           </span>
           <p className="text-sm text-zinc-400 leading-relaxed">{promise}</p>
         </div>

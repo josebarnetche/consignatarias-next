@@ -1,3 +1,4 @@
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import type { ReactNode } from 'react'
 
 interface EmptyStateProps {
@@ -25,8 +26,7 @@ export default function EmptyState({ icon, title, sub, cta, className = '', comp
         className={`inline-flex ${compact ? 'w-10 h-10' : 'w-14 h-14'} rounded-lg bg-zinc-100 items-center justify-center select-none`}
         aria-hidden="true"
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={`/marca/${dir}/${icon}.png`} alt="" className={compact ? 'w-6 h-6' : 'w-9 h-9'} />
+                <ImagenTema src={`/marca/${dir}/${icon}.png`} alt="" className={compact ? 'w-6 h-6' : 'w-9 h-9'} />
       </span>
       <p className={`text-zinc-300 text-sm font-terminal ${compact ? 'mt-2' : 'mt-3'}`}>{title}</p>
       {sub && <p className="text-xxs text-zinc-500 mt-1 max-w-sm mx-auto leading-relaxed">{sub}</p>}

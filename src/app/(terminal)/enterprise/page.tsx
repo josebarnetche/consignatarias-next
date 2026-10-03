@@ -1,3 +1,4 @@
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
@@ -194,7 +195,7 @@ export default function EnterprisePage() {
 
       {/* Hero — render de marca de la API (universo v2.0) */}
       <section className="relative overflow-hidden">
-        <img
+        <ImagenTema
           src="/marca/features/feat-api.jpg"
           alt=""
           aria-hidden="true"

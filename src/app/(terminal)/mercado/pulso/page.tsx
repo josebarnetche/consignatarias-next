@@ -1,3 +1,4 @@
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import type { Metadata } from 'next'
 import MagPulse from '@/components/MagPulse'
 import MarketIntelPanel from '@/components/MarketIntelPanel'
@@ -15,7 +16,7 @@ export default function PulsoPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <div className="relative overflow-hidden rounded-xl mb-4">
-        <img
+        <ImagenTema
           src="/marca/patterns/09-ondas.jpg"
           alt=""
           aria-hidden="true"

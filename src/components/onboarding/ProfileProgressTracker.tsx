@@ -1,5 +1,6 @@
 'use client'
 
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { calculateProfilePoints, getNextActions, PRO_MONTH_THRESHOLD } from '@/lib/points'
@@ -54,8 +55,7 @@ export default function ProfileProgressTracker({
       <div className="terminal-panel-header flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="inline-flex w-5 h-5 rounded bg-zinc-100 items-center justify-center select-none shrink-0" aria-hidden="true">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/marca/iconos-color/guia-dte.png" alt="" className="w-3.5 h-3.5" />
+                        <ImagenTema src="/marca/iconos-color/guia-dte.png" alt="" className="w-3.5 h-3.5" />
           </span>
           <Star className="w-3.5 h-3.5 text-amber-400" />
           <span className="text-zinc-200 text-label tracking-widest">TU PROGRESO</span>

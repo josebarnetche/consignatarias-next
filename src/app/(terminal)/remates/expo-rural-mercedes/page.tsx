@@ -1,3 +1,4 @@
+import { PictureTema } from '@/components/ui/ImagenTema'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Tv, Radio, MapPin, ArrowRight } from 'lucide-react'
@@ -98,16 +99,13 @@ export default function Page() {
              hacia el carbón y la grilla de fondo. ─────────────────────────────── */}
       <section className="relative overflow-hidden border-b border-zinc-800/60">
         <div className="absolute inset-0 z-0">
-          <picture>
-            <source media="(max-width: 768px)" srcSet="/marca/hero-pampa-mobile.webp" type="image/webp" />
-            <source srcSet="/marca/hero-pampa.webp" type="image/webp" />
-            <img
+          <PictureTema
+              fuentes={[{ srcSet: '/marca/hero-pampa-mobile.webp', media: '(max-width: 768px)', type: 'image/webp' }, { srcSet: '/marca/hero-pampa.webp', type: 'image/webp' }]}
               src="/marca/hero-pampa.jpg"
               alt=""
               className="h-full w-full object-cover object-[center_35%] opacity-30"
               fetchPriority="high"
             />
-          </picture>
           <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/75 to-zinc-950/40" />
           <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/50 via-transparent to-zinc-950" />
         </div>

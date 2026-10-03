@@ -1,3 +1,4 @@
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { SectionBreadcrumbSchema, TechArticleSchema } from '@/components/seo/JsonLd'
@@ -156,7 +157,7 @@ export default function ApiDocsPage() {
         <div className="mb-8">
           <h1 className="text-2xl font-terminal text-zinc-100 mb-3">
             <span className="inline-flex w-9 h-9 rounded bg-zinc-100 items-center justify-center align-middle mr-2" aria-hidden="true">
-              <img src="/marca/iconos-color/agente-ia.png" alt="" className="w-6 h-6" />
+              <ImagenTema src="/marca/iconos-color/agente-ia.png" alt="" className="w-6 h-6" />
             </span>
             API Documentation
           </h1>

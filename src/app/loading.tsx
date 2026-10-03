@@ -1,3 +1,4 @@
+import { ImagenTema } from '@/components/ui/ImagenTema'
 /**
  * Loading global — la sonda respirando (curva de marca --ease-decay).
  * Pictograma COLOR "onda" en chip hueso, como manda el manual.
@@ -14,8 +15,7 @@ export default function Loading() {
         style={{ animation: 'marca-pulso 1.8s cubic-bezier(.16,1,.3,1) infinite' }}
         aria-hidden="true"
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/marca/iconos-color/onda.png" alt="" className="w-9 h-9" />
+                <ImagenTema src="/marca/iconos-color/onda.png" alt="" className="w-9 h-9" />
       </span>
       <p className="text-xxs font-terminal uppercase tracking-widest text-zinc-500">
         Cargando el mercado…

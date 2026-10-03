@@ -1,5 +1,6 @@
 'use client'
 
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import { useEffect, useRef } from 'react'
 
 /**
@@ -35,7 +36,7 @@ function Scene({
     <div className="mcp-scene" data-scene>
       <div className="flex items-center gap-2.5 mb-3">
         <span className="w-8 h-8 rounded bg-zinc-100 flex items-center justify-center select-none" aria-hidden="true">
-          <img src={`/marca/iconos-color/${icon}.png`} alt="" className="w-5.5 h-5.5" style={{ width: 22, height: 22 }} />
+          <ImagenTema src={`/marca/iconos-color/${icon}.png`} alt="" className="w-5.5 h-5.5" style={{ width: 22, height: 22 }} />
         </span>
         <code className="text-sky-300 font-mono text-sm">{tool}</code>
         <span className="ml-auto text-xxs font-terminal text-zinc-600 tabular-nums">{String(n).padStart(2, '0')}/08</span>

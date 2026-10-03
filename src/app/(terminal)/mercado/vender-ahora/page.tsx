@@ -1,3 +1,4 @@
+import { ImagenTema } from '@/components/ui/ImagenTema'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
@@ -34,7 +35,7 @@ export default async function VenderAhoraPage() {
         </div>
         <h1 className="text-2xl md:text-3xl font-heading text-zinc-100 mb-1 leading-tight">
           <span className="inline-flex w-9 h-9 rounded bg-zinc-100 items-center justify-center align-middle mr-2" aria-hidden="true">
-            <img src="/marca/iconos-color/alerta.png" alt="" className="w-6 h-6" />
+            <ImagenTema src="/marca/iconos-color/alerta.png" alt="" className="w-6 h-6" />
           </span>
           ¿Vendo ahora?
         </h1>
