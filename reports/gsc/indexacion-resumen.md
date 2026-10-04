@@ -1,11 +1,11 @@
-# Indexación — 2026-10-03
+# Indexación — 2026-10-04
 
-Inspeccionadas 3389 de 3159 URLs del sitemap.
+Inspeccionadas 3401 de 3015 URLs del sitemap.
 
 | Sección | Inspeccionadas | Indexadas | NO indexadas | % |
 |---|---:|---:|---:|---:|
+| /remates | 1274 | 960 | 314 | 25% |
 | /productividad | 479 | 168 | 311 | 65% |
-| /remates | 1263 | 960 | 303 | 24% |
 | /consignatarias | 86 | 70 | 16 | 19% |
 | /frigorificos | 1140 | 1129 | 11 | 1% |
 | /calendario | 74 | 68 | 6 | 8% |
@@ -20,6 +20,7 @@ Inspeccionadas 3389 de 3159 URLs del sitemap.
 | /metodologia | 2 | 1 | 1 | 50% |
 | /el-oraculo | 1 | 0 | 1 | 100% |
 | /precios.json | 1 | 0 | 1 | 100% |
+| /valuar-hacienda | 1 | 0 | 1 | 100% |
 | /precio-de-la-vaca-en-pie | 1 | 1 | 0 | 0% |
 | /que-es-una-consignataria | 1 | 1 | 0 | 0% |
 | /(home) | 1 | 1 | 0 | 0% |
@@ -111,8 +112,8 @@ Inspeccionadas 3389 de 3159 URLs del sitemap.
 | Motivo | URLs |
 |---|---:|
 | Enviada e indexada | 2728 |
-| Descubierta: actualmente sin indexar | 451 |
-| Google no reconoce esta URL | 142 |
+| Descubierta: actualmente sin indexar | 452 |
+| Google no reconoce esta URL | 153 |
 | Rastreada: actualmente sin indexar | 38 |
 | Excluida por una etiqueta "noindex" | 16 |
 | No se ha encontrado (404) | 5 |
