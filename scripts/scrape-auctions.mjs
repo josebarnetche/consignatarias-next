@@ -19,6 +19,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { scrapeNEA } from "./scrapers/nea.mjs";
+import { scrapeLotesDcac } from "./scrapers/dcac-lotes.mjs";
 import { parseOFarrellHtml } from "./ofarrell-parse.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -28,6 +29,8 @@ const REMATES_PATH = resolve(DATA_DIR, "remates.json");
 // una IP residencial AR (scripts/local-nea-fetch.mjs). Opcional; se mergea si existe.
 const LOCAL_NEA_PATH = resolve(DATA_DIR, "remates-local-nea.json");
 const MARKET_PATH = resolve(DATA_DIR, "market-prices.json");
+// Lotes de hacienda publicados por deCampoaCampo (catálogo acumulativo, ver el módulo).
+const LOTES_DCAC_PATH = resolve(DATA_DIR, "lotes-dcac.json");
 const YOUTUBE_PATH = resolve(DATA_DIR, "youtube-channels.json");
 const MAG_CONSIG_PATH = resolve(DATA_DIR, "mag-consignatarios.json");
 const PROVINCES_PATH = resolve(DATA_DIR, "consignataria-provinces.json");
@@ -2122,6 +2125,18 @@ async function main() {
 
   // Update YouTube channel latest videos
   await scrapeYouTubeLatest();
+
+  // Lotes de hacienda de dCaC. Va en un try propio: es una fuente de terceros y
+  // su caída no puede tirar la corrida de remates, que es la crítica.
+  try {
+    let previo = [];
+    try { previo = JSON.parse(readFileSync(LOTES_DCAC_PATH, "utf-8")); } catch { /* primera corrida */ }
+    const lotes = await scrapeLotesDcac(previo);
+    if (lotes.length > 0) writeFileSync(LOTES_DCAC_PATH, JSON.stringify(lotes, null, 2) + "\n");
+    else console.warn("  ⚠ dCaC: 0 lotes — no se sobreescribe el catálogo anterior");
+  } catch (err) {
+    console.warn(`  ⚠ dCaC lotes falló: ${err.message}`);
+  }
 
   // Summary
   const provinces = [...new Set(merged.map((a) => a.province))];

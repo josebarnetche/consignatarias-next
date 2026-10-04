@@ -85,6 +85,7 @@ const NAV_GROUPS: NavGroup[] = [
       { label: "Esta semana", href: "/remates/semana" },
       { label: "En vivo", href: "/remates/en-vivo", tag: "live" },
       { label: "Anteriores", href: "/remates/anteriores", hint: "Resultados de los que ya pasaron" },
+      { label: "Lotes en venta", href: "/lotes", hint: "Hacienda publicada, con la banda observada", tag: "new" },
     ],
   },
   {

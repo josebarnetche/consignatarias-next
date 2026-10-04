@@ -55,6 +55,15 @@ jobs:
 
       # 2da pasada: remates de hoy SIN canal propio → matchear streams en vivo de
       # los canales agregadores (Canal Rural, Rosgan, Entre Surcos) por título.
+      # Lotes de hacienda de dCaC × leads de compra abiertos. El scraper de arriba
+      # ya actualizó el catálogo; esto deja el cruce escrito y visible en el log.
+      - name: Cruzar lotes con leads de compra
+        continue-on-error: true
+        run: node scripts/match-lotes-leads.mjs
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
       - name: Match aggregator streams
         run: npx tsx scripts/match-aggregator-streams.ts
         env:

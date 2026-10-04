@@ -115,6 +115,7 @@ neto en mano, comparador, spread, seasonality, INMAG history) are free. The prod
 | Páginas de valor de la tierra | 67 (15 provincias + 52 zonas) | `/campos/valor-hectarea/[provincia]/[zona]` desde `tierra-por-kilo.json` |
 | Guías indexadas | 52 en 6 temas | `src/lib/data/guias.ts` → hub `/guias` |
 | MCP tools | 24 | `src/app/api/mcp/route.ts` · registry `ar.com.consignatarias/cattle-market` v1.5.0 |
+| Lotes de hacienda en vidriera | lo que dCaC publica cada día (catálogo acumulativo) | `src/lib/data/lotes-dcac.json` → `/lotes` |
 | API endpoints | 137 under `src/app/api/` | route handlers |
 | Public Enterprise endpoints (auth-gated) | 2 — `/api/precios`, `/api/lots` | |
 | Consignatarias (canonical) | 107 | `src/lib/data/consignataria-slugs.ts` (`getAllProfiles().length` — the public count) |
@@ -132,7 +133,7 @@ neto en mano, comparador, spread, seasonality, INMAG history) are free. The prod
 ## Daily data flow
 
 ```
-14:00 ART  scrape-auctions.yml         → remates.json + market-prices.json (git commit → Vercel rebuild)
+14:00 ART  scrape-auctions.yml         → remates.json + market-prices.json + lotes-dcac.json + lotes-matches.json (git commit → Vercel rebuild)
 15:30 ART  mag-detailed-prices.yml     → mag_prices_detailed (16 sub-cats per day, Lun-Vie)
 16:00 ART  mag-lots-pipeline.yml       → mag_consignataria_sales_lots (lote-level, Mar/Mié/Vie)
 + hourly   post-remate-outreach.yml    → outreach to consignatarias after their auction (rate-limit 30d per recipient)
@@ -195,6 +196,7 @@ docs/                                 Current strategic docs (Oráculo, Corredor
 ## Working conventions
 
 - **Static data files in `src/lib/data/`** are partially shadowed by Supabase tables but several are still the *source of truth* (e.g. `mag-consignatarios.json` because `mag_consignatarias` table is empty). Verify before assuming DB is canonical.
+- **Lotes de terceros (`/lotes`).** El inventario NO es nuestro: son los lotes que **deCampoaCampo** publica en sus dos páginas públicas de precios, tomados del JSON-LD `Product` de cada ficha (`scripts/scrapers/dcac-lotes.mjs`, 6 por página, catálogo acumulativo). Reglas: **no se recorre el rango de sku** (sería su base entera, no lo publicado), **no se copian fotos** (se sirve la URL que ellos declaran), **no se toma su precio** —lo que aportamos es la banda VR— y cada tarjeta enlaza la ficha original con atribución. Nuestros `producer_leads` NO se publican; la captura de la página queda etiquetada `lote:<sku>` (`LoteLeadCapture`, lee `?lote=` en el cliente para no volver dinámica la página). El cruce con los leads de compra abiertos lo hace `scripts/match-lotes-leads.mjs` → `lotes-matches.json` (sin datos personales).
 - **Sitemap source** is `src/app/sitemap.ts`. Adding a route or slug? Make sure it gets emitted.
 - **Migrations** are in `supabase/migrations/` only. Format: `YYYYMMDD_<slug>.sql`. Never edit applied migrations — add a new one.
 - **API keys (`cnsg_live_*`)** require `API_KEY_PEPPER` env var set in Vercel. Never rotate the pepper without invalidating all keys.

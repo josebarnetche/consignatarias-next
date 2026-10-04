@@ -186,6 +186,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/quiero-comprar`, lastModified: editado('/quiero-comprar'), changeFrequency: 'weekly', priority: 0.8 },
     { url: `${baseUrl}/licencia-datos`, lastModified: editado('/licencia-datos'), changeFrequency: 'monthly', priority: 0.6 },
     { url: `${baseUrl}/campos`, lastModified: editado('/campos'), changeFrequency: 'daily', priority: 0.9 },
+    { url: `${baseUrl}/lotes`, lastModified: editado('/lotes'), changeFrequency: 'daily', priority: 0.85 },
     { url: `${baseUrl}/campos/publicar`, lastModified: editado('/campos/publicar'), changeFrequency: 'weekly', priority: 0.8 },
     { url: `${baseUrl}/campos/valuar`, lastModified: editado('/campos/valuar'), changeFrequency: 'weekly', priority: 0.85 },
     // Landing indexable de "cuánto vale mi hacienda" (/mi-ganado es noindex): muestra la
