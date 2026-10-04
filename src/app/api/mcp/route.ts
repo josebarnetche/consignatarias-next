@@ -52,7 +52,15 @@ export const maxDuration = 60
  * las 24 tools responden gratis y sin cupo; lo pago es la descarga masiva (/api/x402/*, exports Enterprise).
  */
 
-const SERVER_INFO = { name: 'consignatarias', version: '1.5.0' }
+// `title` es el nombre legible: es lo que muestran los clientes MCP y los directorios
+// cuando listan el server. Sin él, un directorio cae en el slug ("consignatarias-cattle-market")
+// y el server aparece sin nombre propio. `websiteUrl` le da a quién lo evalúa adónde ir.
+const SERVER_INFO = {
+  name: 'consignatarias',
+  title: 'Consignatarias — Mercado Ganadero Argentino',
+  version: '1.5.0',
+  websiteUrl: 'https://www.consignatarias.com.ar/mcp',
+}
 // Versiones del protocolo MCP que soportamos. Somos tools-only + stateless, así que
 // la compatibilidad es hacia adelante: negociamos la que pida el cliente si la conocemos.
 // Si pide una desconocida NO devolvemos la última a ciegas: un cliente que pide
