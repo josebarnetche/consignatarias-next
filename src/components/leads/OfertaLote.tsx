@@ -11,19 +11,25 @@ import { useState } from 'react'
  * `lote:<sku>`, con intent `comprar`, así que el que lo trabaja sabe por qué
  * hacienda preguntan y a cuánto.
  */
+/** El salto de los botones: redondo contra el precio de la hacienda, no 1 peso. */
+const PASO = 50
+
 export default function OfertaLote({
   sku,
   categoria,
   provincia,
   cabezas,
+  referencia,
 }: {
   sku: string
   categoria: string | null
   provincia: string | null
   cabezas: number | null
+  /** La referencia del lote: arranca ahí para que + y − sean "pago más/menos que el mercado". */
+  referencia?: number | null
 }) {
   const [abierto, setAbierto] = useState(false)
-  const [precio, setPrecio] = useState('')
+  const [precio, setPrecio] = useState(referencia ? String(Math.round(referencia)) : '')
   const [email, setEmail] = useState('')
   const [estado, setEstado] = useState<'listo' | 'enviando' | 'ok' | 'error'>('listo')
   const [error, setError] = useState<string | null>(null)
@@ -81,22 +87,46 @@ export default function OfertaLote({
     )
   }
 
+  const mover = (signo: 1 | -1) => {
+    const base = Number(precio) || referencia || 0
+    const siguiente = Math.max(PASO, Math.round((base + signo * PASO) / PASO) * PASO)
+    setPrecio(String(siguiente))
+  }
+
   return (
     <form onSubmit={enviar} className="flex flex-col gap-2">
       <div className="flex gap-2">
-        <div className="relative flex-1">
-          <span className="absolute left-2 top-1/2 -translate-y-1/2 text-xs text-zinc-500">$</span>
-          <input
-            type="number"
-            inputMode="decimal"
-            min="1"
-            step="any"
-            value={precio}
-            onChange={(e) => setPrecio(e.target.value)}
-            placeholder="Tu precio por kg"
-            aria-label="Tu precio por kilo"
-            className="w-full rounded-lg border border-terminal-border bg-black/30 pl-5 pr-2 py-2 text-xs text-ink placeholder:text-zinc-600 focus:border-sky-500/60 focus:outline-none"
-          />
+        <div className="flex flex-1 items-stretch rounded-lg border border-terminal-border bg-black/30 focus-within:border-sky-500/60">
+          <button
+            type="button"
+            onClick={() => mover(-1)}
+            aria-label={`Bajar ${PASO} pesos`}
+            className="px-2.5 text-sm text-zinc-400 hover:text-ink transition-colors"
+          >
+            −
+          </button>
+          <div className="relative flex-1 min-w-0">
+            <span className="absolute left-1.5 top-1/2 -translate-y-1/2 text-xs text-zinc-500">$</span>
+            <input
+              type="number"
+              inputMode="numeric"
+              min="1"
+              step={PASO}
+              value={precio}
+              onChange={(e) => setPrecio(e.target.value)}
+              placeholder="Tu precio por kg"
+              aria-label="Tu precio por kilo"
+              className="w-full bg-transparent pl-4 pr-1 py-2 text-xs text-ink placeholder:text-zinc-600 focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={() => mover(1)}
+            aria-label={`Subir ${PASO} pesos`}
+            className="px-2.5 text-sm text-zinc-400 hover:text-ink transition-colors"
+          >
+            +
+          </button>
         </div>
         <input
           type="email"
@@ -115,6 +145,7 @@ export default function OfertaLote({
       >
         {estado === 'enviando' ? 'Enviando…' : 'Enviar oferta'}
       </button>
+      <p className="text-xxs text-zinc-500">Nos comunicaremos y te hablamos.</p>
       {error && <p className="text-xxs text-negative">{error}</p>}
     </form>
   )

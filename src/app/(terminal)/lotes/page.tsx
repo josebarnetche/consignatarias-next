@@ -172,6 +172,7 @@ export default function LotesPage() {
                     categoria={lote.categoria}
                     provincia={lote.provincia}
                     cabezas={lote.cabezas}
+                    referencia={ref?.mediana ?? null}
                   />
                 </div>
               </article>
