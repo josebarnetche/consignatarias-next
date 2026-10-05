@@ -1,0 +1,51 @@
+[
+  {
+    "id": 34,
+    "categoria": "vacas",
+    "cabezas": 20,
+    "provincia": "Misiones",
+    "desde": "2026-10-04"
+  },
+  {
+    "id": 29,
+    "categoria": "terneros",
+    "cabezas": 40,
+    "provincia": "Santa Fe",
+    "desde": "2026-09-28"
+  },
+  {
+    "id": 28,
+    "categoria": "novillos",
+    "cabezas": 2,
+    "provincia": "Córdoba",
+    "desde": "2026-09-28"
+  },
+  {
+    "id": 24,
+    "categoria": "terneros",
+    "cabezas": 70,
+    "provincia": "Mendoza",
+    "desde": "2026-09-08"
+  },
+  {
+    "id": 13,
+    "categoria": "novillos",
+    "cabezas": 5,
+    "provincia": "Misiones",
+    "desde": "2026-08-21"
+  },
+  {
+    "id": 10,
+    "categoria": "novillos",
+    "cabezas": 50,
+    "provincia": "Buenos Aires",
+    "desde": "2026-08-18"
+  },
+  {
+    "id": 2,
+    "categoria": "novillitos",
+    "cabezas": 40,
+    "provincia": "Buenos Aires",
+    "desde": "2026-07-27"
+  }
+]

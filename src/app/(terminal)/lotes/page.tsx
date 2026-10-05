@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import lotesDcac from '@/lib/data/lotes-dcac.json'
-import { getReferenciaPorPeso } from '@/lib/vr'
+import lotesPropios from '@/lib/data/lotes-propios.json'
+import { getReferencia, getReferenciaPorPeso } from '@/lib/vr'
 import { nombrePropio, provinciaNombre } from '@/lib/ui/tokens'
 import OfertaLote from '@/components/leads/OfertaLote'
 import { ImagenTema } from '@/components/ui/ImagenTema'
@@ -47,6 +48,21 @@ const LOTES = (lotesDcac as Lote[]).filter((l) => l.activo)
  * más. Existe para que apagarlas sea un commit de una línea y no una reescritura.
  */
 const MOSTRAR_FOTOS = true
+
+/**
+ * La hacienda que nos ofrecieron a nosotros (`producer_leads` con intent vender,
+ * anonimizada por `scripts/lotes-propios.mjs`). Va PRIMERO: es la única oferta de
+ * la vidriera sobre la que tenemos mandato. Nunca trae datos de la persona — eso
+ * se filtra al generar el archivo, no acá.
+ */
+type Propio = { id: number; categoria: string; cabezas: number; provincia: string | null; desde: string }
+const PROPIOS = (lotesPropios as Propio[]).slice().sort((a, b) => b.cabezas - a.cabezas)
+
+/** La referencia de una oferta propia: no declara peso, así que va la de la categoría. */
+function referenciaCategoria(categoria: string) {
+  const r = getReferencia(categoria)
+  return r.banda ? { mediana: r.banda.mediana, lotes: r.banda.lotes, fecha: r.fecha_dato } : null
+}
 
 /**
  * Las subcategorías del aviso contra las categorías que el VR mide.
@@ -122,7 +138,8 @@ function referenciaDe(lote: Lote) {
 
 export default function LotesPage() {
   const filas = LOTES.map((l) => ({ lote: l, ref: referenciaDe(l) }))
-  const cabezasTotales = LOTES.reduce((a, l) => a + (l.cabezas || 0), 0)
+  const cabezasTotales =
+    LOTES.reduce((a, l) => a + (l.cabezas || 0), 0) + PROPIOS.reduce((a, l) => a + l.cabezas, 0)
   const provincias = [...new Set(LOTES.map((l) => l.provincia).filter(Boolean))]
 
   return (
@@ -131,7 +148,7 @@ export default function LotesPage() {
         <p className="text-label tracking-widest text-zinc-400 mb-2">LOTES DE HACIENDA</p>
         <h1 className="text-2xl sm:text-3xl font-semibold text-ink">Lotes disponibles hoy</h1>
         <p className="text-sm text-zinc-400 mt-3 max-w-3xl">
-          {LOTES.length} lotes{cabezasTotales > 0 ? ` · ${cabezasTotales.toLocaleString('es-AR')} cabezas` : ''}
+          {LOTES.length + PROPIOS.length} lotes{cabezasTotales > 0 ? ` · ${cabezasTotales.toLocaleString('es-AR')} cabezas` : ''}
           {provincias.length > 0 ? ` · ${provincias.length} provincias` : ''}. Cada uno con la referencia de precio
           que salió de las operaciones de lote del Mercado Agroganadero para esa categoría y ese peso. Si te sirve,
           poné tu precio y lo trabajamos.
@@ -145,8 +162,76 @@ export default function LotesPage() {
         </p>
       </section>
 
+      {PROPIOS.length > 0 && (
+        <section className="max-w-5xl mx-auto px-4 pb-2">
+          <div className="flex items-baseline justify-between gap-3 mb-3">
+            <h2 className="text-label tracking-widest text-zinc-400">OFRECIDOS DIRECTO POR EL PRODUCTOR</h2>
+            <p className="text-xxs text-zinc-600">{PROPIOS.length} ofertas · la operación la hacemos nosotros</p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {PROPIOS.map((o) => {
+              const ref = referenciaCategoria(o.categoria)
+              return (
+                <article key={`propio-${o.id}`} className="terminal-panel rounded-xl overflow-hidden flex flex-col border border-accent/30">
+                  <div className="flex items-center gap-3 border-b border-terminal-border bg-zinc-100 px-4 py-3">
+                    <ImagenTema
+                      src={`/marca/glifos-color/glifo-${GLIFO[o.categoria] ?? 'vaca'}.png`}
+                      alt=""
+                      aria-hidden="true"
+                      className="h-12 w-12 shrink-0 object-contain"
+                    />
+                    <div className="min-w-0">
+                      <p className="text-xxs font-terminal uppercase tracking-wider text-accent">Directo del productor</p>
+                      <p className="text-sm font-semibold text-zinc-900 truncate">
+                        {o.cabezas} {nombrePropio(o.categoria.replace(/_/g, ' '))}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="p-4 flex flex-col gap-3 flex-1">
+                    <p className="text-xs text-zinc-500">
+                      {[o.provincia ? provinciaNombre(o.provincia) : 'Sin zona declarada', `ofrecido el ${o.desde}`]
+                        .filter(Boolean)
+                        .join(' · ')}
+                    </p>
+                    {ref ? (
+                      <div className="rounded-lg border border-terminal-border bg-black/20 px-3 py-2">
+                        <p className="text-xxs font-terminal uppercase tracking-wider text-zinc-500">
+                          Referencia de la categoría
+                        </p>
+                        <p className="text-lg text-ink font-mono font-semibold leading-tight">
+                          {fmtArs(ref.mediana)} <span className="text-xs text-zinc-500 font-sans font-normal">/kg</span>
+                        </p>
+                        <p className="text-xxs text-zinc-600 mt-1">
+                          {ref.lotes} lotes del MAG · dato al {ref.fecha} · el peso lo confirma el productor
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="text-xs text-zinc-500">
+                        Sin referencia observada para esta categoría: no le ponemos un número inventado.
+                      </p>
+                    )}
+                    <div className="mt-auto pt-1">
+                      <OfertaLote
+                        sku={`oferta-${o.id}`}
+                        categoria={o.categoria}
+                        provincia={o.provincia}
+                        cabezas={o.cabezas}
+                        referencia={ref?.mediana ?? null}
+                      />
+                    </div>
+                  </div>
+                </article>
+              )
+            })}
+          </div>
+        </section>
+      )}
+
       <section className="max-w-5xl mx-auto px-4 pb-16">
-        {filas.length === 0 ? (
+        {PROPIOS.length > 0 && filas.length > 0 && (
+          <h2 className="text-label tracking-widest text-zinc-400 mb-3 pt-6">OTROS LOTES EN VIDRIERA</h2>
+        )}
+        {filas.length === 0 && PROPIOS.length === 0 ? (
           <div className="terminal-panel rounded-xl p-6">
             <p className="text-sm text-zinc-300">
               Hoy no hay lotes en vidriera. Decinos qué hacienda buscás en{' '}
