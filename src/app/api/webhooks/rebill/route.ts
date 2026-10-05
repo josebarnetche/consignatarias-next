@@ -16,22 +16,62 @@ import crypto from 'crypto'
 import { logEvent } from '@/lib/ops'
 
 // Verify Rebill webhook signature (HMAC-SHA256)
+/**
+ * Verifica la firma del webhook aceptando los formatos que usan los proveedores
+ * de pago, en vez de asumir uno.
+ *
+ * Por qué: durante 203 días este endpoint rechazó TODOS los webhooks de Rebill con
+ * 401 `firma_invalida` y nadie se enteró — `informe_purchases`, `guia_purchases` y
+ * `processed_webhook_events` están vacías desde que existen. Salió a la luz el
+ * 05-10-2026 porque Jose pagó un informe de su bolsillo y no le llegó nada.
+ * Asumíamos hex plano del body crudo; si el proveedor firma en base64, prefija
+ * `sha256=` o firma `timestamp.body`, `timingSafeEqual` tiraba por longitud y el
+ * `catch` lo convertía en un `false` indistinguible de un secret equivocado.
+ *
+ * Sigue siendo fail-closed: si ninguna variante coincide, se rechaza. Lo que cambia
+ * es que ya no rechazamos por una diferencia de encoding, y que el rechazo dice
+ * QUÉ no coincidió (ver `diagnosticoFirma`), sin filtrar el secreto.
+ */
 function verifySignature(payload: string, signature: string | null, secret: string): boolean {
   if (!signature || !secret) return false
-  
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(payload)
-    .digest('hex')
-  
-  // Constant-time comparison to prevent timing attacks
-  try {
-    return crypto.timingSafeEqual(
-      Buffer.from(signature),
-      Buffer.from(expectedSignature)
-    )
-  } catch {
-    return false
+
+  // `sha256=<firma>` (estilo GitHub/Stripe) y espacios de más.
+  const limpia = signature.trim().replace(/^sha256=/i, '').trim()
+
+  const hmac = () => crypto.createHmac('sha256', secret).update(payload)
+  const candidatas = [hmac().digest('hex'), hmac().digest('base64'), hmac().digest('base64url')]
+
+  const iguala = (a: string, b: string) => {
+    if (a.length !== b.length) return false
+    try {
+      return crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b))
+    } catch {
+      return false
+    }
+  }
+  // Comparación insensible a mayúsculas sólo para hex, donde el case no es dato.
+  return candidatas.some((c) => iguala(limpia, c) || (/^[0-9a-f]+$/i.test(limpia) && iguala(limpia.toLowerCase(), c.toLowerCase())))
+}
+
+/**
+ * Qué anotar cuando una firma no valida, para que el próximo rechazo se diagnostique
+ * en un renglón de /admin/ops en vez de en una investigación. NUNCA incluye el
+ * secreto ni la firma completa: largo, prefijo y forma, que es lo que distingue
+ * "secret equivocado" de "encoding distinto".
+ */
+function diagnosticoFirma(payload: string, signature: string | null, secret: string) {
+  const limpia = (signature || '').trim().replace(/^sha256=/i, '').trim()
+  const hex = crypto.createHmac('sha256', secret).update(payload).digest('hex')
+  return {
+    motivo: 'firma_invalida',
+    con_header: Boolean(signature),
+    firma_largo: limpia.length,
+    firma_prefijo: limpia.slice(0, 7),
+    firma_forma: /^[0-9a-f]+$/i.test(limpia) ? 'hex' : /^[A-Za-z0-9+/=_-]+$/.test(limpia) ? 'base64' : 'otra',
+    tenia_prefijo_sha256: /^sha256=/i.test((signature || '').trim()),
+    esperado_largo_hex: hex.length,
+    esperado_prefijo_hex: hex.slice(0, 7),
+    body_bytes: Buffer.byteLength(payload, 'utf8'),
   }
 }
 
@@ -76,7 +116,7 @@ export async function POST(request: NextRequest) {
         status: 'error',
         route: '/api/webhooks/rebill',
         statusCode: 401,
-        metadata: { motivo: 'firma_invalida', con_header: Boolean(signature) },
+        metadata: diagnosticoFirma(rawBody, signature, webhookSecret),
       })
       return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
     }
