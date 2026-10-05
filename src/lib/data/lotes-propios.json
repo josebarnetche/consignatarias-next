@@ -14,25 +14,11 @@
     "desde": "2026-09-28"
   },
   {
-    "id": 28,
-    "categoria": "novillos",
-    "cabezas": 2,
-    "provincia": "Córdoba",
-    "desde": "2026-09-28"
-  },
-  {
     "id": 24,
     "categoria": "terneros",
     "cabezas": 70,
     "provincia": "Mendoza",
     "desde": "2026-09-08"
-  },
-  {
-    "id": 13,
-    "categoria": "novillos",
-    "cabezas": 5,
-    "provincia": "Misiones",
-    "desde": "2026-08-21"
   },
   {
     "id": 10,

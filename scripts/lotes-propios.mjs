@@ -29,9 +29,19 @@ const KEY_SB = process.env.SUPABASE_SERVICE_ROLE_KEY
 /** Estados que siguen vivos. `discarded` y los cerrados no se publican. */
 const VIVOS = ['new', 'routed', 'contacted', 'needs_review']
 
+/**
+ * Piso para PUBLICAR en la vidriera (Jose, 05-10-2026). No es el piso comercial
+ * de `src/lib/leads/calidad.ts` —ese son 40 cabezas y decide a quién se llama—:
+ * esto es más bajo porque una oferta de 15 cabezas puede servirle a un vecino,
+ * pero una de 2 le baja el nivel a la página. El lead chico NO se descarta: sigue
+ * en `producer_leads` y se trabaja, solo no sale en vidriera.
+ */
+const CABEZAS_MINIMAS_VIDRIERA = 10
+
 /** Los campos que se publican. Todo lo demás se descarta acá, no en la página. */
 function anonimizar(l) {
   if (!l.category || !l.head_count) return null // sin categoría o sin cabezas no hay aviso
+  if (Number(l.head_count) < CABEZAS_MINIMAS_VIDRIERA) return null
   return {
     id: l.id,
     categoria: String(l.category).toLowerCase(),
@@ -75,7 +85,11 @@ async function main() {
 
   writeFileSync(SALIDA, JSON.stringify(publicables, null, 2) + '\n')
   const cabezas = publicables.reduce((a, l) => a + l.cabezas, 0)
-  console.log(`  Lotes propios: ${publicables.length} ofertas publicables (${cabezas} cabezas) de ${filas.length} leads de venta`)
+  const chicas = filas.filter((l) => l.category && l.head_count && Number(l.head_count) < CABEZAS_MINIMAS_VIDRIERA).length
+  console.log(
+    `  Lotes propios: ${publicables.length} ofertas publicables (${cabezas} cabezas) de ${filas.length} leads de venta` +
+      (chicas > 0 ? ` · ${chicas} por debajo de ${CABEZAS_MINIMAS_VIDRIERA} cabezas no salen en vidriera (siguen en el board)` : ''),
+  )
 }
 
 main().catch((err) => {
