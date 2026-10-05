@@ -1,6 +1,6 @@
-# Indexación — 2026-10-04
+# Indexación — 2026-10-05
 
-Inspeccionadas 3401 de 3015 URLs del sitemap.
+Inspeccionadas 3402 de 3008 URLs del sitemap.
 
 | Sección | Inspeccionadas | Indexadas | NO indexadas | % |
 |---|---:|---:|---:|---:|
@@ -21,6 +21,7 @@ Inspeccionadas 3401 de 3015 URLs del sitemap.
 | /el-oraculo | 1 | 0 | 1 | 100% |
 | /precios.json | 1 | 0 | 1 | 100% |
 | /valuar-hacienda | 1 | 0 | 1 | 100% |
+| /lotes | 1 | 0 | 1 | 100% |
 | /precio-de-la-vaca-en-pie | 1 | 1 | 0 | 0% |
 | /que-es-una-consignataria | 1 | 1 | 0 | 0% |
 | /(home) | 1 | 1 | 0 | 0% |
@@ -112,7 +113,7 @@ Inspeccionadas 3401 de 3015 URLs del sitemap.
 | Motivo | URLs |
 |---|---:|
 | Enviada e indexada | 2728 |
-| Descubierta: actualmente sin indexar | 452 |
+| Descubierta: actualmente sin indexar | 453 |
 | Google no reconoce esta URL | 153 |
 | Rastreada: actualmente sin indexar | 38 |
 | Excluida por una etiqueta "noindex" | 16 |
