@@ -412,8 +412,11 @@ def ratio_maiz(puntos: list[dict], ancho_mm: float = 180, alto_mm: float = 54, u
     # el área entre la serie y el umbral, con textura según el lado
     d_arriba = f'M{_f(x(0))} {_f(y(umbral))}' + "".join(f' L{_f(x(i))} {_f(y(max(p["relacion"], umbral)))}' for i, p in enumerate(pts)) + f' L{_f(x(len(pts)-1))} {_f(y(umbral))} Z'
     d_abajo = f'M{_f(x(0))} {_f(y(umbral))}' + "".join(f' L{_f(x(i))} {_f(y(min(p["relacion"], umbral)))}' for i, p in enumerate(pts)) + f' L{_f(x(len(pts)-1))} {_f(y(umbral))} Z'
-    o.append(f'<path d="{d_abajo}" fill="url(#trF)" style="print-color-adjust:exact"/>')
-    o.append(f'<path d="{d_arriba}" fill="{BANDA_CLARA}" style="print-color-adjust:exact"/>')
+    # La trama marca lo EXCEPCIONAL (grano barato contra la hacienda), no lo habitual:
+    # tramar los 5 años que estuvieron por debajo del umbral llenaba el gráfico de rayas
+    # y escondía la línea, que es el dato.
+    o.append(f'<path d="{d_abajo}" fill="#f4f4f5" style="print-color-adjust:exact"/>')
+    o.append(f'<path d="{d_arriba}" fill="url(#trF)" style="print-color-adjust:exact"/>')
     o.append(f'<line x1="{L}" y1="{_f(y(umbral))}" x2="{W-R}" y2="{_f(y(umbral))}" stroke="{TINTA}" stroke-width="1.5"/>')
     o.append(texto(L + 4, y(umbral) - 5, f"umbral de referencia: {_f(umbral)}", 7, TINTA_2, 500))
     d = "M" + " L".join(f"{_f(x(i))} {_f(y(p['relacion']))}" for i, p in enumerate(pts))

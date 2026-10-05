@@ -236,8 +236,9 @@ def p_oferta(p: D.Paquete) -> str:
     )
     bloque_nac = ""
     if nac.get("pct"):
-        bloque_nac = (f'<div class="aviso">A nivel nacional, las hembras fueron el {G._f(nac["pct"])}% de la faena '
-                      f'({esc(nac.get("periodo"))}, {esc(nac.get("fuente"))}). <strong>No se compara con la serie de arriba</strong>: '
+        detalle = " · ".join(x for x in (esc(nac.get("periodo")), esc(nac.get("fuente"))) if x)
+        bloque_nac = (f'<div class="aviso">A nivel nacional, las hembras fueron el {G._f(nac["pct"])}% de la faena'
+                      f'{f" ({detalle})" if detalle else ""}. <strong>No se compara con la serie de arriba</strong>: '
                       f'Cañuelas concentra venta de vientres y corre quince a veinte puntos por encima del promedio del país.</div>')
     return (
         f'<h2>Qué está entrando al mercado</h2>'
@@ -306,7 +307,19 @@ def p_planilla(p: D.Paquete) -> str:
 
 def p_remates(p: D.Paquete) -> str:
     r = p.remates or {}
-    prox = (r.get("proximos") or [])[:22]
+    # Ordenado por fecha y cortado a 22, el "calendario del mes" terminaba siendo
+    # una lista del primer día (el informe viejo tenía el mismo defecto). Se toman
+    # hasta 2 por jornada para que la tabla cubra el mes, que es lo que se consulta.
+    por_dia: dict[str, int] = {}
+    prox = []
+    for x in (r.get("proximos") or []):
+        d = str(x.get("date"))[:10]
+        if por_dia.get(d, 0) >= 2:
+            continue
+        por_dia[d] = por_dia.get(d, 0) + 1
+        prox.append(x)
+        if len(prox) >= 22:
+            break
     filas = "".join(
         f'<tr><td>{esc(G.fecha_es(x.get("date")))}</td><td>{esc(x.get("consignatariaName"))}</td>'
         f'<td>{esc(x.get("location") or "—")}</td><td>{esc(x.get("province") or "—")}</td></tr>'
@@ -319,7 +332,7 @@ def p_remates(p: D.Paquete) -> str:
         f'<p class="ancho">Los remates del mes que viene, que es lo único de este informe con fecha de vencimiento. '
         f'El calendario completo, con los que se agreguen después, está en consignatarias.com.ar/remates.</p>'
         f'<table><thead><tr><th>Fecha</th><th>Firma</th><th>Lugar</th><th>Provincia</th></tr></thead><tbody>{filas}</tbody></table>'
-        f'<p class="nota">{len(r.get("proximos") or [])} remates convocados para {esc(r.get("mes"))} al cierre de esta edición · '
+        f'<p class="nota">{len(r.get("proximos") or [])} remates convocados para {esc(r.get("mes"))} en {len(r.get("por_dia") or {})} jornadas, al cierre de esta edición. La tabla muestra hasta dos por día para cubrir el mes completo · '
         f'{esc(r.get("fuente"))}.</p>'
     )
 
