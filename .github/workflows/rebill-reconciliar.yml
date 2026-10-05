@@ -1,0 +1,39 @@
+name: Rebill — reconciliar pagos cobrados
+
+# Cada 10 minutos. El webhook es el camino rápido; esto es la red.
+#
+# El 05-10-2026 se descubrió que NINGÚN webhook de Rebill había validado nunca:
+# quien pagaba no recibía nada y la única forma de enterarse era que alguien lo
+# notara. Con esto, el peor caso pasa de "indefinido" a "diez minutos".
+#
+# GitHub Actions es best-effort con los cron de alta frecuencia: puede correr
+# tarde. Da igual — la reconciliación mira 7 días para atrás, así que una corrida
+# salteada la levanta la siguiente.
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  reconciliar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reconciliar contra Rebill
+        run: |
+          RESP=$(curl -s -w "\n%{http_code}" -X POST \
+            -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
+            https://www.consignatarias.com.ar/api/cron/rebill-reconciliar)
+          CODE=$(echo "$RESP" | tail -1)
+          BODY=$(echo "$RESP" | sed '$d')
+          echo "$BODY"
+          if [ "$CODE" != "200" ]; then
+            echo "::error::la reconciliación respondió $CODE"
+            exit 1
+          fi
+          # Un pago otorgado acá significa que el webhook NO hizo su trabajo: se
+          # anuncia en el log para que no pase desapercibido aunque el cliente ya
+          # haya recibido lo suyo.
+          OTORGADOS=$(echo "$BODY" | python3 -c "import sys,json;print(len(json.load(sys.stdin).get('otorgados',[])))" 2>/dev/null || echo 0)
+          if [ "$OTORGADOS" != "0" ]; then
+            echo "::warning::$OTORGADOS pago(s) otorgados por reconciliación — el webhook no los procesó. Revisar REBILL_WEBHOOK_SECRET."
+          fi

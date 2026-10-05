@@ -24,6 +24,7 @@ export type OpsEventType =
   | 'cron_finished'
   | 'form_submit'
   | 'x402_payment'
+  | 'rebill_reconciliar'
   | 'error'
 
 /**
