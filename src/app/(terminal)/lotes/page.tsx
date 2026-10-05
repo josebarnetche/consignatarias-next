@@ -3,6 +3,7 @@ import lotesDcac from '@/lib/data/lotes-dcac.json'
 import { getReferenciaPorPeso } from '@/lib/vr'
 import { nombrePropio, provinciaNombre } from '@/lib/ui/tokens'
 import OfertaLote from '@/components/leads/OfertaLote'
+import { ImagenTema } from '@/components/ui/ImagenTema'
 
 /**
  * Lotes de hacienda en vidriera.
@@ -59,6 +60,27 @@ const A_CATEGORIA_VR: Record<string, { vr: string; prima?: string }> = {
   vaquillonas_prenadas: { vr: 'vaquillonas', prima: 'la preñez se pacta aparte' },
   vaquillonas_madre: { vr: 'vaquillonas', prima: 'el destino de madre se pacta aparte' },
   toros: { vr: 'toros' },
+}
+
+/**
+ * El glifo de marca de cada categoría. La imagen de la tarjeta es NUESTRA: los
+ * glifos de `public/marca/glifos-color/` ya existen con variante para tema claro,
+ * así que la página tiene imagen sin usar la foto del aviso, que es lo único del
+ * aviso con dueño. Si en algún momento se quieren las fotos reales de los
+ * animales, van con el crédito al aviso original — no sin él.
+ */
+const GLIFO: Record<string, string> = {
+  novillos: 'novillo',
+  novillitos: 'novillito',
+  vacas: 'vaca',
+  vacas_prenadas: 'vaca',
+  vacas_con_cria: 'vaca',
+  vaquillonas: 'vaquillona',
+  vaquillonas_prenadas: 'vaquillona',
+  vaquillonas_madre: 'vaquillona',
+  terneros: 'ternero',
+  terneras: 'ternero',
+  toros: 'toro',
 }
 
 const fmtArs = (n: number) => '$' + Math.round(n).toLocaleString('es-AR')
@@ -127,8 +149,25 @@ export default function LotesPage() {
         ) : (
           <div className="grid gap-4 sm:grid-cols-2">
             {filas.map(({ lote, ref }) => (
-              <article key={lote.sku} className="terminal-panel rounded-xl p-4 flex flex-col gap-3">
-                <div>
+              <article key={lote.sku} className="terminal-panel rounded-xl overflow-hidden flex flex-col">
+                <div className="flex items-center gap-3 border-b border-terminal-border bg-zinc-100 claro:bg-zinc-100 px-4 py-3">
+                  <ImagenTema
+                    src={`/marca/glifos-color/glifo-${GLIFO[lote.categoria ?? ''] ?? 'vaca'}.png`}
+                    alt=""
+                    aria-hidden="true"
+                    className="h-12 w-12 shrink-0 object-contain"
+                  />
+                  <div className="min-w-0">
+                    <p className="text-xxs font-terminal uppercase tracking-wider text-zinc-500">
+                      {lote.raza ? nombrePropio(lote.raza.split(' - ')[0]) : 'Hacienda'}
+                    </p>
+                    <p className="text-sm font-semibold text-zinc-900 truncate">
+                      {lote.cabezas ? `${lote.cabezas} cabezas` : 'Lote'}
+                      {lote.kg_promedio ? ` · ${lote.kg_promedio} kg` : ''}
+                    </p>
+                  </div>
+                </div>
+                <div className="p-4 flex flex-col gap-3 flex-1">
                   <h2 className="text-base font-semibold text-ink leading-snug">{nombrePropio(lote.titulo)}</h2>
                   <p className="text-xs text-zinc-500 mt-1">
                     {[
@@ -139,9 +178,8 @@ export default function LotesPage() {
                       .filter(Boolean)
                       .join(' · ')}
                   </p>
-                </div>
 
-                {ref ? (
+                  {ref ? (
                   <div className="rounded-lg border border-terminal-border bg-black/20 px-3 py-2">
                     <p className="text-xxs font-terminal uppercase tracking-wider text-zinc-500">
                       Referencia {ref.porPeso ? 'para ese peso' : 'de la categoría'}
@@ -174,6 +212,7 @@ export default function LotesPage() {
                     cabezas={lote.cabezas}
                     referencia={ref?.mediana ?? null}
                   />
+                  </div>
                 </div>
               </article>
             ))}
