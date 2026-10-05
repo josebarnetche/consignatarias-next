@@ -145,8 +145,12 @@ export default function RootLayout({
           <>
             {/* Preconnect: open the GTM/GA connection early so the deferred
                 gtag.js download is fast when it fires (esp. slow mobile nets). */}
-            <link rel="preconnect" href="https://www.googletagmanager.com" />
-            <link rel="preconnect" href="https://www.google-analytics.com" crossOrigin="" />
+            {/* googletagmanager y google-analytics estaban preconectados y NO se usaban
+                (gtag entra después, por afterInteractive): una preconexión que no se
+                usa es una conexión TCP+TLS tirada. La que sí estaba en la ruta crítica
+                del LCP era el tracker propio, con 530 ms de ahorro estimado. */}
+            <link rel="preconnect" href="https://howmuchusers.wtf" crossOrigin="" />
+            <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
             {/* Inline stub runs IMMEDIATELY (plain head script, before hydration) so
                 window.gtag + dataLayer exist before any React effect fires — e.g. the
                 pro_upgrade `purchase` event in UpgradeConfirmTracker. Events queue into

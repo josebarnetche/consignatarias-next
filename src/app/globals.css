@@ -594,18 +594,32 @@
   50% { opacity: 0.5; }
 }
 
-/* PRO badge glow animation — acento de marca */
+/* PRO badge glow — acento de marca.
+   Animaba `box-shadow`, que el navegador NO puede componer: cada fotograma
+   recalcula pintura en el hilo principal, para siempre y en los cuatro badges a
+   la vez (PageSpeed 05-10-2026 lo marcó como animación no compuesta). El brillo
+   ahora vive en un ::after y lo que se anima es su `opacity`, que sí se compone
+   en la GPU. Mismo efecto, cero trabajo en el hilo principal. */
 @keyframes pro-glow {
-  0%, 100% {
-    box-shadow: 0 0 8px rgb(var(--accent) / 0.2), 0 0 16px rgb(var(--accent) / 0.1);
-  }
-  50% {
-    box-shadow: 0 0 12px rgb(var(--accent) / 0.35), 0 0 24px rgb(var(--accent) / 0.15);
-  }
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
 }
 
 .pro-badge-glow {
+  position: relative;
+}
+.pro-badge-glow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: 0 0 12px rgb(var(--accent) / 0.35), 0 0 24px rgb(var(--accent) / 0.15);
   animation: pro-glow 2s ease-in-out infinite;
+  will-change: opacity;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pro-badge-glow::after { animation: none; opacity: 0.7; }
 }
 
 /* --- Enterprise tier CTAs --------------------------------- */

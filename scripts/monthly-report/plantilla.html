@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>El Corredor — $mes_etiqueta</title>
+<style>
+/*
+  El Corredor, versión papel.
+
+  La edición anterior era un PDF de pantalla: 12 hojas A4 con fondo #09090b a
+  sangre, texto de 8 px y fuentes no embebidas. Imprimirlo costaba un cartucho,
+  la tabla principal no se leía, y como el runner de Linux no tiene ninguna de las
+  cinco monoespaciadas que pedía el CSS, el PDF que recibía el suscriptor no era
+  el que veía quien lo generaba — de ahí los recortes impredecibles.
+
+  Acá: fondo blanco, tipo en pt (que es lo que entiende el papel), medida de
+  lectura de 87 mm, y las dos familias embebidas en base64 para que el PDF sea
+  idéntico en cualquier máquina.
+*/
+$fuentes
+
+@page { size: A4; margin: 0; }
+
+html, body { margin: 0; padding: 0; background: #fff; }
+
+body {
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+  font-size: 10pt;
+  line-height: 14.5pt;
+  color: #18181b;
+  -webkit-font-smoothing: antialiased;
+}
+
+/*
+  296.9mm y no 297: con margin:0 y la altura exacta del pliego, el redondeo
+  sub-pixel de Chromium empuja 1 px a la hoja siguiente y mete una página en
+  blanco entre cada una.
+*/
+.hoja {
+  width: 210mm;
+  height: 296.9mm;
+  padding: 16mm 15mm 18mm;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+  break-after: page;
+  break-inside: avoid;
+  background: #fff;
+}
+.hoja:last-child { break-after: auto; }
+
+/* Chromium ignora @bottom-center y counter(page): el folio lo estampa el render. */
+.folio {
+  position: absolute; bottom: 9mm; right: 15mm;
+  font-size: 8pt; font-weight: 500; color: #71717a;
+  font-variant-numeric: tabular-nums;
+}
+.hoja.tapa .folio { display: none; }
+
+.cabecera {
+  display: flex; justify-content: space-between; align-items: baseline;
+  border-bottom: 1.5px solid #18181b; padding-bottom: 2.5mm; margin-bottom: 6mm;
+}
+.cabecera .marca { font-size: 9pt; font-weight: 600; letter-spacing: .02em; }
+.cabecera .ventana { font-size: 7.5pt; color: #71717a; font-variant-numeric: tabular-nums; }
+
+h1 { font-size: 26pt; line-height: 30pt; font-weight: 600; margin: 0 0 3mm; letter-spacing: -0.01em; }
+h2 { font-size: 16pt; line-height: 19pt; font-weight: 600; margin: 0 0 3mm; break-after: avoid; }
+h3 { font-size: 11pt; line-height: 14pt; font-weight: 600; margin: 0 0 1.5mm; break-after: avoid; }
+
+.rotulo { font-size: 7.5pt; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #71717a; margin: 0 0 1.5mm; }
+.bajada { font-size: 11.5pt; line-height: 17pt; color: #52525b; margin: 0 0 6mm; max-width: 150mm; }
+p { margin: 0 0 4.5mm; max-width: 87mm; }   /* medida de lectura: ~58 caracteres */
+p.ancho { max-width: 180mm; }
+.nota { font-size: 7pt; line-height: 9.5pt; color: #71717a; margin: 1.5mm 0 0; max-width: 180mm; }
+.fuerte { font-weight: 600; color: #18181b; }
+
+/* La figura y su pie no se separan nunca: el pie lleva la fuente y la fecha. */
+figure { margin: 0 0 6mm; break-inside: avoid; }
+figcaption { font-size: 7pt; line-height: 9.5pt; color: #71717a; margin-top: 1.5mm; }
+figcaption .marca-dato { display: inline-block; width: 2.5mm; height: 2.5mm; margin-right: 1.2mm; vertical-align: -0.2mm; }
+.propio .marca-dato { background: #1d4ed8; }
+.externo .marca-dato { border: 1px solid #52525b; }
+
+table { width: 100%; border-collapse: collapse; font-size: 8.5pt; font-variant-numeric: tabular-nums; break-inside: auto; }
+thead { display: table-header-group; }
+tbody tr { break-inside: avoid; }
+th {
+  font-size: 7.5pt; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+  color: #52525b; text-align: right; padding: 1.5mm 1.5mm 1mm; border-bottom: 1px solid #a1a1aa;
+}
+th:first-child, td:first-child { text-align: left; }
+td { padding: 1.2mm 1.5mm; border-bottom: 1px solid #d4d4d8; }
+tr:last-child td { border-bottom: none; }
+td.num { text-align: right; }
+.sub td { font-weight: 600; background: #f4f4f5; }
+
+.fichas { display: flex; gap: 4mm; margin: 0 0 6mm; }
+.ficha { flex: 1; border: 1px solid #d4d4d8; border-radius: 6px; padding: 3mm; break-inside: avoid; }
+.ficha .et { font-size: 7.5pt; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #71717a; margin-bottom: 1mm; }
+.ficha .val { font-size: 16pt; font-weight: 600; line-height: 1.05; }
+.ficha .delta { font-size: 8pt; font-weight: 500; margin-top: 0.8mm; }
+.sube { color: #065f46; } .baja { color: #b91c1c; } .neutro { color: #52525b; }
+
+.hero { font-size: 48pt; line-height: 1; font-weight: 600; color: #1d4ed8; letter-spacing: -0.02em; }
+.hero-sub { font-size: 11.5pt; color: #52525b; margin-top: 2mm; }
+
+.dos { display: flex; gap: 6mm; }
+.dos > * { flex: 1; min-width: 0; }
+
+.lista-num { counter-reset: n; padding: 0; margin: 0 0 6mm; list-style: none; }
+.lista-num li { counter-increment: n; position: relative; padding-left: 8mm; margin-bottom: 4mm; font-size: 11pt; line-height: 15.5pt; max-width: 165mm; break-inside: avoid; }
+.lista-num li::before {
+  content: counter(n); position: absolute; left: 0; top: 0.3mm;
+  font-size: 9pt; font-weight: 600; color: #1d4ed8;
+  border: 1px solid #1d4ed8; border-radius: 50%; width: 5mm; height: 5mm;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.aviso { border-left: 2px solid #b45309; padding: 2mm 0 2mm 3mm; margin: 0 0 6mm; font-size: 9pt; line-height: 13pt; color: #52525b; max-width: 180mm; }
+
+/* La planilla que se completa a mano: es lo que justifica imprimirlo. */
+.planilla td { height: 7mm; border-bottom: 1px solid #a1a1aa; }
+.planilla .vacia { background: #fff; }
+
+.contacto { margin-top: 10mm; padding-top: 6mm; border-top: 1.5px solid #18181b; break-inside: avoid; }
+.vias { display: flex; gap: 10mm; margin: 5mm 0; }
+.via {
+  display: inline-flex; align-items: center; gap: 3mm;
+  padding: 2.5mm 4mm 2.5mm 3mm;
+  border: 1px solid #d4d4d8; border-radius: 6px;
+  text-decoration: none; color: #1d4ed8;
+}
+.via-ico { flex: 0 0 auto; width: 7mm; height: 7mm; display: block; }
+.via-txt { display: flex; flex-direction: column; line-height: 1.25; }
+.via-rot { font-size: 7.5pt; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #71717a; }
+.via-dato { font-size: 10pt; font-weight: 500; color: #18181b; }
+.fallback { font-size: 8.5pt; color: #52525b; margin: 0; max-width: 180mm; }
+.fallback strong { color: #18181b; font-weight: 600; }
+
+.colofon { position: absolute; bottom: 9mm; left: 15mm; font-size: 6.5pt; color: #a1a1aa; }
+</style>
+</head>
+<body>
+$cuerpo
+</body>
+</html>

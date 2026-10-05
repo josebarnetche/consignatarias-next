@@ -57,5 +57,9 @@
       "protobufjs@<7.5.5": "^7.5.5",
       "baseline-browser-mapping": ">=2.11.0"
     }
-  }
+  },
+  "browserslist": [
+    ">0.3%, last 2 versions, Firefox ESR, not dead",
+    "not op_mini all"
+  ]
 }

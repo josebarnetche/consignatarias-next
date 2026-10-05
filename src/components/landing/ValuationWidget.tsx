@@ -86,9 +86,11 @@ export default function ValuationWidget() {
       <div className="absolute top-0 left-0 w-48 h-48 bg-sky-500/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
 
       <div className="relative z-10">
-        <h3 className="text-xl font-medium text-zinc-100 mb-1">
+        {/* h2 y no h3: era el único salto de nivel de la home (de h1 a h3) y es lo
+            que desorienta a quien navega con lector de pantalla. */}
+        <h2 className="text-xl font-medium text-zinc-100 mb-1">
           ¿Cuánto vale tu hacienda hoy?
-        </h3>
+        </h2>
         <p className="text-sm text-zinc-500 mb-6">
           Con lo que realmente se pagó por lotes parecidos al tuyo en el Mercado Agroganadero.
         </p>
