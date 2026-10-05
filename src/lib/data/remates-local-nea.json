@@ -1443,7 +1443,7 @@
     "title": "Sociedad Rural de Jesús María | Consignaciones Córdoba",
     "consignatariaName": "Sociedad Rural de Jesús Maria",
     "consignatariaSlug": "sociedad-rural-de-jesus-maria",
-    "date": "2026-10-04",
+    "date": "2026-10-05",
     "time": "10:30",
     "location": "",
     "province": "CORDOBA",
@@ -1473,7 +1473,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6688-umc-y-haciendas-villaguay-invernada-y-cria",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "AFA | Totoras | Gordos y conserva",
@@ -1635,7 +1635,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6689-sociedad-rural-de-jesus-maria-consignaciones-cordoba",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "UMC y Haciendas Villaguay | Invernada y cría",
@@ -1653,7 +1653,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6688-umc-y-haciendas-villaguay-invernada-y-cria",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "AFA | Totoras | Gordos y conserva",
