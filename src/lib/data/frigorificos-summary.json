@@ -1,12 +1,12 @@
 {
-  "total": 1115,
-  "habilitados": 862,
+  "total": 1116,
+  "habilitados": 863,
   "provincias": 25,
-  "generadoEl": "2026-09-30",
+  "generadoEl": "2026-10-05",
   "byProvince": {
     "BUENOS AIRES": 398,
     "SANTA FE": 125,
-    "CORDOBA": 85,
+    "CORDOBA": 86,
     "CIUDAD AUTONOMA DE BUENOS AIRES": 85,
     "ENTRE RIOS": 66,
     "CHACO": 56,
@@ -33,7 +33,7 @@
   "byStage": {
     "1": 185,
     "2": 536,
-    "3": 394
+    "3": 395
   },
   "topProvinces": [
     {
@@ -48,8 +48,8 @@
     },
     {
       "province": "CORDOBA",
-      "count": 85,
-      "pct": 7.6
+      "count": 86,
+      "pct": 7.7
     },
     {
       "province": "CIUDAD AUTONOMA DE BUENOS AIRES",

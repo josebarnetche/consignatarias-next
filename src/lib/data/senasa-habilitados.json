@@ -1,5 +1,5 @@
 {
-  "scrapedAt": "2026-09-28T15:37:18.263Z",
+  "scrapedAt": "2026-10-05T16:10:10.057Z",
   "source": "https://aps2.senasa.gov.ar/registros/faces/publico/establecimientos/tc_frigorificospublico.jsp",
   "ciclos": [
     "CICLO I - MAT.FRIG.",
@@ -7,7 +7,7 @@
     "CICLO III - DADOR DE FRIO"
   ],
   "totalRowsScraped": 1000,
-  "distinctCuits": 862,
+  "distinctCuits": 863,
   "unparsableCuits": 0,
   "byCuit": {
     "30707283250": {
@@ -309,8 +309,7 @@
         "LI E - 5. ELABORACIÓN MENUDENCIAS BOVINAS COCIDAS CONGELADAS"
       ],
       "ciclos": [
-        "CICLO I - MAT.FRIG.",
-        "CICLO II - ELABORADOR"
+        "CICLO I - MAT.FRIG."
       ]
     },
     "30715068768": {
@@ -3667,18 +3666,18 @@
       "provincia": "SANTA FE",
       "partido": "ROSARIO",
       "localidad": "VILLA GOBERNADOR GALVEZ",
-      "nroOficial": "1130",
+      "nroOficial": "2095",
       "actividades": [
+        "I A - CABEZA DE BOVINO FAENADO",
         "I B - CABEZA DE PORCINO FAENADO",
-        "I F - CABEZA DE LECHON FAENADO",
-        "II - FABRICA DE CHACINADOS Y AFINES",
         "XII - CARNES EN TROZOS O CORTES",
         "XXX - DEPOSITO PRODUCTOS CARNEOS",
         "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
         "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
-        "LI D - MATADERO Y FRIGORIFICO C/FAENA. FABRICA DE CHACINADOS Y AFINES",
         "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
-        "LXIV - IMPORTACION DE CARNE PORCINA"
+        "LI F - MATADERO Y FRIGORIFICO C/FAENA. GRASERIAS, PRODUCCION, COMERCIALIZACION",
+        "LI G - MATADERO Y FRIGORIFICO C/FAENA. SEBERIA INCOMESTIBLE",
+        "LI H - MATADERO Y FRIGORIFICO C/FAENA HARINA CARNE/HUESO"
       ],
       "ciclos": [
         "CICLO I - MAT.FRIG.",
@@ -3725,7 +3724,7 @@
     "30710235364": {
       "cuit": "30710235364",
       "tipo": "CICLO I - MAT.FRIG.",
-      "propietario": "PATAGONIA MEAT S.A.",
+      "propietario": "PATAGONIA MEAT S.A. S. A.",
       "nombre": "PATAGONIA MEAT S.A.",
       "provincia": "LA PAMPA",
       "partido": "MARACO",
@@ -4048,7 +4047,7 @@
     "30678597194": {
       "cuit": "30678597194",
       "tipo": "CICLO I - MAT.FRIG.",
-      "propietario": "SOCIEDAD ANONIMA CARNES PAMPEANAS SA",
+      "propietario": "SOCIEDAD ANONIMA CARNES PAMPEANAS S. A.",
       "nombre": "SOCIEDAD ANONIMA CARNES PAMPEANAS S.A.",
       "provincia": "LA PAMPA",
       "partido": "CAPITAL",
@@ -7539,6 +7538,8 @@
       "nroOficial": "5454",
       "actividades": [
         "XII - CARNES EN TROZOS O CORTES",
+        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+        "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
         "LXII - IMPORTACION DE POLLOS",
         "LXIV - IMPORTACION DE CARNE PORCINA"
       ],
@@ -7591,7 +7592,9 @@
       "localidad": "CARDENAS CORONEL 1901/3100",
       "nroOficial": "5643",
       "actividades": [
-        "II - 21. ELABORACION DE EMBUTIDOS FRESCOS, SECOS Y COCIDOS"
+        "LXIV - IMPORTACION DE CARNE PORCINA",
+        "II - 21. ELABORACION DE EMBUTIDOS FRESCOS, SECOS Y COCIDOS",
+        "XXXIII - 8. CAMARA FRIGORIFICA PARA DEPOSITO A TERCEROS"
       ],
       "ciclos": [
         "CICLO II - ELABORADOR"
@@ -11987,7 +11990,7 @@
     "20055036579": {
       "cuit": "20055036579",
       "tipo": "CICLO II - ELABORADOR",
-      "propietario": "LUCANERA ALFREDO ADOLFO",
+      "propietario": "SUCESION DE LUCANERA ALFREDO ADOLFO",
       "nombre": "SUCESION DE LUCANERA ALFREDO ADOLFO",
       "provincia": "BUENOS AIRES",
       "partido": "BAHIA BLANCA",
@@ -14244,7 +14247,8 @@
       "localidad": "GENERAL JOSE DE SAN MARTIN",
       "nroOficial": "5469",
       "actividades": [
-        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC."
+        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+        "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC."
       ],
       "ciclos": [
         "CICLO III - DADOR DE FRIO"
@@ -15760,6 +15764,23 @@
         "LXIV - IMPORTACION DE CARNE PORCINA",
         "XXX - 1. DEPOSITO Y TRANSBORDO DE MERCADERIAS",
         "LXVII - IMPORTACION DE CARNE BOVINA"
+      ],
+      "ciclos": [
+        "CICLO III - DADOR DE FRIO"
+      ]
+    },
+    "30651084241": {
+      "cuit": "30651084241",
+      "tipo": "CICLO III - DADOR DE FRIO",
+      "propietario": "PEDROLGA S.A.",
+      "nombre": "PEDROLGA S.A.",
+      "provincia": "CORDOBA",
+      "partido": "GENERAL SAN MARTIN",
+      "localidad": "VILLA MARIA",
+      "nroOficial": "5722",
+      "actividades": [
+        "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
+        "XXX -  DEPOSITO PRODUCTOS CARNEOS"
       ],
       "ciclos": [
         "CICLO III - DADOR DE FRIO"
