@@ -27,6 +27,14 @@ const FROM = process.env.RESEND_FROM_EMAIL || 'Consignatarias <noreply@consignat
 // IMPORTANT: only consignatarias.com is verified in Resend. memola.com.ar is NOT.
 // Any from: address must end in @consignatarias.com or Resend rejects the send.
 const FROM_PERSONAL = process.env.RESEND_FROM_PERSONAL || 'José Barnetche <hola@consignatarias.com>'
+/**
+ * La casilla que SE LEE. `hola@consignatarias.com` existe solo como remitente
+ * (consignatarias.com es el único dominio verificado en Resend), pero **no hay
+ * buzón detrás**: todo lo que respondieran ahí se perdía. Cada correo que sale
+ * con FROM_PERSONAL tiene que llevar este replyTo, o estamos preguntando algo y
+ * tirando la respuesta. Verificado el 05-10-2026: seis envíos lo tenían mal.
+ */
+const REPLY_TO = process.env.REPLY_TO_EMAIL || 'agro@memola.com.ar'
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
 
 /* ------------------------------------------------------------------ */
@@ -225,6 +233,7 @@ export async function sendConsignatariaViewsOutreach(opts: {
   try {
     await resend.emails.send({
       from: FROM_PERSONAL,
+      replyTo: REPLY_TO,
       to: opts.to,
       // List-Unsubscribe RFC 8058 (warm outreach): prerrequisito de deliverability.
       // Mismo bloque de headers que el digest / sendRemateResultsToProducer.
@@ -270,6 +279,7 @@ export async function sendCampoOfertaOutreach(opts: {
   try {
     await resend.emails.send({
       from: FROM_PERSONAL,
+      replyTo: REPLY_TO,
       to: opts.to,
       headers: listUnsubHeaders(opts.to, 'campos_oferta'),
       subject: `¿Tenés campos en cartera? Los publicamos gratis a nombre de ${opts.displayName}`,
@@ -326,6 +336,7 @@ export async function sendValuacionAlDueno(opts: {
   try {
     await resend.emails.send({
       from: FROM_PERSONAL,
+      replyTo: REPLY_TO,
       to: opts.to,
       headers: listUnsubHeaders(opts.to, 'campos_valuacion'),
       subject: `Tu campo en ${opts.zona || opts.provincia}: ${usd(opts.usdHa)} por hectárea`,
@@ -384,6 +395,7 @@ export async function sendBusquedaConfirmada(opts: {
   try {
     await resend.emails.send({
       from: FROM_PERSONAL,
+      replyTo: REPLY_TO,
       to: opts.to,
       headers: listUnsubHeaders(opts.to, 'campos_busqueda'),
       subject: `Quedaste anotado: campo para ${opts.operacion} en ${opts.zona || opts.provincia}`,
@@ -425,6 +437,7 @@ export async function sendCampoMatchALead(opts: {
   try {
     await resend.emails.send({
       from: FROM_PERSONAL,
+      replyTo: REPLY_TO,
       to: opts.to,
       headers: listUnsubHeaders(opts.to, 'campos_match'),
       subject: `Apareció un campo que puede servirte: ${opts.campoTitulo}`,
@@ -2196,7 +2209,7 @@ export async function sendSubscriptionInvite(
     await resend.emails.send({
       from: FROM_PERSONAL,
       to,
-      replyTo: 'hola@consignatarias.com',
+      replyTo: REPLY_TO,
       subject: precio ? `El Índice Novillo cerró en ${precio} — ¿te lo mando cada mes?` : 'El cierre mensual del Índice Novillo — ¿te interesa?',
       html: darkEmailShell(`
           <p style="color:#a1a1aa;font-size:14px;line-height:1.7;margin:0 0 12px">${saludo}</p>
@@ -3769,6 +3782,7 @@ export async function sendExpoMercedesAviso(opts: ExpoMercedesAvisoOpts) {
   try {
     await resend.emails.send({
       from: FROM_PERSONAL,
+      replyTo: REPLY_TO,
       to: opts.to,
       subject: ASUNTO_EXPO_MERCEDES,
       html: buildExpoMercedesAvisoHtml(opts),
