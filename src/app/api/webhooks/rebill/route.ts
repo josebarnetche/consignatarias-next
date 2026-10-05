@@ -17,61 +17,101 @@ import { logEvent } from '@/lib/ops'
 
 // Verify Rebill webhook signature (HMAC-SHA256)
 /**
- * Verifica la firma del webhook aceptando los formatos que usan los proveedores
- * de pago, en vez de asumir uno.
+ * Verifica la firma del webhook probando los ESQUEMAS conocidos, no uno asumido.
  *
- * Por qué: durante 203 días este endpoint rechazó TODOS los webhooks de Rebill con
- * 401 `firma_invalida` y nadie se enteró — `informe_purchases`, `guia_purchases` y
- * `processed_webhook_events` están vacías desde que existen. Salió a la luz el
- * 05-10-2026 porque Jose pagó un informe de su bolsillo y no le llegó nada.
- * Asumíamos hex plano del body crudo; si el proveedor firma en base64, prefija
- * `sha256=` o firma `timestamp.body`, `timingSafeEqual` tiraba por longitud y el
- * `catch` lo convertía en un `false` indistinguible de un secret equivocado.
+ * Historia: durante 203 días este endpoint rechazó todos los webhooks de Rebill
+ * con 401. Primero se sospechó del encoding; el diagnóstico del 05-10-2026 mostró
+ * que la firma que llega y la que calculábamos tienen el mismo formato y el mismo
+ * largo (hex, 64) y distinto valor. Después se verificó que el secret guardado en
+ * producción es exactamente el del panel (35 caracteres, prefijo `we_`). Si la
+ * clave es la correcta y el algoritmo también, lo que difiere es **qué string se
+ * firma** — y el prefijo `we_` es el de los esquemas estilo Stripe, que firman
+ * `timestamp.cuerpo` y no el cuerpo solo.
  *
- * Sigue siendo fail-closed: si ninguna variante coincide, se rechaza. Lo que cambia
- * es que ya no rechazamos por una diferencia de encoding, y que el rechazo dice
- * QUÉ no coincidió (ver `diagnosticoFirma`), sin filtrar el secreto.
+ * Así que en vez de adivinar uno, se prueban los que existen. Sigue siendo
+ * fail-closed: si ninguno coincide, 401. Lo que cambia es que ahora el rechazo
+ * dice qué esquemas se probaron y qué cabeceras llegaron, así el próximo reintento
+ * lo resuelve en un renglón de /admin/ops en vez de en otra investigación.
  */
-function verifySignature(payload: string, signature: string | null, secret: string): boolean {
-  if (!signature || !secret) return false
 
-  // `sha256=<firma>` (estilo GitHub/Stripe) y espacios de más.
-  const limpia = signature.trim().replace(/^sha256=/i, '').trim()
+/** Las cabeceras que podrían traer el timestamp del esquema `ts.cuerpo`. */
+function timestamps(req: NextRequest): { nombre: string; valor: string }[] {
+  const out: { nombre: string; valor: string }[] = []
+  req.headers.forEach((valor, nombre) => {
+    const n = nombre.toLowerCase()
+    if (/(timestamp|^x-.*-ts$|request-time|webhook-time)/.test(n) && /^\d{10,13}$/.test(valor.trim())) {
+      out.push({ nombre: n, valor: valor.trim() })
+    }
+  })
+  return out
+}
 
-  const hmac = () => crypto.createHmac('sha256', secret).update(payload)
-  const candidatas = [hmac().digest('hex'), hmac().digest('base64'), hmac().digest('base64url')]
-
-  const iguala = (a: string, b: string) => {
-    if (a.length !== b.length) return false
-    try {
-      return crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b))
-    } catch {
-      return false
+/** Los candidatos a firmar, en orden de probabilidad. */
+function candidatos(rawBody: string, secret: string, req: NextRequest): { nombre: string; firma: string }[] {
+  const claves = [
+    { k: secret, etiqueta: "secret" },
+    // Algunos proveedores firman con el secret sin su prefijo identificador.
+    ...(secret.includes("_") ? [{ k: secret.slice(secret.indexOf("_") + 1), etiqueta: "secret sin prefijo" }] : []),
+  ]
+  const cuerpos = [
+    { p: rawBody, etiqueta: "cuerpo" },
+    ...timestamps(req).map((t) => ({ p: `${t.valor}.${rawBody}`, etiqueta: `${t.nombre}.cuerpo` })),
+  ]
+  const out: { nombre: string; firma: string }[] = []
+  for (const { k, etiqueta: ek } of claves) {
+    for (const { p, etiqueta: ep } of cuerpos) {
+      for (const enc of ["hex", "base64", "base64url"] as const) {
+        out.push({
+          nombre: `${ek}+${ep}+${enc}`,
+          firma: crypto.createHmac("sha256", k).update(p).digest(enc),
+        })
+      }
     }
   }
-  // Comparación insensible a mayúsculas sólo para hex, donde el case no es dato.
-  return candidatas.some((c) => iguala(limpia, c) || (/^[0-9a-f]+$/i.test(limpia) && iguala(limpia.toLowerCase(), c.toLowerCase())))
+  return out
+}
+
+function igualSeguro(a: string, b: string): boolean {
+  if (a.length !== b.length) return false
+  try {
+    return crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b))
+  } catch {
+    return false
+  }
+}
+
+/** Devuelve el nombre del esquema que validó, o null. */
+function esquemaValido(rawBody: string, signature: string | null, secret: string, req: NextRequest): string | null {
+  if (!signature || !secret) return null
+  const limpia = signature.trim().replace(/^sha256=/i, "").trim()
+  // Formato `t=...,v1=...` (estilo Stripe): se extrae el v1 y el t se usa como timestamp.
+  const v1 = limpia.match(/(?:^|,)\s*v1=([A-Za-z0-9+/=_-]+)/)?.[1]
+  const objetivo = v1 || limpia
+  for (const c of candidatos(rawBody, secret, req)) {
+    if (igualSeguro(objetivo, c.firma)) return c.nombre
+    if (/^[0-9a-f]+$/i.test(objetivo) && igualSeguro(objetivo.toLowerCase(), c.firma.toLowerCase())) return c.nombre
+  }
+  return null
 }
 
 /**
- * Qué anotar cuando una firma no valida, para que el próximo rechazo se diagnostique
- * en un renglón de /admin/ops en vez de en una investigación. NUNCA incluye el
- * secreto ni la firma completa: largo, prefijo y forma, que es lo que distingue
- * "secret equivocado" de "encoding distinto".
+ * Qué anotar cuando ninguno coincide. NUNCA el secreto ni la firma completa:
+ * largo, prefijo, forma, las cabeceras que llegaron y qué esquemas se probaron.
  */
-function diagnosticoFirma(payload: string, signature: string | null, secret: string) {
-  const limpia = (signature || '').trim().replace(/^sha256=/i, '').trim()
-  const hex = crypto.createHmac('sha256', secret).update(payload).digest('hex')
+function diagnosticoFirma(rawBody: string, signature: string | null, secret: string, req: NextRequest) {
+  const limpia = (signature || "").trim().replace(/^sha256=/i, "").trim()
+  const cabeceras = [...req.headers.keys()].filter((h) => h.startsWith("x-") || /signature|timestamp/i.test(h))
   return {
-    motivo: 'firma_invalida',
+    motivo: "firma_invalida",
     con_header: Boolean(signature),
     firma_largo: limpia.length,
     firma_prefijo: limpia.slice(0, 7),
-    firma_forma: /^[0-9a-f]+$/i.test(limpia) ? 'hex' : /^[A-Za-z0-9+/=_-]+$/.test(limpia) ? 'base64' : 'otra',
-    tenia_prefijo_sha256: /^sha256=/i.test((signature || '').trim()),
-    esperado_largo_hex: hex.length,
-    esperado_prefijo_hex: hex.slice(0, 7),
-    body_bytes: Buffer.byteLength(payload, 'utf8'),
+    firma_forma: /^[0-9a-f]+$/i.test(limpia) ? "hex" : /^[A-Za-z0-9+/=_-]+$/.test(limpia) ? "base64" : "otra",
+    tenia_prefijo_sha256: /^sha256=/i.test((signature || "").trim()),
+    body_bytes: Buffer.byteLength(rawBody, "utf8"),
+    // Lo que faltaba para cerrar el caso: qué manda Rebill y qué probamos nosotros.
+    cabeceras_recibidas: cabeceras,
+    esquemas_probados: candidatos(rawBody, secret, req).map((c) => `${c.nombre}:${c.firma.slice(0, 7)}`),
   }
 }
 
@@ -109,14 +149,15 @@ export async function POST(request: NextRequest) {
       })
       return NextResponse.json({ error: 'not_configured' }, { status: 503 })
     }
-    if (!verifySignature(rawBody, signature, webhookSecret)) {
+    const esquema = esquemaValido(rawBody, signature, webhookSecret, request)
+    if (!esquema) {
       console.error('Webhook signature verification failed')
       logEvent({
         eventType: 'webhook_received',
         status: 'error',
         route: '/api/webhooks/rebill',
         statusCode: 401,
-        metadata: diagnosticoFirma(rawBody, signature, webhookSecret),
+        metadata: diagnosticoFirma(rawBody, signature, webhookSecret, request),
       })
       return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
     }
@@ -125,7 +166,8 @@ export async function POST(request: NextRequest) {
       status: 'ok',
       route: '/api/webhooks/rebill',
       statusCode: 200,
-      metadata: { motivo: 'firma_valida' },
+      // Se guarda QUÉ esquema validó: el día que Rebill lo cambie, el cambio se ve.
+      metadata: { motivo: 'firma_valida', esquema },
     })
     
     const payload = JSON.parse(rawBody)
