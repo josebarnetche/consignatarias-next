@@ -13,10 +13,13 @@ import { ImagenTema } from '@/components/ui/ImagenTema'
  * las operaciones de lote del MAG para esa categoría y ese peso— y un botón para
  * ofertar. La oferta entra como `lote:<sku>`: por eso existe la página.
  *
- * Sin foto y sin ficha enlazada por decisión del 04-10-2026. La foto es lo único
- * del aviso que sí tiene dueño, así que si no va la atribución tampoco va la
- * imagen. Lo que sí queda es la línea que aclara que no somos el vendedor: sin
- * eso la página implica que la hacienda es nuestra, que no lo es.
+ * FOTOS: van las reales del lote (decisión de Jose, 05-10-2026), servidas desde
+ * el almacenamiento del aviso — no se copia ni se re-aloja ninguna imagen acá.
+ * El glifo de marca de la categoría queda como respaldo para el lote que no
+ * trae foto. Advertido y asumido: la foto es lo único del aviso con dueño, así
+ * que si llega un reclamo se apaga con `MOSTRAR_FOTOS = false` y vuelve el
+ * glifo, sin tocar nada más. La ficha sigue sin enlazarse y la fuente sin
+ * nombrarse; lo que queda es la línea de que no somos el vendedor.
  */
 
 type Lote = {
@@ -37,6 +40,13 @@ type Lote = {
 }
 
 const LOTES = (lotesDcac as Lote[]).filter((l) => l.activo)
+
+/**
+ * El interruptor de las fotos. En `false`, cada tarjeta vuelve al glifo de marca
+ * de su categoría y la página deja de mostrar imágenes del aviso, sin tocar nada
+ * más. Existe para que apagarlas sea un commit de una línea y no una reescritura.
+ */
+const MOSTRAR_FOTOS = true
 
 /**
  * Las subcategorías del aviso contra las categorías que el VR mide.
@@ -150,23 +160,37 @@ export default function LotesPage() {
           <div className="grid gap-4 sm:grid-cols-2">
             {filas.map(({ lote, ref }) => (
               <article key={lote.sku} className="terminal-panel rounded-xl overflow-hidden flex flex-col">
-                <div className="flex items-center gap-3 border-b border-terminal-border bg-zinc-100 claro:bg-zinc-100 px-4 py-3">
-                  <ImagenTema
-                    src={`/marca/glifos-color/glifo-${GLIFO[lote.categoria ?? ''] ?? 'vaca'}.png`}
-                    alt=""
-                    aria-hidden="true"
-                    className="h-12 w-12 shrink-0 object-contain"
+                {MOSTRAR_FOTOS && lote.imagen_url ? (
+                  /* La foto del lote, servida desde el almacenamiento del aviso: no se copia
+                     ni se re-aloja nada acá. Si alguna vez hay que sacarlas, es cambiar
+                     MOSTRAR_FOTOS a false y vuelve el glifo de marca. */
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={lote.imagen_url}
+                    alt={`${lote.titulo}${lote.provincia ? ` — ${provinciaNombre(lote.provincia)}` : ''}`}
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
+                    className="w-full h-48 object-cover bg-zinc-900"
                   />
-                  <div className="min-w-0">
-                    <p className="text-xxs font-terminal uppercase tracking-wider text-zinc-500">
-                      {lote.raza ? nombrePropio(lote.raza.split(' - ')[0]) : 'Hacienda'}
-                    </p>
-                    <p className="text-sm font-semibold text-zinc-900 truncate">
-                      {lote.cabezas ? `${lote.cabezas} cabezas` : 'Lote'}
-                      {lote.kg_promedio ? ` · ${lote.kg_promedio} kg` : ''}
-                    </p>
+                ) : (
+                  <div className="flex items-center gap-3 border-b border-terminal-border bg-zinc-100 px-4 py-3">
+                    <ImagenTema
+                      src={`/marca/glifos-color/glifo-${GLIFO[lote.categoria ?? ''] ?? 'vaca'}.png`}
+                      alt=""
+                      aria-hidden="true"
+                      className="h-12 w-12 shrink-0 object-contain"
+                    />
+                    <div className="min-w-0">
+                      <p className="text-xxs font-terminal uppercase tracking-wider text-zinc-500">
+                        {lote.raza ? nombrePropio(lote.raza.split(' - ')[0]) : 'Hacienda'}
+                      </p>
+                      <p className="text-sm font-semibold text-zinc-900 truncate">
+                        {lote.cabezas ? `${lote.cabezas} cabezas` : 'Lote'}
+                        {lote.kg_promedio ? ` · ${lote.kg_promedio} kg` : ''}
+                      </p>
+                    </div>
                   </div>
-                </div>
+                )}
                 <div className="p-4 flex flex-col gap-3 flex-1">
                   <h2 className="text-base font-semibold text-ink leading-snug">{nombrePropio(lote.titulo)}</h2>
                   <p className="text-xs text-zinc-500 mt-1">
