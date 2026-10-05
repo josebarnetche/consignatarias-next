@@ -100,8 +100,13 @@ def main() -> None:
         print("\n→ [1-2/4] Skipping data refresh (--skip-data-refresh)")
 
     # 2. Render PDF + product images
+    #
+    # `informe.py` es el generador vigente desde el 05-10-2026 (fondo blanco e
+    # imprimible, fuentes embebidas, hembras calculadas sobre las 8 categorías y
+    # sin precio de ternero). `render.py` quedó como referencia histórica: NO se
+    # publica más desde ahí, porque imprimía el indicador de ciclo al revés.
     print(f"\n→ [3/4] Render PDF + product images")
-    run(["python3", str(HERE / "render.py"), "--month", target_ym, "--pdf"])
+    run(["python3", str(HERE / "informe.py"), "--mes", target_ym, "--pdf"])
     run(["python3", str(HERE / "product_image.py"), "--month", target_ym])
 
     # 3. Copy to public/
@@ -109,7 +114,7 @@ def main() -> None:
     PUBLIC.mkdir(parents=True, exist_ok=True)
 
     pairs = [
-        (OUT / f"informe-{target_ym}.pdf", PUBLIC / f"{month_slug}.pdf"),
+        (OUT / f"el-corredor-{target_ym}.pdf", PUBLIC / f"{month_slug}.pdf"),
         (OUT / f"el-corredor-{target_ym}-cover-portrait-768x1024.png", PUBLIC / f"cover-{month_slug}.png"),
         (OUT / f"el-corredor-{target_ym}-og-1200x630.png", PUBLIC / f"og-{month_slug}.png"),
         (OUT / f"el-corredor-{target_ym}-square-1080x1080.png", PUBLIC / f"square-{month_slug}.png"),
@@ -120,6 +125,11 @@ def main() -> None:
             print(f"    {dst.name}  ({dst.stat().st_size // 1024} KB)")
         else:
             print(f"    ⚠ MISSING: {src.name}")
+            # El PDF no es opcional: sin él, el manifest se actualizaba igual y el
+            # blast mandaba a la gente a la edición del mes anterior.
+            if src.suffix == ".pdf":
+                print("::error::no se generó el PDF de la edición — no se publica nada")
+                sys.exit(1)
 
     # 4. Update manifest
     manifest_path = PUBLIC / "manifest.json"

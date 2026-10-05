@@ -52,6 +52,10 @@ jobs:
       - name: Run publish pipeline
         env:
           CHROME_BIN: ${{ steps.setup-chrome.outputs.chrome-path }}
+          # El generador nuevo lee las series del INMAG, los lotes y las bandas VR
+          # directo de Supabase: sin esto no hay informe (y falla ruidosamente).
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
           MONTH_INPUT="${{ github.event.inputs.month || 'auto' }}"
           echo "Chrome: $CHROME_BIN"
