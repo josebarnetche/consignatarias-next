@@ -136,3 +136,6 @@ scripts/dev-magic-link.mts
 # esto no se sube nunca.
 private/bases/
 .claude/worktrees/
+
+# Notas institucionales generadas: llevan la firma de José, no van al repo.
+scripts/notas/salida/
