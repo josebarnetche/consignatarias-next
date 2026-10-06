@@ -335,6 +335,11 @@ export default async function FrigorificoDetailPage({
   const grupoEmpresario = profile?.grupoEmpresario || null
   const tipo = profile?.tipo || null
   const direccion = profile?.direccion || null
+  /* ¿La planta sigue operando? El padrón SENASA NO alcanza para responder esto: Vicentin
+     Faenas figura "vigente" en el scrape y está cerrada desde diciembre de 2017. Cuando el
+     relevamiento propio verificó que una planta no opera, mandamos ese dato y no el padrón:
+     no se le ofrece al productor un formulario para contactar a alguien que no faena. */
+  const opera = profile?.opera !== false
   const volumenFaena = profile?.volumenFaena || null
 
   const hasContact = phone || email || website || whatsapp
@@ -462,6 +467,14 @@ export default async function FrigorificoDetailPage({
               El CUIT <span className="text-zinc-100 tabular-nums">{ficha.cuitFormateado}</span> corresponde a{' '}
               <span className="text-zinc-100">{name}</span>, {ficha.categoria ? ficha.categoria.toLowerCase() : 'frigorífico'} con sede en {localidadStr}.
               Habilitación SENASA <span className={senasaVigente ? 'text-positive' : 'text-zinc-100'}>{estadoSenasaTexto(ficha)}</span>, Mat. {basicF.matricula}.
+              {!opera && (
+                <>
+                  {' '}
+                  <span className="text-negative">
+                    La planta no está operando: la habilitación figura en el padrón, pero no faena.
+                  </span>
+                </>
+              )}
             </p>
             <div className="flex items-center gap-x-2 gap-y-1 flex-wrap mt-2.5 text-xxs font-terminal">
               <span className="px-1.5 py-0.5 border border-terminal-border text-zinc-400 rounded-terminal">
@@ -501,7 +514,33 @@ export default async function FrigorificoDetailPage({
 
       {/* Captura de venta a faena — el productor llegó al perfil de la planta →
           intención de venderle. Lo conectamos (comisión), no publicamos su dato. */}
-      <FrigorificoLeadCapture source={`frigorifico:${slug}`} frigorificoName={name} />
+      {opera ? (
+        <FrigorificoLeadCapture source={`frigorifico:${slug}`} frigorificoName={name} />
+      ) : (
+        <div className="terminal-panel border-negative/40">
+          <div className="terminal-panel-header">
+            <span className="text-negative text-label tracking-widest">ESTA PLANTA NO ESTÁ OPERANDO</span>
+          </div>
+          <div className="p-3 sm:p-4 text-data text-zinc-300 leading-relaxed">
+            <p>
+              Según nuestro relevamiento, {name} no está faenando. La dejamos publicada porque el
+              CUIT se sigue consultando y es mejor encontrar el dato que no encontrar nada, pero no
+              tiene sentido mandarle una propuesta de hacienda.
+            </p>
+            <p className="mt-2">
+              Si tenés hacienda para vender,{' '}
+              <Link href="/frigorificos" className="text-accent hover:underline">
+                buscá una planta activa en el directorio
+              </Link>{' '}
+              o escribinos a{' '}
+              <a href="mailto:agro@memola.com.ar" className="text-accent hover:underline">
+                agro@memola.com.ar
+              </a>{' '}
+              y te decimos a quién conviene ofrecérsela.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* FICHA DE LA EMPRESA — lo que el que pegó un CUIT quiere en 3 segundos: razón social,
           CUIT en los dos formatos, dónde está, estado SENASA con fecha, matrícula, ciclo.

@@ -186,7 +186,20 @@ export function getFichaFrigorifico(cuit: string, localidadPerfil?: string | nul
   }
 }
 
-/** Frase de estado para la meta description y el JSON-LD: "vigente al 14/09/2026" / "no figura en el padrón del 14/09/2026". */
+/**
+ * Frase de estado para la meta description y el JSON-LD: "vigente al 14/09/2026" /
+ * "no figura en el padrón del 14/09/2026".
+ *
+ * ⚠️ La frase dice lo que dice a propósito: **figura o no figura en el padrón**, nunca
+ * "está activa" o "cerró". El padrón no responde esa pregunta y falla para los dos lados:
+ *  - Vicentin Faenas figura VIGENTE y está cerrada desde diciembre de 2017.
+ *  - FP Carnes (8753), AMEL (13913) y La Brava (9096) NO figuran, y las tres están en el
+ *    listado de la SAGyP de tipificación de reses bovinas (Res. 96/2024), que sólo alcanza
+ *    plantas faenadoras en actividad — verificado contra magyp.gob.ar el 06-10-2026.
+ * 253 de 1.116 plantas (22,7 %) cargan la marca negativa, así que el error no es marginal.
+ * Si alguna vez hace falta saber si una planta opera, el dato es `opera` del perfil
+ * (relevamiento propio, verificado a mano), no esta marca.
+ */
 export function estadoSenasaTexto(f: FichaFrigorifico): string {
   if (f.senasa.vigente) return `vigente al ${fechaAR(f.senasa.fechaPadron)}`
   const base = `no figura en el padrón del ${fechaAR(f.senasa.fechaPadron)}`
