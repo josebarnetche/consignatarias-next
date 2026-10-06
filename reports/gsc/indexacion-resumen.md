@@ -1,13 +1,13 @@
-# Indexación — 2026-10-05
+# Indexación — 2026-10-06
 
-Inspeccionadas 3402 de 3008 URLs del sitemap.
+Inspeccionadas 3413 de 3006 URLs del sitemap.
 
 | Sección | Inspeccionadas | Indexadas | NO indexadas | % |
 |---|---:|---:|---:|---:|
-| /remates | 1274 | 960 | 314 | 25% |
+| /remates | 1284 | 960 | 324 | 25% |
 | /productividad | 479 | 168 | 311 | 65% |
 | /consignatarias | 86 | 70 | 16 | 19% |
-| /frigorificos | 1140 | 1129 | 11 | 1% |
+| /frigorificos | 1141 | 1130 | 11 | 1% |
 | /calendario | 74 | 68 | 6 | 8% |
 | /precios | 117 | 114 | 3 | 3% |
 | /vr | 7 | 5 | 2 | 29% |
@@ -112,9 +112,9 @@ Inspeccionadas 3402 de 3008 URLs del sitemap.
 
 | Motivo | URLs |
 |---|---:|
-| Enviada e indexada | 2728 |
+| Enviada e indexada | 2729 |
 | Descubierta: actualmente sin indexar | 453 |
-| Google no reconoce esta URL | 153 |
+| Google no reconoce esta URL | 163 |
 | Rastreada: actualmente sin indexar | 38 |
 | Excluida por una etiqueta "noindex" | 16 |
 | No se ha encontrado (404) | 5 |
