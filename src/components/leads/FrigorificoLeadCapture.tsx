@@ -21,6 +21,7 @@ export default function FrigorificoLeadCapture({
       emoji="🥩"
       defaultIntent="vender"
       intents={[{ value: 'vender', label: 'Vender hacienda para faena' }]}
+      askFiscal
       askCategory
       quantityField="headCount"
       quantityLabel="Cabezas"

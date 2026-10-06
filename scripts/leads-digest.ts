@@ -45,6 +45,7 @@ type Fila = {
 const ETIQUETA: Record<NivelLead, string> = {
   pro: 'PRO — operación grande',
   trabajable: 'TRABAJABLES',
+  contacto: 'CONSULTAS A PLANTAS — rutear',
   sin_datos: 'FALTA PREGUNTAR',
   chico: 'CHICOS — no se derivan',
 }
@@ -103,7 +104,7 @@ async function main() {
   console.log(resumen + '\n')
 
   const bloques: string[] = []
-  for (const nivel of ['pro', 'trabajable', 'sin_datos', 'chico'] as NivelLead[]) {
+  for (const nivel of ['pro', 'trabajable', 'contacto', 'sin_datos', 'chico'] as NivelLead[]) {
     const grupo = porNivel(nivel)
     if (grupo.length === 0) continue
     console.log(`-- ${ETIQUETA[nivel]} (${grupo.length})`)

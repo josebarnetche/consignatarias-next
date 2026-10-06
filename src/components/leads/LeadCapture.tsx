@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { cuitValido, formatearCuit, soloDigitos } from '@/lib/cuit'
 import { trackValueEvent } from '@/lib/analytics'
 
 /**
@@ -59,6 +60,14 @@ export interface LeadCaptureProps {
   quantityLabel?: string
   quantityPlaceholder?: string
   /** Si true, pide el precio deseado (el spread es negocio). */
+  /**
+   * Pide razón social y CUIT, y los exige. Va en todo formulario donde alguien
+   * OFRECE hacienda: con esos dos datos se hace el chequeo crediticio en el BCRA
+   * y en la Cámara de Consignatarios antes de mover la operación (criterio de
+   * Pablo Usandizaga, 05-10-2026). Sin eso, se consigna hacienda de alguien a
+   * quien no se puede verificar.
+   */
+  askFiscal?: boolean
   askPrice?: boolean
   priceLabel?: string
   pricePlaceholder?: string
@@ -82,6 +91,7 @@ export default function LeadCapture({
   presetProvince,
   presetCategory,
   askCategory = false,
+  askFiscal = false,
   quantityField = 'headCount',
   quantityLabel,
   quantityPlaceholder,
@@ -107,6 +117,8 @@ export default function LeadCapture({
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
+  const [razonSocial, setRazonSocial] = useState('')
+  const [cuit, setCuit] = useState('')
   const [message, setMessage] = useState('')
   const [state, setState] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
   const [errMsg, setErrMsg] = useState('')
@@ -125,6 +137,18 @@ export default function LeadCapture({
     setErrMsg('')
     if (name.trim().length < 2) { setState('error'); setErrMsg('Decinos tu nombre.'); return }
     if (!phone.trim() && !email.trim()) { setState('error'); setErrMsg('Dejanos un teléfono o email.'); return }
+    if (askFiscal) {
+      if (razonSocial.trim().length < 2) {
+        setState('error'); setErrMsg('Necesitamos la razón social a nombre de quien se vende.'); return
+      }
+      if (!cuitValido(cuit)) {
+        setState('error')
+        setErrMsg(soloDigitos(cuit).length === 11
+          ? 'Ese CUIT no es válido: revisá el número.'
+          : 'El CUIT va completo, con sus 11 dígitos.')
+        return
+      }
+    }
     setState('loading')
     try {
       const qty = quantity ? Number(quantity) : undefined
@@ -140,6 +164,8 @@ export default function LeadCapture({
           headCount: quantityField === 'headCount' ? qty : undefined,
           hectareas: quantityField === 'hectareas' ? qty : undefined,
           desiredPriceArs: desiredPrice ? Number(desiredPrice.replace(/\D/g, '')) : undefined,
+          razonSocial: askFiscal ? razonSocial.trim() : undefined,
+          cuit: askFiscal ? formatearCuit(cuit) : undefined,
           name: name.trim(),
           phone: phone.trim() || undefined,
           email: email.trim() || undefined,
@@ -219,6 +245,36 @@ export default function LeadCapture({
           </label>
         )}
       </div>
+
+      {askFiscal && (
+        <div className="grid grid-cols-2 gap-3">
+          <label className="col-span-2 sm:col-span-1">
+            <span className={labelCls}>Razón social</span>
+            <input
+              value={razonSocial}
+              onChange={(e) => setRazonSocial(e.target.value)}
+              className={inputCls}
+              placeholder="A nombre de quién se vende"
+              autoComplete="organization"
+            />
+          </label>
+          <label className="col-span-2 sm:col-span-1">
+            <span className={labelCls}>CUIT</span>
+            <input
+              value={cuit}
+              onChange={(e) => setCuit(e.target.value)}
+              onBlur={() => setCuit((v) => (cuitValido(v) ? formatearCuit(v) : v))}
+              className={inputCls}
+              placeholder="30-71863222-2"
+              inputMode="numeric"
+            />
+          </label>
+          <p className="col-span-2 text-xs text-zinc-500">
+            Van porque la operación se trabaja a nombre de alguien: con la razón social y el CUIT
+            verificamos antecedentes antes de mover la hacienda. Tus datos no se publican.
+          </p>
+        </div>
+      )}
 
       <div className="grid grid-cols-2 gap-3">
         <label className="col-span-2">

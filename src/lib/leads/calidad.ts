@@ -21,7 +21,7 @@ export const CABEZAS_MINIMAS = 40
 /** Desde acá el lead es de los que un consignatario grande atiende él mismo. */
 export const CABEZAS_PRO = 300
 
-export type NivelLead = 'pro' | 'trabajable' | 'chico' | 'sin_datos'
+export type NivelLead = 'pro' | 'trabajable' | 'chico' | 'sin_datos' | 'contacto'
 
 export interface LeadParaCalificar {
   intent: string
@@ -65,6 +65,19 @@ function diasDesde(iso: string | null | undefined): number | null {
  */
 export function calificarLead(lead: LeadParaCalificar): Calificacion {
   const faltan: string[] = []
+
+  // Una consulta a una planta no es una operación de hacienda y no se mide en
+  // cabezas: se rutea o no se rutea. Mezclarla con las ventas fue lo que puso un
+  // "necesito hablar con Oscar" como el lead más valioso del tablero.
+  if (lead.intent === 'contactar_frigorifico') {
+    return {
+      faltan,
+      diasSinContactar: SIN_CONTACTAR.has(String(lead.status || '')) ? diasDesde(lead.createdAt) : null,
+      nivel: 'contacto',
+      motivo: 'consulta a una planta: se rutea, no se valúa',
+      derivable: false,
+    }
+  }
   if (!lead.category) faltan.push('categoría')
   if (!lead.headCount) faltan.push('cabezas')
   if (!lead.province) faltan.push('provincia')
@@ -112,8 +125,9 @@ export function calificarLead(lead: LeadParaCalificar): Calificacion {
 export const ORDEN_NIVEL: Record<NivelLead, number> = {
   pro: 0,
   trabajable: 1,
-  sin_datos: 2,
-  chico: 3,
+  contacto: 2,
+  sin_datos: 3,
+  chico: 4,
 }
 
 /**
@@ -121,6 +135,9 @@ export const ORDEN_NIVEL: Record<NivelLead, number> = {
  * sólo clasifica no mueve nada.
  */
 export function proximaAccion(c: Calificacion, intent: string): string {
+  if (c.nivel === 'contacto') {
+    return 'Rutear a la planta. Si su ficha no tiene mail cargado, el ruteo automático no puede salir: cargarlo es lo que destraba esto y todas las consultas que vengan.'
+  }
   if (c.nivel === 'pro') {
     return intent === 'vender'
       ? 'Llamar hoy. Es el tamaño que una firma grande atiende: se puede derivar con comisión acordada por escrito.'

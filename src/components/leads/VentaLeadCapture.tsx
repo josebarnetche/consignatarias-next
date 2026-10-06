@@ -23,6 +23,7 @@ export default function VentaLeadCapture({
         { value: 'vender', label: 'Vender hacienda' },
         { value: 'comprar', label: 'Comprar hacienda' },
       ]}
+      askFiscal
       askCategory={!presetCategory}
       presetCategory={presetCategory}
       quantityField="headCount"

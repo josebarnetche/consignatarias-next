@@ -7,6 +7,7 @@ import { triageLead, dedupeKey, DEDUPE_WINDOW_HOURS } from '@/lib/leads/triage'
 import { sendProducerLeadOps, sendProducerLeadConfirmation, sendFrigorificoLeadAlert } from '@/lib/email'
 import { getFrigorificoProfile } from '@/lib/dal/frigorificos'
 import { z } from 'zod'
+import { cuitValido, formatearCuit } from '@/lib/cuit'
 import crypto from 'crypto'
 
 export const runtime = 'nodejs'
@@ -24,13 +25,21 @@ export const runtime = 'nodejs'
  */
 
 const schema = z.object({
-  intent: z.enum(['vender', 'comprar', 'arrendar', 'consignar', 'tasar', 'arrendar_ofrezco', 'arrendar_busco']),
+  // `contactar_frigorifico` existe porque la mitad de los "leads de compra" más
+  // grandes no eran hacienda: eran gente usando la ficha de una planta para llegar
+  // a ella (uno pedía hablar con Oscar, otro ofrecía cabras, otro vendía
+  // maquinaria). Mezclados con las operaciones, el motor los valuaba con precio de
+  // novillo y el lead más caro del tablero resultó ser una consulta. Separado, cada
+  // uno va a su embudo y el volumen vuelve a significar algo.
+  intent: z.enum(['vender', 'comprar', 'arrendar', 'consignar', 'tasar', 'arrendar_ofrezco', 'arrendar_busco', 'contactar_frigorifico']),
   category: z.string().max(40).optional(),
   headCount: z.number().int().positive().max(100000).optional(),
   hectareas: z.number().int().positive().max(1000000).optional(),
   desiredPriceArs: z.number().positive().max(1e12).optional(),
   province: z.string().max(60).optional(),
   zona: z.string().max(120).optional(),
+  razonSocial: z.string().max(160).optional(),
+  cuit: z.string().max(20).optional(),
   name: z.string().min(2, 'Nombre muy corto').max(120),
   phone: z.string().max(40).optional(),
   email: z.string().email('Email inválido').max(160).optional(),
@@ -55,6 +64,12 @@ export async function POST(req: NextRequest) {
     }
     const d = parsed.data
 
+    // El CUIT, si viene, tiene que ser un CUIT. Un número cualquiera en ese campo
+    // es peor que el campo vacío: hace creer que el chequeo crediticio se puede hacer.
+    if (d.cuit && !cuitValido(d.cuit)) {
+      return NextResponse.json({ error: 'El CUIT no es válido' }, { status: 400 })
+    }
+
     // Necesitamos una vía de contacto: teléfono o email.
     if (!d.phone && !d.email) {
       return NextResponse.json({ error: 'Dejanos un teléfono o email para que te contacten' }, { status: 400 })
@@ -65,7 +80,11 @@ export async function POST(req: NextRequest) {
     // hacienda; el negocio ahí es el canon/spread, que se evalúa con hectáreas +
     // precio deseado.
     const isArrendamiento = d.intent.startsWith('arrendar')
-    const { estimatedValueArs, feeArs, feePct } = isArrendamiento
+    // Una consulta a una planta NO se valúa: no hay hacienda. Valuarla con precio
+    // de novillo es lo que puso un pedido de "necesito hablar con Oscar" arriba de
+    // todo el tablero, con 2.599 millones estimados.
+    const esContacto = d.intent === 'contactar_frigorifico'
+    const { estimatedValueArs, feeArs, feePct } = isArrendamiento || esContacto
       ? { estimatedValueArs: null as number | null, feeArs: null as number | null, feePct: DEFAULT_FEE_PCT }
       : estimateOperation({ headCount: d.headCount, category: d.category })
     const ipHash = crypto.createHash('sha256').update(ip + d.name).digest('hex').slice(0, 16)
@@ -114,11 +133,13 @@ export async function POST(req: NextRequest) {
       .insert({
         intent: d.intent,
         category: d.category ?? null,
-        head_count: isArrendamiento ? null : (d.headCount ?? null),
+        head_count: isArrendamiento || esContacto ? null : (d.headCount ?? null),
         hectareas: isArrendamiento ? (d.hectareas ?? d.headCount ?? null) : (d.hectareas ?? null),
         desired_price_ars: d.desiredPriceArs ?? null,
         province: d.province ?? null,
         zona: d.zona ?? null,
+        razon_social: d.razonSocial ?? null,
+        cuit: d.cuit ? formatearCuit(d.cuit) : null,
         name: d.name,
         phone: d.phone ?? null,
         email: d.email ?? null,
