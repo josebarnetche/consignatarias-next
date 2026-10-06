@@ -1889,15 +1889,15 @@
   },
   "corn": {
     "current": 235.33,
-    "prev": 234.83,
-    "change": 0.2,
+    "prev": 235.33,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
     "current": 1545,
-    "prev": 1560,
-    "change": -1,
+    "prev": 1545,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
@@ -1908,7 +1908,7 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-10-05",
+  "lastUpdate": "2026-10-06",
   "provinceEntry": {
     "date": "2026-10-03",
     "totalCabezas": 7228,
@@ -2096,153 +2096,20 @@
     ]
   },
   "auctionDayEntries": {
-    "date": "2026-10-02",
+    "date": "2026-10-06",
     "consignatarias": {
       "colombo-y-magliano": {
         "magId": "165",
-        "totalCabezas": 507,
+        "totalCabezas": 1,
         "entries": [
-          {
-            "remitente": "AVESTRUZ S.A.S.",
-            "localidad": "SAN A. DE ARECO",
-            "provincia": "BUE",
-            "cabezas": 20
-          },
-          {
-            "remitente": "CHARLES DE GUERRERO S.A.",
-            "localidad": "SAN A. GILES",
-            "provincia": "BUE",
-            "cabezas": 11
-          },
-          {
-            "remitente": "COLOMBO CARLOS JOSE",
-            "localidad": "SAN A. DE ARECO",
-            "provincia": "BUE",
-            "cabezas": 10
-          },
-          {
-            "remitente": "COLOMBO Y MAGLIANO S.A.",
-            "localidad": "LEZAMA",
-            "provincia": "BUE",
-            "cabezas": 48
-          },
           {
             "remitente": "COLOMBO Y MAGLIANO S.A.",
             "localidad": "MORENO     (SGO. DEL",
             "provincia": "SDE",
-            "cabezas": 45
-          },
-          {
-            "remitente": "COLOMBO Y MAGLIANO S.A.",
-            "localidad": "MORENO     (SGO. DEL",
-            "provincia": "SDE",
-            "cabezas": 45
-          },
-          {
-            "remitente": "COLOMBO Y MAGLIANO S.A.",
-            "localidad": "RIVADAVIA         B",
-            "provincia": "BUE",
-            "cabezas": 45
-          },
-          {
-            "remitente": "COSQUI S.A.",
-            "localidad": "BALCARCE",
-            "provincia": "BUE",
-            "cabezas": 31
-          },
-          {
-            "remitente": "EL RECADO S A",
-            "localidad": "RIVADAVIA         B",
-            "provincia": "BUE",
-            "cabezas": 83
-          },
-          {
-            "remitente": "FERNANDEZ EMANUEL",
-            "localidad": "TRENQUE LAUQUEN",
-            "provincia": "BUE",
-            "cabezas": 4
-          },
-          {
-            "remitente": "GARRUCHOS S.A.",
-            "localidad": "GRAL. BELGRANO",
-            "provincia": "BUE",
             "cabezas": 1
-          },
-          {
-            "remitente": "HOLGADO ALBERTO ANGEL",
-            "localidad": "TRENQUE LAUQUEN",
-            "provincia": "BUE",
-            "cabezas": 1
-          },
-          {
-            "remitente": "LA ROPA S.A",
-            "localidad": "LEZAMA",
-            "provincia": "BUE",
-            "cabezas": 48
-          },
-          {
-            "remitente": "LOS LOPEZ S.A.",
-            "localidad": "GRAL. VIAMONTE",
-            "provincia": "BUE",
-            "cabezas": 36
-          },
-          {
-            "remitente": "NAZAR ANCHORENA ALEJANDRO",
-            "localidad": "BENITO JUAREZ",
-            "provincia": "BUE",
-            "cabezas": 45
-          },
-          {
-            "remitente": "PIRAY MINI S.A.",
-            "localidad": "GONZALES CHAVES",
-            "provincia": "BUE",
-            "cabezas": 34
           }
         ],
-        "period": "02/09/2026 - 02/10/2026"
-      },
-      "gananor-pujol": {
-        "magId": "520",
-        "totalCabezas": 104,
-        "entries": [
-          {
-            "remitente": "AGROP. SAN GUILLERMO S.A.",
-            "localidad": "CA�UELAS",
-            "provincia": "BUE",
-            "cabezas": 7
-          },
-          {
-            "remitente": "CIA DE INVERSION",
-            "localidad": "PTE. R. S. PE�A",
-            "provincia": "CBA",
-            "cabezas": 8
-          },
-          {
-            "remitente": "DASSO MARIANA INES",
-            "localidad": "LOBOS",
-            "provincia": "BUE",
-            "cabezas": 7
-          },
-          {
-            "remitente": "DASSO MARIANA INES",
-            "localidad": "LOBOS",
-            "provincia": "BUE",
-            "cabezas": 1
-          },
-          {
-            "remitente": "EL COMPINCHE AGRO S.R.L",
-            "localidad": "BENITO JUAREZ",
-            "provincia": "BUE",
-            "cabezas": 33
-          },
-          {
-            "remitente": "OLAVIAGA E HIJOS S.A.",
-            "localidad": "BRAGADO",
-            "provincia": "BUE",
-            "cabezas": 48
-          }
-        ],
-        "period": "02/09/2026 - 02/10/2026"
+        "period": "06/09/2026 - 06/10/2026"
       }
     }
   },
@@ -2452,15 +2319,15 @@
   "arrendamientoOficial": {
     "date": "2026-10-02",
     "index": 4120.389,
-    "periodStart": "2026-09-25",
+    "periodStart": "2026-09-29",
     "periodEnd": "2026-10-02",
-    "periodIndex": 4192.903,
+    "periodIndex": 4205.415,
     "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)"
   },
   "soy": {
     "current": 509,
-    "prev": 507.5,
-    "change": 0.3,
+    "prev": 509,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API",
     "date": "2026-10-05"
