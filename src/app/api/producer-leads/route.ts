@@ -5,6 +5,7 @@ import { enforceRateLimit, clientIp, rateLimitedResponse } from '@/lib/rate-limi
 import { estimateOperation, matchConsignatarias, whatsappLink, DEFAULT_FEE_PCT } from '@/lib/leads/routing'
 import { triageLead, dedupeKey, DEDUPE_WINDOW_HOURS } from '@/lib/leads/triage'
 import { sendProducerLeadOps, sendProducerLeadConfirmation, sendFrigorificoLeadAlert } from '@/lib/email'
+import { puedeFaenarBovinos } from '@/lib/frigorificos/faena'
 import { getFrigorificoProfile } from '@/lib/dal/frigorificos'
 import { z } from 'zod'
 import { cuitValido, formatearCuit } from '@/lib/cuit'
@@ -189,6 +190,14 @@ export async function POST(req: NextRequest) {
           // hacerle perder el viaje.
           const to = prof?.claimedByEmail || prof?.email || prof?.emailRuteo
           if (!prof || !to || prof.opera === false) return
+          // Y tampoco recibe derivaciones la planta cuyo rubro de faena bovina no
+          // está habilitado en el registro de SENASA. Brekan es ciclo I y figura en
+          // el padrón —pasaba todos los filtros— pero tiene la faena SUSPENDIDA: el
+          // productor que le escribía no tenía a quién escribirle. `false` es dato
+          // verificado; `null` es que no la relevamos, y ahí no se bloquea nada.
+          // Si sólo quiere contactar a la planta, se le pasa igual: el que no
+          // puede recibir es el que viene a vender hacienda.
+          if (!esContacto && puedeFaenarBovinos(prof.matricula) === false) return
           return sendFrigorificoLeadAlert({
             to,
             frigorificoName: prof.name || 'tu frigorífico',

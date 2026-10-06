@@ -73,7 +73,10 @@ export function motivoNoFaena(matricula: string | number | null | undefined): st
   if (p.estadoFaenaBovina) {
     return `el rubro de faena bovina figura ${p.estadoFaenaBovina.toLowerCase()} en el registro de SENASA`
   }
-  return 'no tiene habilitado el rubro de faena bovina en el registro de SENASA'
+  // La mayoría de los "no" no son sanciones: son plantas porcinas, ovinas o
+  // caprinas que nunca tuvieron el rubro bovino. Decirles "no compra hacienda"
+  // sería falso — Campo Austral compra cerdos todos los días.
+  return 'no tiene el rubro de faena bovina en el registro de SENASA'
 }
 
 /** Fecha del relevamiento, para poder citarla. */

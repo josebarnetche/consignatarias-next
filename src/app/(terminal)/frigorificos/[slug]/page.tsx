@@ -5,6 +5,7 @@ import Link from 'next/link'
 import frigorificosData from '@/lib/data/frigorificos.json'
 import existenciasData from '@/lib/data/existencias-bovinas.json'
 import { getFrigorificoProfile } from '@/lib/dal/frigorificos'
+import { puedeFaenarBovinos, motivoNoFaena } from '@/lib/frigorificos/faena'
 import { getFrigorificoPlanStatus, frigorificoPuedeInterprovincial } from '@/lib/features'
 import { createServiceClient } from '@/lib/supabase'
 import CompraMayorista, { type VitrinaProduct } from './CompraMayorista'
@@ -340,6 +341,12 @@ export default async function FrigorificoDetailPage({
      relevamiento propio verificó que una planta no opera, mandamos ese dato y no el padrón:
      no se le ofrece al productor un formulario para contactar a alguien que no faena. */
   const opera = profile?.opera !== false
+  /* Y la otra mitad de la misma pregunta: aunque la planta exista y opere, puede
+     no tener habilitado el rubro de faena bovina. Brekan es ciclo I y figura en el
+     padrón, pero lo tiene SUSPENDIDO. `false` es dato verificado contra el registro
+     APS2 de SENASA; `null` significa que no la relevamos y no cambia nada. */
+  const faenaBovina = puedeFaenarBovinos(basicF.matricula)
+  const recibeHacienda = opera && faenaBovina !== false
   const volumenFaena = profile?.volumenFaena || null
 
   const hasContact = phone || email || website || whatsapp
@@ -467,11 +474,13 @@ export default async function FrigorificoDetailPage({
               El CUIT <span className="text-zinc-100 tabular-nums">{ficha.cuitFormateado}</span> corresponde a{' '}
               <span className="text-zinc-100">{name}</span>, {ficha.categoria ? ficha.categoria.toLowerCase() : 'frigorífico'} con sede en {localidadStr}.
               Habilitación SENASA <span className={senasaVigente ? 'text-positive' : 'text-zinc-100'}>{estadoSenasaTexto(ficha)}</span>, Mat. {basicF.matricula}.
-              {!opera && (
+              {!recibeHacienda && (
                 <>
                   {' '}
                   <span className="text-negative">
-                    La planta no está operando: la habilitación figura en el padrón, pero no faena.
+                    {opera
+                      ? `No faena bovinos: ${motivoNoFaena(basicF.matricula)}.`
+                      : 'La planta no está operando: la habilitación figura en el padrón, pero no faena.'}
                   </span>
                 </>
               )}
@@ -514,21 +523,27 @@ export default async function FrigorificoDetailPage({
 
       {/* Captura de venta a faena — el productor llegó al perfil de la planta →
           intención de venderle. Lo conectamos (comisión), no publicamos su dato. */}
-      {opera ? (
+      {recibeHacienda ? (
         <FrigorificoLeadCapture source={`frigorifico:${slug}`} frigorificoName={name} />
       ) : (
         <div className="terminal-panel border-negative/40">
           <div className="terminal-panel-header">
-            <span className="text-negative text-label tracking-widest">ESTA PLANTA NO ESTÁ OPERANDO</span>
+            <span className="text-negative text-label tracking-widest">
+              {opera ? 'ESTA PLANTA NO FAENA BOVINOS' : 'ESTA PLANTA NO ESTÁ OPERANDO'}
+            </span>
           </div>
           <div className="p-3 sm:p-4 text-data text-zinc-300 leading-relaxed">
             <p>
-              Según nuestro relevamiento, {name} no está faenando. La dejamos publicada porque el
-              CUIT se sigue consultando y es mejor encontrar el dato que no encontrar nada, pero no
-              tiene sentido mandarle una propuesta de hacienda.
+              {opera
+                ? `${name} no faena bovinos: ${motivoNoFaena(basicF.matricula)}. Puede faenar otras
+                   especies, procesar o almacenar carne, pero una propuesta de hacienda vacuna no
+                   tiene destino acá.`
+                : `Según nuestro relevamiento, ${name} no está faenando. La dejamos publicada porque el
+                   CUIT se sigue consultando y es mejor encontrar el dato que no encontrar nada, pero no
+                   tiene sentido mandarle una propuesta de hacienda.`}
             </p>
             <p className="mt-2">
-              Si tenés hacienda para vender,{' '}
+              Si tenés hacienda vacuna para vender,{' '}
               <Link href="/frigorificos" className="text-accent hover:underline">
                 buscá una planta activa en el directorio
               </Link>{' '}
