@@ -1882,22 +1882,22 @@
     },
     "terneros": {
       "current": 4646,
-      "prev": 4483,
-      "change": 3.6,
+      "prev": 4646,
+      "change": 0,
       "source": "MAG (derived from INMAG)"
     }
   },
   "corn": {
     "current": 239.83,
-    "prev": 235.33,
-    "change": 1.9,
+    "prev": 239.83,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
     "current": 1550,
-    "prev": 1545,
-    "change": 0.3,
+    "prev": 1550,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
@@ -2366,119 +2366,254 @@
     }
   },
   "consignatarioEntry": {
-    "date": "08/09/2026",
+    "date": "06/10/2026",
     "entries": [
       {
-        "remitente": "CIMERO S.A.",
-        "localidad": "GRAL. VILLEGAS",
-        "provincia": "BUE",
-        "enPie": 90,
-        "muertos": 0,
+        "remitente": "SANTANDREA JAVIER ANTONIO",
+        "localidad": "CHA�AR LADEADO  S.FE",
+        "provincia": "SFE",
+        "enPie": 81,
+        "muertos": 1,
         "caidos": 0,
-        "total": 90
+        "total": 82
       },
       {
-        "remitente": "AGROP. LOS GROBITOS S.A.",
-        "localidad": "LINCOLN",
-        "provincia": "BUE",
-        "enPie": 85,
+        "remitente": "BERTONE ARIEL CRISTIAN OSVALDO",
+        "localidad": "CHA�AR LADEADO  S.FE",
+        "provincia": "SFE",
+        "enPie": 68,
         "muertos": 0,
         "caidos": 0,
-        "total": 85
+        "total": 68
       },
       {
-        "remitente": "RUBIO ISOLDA CRISTINA",
-        "localidad": "GUALEGUAY",
+        "remitente": "AGROPECUARIA LAS MARIAS SA",
+        "localidad": "VILLA DE MARIA DEL R",
+        "provincia": "CBA",
+        "enPie": 66,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 66
+      },
+      {
+        "remitente": "MUY AGRO S.A.S",
+        "localidad": "JESUS MARIA",
+        "provincia": "CBA",
+        "enPie": 65,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 65
+      },
+      {
+        "remitente": "DINAGRO S.R.L.",
+        "localidad": "TALA",
         "provincia": "ERI",
+        "enPie": 58,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 58
+      },
+      {
+        "remitente": "CARELLI RAUL GERARDO",
+        "localidad": "CASILDA      S.FE",
+        "provincia": "SFE",
+        "enPie": 55,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 55
+      },
+      {
+        "remitente": "DINAGRO S.R.L.",
+        "localidad": "TALA",
+        "provincia": "ERI",
+        "enPie": 55,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 55
+      },
+      {
+        "remitente": "DINAGRO S.R.L.",
+        "localidad": "TALA",
+        "provincia": "ERI",
+        "enPie": 55,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 55
+      },
+      {
+        "remitente": "ENJONOR S.A.",
+        "localidad": "BOLIVAR",
+        "provincia": "BUE",
         "enPie": 50,
         "muertos": 0,
         "caidos": 0,
         "total": 50
       },
       {
-        "remitente": "ILLA JORGE JUAN",
-        "localidad": "BALCARCE",
-        "provincia": "BUE",
-        "enPie": 47,
+        "remitente": "PESCHIUTTA NESTOR JOSE",
+        "localidad": "RIO PRIMERO",
+        "provincia": "CBA",
+        "enPie": 48,
         "muertos": 0,
         "caidos": 0,
-        "total": 47
+        "total": 48
       },
       {
-        "remitente": "LOVIZIO S.A.",
-        "localidad": "AYACUCHO           B",
-        "provincia": "BUE",
+        "remitente": "TODONE FABIO JOAQUIN",
+        "localidad": "PARANA",
+        "provincia": "ERI",
         "enPie": 42,
         "muertos": 0,
         "caidos": 0,
         "total": 42
       },
       {
-        "remitente": "EL PRETEXTO S.A.",
-        "localidad": "CHIVILCOY",
-        "provincia": "BUE",
-        "enPie": 39,
+        "remitente": "CADAMURO LUIS ALBERTO",
+        "localidad": "TOTORAL",
+        "provincia": "CBA",
+        "enPie": 40,
         "muertos": 0,
         "caidos": 0,
-        "total": 39
+        "total": 40
       },
       {
-        "remitente": "VIEJO ROBLE S.A.",
-        "localidad": "FIRMAT",
-        "provincia": "SFE",
+        "remitente": "LOS MEDANOS S.C.A.",
+        "localidad": "25 DE MAYO",
+        "provincia": "BUE",
         "enPie": 38,
         "muertos": 0,
         "caidos": 0,
         "total": 38
       },
       {
-        "remitente": "GOLPE DE AGUA S.C.A.",
-        "localidad": "TRENQUE LAUQUEN",
-        "provincia": "BUE",
+        "remitente": "CONSALVI JORGE",
+        "localidad": "JESUS MARIA",
+        "provincia": "CBA",
         "enPie": 37,
         "muertos": 0,
         "caidos": 0,
         "total": 37
       },
       {
-        "remitente": "RIART SILVINA DEL CARMEN",
-        "localidad": "ALCORTA",
+        "remitente": "GRUPO D Y V S.R.L",
+        "localidad": "CASILDA      S.FE",
         "provincia": "SFE",
-        "enPie": 26,
+        "enPie": 37,
         "muertos": 0,
         "caidos": 0,
-        "total": 26
+        "total": 37
       },
       {
-        "remitente": "EL PROGRESO DE RAWSON S.A.",
-        "localidad": "CHACABUCO",
-        "provincia": "BUE",
-        "enPie": 18,
+        "remitente": "HILLAIRET VICTOR Y MARIA NANI",
+        "localidad": "PARANA",
+        "provincia": "ERI",
+        "enPie": 35,
         "muertos": 0,
         "caidos": 0,
-        "total": 18
+        "total": 35
       },
       {
-        "remitente": "HUMARAN MARTIN",
-        "localidad": "CHASCOMUS",
+        "remitente": "ESTEBAN AMBROSINO E HIJOS SA",
+        "localidad": "JESUS MARIA",
+        "provincia": "CBA",
+        "enPie": 32,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 32
+      },
+      {
+        "remitente": "PIERMATTEI HORACIO M.PIERMATTE",
+        "localidad": "CASEROS",
+        "provincia": "SFE",
+        "enPie": 31,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 31
+      },
+      {
+        "remitente": "BARON REMIGIO A. Y CARLOS",
+        "localidad": "PARANA",
+        "provincia": "ERI",
+        "enPie": 29,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 29
+      },
+      {
+        "remitente": "ABDO RAUL GERMAN",
+        "localidad": "JUNIN",
         "provincia": "BUE",
+        "enPie": 25,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 25
+      },
+      {
+        "remitente": "GRUPO D Y V S.R.L",
+        "localidad": "CASILDA      S.FE",
+        "provincia": "SFE",
+        "enPie": 23,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 23
+      },
+      {
+        "remitente": "ANTON PAUL ANDRES",
+        "localidad": "EDUARDO CASTEX",
+        "provincia": "LPA",
+        "enPie": 22,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 22
+      },
+      {
+        "remitente": "PRINOS PAMPA S.C.",
+        "localidad": "GRAL. LA MADRID",
+        "provincia": "BUE",
+        "enPie": 16,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 16
+      },
+      {
+        "remitente": "CAMPOS NILDA GLADIS",
+        "localidad": "URIBURU",
+        "provincia": "LPA",
+        "enPie": 15,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 15
+      },
+      {
+        "remitente": "BARAVALLE EDGARDO JUAN",
+        "localidad": "GRAL. LOPEZ",
+        "provincia": "SFE",
+        "enPie": 14,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 14
+      },
+      {
+        "remitente": "IRIARTE JORGE M.",
+        "localidad": "GRAL. LA MADRID",
+        "provincia": "BUE",
+        "enPie": 14,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 14
+      },
+      {
+        "remitente": "ROSKOPF UBALDO MARIO",
+        "localidad": "PARANA",
+        "provincia": "ERI",
         "enPie": 13,
         "muertos": 0,
         "caidos": 0,
         "total": 13
       },
       {
-        "remitente": "HERNANDEZ NESTOR ADRIAN",
-        "localidad": "FIRMAT",
-        "provincia": "SFE",
-        "enPie": 12,
-        "muertos": 0,
-        "caidos": 0,
-        "total": 12
-      },
-      {
-        "remitente": "EGUIA JORGE ALBERTO",
-        "localidad": "CHACABUCO",
+        "remitente": "MENDIZABAL HUMBERTO JAVIER",
+        "localidad": "GRAL. LA MADRID",
         "provincia": "BUE",
         "enPie": 11,
         "muertos": 0,
@@ -2486,44 +2621,116 @@
         "total": 11
       },
       {
-        "remitente": "S. Y D. LAFUENTE S.A.",
-        "localidad": "SAN A. GILES",
+        "remitente": "LELL JOAQUIN",
+        "localidad": "PARANA",
+        "provincia": "ERI",
+        "enPie": 10,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 10
+      },
+      {
+        "remitente": "MALIANNI CARLOS IVAN",
+        "localidad": "GRAL. LA MADRID",
         "provincia": "BUE",
+        "enPie": 10,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 10
+      },
+      {
+        "remitente": "OTAVIANI ALEJANDRO OMAR",
+        "localidad": "LINCOLN",
+        "provincia": "BUE",
+        "enPie": 10,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 10
+      },
+      {
+        "remitente": "SUC.DE LEALI HECTOR JOSE",
+        "localidad": "GRAL. LOPEZ",
+        "provincia": "SFE",
+        "enPie": 10,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 10
+      },
+      {
+        "remitente": "MENDIZABAL HUMBERTO JAVIER",
+        "localidad": "GRAL. LA MADRID",
+        "provincia": "BUE",
+        "enPie": 9,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 9
+      },
+      {
+        "remitente": "PRINOS PAMPA S.C.",
+        "localidad": "GRAL. LA MADRID",
+        "provincia": "BUE",
+        "enPie": 9,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 9
+      },
+      {
+        "remitente": "DINAGRO S.R.L.",
+        "localidad": "TALA",
+        "provincia": "ERI",
         "enPie": 8,
         "muertos": 0,
         "caidos": 0,
         "total": 8
       },
       {
-        "remitente": "VERCELLINO FERNANDO GABRIEL",
-        "localidad": "PUAN",
-        "provincia": "BUE",
-        "enPie": 8,
+        "remitente": "ANTON ANGEL CARLOS",
+        "localidad": "EDUARDO CASTEX",
+        "provincia": "LPA",
+        "enPie": 6,
         "muertos": 0,
         "caidos": 0,
-        "total": 8
+        "total": 6
       },
       {
-        "remitente": "RIART JAIMEALEJANDRO",
-        "localidad": "ALCORTA",
-        "provincia": "SFE",
-        "enPie": 7,
+        "remitente": "GIRARD SERGIO",
+        "localidad": "TOAY",
+        "provincia": "LPA",
+        "enPie": 6,
         "muertos": 0,
         "caidos": 0,
-        "total": 7
+        "total": 6
       },
       {
-        "remitente": "MONTANARI JUAN CARLOS",
-        "localidad": "FIRMAT",
+        "remitente": "CASADEI CARLOS ALBERTO",
+        "localidad": "CASEROS",
         "provincia": "SFE",
+        "enPie": 5,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 5
+      },
+      {
+        "remitente": "CASADEI HECTOR HUGO",
+        "localidad": "CASEROS",
+        "provincia": "SFE",
+        "enPie": 5,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 5
+      },
+      {
+        "remitente": "PESCHIUTTA NESTOR JOSE",
+        "localidad": "RIO PRIMERO",
+        "provincia": "CBA",
         "enPie": 4,
         "muertos": 0,
         "caidos": 0,
         "total": 4
       },
       {
-        "remitente": "VITALE MILENA INES",
-        "localidad": "CHIVILCOY",
+        "remitente": "MALIANNI CARLOS IVAN",
+        "localidad": "GRAL. LA MADRID",
         "provincia": "BUE",
         "enPie": 3,
         "muertos": 0,
@@ -2531,36 +2738,36 @@
         "total": 3
       },
       {
-        "remitente": "HEIM NELIDA INES",
-        "localidad": "PUAN",
-        "provincia": "BUE",
-        "enPie": 2,
-        "muertos": 0,
-        "caidos": 0,
-        "total": 2
-      },
-      {
-        "remitente": "MIGUEL JUAN CARLOS",
-        "localidad": "FIRMAT",
+        "remitente": "ADRIAN PILATTI S.R.L.",
+        "localidad": "CASEROS",
         "provincia": "SFE",
-        "enPie": 2,
-        "muertos": 0,
-        "caidos": 0,
-        "total": 2
-      },
-      {
-        "remitente": "ISPIZUA CLEMENTE LUIS",
-        "localidad": "BALCARCE",
-        "provincia": "BUE",
         "enPie": 1,
         "muertos": 0,
         "caidos": 0,
         "total": 1
       },
       {
-        "remitente": "VITALE MILENA INES",
-        "localidad": "CHIVILCOY",
-        "provincia": "BUE",
+        "remitente": "GIRARD SERGIO",
+        "localidad": "TOAY",
+        "provincia": "LPA",
+        "enPie": 1,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 1
+      },
+      {
+        "remitente": "PAVICICH CARLOS COSME",
+        "localidad": "CASEROS",
+        "provincia": "SFE",
+        "enPie": 1,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 1
+      },
+      {
+        "remitente": "PESCHIUTTA NESTOR JOSE",
+        "localidad": "RIO PRIMERO",
+        "provincia": "CBA",
         "enPie": 1,
         "muertos": 0,
         "caidos": 0,
@@ -2578,8 +2785,8 @@
   },
   "soy": {
     "current": 508.33,
-    "prev": 509,
-    "change": -0.1,
+    "prev": 508.33,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API",
     "date": "2026-10-06"
