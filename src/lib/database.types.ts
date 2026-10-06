@@ -1304,6 +1304,13 @@ export type Database = {
       }
       frigorifico_profiles: {
         Row: {
+          contacto_confianza: string | null
+          contacto_fuente: string | null
+          contacto_verificado_at: string | null
+          email_ruteo: string | null
+          notas_internas: string | null
+          opera: boolean | null
+          telefono_ruteo: string | null
           claimed_at: string | null
           claimed_by_email: string | null
           created_at: string
@@ -1326,6 +1333,13 @@ export type Database = {
           whatsapp: string | null
         }
         Insert: {
+          contacto_confianza?: string | null
+          contacto_fuente?: string | null
+          contacto_verificado_at?: string | null
+          email_ruteo?: string | null
+          notas_internas?: string | null
+          opera?: boolean | null
+          telefono_ruteo?: string | null
           claimed_at?: string | null
           claimed_by_email?: string | null
           created_at?: string
@@ -1348,6 +1362,13 @@ export type Database = {
           whatsapp?: string | null
         }
         Update: {
+          contacto_confianza?: string | null
+          contacto_fuente?: string | null
+          contacto_verificado_at?: string | null
+          email_ruteo?: string | null
+          notas_internas?: string | null
+          opera?: boolean | null
+          telefono_ruteo?: string | null
           claimed_at?: string | null
           claimed_by_email?: string | null
           created_at?: string

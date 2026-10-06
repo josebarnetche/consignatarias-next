@@ -43,6 +43,16 @@ export interface EnrichedFrigorifico {
   verified: boolean
   featured: boolean
   claimedByEmail: string | null
+  /**
+   * Contacto relevado de fuentes públicas, SOLO para derivarle consultas.
+   * ⚠️ No renderizar nunca en la ficha: si se publica, el visitante escribe
+   * directo a la planta y perdemos la operación.
+   */
+  emailRuteo: string | null
+  telefonoRuteo: string | null
+  contactoConfianza: string | null
+  /** false = no está faenando (cierre o baja de RENSPA). No se le deriva nada. */
+  opera: boolean
   claimedAt: string | null
   // Habilitación (gate de confianza por constancia — §3 del spec privado)
   habilitacionNivel: string | null
@@ -88,6 +98,10 @@ export async function getFrigorificoProfile(cuit: string): Promise<EnrichedFrigo
       verified: data?.verified || false,
       featured: data?.featured || false,
       claimedByEmail: data?.claimed_by_email || null,
+      emailRuteo: data?.email_ruteo || null,
+      telefonoRuteo: data?.telefono_ruteo || null,
+      contactoConfianza: data?.contacto_confianza || null,
+      opera: data?.opera !== false,
       claimedAt: data?.claimed_at || null,
       habilitacionNivel: data?.habilitacion_nivel || null,
       habilitacionVerificada: data?.habilitacion_verificada || false,
@@ -106,6 +120,10 @@ export async function getFrigorificoProfile(cuit: string): Promise<EnrichedFrigo
       direccion: staticEntry.direccion,
       phone: staticEntry.telefono || null,
       email: staticEntry.email || null,
+      emailRuteo: null,
+      telefonoRuteo: null,
+      contactoConfianza: null,
+      opera: true,
       website: staticEntry.web || null,
       description: staticEntry.notas || null,
       volumenFaena: staticEntry.volumenFaena,

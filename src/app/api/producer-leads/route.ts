@@ -182,8 +182,13 @@ export async function POST(req: NextRequest) {
       const cuit = d.source.slice('frigorifico:'.length)
       getFrigorificoProfile(cuit)
         .then((prof) => {
-          const to = prof?.email || prof?.claimedByEmail
-          if (!prof || !to) return
+          // Orden: el mail del dueño que reclamó la ficha, después el que la planta
+          // publica, y recién después el que relevamos nosotros de fuentes públicas.
+          // Una planta que no está faenando NO recibe derivaciones: Vicentin Faenas
+          // está cerrada y dada de baja por RENSPA, mandarle un productor sería
+          // hacerle perder el viaje.
+          const to = prof?.claimedByEmail || prof?.email || prof?.emailRuteo
+          if (!prof || !to || prof.opera === false) return
           return sendFrigorificoLeadAlert({
             to,
             frigorificoName: prof.name || 'tu frigorífico',
