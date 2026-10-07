@@ -13,27 +13,45 @@
  * MAG. Resultó ser un banco de pruebas y no un competidor, pero el agujero es el
  * mismo para cualquiera.
  *
- * LA DEFENSA REAL NO ES EL TECHO: ES QUE NO SE PUEDA ENUMERAR. Un tope por IP lo
- * esquiva cualquiera alquilando direcciones — son baratas y rotan. Lo que no se
- * esquiva es no poder preguntar "dame la lista": sin credencial hay que saber de
- * antemano a quién buscás, y entonces no hay barrido posible, tarde lo que tarde.
- * El techo diario es el cinturón; el cierre de la enumeración es el tirante.
+ * POSTURA ELEGIDA: VIDRIERA (decisión de José, 07-10-2026). Quien barría resultó
+ * ser **MCP-Bench**, un banco de pruebas académico que mide agentes contra ~28
+ * servidores MCP reales y que nos eligió como uno de ellos. Sus tareas enumeran
+ * por diseño —buscan con nombres truncados y erratas (`rango`, `ango`, `r`) para
+ * medir recuperación difusa—, así que cerrar la enumeración nos sacaba del
+ * benchmark. Entre proteger un directorio que de todos modos es público y quedar
+ * en la vitrina donde nos descubren, se eligió la vitrina.
  *
- * LO QUE NO SE TOCA. El que busca una firma por nombre, un frigorífico por CUIT o
- * los remates de su provincia pasa sin enterarse: son 25 llamadas por día y nadie
- * que esté resolviendo algo real hace más. El techo cuenta por IP y por día.
+ * QUÉ QUEDA ENTONCES. Sólo un tope por IP y por día, alto: frena la extracción
+ * industrial sostenida y no toca ni a un benchmark ni a una persona. **No es una
+ * defensa real** y conviene no creer que lo es: las IPs son baratas y rotan, y
+ * quien quiera la base la va a juntar igual. Lo que de verdad protegería es
+ * cerrar la enumeración —poner `ENUMERACION_ABIERTA = false`—, y eso está a un
+ * booleano de distancia el día que el benchmark deje de importar.
+ *
+ * LO QUE NUNCA SE TOCÓ. El que busca una firma por nombre, un frigorífico por
+ * CUIT o los remates de su provincia no se entera de que esto existe.
  */
 
 import { enforceRateLimit, clientIp } from '@/lib/rate-limit-db'
 
-/** Filas por llamada sin credencial. Alcanza para responder, no para copiar. */
-export const FILAS_ANONIMAS = 5
+/**
+ * ¿Se puede pedir "dame la lista" sin credencial? En `true` el servidor queda
+ * apto para benchmarks y exploradores; en `false` hay que saber a quién buscás y
+ * el barrido se vuelve inviable. Es la única perilla que importa.
+ */
+export const ENUMERACION_ABIERTA = true
 
-/** Llamadas de listado por IP y por día sin credencial. */
-export const LLAMADAS_DIA_ANONIMAS = 25
+/** Filas por llamada sin credencial. En modo vidriera, el tope propio de cada tool. */
+export const FILAS_ANONIMAS = 50
+
+/**
+ * Llamadas de listado por IP, por día y por tool. Alto a propósito: una corrida
+ * de MCP-Bench hizo 1.051 llamadas en un día y tiene que pasar entera.
+ */
+export const LLAMADAS_DIA_ANONIMAS = 2000
 
 /** Ventana máxima, en días, para la actividad del MAG sin credencial. */
-export const VENTANA_MAX_DIAS = 31
+export const VENTANA_MAX_DIAS = 365
 
 export interface Veredicto {
   /** Filas que se pueden devolver en esta llamada. */
@@ -70,7 +88,7 @@ export async function techoListado(opts: {
 
   if (autorizado) return { limite: Math.min(pedidoValido, tope), corte: null }
 
-  if (enumera) {
+  if (enumera && !ENUMERACION_ABIERTA) {
     return {
       limite: 0,
       corte: `Esta consulta pide el listado completo, y eso va con credencial.\n\n${PEDI_KEY}`,

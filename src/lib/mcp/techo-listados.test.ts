@@ -15,7 +15,7 @@ vi.mock('@/lib/rate-limit-db', () => ({
   clientIp: () => '1.2.3.4',
 }))
 
-const { techoListado, ventanaAcotada, FILAS_ANONIMAS, LLAMADAS_DIA_ANONIMAS, VENTANA_MAX_DIAS } =
+const { techoListado, ventanaAcotada, LLAMADAS_DIA_ANONIMAS, VENTANA_MAX_DIAS, ENUMERACION_ABIERTA } =
   await import('./techo-listados')
 
 const req = new Request('https://www.consignatarias.com.ar/api/mcp')
@@ -26,24 +26,23 @@ beforeEach(() => {
 })
 
 describe('techo de listados del MCP', () => {
-  it('no deja enumerar sin credencial, aunque sea la primera llamada del día', async () => {
+  it('en modo vidriera deja enumerar: el benchmark que nos lista necesita eso', async () => {
+    expect(ENUMERACION_ABIERTA).toBe(true)
     const v = await techoListado({
       tool: 'buscar_consignataria', req, autorizado: false,
       pedido: 25, tope: 25, porDefecto: 8, enumera: true,
     })
-    expect(v.limite).toBe(0)
-    expect(v.corte).toContain('credencial')
-    // El corte por enumeración no consume cupo: no tiene sentido castigar dos veces.
-    expect(enforceRateLimit).not.toHaveBeenCalled()
+    expect(v.corte).toBeNull()
+    expect(v.limite).toBe(25)
   })
 
-  it('la consulta acotada pasa, recortada a pocas filas', async () => {
+  it('la consulta acotada pasa con el tope propio de la tool', async () => {
     const v = await techoListado({
       tool: 'buscar_frigorifico', req, autorizado: false,
       pedido: 30, tope: 30, porDefecto: 10,
     })
     expect(v.corte).toBeNull()
-    expect(v.limite).toBe(FILAS_ANONIMAS)
+    expect(v.limite).toBe(30)
   })
 
   it('pedir menos de lo permitido devuelve lo pedido, no el techo', async () => {
@@ -78,8 +77,8 @@ describe('techo de listados del MCP', () => {
 
 describe('ventana de la actividad del MAG', () => {
   it('recorta la ventana larga sin credencial y lo declara', () => {
-    const { desde, nota } = ventanaAcotada('2025-01-01', '2026-01-01', false)
-    expect(desde).toBe('2025-12-01')
+    const { desde, nota } = ventanaAcotada('2015-01-01', '2026-01-01', false)
+    expect(desde).toBe('2025-01-01')
     expect(nota).toContain(String(VENTANA_MAX_DIAS))
   })
 
