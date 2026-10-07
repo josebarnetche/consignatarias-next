@@ -63,9 +63,13 @@ describe('estacionalidad', () => {
 describe('renta del campo', () => {
   const PRECIOS = { novilloUsdKg: 2.6, sojaUsdTn: 500 }
   const zonas: ZonaTierra[] = [
-    { provincia: 'Corrientes', zona: 'Centro', usd_ha: 1900, kg_ha_ano: 150, qq_soja_ha_anio: null, anos_repago: 7, aptitud: 'ganadera', n: 12, fecha: '2026-08' },
+    // Corrientes con canon RELEVADO: 3 kg/ha/mes = 36 kg/ha/año. La producción
+    // (150) es casi cuatro veces eso y no es lo que paga el arrendatario.
+    { provincia: 'Corrientes', zona: 'Centro', usd_ha: 1900, kg_ha_ano: 150, kg_ha_mes_canon: 3, canon_fuente: 'UNNE 2023', qq_soja_ha_anio: null, anos_repago: 7, aptitud: 'ganadera', n: 12, fecha: '2026-08' },
     { provincia: 'Buenos Aires', zona: 'Zona núcleo', usd_ha: 18500, kg_ha_ano: 300, qq_soja_ha_anio: 21, anos_repago: 21.1, aptitud: 'agricola', n: 10, fecha: '2026-06' },
     { provincia: 'Córdoba', zona: null, usd_ha: 5100, kg_ha_ano: 120, qq_soja_ha_anio: 10.5, anos_repago: 14.6, aptitud: 'mixta', n: 26, fecha: '2024' },
+    // Sin canon relevado: cae al 30 % de la producción → 100 × 0,3 = 30 kg/ha/año.
+    { provincia: 'La Pampa', zona: null, usd_ha: 800, kg_ha_ano: 100, qq_soja_ha_anio: null, anos_repago: 4.5, aptitud: 'ganadera', n: 8, fecha: '2026-08' },
   ]
 
   it('valúa cada aptitud por su propio canon, no todo con novillo', () => {
@@ -76,41 +80,58 @@ describe('renta del campo', () => {
     expect(nucleo.rentaUsdHa).toBeCloseTo(1050, 0)
     const ctes = r.find((x) => x.provincia === 'Corrientes')!
     expect(ctes.rentaSegun).toBe('ganadero')
-    expect(ctes.rentaUsdHa).toBeCloseTo(390, 0)
+    // 36 kg de canon × 2,6 = 93,6. Con la producción (150) habrían sido 390.
+    expect(ctes.rentaUsdHa).toBeCloseTo(93.6, 1)
+    expect(ctes.canonRelevado).toBe(true)
+  })
+
+  it('⚠️ el canon NO es la producción: tomar la producción triplica el rendimiento', () => {
+    const r = rentaCampo(zonas, PRECIOS)
+    const ctes = r.find((x) => x.provincia === 'Corrientes')!
+    // 93,6 sobre 1.900 = 4,93 %. Con la producción daba 20,5 %, que no lo paga nadie.
+    expect(ctes.rendimientoPct).toBeCloseTo(4.93, 1)
+    expect(ctes.canonKgNovilloHaAno).toBe(36)
+  })
+
+  it('sin canon relevado aplica el 30 % de la producción, y lo declara', () => {
+    const r = rentaCampo(zonas, PRECIOS)
+    const lp = r.find((x) => x.provincia === 'La Pampa')!
+    expect(lp.canonKgNovilloHaAno).toBe(30)
+    expect(lp.canonRelevado).toBe(false)
+    expect(lp.rentaUsdHa).toBeCloseTo(78, 0)
   })
 
   it('en zona mixta toma la renta mayor y declara cuál es', () => {
     const r = rentaCampo(zonas, PRECIOS)
     const cba = r.find((x) => x.provincia === 'Córdoba')!
-    // ganadero 120 × 2,6 = 312 · agrícola 10,5 × 50 = 525 → gana el agrícola
+    // ganadero: 120 × 0,3 = 36 kg × 2,6 = 93,6 · agrícola 10,5 × 50 = 525 → gana el agrícola
     expect(cba.rentaSegun).toBe('agrícola')
     expect(cba.rentaUsdHa).toBeCloseTo(525, 0)
-    expect(cba.rentaGanaderaUsdHa).toBeCloseTo(312, 0)
+    expect(cba.rentaGanaderaUsdHa).toBeCloseTo(93.6, 1)
   })
 
   it('guarda el canon en su unidad real, que es como se firma', () => {
     const r = rentaCampo(zonas, PRECIOS)
     const ctes = r.find((x) => x.provincia === 'Corrientes')!
-    expect(ctes.canonKgNovilloHaAno).toBe(150)
+    expect(ctes.canonKgNovilloHaAno).toBe(36)
     const nucleo = r.find((x) => x.zona === 'Zona núcleo')!
     expect(nucleo.canonQqSojaHaAno).toBe(21)
   })
 
   it('ya no excluye la tierra agrícola: ahora la valúa bien', () => {
-    expect(rentaCampo(zonas, PRECIOS)).toHaveLength(3)
+    expect(rentaCampo(zonas, PRECIOS)).toHaveLength(4)
   })
 
   it('filtra por aptitud cuando se la piden', () => {
     const r = rentaCampo(zonas, PRECIOS, { aptitud: 'ganadera' })
-    expect(r).toHaveLength(1)
-    expect(r[0].provincia).toBe('Corrientes')
+    expect(r.map((x) => x.provincia).sort()).toEqual(['Corrientes', 'La Pampa'])
   })
 
   it('ordena por rendimiento', () => {
     const r = rentaCampo(zonas, PRECIOS)
-    // Corrientes 20,5% · Córdoba 10,3% · núcleo 5,7%
-    expect(r[0].provincia).toBe('Corrientes')
-    expect(r.at(-1)!.zona).toBe('Zona núcleo')
+    // Córdoba 10,3% · La Pampa 9,8% · núcleo 5,7% · Corrientes 4,9%
+    expect(r[0].provincia).toBe('Córdoba')
+    expect(r[0].rendimientoPct!).toBeGreaterThan(r.at(-1)!.rendimientoPct!)
   })
 
   it('sin precio de soja, la agrícola no inventa renta', () => {

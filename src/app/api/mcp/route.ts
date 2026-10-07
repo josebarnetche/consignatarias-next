@@ -789,7 +789,7 @@ const TOOLS: Tool[] = [
   {
     name: 'farmland_yield',
     description:
-      'Qué renta un dólar puesto en campo argentino, por zona y para las TRES aptitudes (ganadera, agrícola y mixta): USD/hectárea, renta anual del arrendamiento en USD, el canon en su unidad real (kg de novillo o quintales de soja por ha/año), el rendimiento sobre el valor de la tierra y los años de repago. Para el comprador del exterior que evalúa entrar. Args: presupuesto_usd (opcional, lo reparte en hectáreas), provincia, aptitud (ganadera|agricola|mixta), limite (def 10). Cada aptitud rinde por lo suyo: la zona núcleo vale por la soja, no por los novillos. [EN] What a dollar buys and earns in Argentine farmland, by zone: USD per hectare, annual rental yield, payback years. Covers grazing, cropping and mixed land.',
+      'El RENDIMIENTO ANUAL de un campo argentino sobre el capital invertido, por zona y para las tres aptitudes (ganadera, agrícola y mixta). Devuelve: USD/hectárea (el capital), la renta anual del arrendamiento, el canon en su unidad real —kg de novillo o quintales de soja por ha/año—, el rendimiento como % sobre el capital y los años de repago. Lo particular: el canon se pacta en PRODUCTO, no en moneda, así que el yield está nominado en carne o grano y no se licúa con una devaluación. Para el comprador del exterior que evalúa entrar. Args: presupuesto_usd (opcional, lo reparte en hectáreas), provincia, aptitud (ganadera|agricola|mixta), limite (def 10). Cada aptitud rinde por lo suyo: la zona núcleo vale por la soja, no por los novillos. [EN] What a dollar buys and earns in Argentine farmland, by zone: USD per hectare, annual rental yield, payback years. Covers grazing, cropping and mixed land.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -822,21 +822,36 @@ const TOOLS: Tool[] = [
 
       const lineas = filas.slice(0, limite).map((z) => {
         const nombre = `${z.provincia}${z.zona ? ` — ${z.zona}` : ''}`
+        // El canon va en su unidad: así se firma el contrato. El asterisco marca
+        // si fue relevado o si es el 30 % supuesto sobre la producción.
+        const canon =
+          z.rentaSegun === 'agrícola'
+            ? `${z.canonQqSojaHaAno} qq soja/ha/año`
+            : z.canonKgNovilloHaAno != null
+              ? `${z.canonKgNovilloHaAno} kg novillo/ha/año${z.canonRelevado ? '' : ' (estimado)'}`
+              : 's/canon'
+        const repago = z.rendimientoPct ? ` · repago ${Math.round(100 / z.rendimientoPct)} años` : ''
         const ha = z.hectareasPorPresupuesto != null ? ` · ${z.hectareasPorPresupuesto.toLocaleString('es-AR')} ha con tu presupuesto` : ''
-        const rend = z.rendimientoPct != null ? `${z.rendimientoPct}%/año` : 'sin canon relevado'
-        // El canon va en su unidad: es como se firma el contrato, y no depende del tipo de cambio.
-        const canon = z.rentaSegun === 'agrícola'
-          ? `${z.canonQqSojaHaAno} qq soja/ha/año`
-          : z.canonKgNovilloHaAno != null ? `${z.canonKgNovilloHaAno} kg novillo/ha/año` : 's/canon'
-        return `· ${nombre} [${z.aptitud}]: US$${z.usdHa.toLocaleString('es-AR')}/ha · renta US$${z.rentaUsdHa ?? '—'}/ha (${canon}) = ${rend}${z.aniosRepago ? ` · repago ${z.aniosRepago} años` : ''}${ha} · n=${z.observaciones ?? '?'} · ${z.fechaDato ?? 's/f'}`
+        return (
+          `· ${nombre} [${z.aptitud}]: rinde ${z.rendimientoPct != null ? `${z.rendimientoPct}%/año` : 's/d'}` +
+          ` — US$${z.usdHa.toLocaleString('es-AR')}/ha de capital, renta US$${z.rentaUsdHa ?? '—'}/ha (${canon})${repago}${ha}` +
+          ` · n=${z.observaciones ?? '?'} · ${z.fechaDato ?? 's/f'}`
+        )
       })
       const soja = sojaUsdTn ? `soja US$${sojaUsdTn}/tn` : 'sin precio de soja'
+      const mejor = filas.find((z) => z.rendimientoPct != null)
+      const ejemplo = mejor
+        ? `\n\nEjemplo con 2.000 ha en ${mejor.provincia}${mejor.zona ? ` (${mejor.zona})` : ''}: ` +
+          `capital US$${(mejor.usdHa * 2000).toLocaleString('es-AR')}, ` +
+          `renta anual US$${Math.round((mejor.rentaUsdHa ?? 0) * 2000).toLocaleString('es-AR')} = ${mejor.rendimientoPct}% sobre el capital.`
+        : ''
       return ok(
-        `Renta del campo argentino — novillo US$${novUsd.toFixed(2)}/kg vivo, ${soja}:\n${lineas.join('\n')}\n\n` +
-          'El canon de arrendamiento NO se pacta en pesos: en campo ganadero se pacta en kilos de novillo por hectárea y por año, y en campo agrícola en quintales de soja. ' +
-          'El dólar de arriba es una conversión, no la unidad del contrato. ' +
-          'Cada aptitud rinde por lo suyo: la hectárea de zona núcleo vale por la soja, no por los novillos, y valuarla con canon de hacienda daría un rendimiento que no existe. ' +
-          'En zona mixta la renta de referencia es la mayor de las dos, porque el dueño arrienda a quien le paga más. ' +
+        `Renta del campo argentino — novillo US$${novUsd.toFixed(2)}/kg vivo, ${soja}:\n${lineas.join('\n')}${ejemplo}\n\n` +
+          'CÓMO LEER EL RENDIMIENTO. Es la renta anual del arrendamiento sobre el valor de la tierra: lo mismo que un yield sobre capital. ' +
+          'Lo particular del caso argentino es que **el canon no se pacta en pesos ni en dólares, sino en producto**: kilos de novillo por hectárea y por año en campo ganadero, quintales de soja en campo agrícola. ' +
+          'El rendimiento está nominado en carne o en grano, así que no se licúa con una devaluación — es la diferencia con cualquier renta en moneda local. El dólar de arriba es una conversión al precio de hoy, no la unidad del contrato.\n' +
+          '⚠️ El canon NO es lo que la hectárea produce: el arrendatario paga una fracción. Donde hay arrendamiento relevado (avisos o estudios) manda ese; donde no, se aplica el 30 % de la producción y la línea lo dice con "(estimado)". ' +
+          'Cada aptitud rinde por lo suyo: la zona núcleo vale por la soja, no por los novillos. En zona mixta la renta de referencia es la mayor de las dos, porque el dueño arrienda a quien le paga más.\n' +
           'Cada fila lleva su cantidad de observaciones y la fecha del relevamiento. Fuente: relevamiento propio + Compañía Argentina de Tierras.',
       )
     },

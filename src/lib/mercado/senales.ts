@@ -160,8 +160,15 @@ export interface ZonaTierra {
   region?: string | null
   zona: string | null
   usd_ha: number | null
-  /** Canon ganadero: kilos de novillo por hectárea y por año. */
+  /**
+   * ⚠️ PRODUCTIVIDAD, no canon: kilos de carne que PRODUCE la hectárea por año.
+   * No es lo que paga un arrendatario. Confundirlos triplica el rendimiento.
+   */
   kg_ha_ano: number | null
+  /** El canon relevado, en kg de novillo por hectárea y por MES. Esto sí es la renta. */
+  kg_ha_mes_canon?: number | null
+  /** Si está cargado, el canon fue RELEVADO (avisos o estudios) y manda sobre el supuesto. */
+  canon_fuente?: string | null
   /** Canon agrícola: quintales de soja por hectárea y por año. */
   qq_soja_ha_anio?: number | null
   anos_repago: number | null
@@ -171,6 +178,13 @@ export interface ZonaTierra {
 }
 
 export type Aptitud = 'ganadera' | 'agricola' | 'mixta'
+
+/**
+ * Qué fracción de lo que produce la hectárea se lleva el canon cuando no hay un
+ * arrendamiento relevado. Calibrado en `valuacion-campos.ts` contra dos fuentes
+ * independientes que convergen: los avisos del Salado y el estudio de la UNNE.
+ */
+export const PROPORCION_CANON_SOBRE_PRODUCCION = 0.3
 
 export interface RentaZona {
   provincia: string
@@ -185,6 +199,8 @@ export interface RentaZona {
   rentaAgricolaUsdHa: number | null
   /** El canon como se pacta de verdad, en su unidad. */
   canonKgNovilloHaAno: number | null
+  /** Si el canon salió de un relevamiento o de aplicar el 30 % sobre la producción. */
+  canonRelevado: boolean
   canonQqSojaHaAno: number | null
   rendimientoPct: number | null
   aniosRepago: number | null
@@ -237,8 +253,25 @@ export function rentaCampo(
       const apt = APTITUDES[String(z.aptitud ?? 'ganadera').toLowerCase()] ?? 'ganadera'
       const usdHa = z.usd_ha as number
 
-      const rg =
-        z.kg_ha_ano != null && novilloUsdKg > 0 ? z.kg_ha_ano * novilloUsdKg : null
+      /**
+       * ⚠️ EL CANON NO ES LA PRODUCCIÓN. `kg_ha_ano` son los kilos que la hectárea
+       * PRODUCE; el arrendatario paga una fracción de eso. Tomar la producción
+       * como renta inflaba el rendimiento cerca de tres veces: en el Salado la
+       * producción son 180 kg/ha/año y el canon relevado en doce avisos es 65.
+       *
+       * El orden es el mismo que usa `valuacion-campos.ts`: si hay canon relevado
+       * manda el canon, porque es lo que se paga y no lo que suponemos que se
+       * paga; si no hay, se aplica el 30 % sobre la producción, que es el supuesto
+       * que el repo ya calibró contra los avisos del Salado y el estudio de la UNNE.
+       */
+      const canonKgAno =
+        z.kg_ha_mes_canon != null && z.kg_ha_mes_canon > 0
+          ? z.kg_ha_mes_canon * 12
+          : z.kg_ha_ano != null
+            ? z.kg_ha_ano * PROPORCION_CANON_SOBRE_PRODUCCION
+            : null
+      const relevado = !!(z.canon_fuente && z.kg_ha_mes_canon)
+      const rg = canonKgAno != null && novilloUsdKg > 0 ? canonKgAno * novilloUsdKg : null
       const ra =
         z.qq_soja_ha_anio != null && sojaUsdQq ? z.qq_soja_ha_anio * sojaUsdQq : null
 
@@ -264,7 +297,8 @@ export function rentaCampo(
         rentaSegun: segun,
         rentaGanaderaUsdHa: rg != null ? Number(rg.toFixed(1)) : null,
         rentaAgricolaUsdHa: ra != null ? Number(ra.toFixed(1)) : null,
-        canonKgNovilloHaAno: z.kg_ha_ano ?? null,
+        canonKgNovilloHaAno: canonKgAno != null ? Number(canonKgAno.toFixed(1)) : null,
+        canonRelevado: relevado,
         canonQqSojaHaAno: z.qq_soja_ha_anio ?? null,
         rendimientoPct: renta != null ? Number(((100 * renta) / usdHa).toFixed(2)) : null,
         aniosRepago: z.anos_repago ?? null,
