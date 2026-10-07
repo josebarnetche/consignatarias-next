@@ -371,6 +371,82 @@ def tierra() -> Serie:
                  nota="Campo ganadero únicamente. Cada fila con su n y su fecha de relevamiento.")
 
 
+
+#: Piso de cabezas para publicar el precio de una zona. Criterio nuestro: SIO
+#: Carnes no publica ningún aviso de representatividad.
+MINIMO_CABEZAS_ZONA = 500
+
+
+def _miles(n: float) -> str:
+    """12345.6 → "12.346". Separador de miles argentino, sin decimales."""
+    return f"{round(n):,}".replace(",", ".")
+
+
+def sio_zonas(m: Mes) -> Serie:
+    """
+    Lo que se pagó por el novillo FUERA de Cañuelas, por zona de destino.
+
+    Es la única respuesta pública a "¿cuánto más o menos se pagó en mi zona?".
+    Sale de SIO Carnes (MAGyP): liquidaciones electrónicas declaradas a ARCA
+    (RG 3964/2016) cruzadas con los DT-e de SENASA.
+
+    ⚠️ Se usa el AGREGADO oficial, nunca el microdato. El export operación por
+    operación de septiembre de 2026 tiene 33 % de filas duplicadas, suma 9,85
+    millones de cabezas en un mes (más que la faena nacional de un trimestre) y
+    llega a $18.683.076 el kilo. Calculado desde ahí el novillo daba $3.600-5.500;
+    el agregado oficial del mismo mes dice $3.021. El scraper
+    `scripts/scrapers/sio-carnes.mjs` toma el agregado por eso.
+
+    ⚠️ Es hacienda con destino a FAENA: no hay invernada ni cría. Y el corte es
+    por zona de DESTINO — dice qué pagaron las plantas de una zona, no qué cobró
+    el productor de una provincia.
+    """
+    a = _json_repo("sio-carnes.json")
+    mes = (a.get("meses") or {}).get(m.ym)
+    if not mes:
+        return Serie([], "SIO Carnes — MAGyP", None)
+
+    zonas = mes.get("zonas") or {}
+    pais = zonas.get("pais") or []
+
+    def ponderado(filas: list[dict]) -> tuple[float | None, int]:
+        nov = [f for f in filas if f.get("categoria") == "Novillo" and f.get("cabezas")]
+        cab = sum(f["cabezas"] for f in nov)
+        if not cab:
+            return None, 0
+        return round(sum(f["precio_kg"] * f["cabezas"] for f in nov) / cab, 2), cab
+
+    ref, cab_pais = ponderado(pais)
+    puntos: list[dict] = []
+    for clave, val in zonas.items():
+        if clave == "pais" or not isinstance(val, dict):
+            continue
+        precio, cab = ponderado(val.get("filas") or [])
+        if precio is None:
+            continue
+        puntos.append({
+            "zona": clave.replace("zona_", "Zona "),
+            "provincias": val.get("provincias"),
+            "precio_kg": precio,
+            "cabezas": cab,
+            "vs_pais_pct": round(100 * (precio / ref - 1), 1) if ref else None,
+            # Una zona con 42 cabezas en el mes no es un mercado: es una anécdota.
+            # Se calcula igual (suma al país) pero no se publica como "el precio
+            # de esa zona". El piso es editorial nuestro: SIO no avisa nada.
+            "representativo": cab >= MINIMO_CABEZAS_ZONA,
+        })
+    puntos.sort(key=lambda x: x["precio_kg"], reverse=True)
+    return Serie(
+        puntos, "SIO Carnes — MAGyP", mes.get("fechaDeCorte"),
+        nota=(
+            "Novillo, promedio ponderado por cabezas. Hacienda con destino a faena. "
+            f"Referencia país ${_miles(ref)}/kg sobre {_miles(cab_pais)} cabezas. "
+            f"Las zonas con menos de {MINIMO_CABEZAS_ZONA} cabezas en el mes se "
+            "listan sin precio: no alcanzan para una referencia."
+            if ref else None
+        ),
+    )
+
 def remates(m: Mes) -> dict:
     """Remates del mes que viene, que es lo único del informe con fecha de caducidad."""
     try:
@@ -425,6 +501,7 @@ class Paquete:
     subcategorias: Serie
     composicion: Serie
     tierra: Serie
+    sio: Serie
     remates: dict
     macro: dict
     faltantes: list[str] = field(default_factory=list)
@@ -503,6 +580,7 @@ def cargar(ym: str) -> Paquete:
         subcategorias=opcional("subcategorías del mes", subcategorias_mes, m),
         composicion=opcional("composición del mes", composicion_mes, m),
         tierra=opcional("valor de la tierra", tierra),
+        sio=opcional("SIO Carnes", sio_zonas, m),
         remates=opcional("remates", remates, m),
         macro=opcional("macro", macro, m),
         faltantes=faltantes,

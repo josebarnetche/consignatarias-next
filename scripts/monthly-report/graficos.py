@@ -597,3 +597,59 @@ def barras_composicion(filas: list[dict], ancho_mm: float = 87, alto_mm: float =
         o.append(texto(W - 2, cy + 3, f'{f["cabezas"]:,}'.replace(",", ".") + f' cab · {_f(f["share"])}%', 7, TINTA, 500, "end"))
     o.append("</svg>")
     return "".join(o)
+
+
+# ─── G11 · precio por zona fuera de Cañuelas (SIO Carnes) ──────────────────────
+
+def barras_sio_zonas(puntos: list[dict], ancho_mm: float = 180, alto_mm: float = 70) -> str:
+    """
+    Cuánto se apartó cada zona del promedio país, en barras divergentes desde el
+    cero. La pregunta que contesta no es "cuánto vale el novillo" —eso ya está en
+    todo el informe— sino **cuánto más o menos le pagaron al que está lejos**.
+
+    El cero es el promedio país ponderado, no Cañuelas: SIO mide lo operado fuera
+    del concentrador, y compararlo contra el concentrador mezclaría dos
+    poblaciones. El dato de Cañuelas va en el texto de la página, al lado.
+
+    Las zonas que no llegan al piso de cabezas se dibujan huecas y sin número: se
+    las nombra para que no parezca que no existen, pero no se les publica precio.
+    """
+    pub = [p for p in puntos if p.get("vs_pais_pct") is not None]
+    if len(pub) < 3:
+        return abrir(ancho_mm, alto_mm) + texto(8, 20, "sin datos de SIO Carnes para el mes", 8) + "</svg>"
+    W, H = round(ancho_mm * MM), round(alto_mm * MM)
+    # El margen izquierdo tiene que aguantar "NOA — Santiago del Estero, Salta…"
+    # y el derecho el porcentaje más el precio. Con menos, se recortan los dos.
+    L, T, B, R = 162, 16, 16, 92
+    m = max(abs(p["vs_pais_pct"]) for p in pub) * 1.35 or 1
+    x = _escala(-m, m, L, W - R)
+    alto = (H - T - B) / len(pub)
+    barra = min(13, alto - 4)
+
+    o = [abrir(ancho_mm, alto_mm, "Precio del novillo por zona, contra el promedio país")]
+    o.append(f'<defs><pattern id="sio45" width="4" height="4" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">'
+             f'<line x1="0" y1="0" x2="0" y2="4" stroke="{SERIE}" stroke-width="0.75"/></pattern></defs>')
+    for t in _ticks(-m, m, 4):
+        o.append(f'<line x1="{_f(x(t))}" y1="{T}" x2="{_f(x(t))}" y2="{H-B}" stroke="{FILETE}" stroke-width="1"/>')
+        o.append(texto(x(t), H - B + 10, f"{t:+.0f}%", 6.5, TINTA_3, 500, "middle", mono=True))
+    o.append(f'<line x1="{_f(x(0))}" y1="{T}" x2="{_f(x(0))}" y2="{H-B}" stroke="{TINTA}" stroke-width="1.5"/>')
+
+    for i, p in enumerate(pub):
+        cy = T + alto * i + alto / 2
+        d = p["vs_pais_pct"]
+        fino = not p.get("representativo", True)
+        x0, x1 = x(0), x(d)
+        # Arriba del promedio con trama; abajo en sólido. La zona fina va hueca.
+        relleno = "none" if fino else ("url(#sio45)" if d >= 0 else BANDA)
+        o.append(f'<rect x="{_f(min(x0,x1))}" y="{_f(cy-barra/2)}" width="{_f(max(abs(x1-x0),1))}" '
+                 f'height="{_f(barra)}" rx="2.5" fill="{relleno}" stroke="{SERIE}" '
+                 f'stroke-width="1" stroke-dasharray="{"2 2" if fino else "0"}" style="print-color-adjust:exact"/>')
+        etiqueta = _corto(p.get("provincias") or p["zona"], 31)
+        o.append(texto(L - 7, cy + 3, etiqueta, 7, TINTA if not fino else TINTA_3, 500, "end"))
+        if fino:
+            o.append(texto(W - 8, cy + 3, f'sólo {p["cabezas"]} cab.', 6.5, TINTA_3, 400, "end", mono=True))
+        else:
+            o.append(texto(W - 8, cy + 3, f'{pct(d,1)} · {ars(p["precio_kg"])}', 7, TINTA, 600, "end", mono=True))
+    o.append(texto(L, T - 5, "Trama: pagó más que el promedio país · Sólido: pagó menos", 7, TINTA_3, 400))
+    o.append("</svg>")
+    return "".join(o)

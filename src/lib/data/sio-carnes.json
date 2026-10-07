@@ -1,0 +1,1721 @@
+{
+ "meses": {
+  "2026-09": {
+   "generadoEl": "2026-10-07T01:50:10.179Z",
+   "fechaDeCorte": "5/10/2026",
+   "zonas": {
+    "pais": [
+     {
+      "subcategoria": "Bovino Novillo Especial Joven Liviano hasta 430 kilos (6 dientes)",
+      "categoria": "Novillo",
+      "cabezas": 1392,
+      "precio_kg": 2961.46
+     },
+     {
+      "subcategoria": "Bovino Novillo Especial Joven Pesado más de 430 kilos (6 dientes)",
+      "categoria": "Novillo",
+      "cabezas": 2062,
+      "precio_kg": 2975.73
+     },
+     {
+      "subcategoria": "Bovino Novillo Especial Adulto Liviano hasta 430 kilos (8 o más dientes)",
+      "categoria": "Novillo",
+      "cabezas": 96,
+      "precio_kg": 2995.31
+     },
+     {
+      "subcategoria": "Bovino Novillo Especial Adulto Pesado más de 430 kilos (8 o más dientes)",
+      "categoria": "Novillo",
+      "cabezas": 127,
+      "precio_kg": 2812.59
+     },
+     {
+      "subcategoria": "Bovino Novillo Regular Liviano hasta 430 kilos (6 o más dientes)",
+      "categoria": "Novillo",
+      "cabezas": 5817,
+      "precio_kg": 2971.06
+     },
+     {
+      "subcategoria": "Bovino Novillo Regular Pesado más de 430 kilos (6 o más dientes)",
+      "categoria": "Novillo",
+      "cabezas": 3837,
+      "precio_kg": 3021.43
+     },
+     {
+      "subcategoria": "Bovino Novillito Especial Liviano hasta 390 kilos (4 dientes)",
+      "categoria": "Novillito",
+      "cabezas": 10557,
+      "precio_kg": 3021.11
+     },
+     {
+      "subcategoria": "Bovino Novillito Especial Pesado más de 390 kilos (4 dientes)",
+      "categoria": "Novillito",
+      "cabezas": 2939,
+      "precio_kg": 3119.23
+     },
+     {
+      "subcategoria": "Bovino Novillito Regular  (4 dientes)",
+      "categoria": "Novillito",
+      "cabezas": 35755,
+      "precio_kg": 3004.29
+     },
+     {
+      "subcategoria": "Bovino Vaquillona Especial Liviana hasta 390 kilos (4 dientes)",
+      "categoria": "Vaquillona",
+      "cabezas": 4899,
+      "precio_kg": 2873.99
+     },
+     {
+      "subcategoria": "Bovino Vaquillona Especial Pesada más de 390 kilos (4 dientes)",
+      "categoria": "Vaquillona",
+      "cabezas": 1211,
+      "precio_kg": 2973.83
+     },
+     {
+      "subcategoria": "Bovino Vaquillona Regular (4 dientes)",
+      "categoria": "Vaquillona",
+      "cabezas": 18441,
+      "precio_kg": 2890.58
+     },
+     {
+      "subcategoria": "Bovino Vaca Especial Joven Liviana hasta 430 kilos (6 dientes)",
+      "categoria": "Vaca",
+      "cabezas": 1555,
+      "precio_kg": 2025.98
+     },
+     {
+      "subcategoria": "Bovino Vaca Especial Joven Pesada más de 430 kilos (6 dientes)",
+      "categoria": "Vaca",
+      "cabezas": 674,
+      "precio_kg": 1917.75
+     },
+     {
+      "subcategoria": "Bovino Vaca Especial Adulta Liviana hasta 430 kilos (8 o más dientes)",
+      "categoria": "Vaca",
+      "cabezas": 263,
+      "precio_kg": 1706.79
+     },
+     {
+      "subcategoria": "Bovino Vaca Especial Adulta Pesada más de 430 kilos (8 o más dientes)",
+      "categoria": "Vaca",
+      "cabezas": 1500,
+      "precio_kg": 2045.42
+     },
+     {
+      "subcategoria": "Bovino Vaca Regular (6 o más dientes)",
+      "categoria": "Vaca",
+      "cabezas": 9841,
+      "precio_kg": 1953.74
+     },
+     {
+      "subcategoria": "Bovino Vaca Conserva Buena (6 o más dientes)",
+      "categoria": "Vaca",
+      "cabezas": 1326,
+      "precio_kg": 2073.35
+     },
+     {
+      "subcategoria": "Bovino Vaca Conserva Inferior (6 o más dientes)",
+      "categoria": "Vaca",
+      "cabezas": 4214,
+      "precio_kg": 1725.24
+     },
+     {
+      "subcategoria": "Bovino Toro Especial (más de 2 dientes)",
+      "categoria": "Toro",
+      "cabezas": 3050,
+      "precio_kg": 2875.03
+     },
+     {
+      "subcategoria": "Bovino Toro Regular (más de 2 dientes)",
+      "categoria": "Toro",
+      "cabezas": 7289,
+      "precio_kg": 2638.87
+     },
+     {
+      "subcategoria": "Bovino MEJ Especial Liviano hasta 430 kilos (2 dientes)",
+      "categoria": "MEJ",
+      "cabezas": 1096,
+      "precio_kg": 2803.71
+     },
+     {
+      "subcategoria": "Bovino MEJ Especial Pesado más de 430 kilos (2 dientes)",
+      "categoria": "MEJ",
+      "cabezas": 193,
+      "precio_kg": 3001.68
+     },
+     {
+      "subcategoria": "Bovino MEJ Regular (hasta 2 dientes)",
+      "categoria": "MEJ",
+      "cabezas": 2627,
+      "precio_kg": 2902.71
+     },
+     {
+      "subcategoria": "Bubalino Vaca",
+      "categoria": "Bubalino",
+      "cabezas": 3721,
+      "precio_kg": 2850.21
+     },
+     {
+      "subcategoria": "Bubalino Vaquillona",
+      "categoria": "Bubalino",
+      "cabezas": 3245,
+      "precio_kg": 3912.04
+     },
+     {
+      "subcategoria": "Bubalino Novillo",
+      "categoria": "Bubalino",
+      "cabezas": 3779,
+      "precio_kg": 3735.32
+     },
+     {
+      "subcategoria": "Bubalino Novillito",
+      "categoria": "Bubalino",
+      "cabezas": 2616918,
+      "precio_kg": 3202.35
+     },
+     {
+      "subcategoria": "Bubalino Ternero",
+      "categoria": "Bubalino",
+      "cabezas": 212,
+      "precio_kg": 3595.95
+     },
+     {
+      "subcategoria": "Bubalino Ternera",
+      "categoria": "Bubalino",
+      "cabezas": 69,
+      "precio_kg": 3656.78
+     },
+     {
+      "subcategoria": "Bubalino Toro",
+      "categoria": "Bubalino",
+      "cabezas": 749,
+      "precio_kg": 3169.3
+     },
+     {
+      "subcategoria": "Bubalino Torito",
+      "categoria": "Bubalino",
+      "cabezas": 357,
+      "precio_kg": 3870.67
+     }
+    ],
+    "zona_1": {
+     "provincias": "Buenos Aires — norte y AMBA",
+     "filas": [
+      {
+       "subcategoria": "Bovino Vaquillona Regular (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 2,
+       "precio_kg": 2839.27
+      },
+      {
+       "subcategoria": "Bovino Vaca Regular (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 6,
+       "precio_kg": 2192
+      },
+      {
+       "subcategoria": "Bovino Toro Regular (más de 2 dientes)",
+       "categoria": "Toro",
+       "cabezas": 8,
+       "precio_kg": 2434.92
+      }
+     ]
+    },
+    "zona_2": {
+     "provincias": "Buenos Aires — centro",
+     "filas": [
+      {
+       "subcategoria": "Bovino Novillo Especial Joven Liviano hasta 430 kilos (6 dientes)",
+       "categoria": "Novillo",
+       "cabezas": 16,
+       "precio_kg": 3003.98
+      },
+      {
+       "subcategoria": "Bovino Novillo Especial Joven Pesado más de 430 kilos (6 dientes)",
+       "categoria": "Novillo",
+       "cabezas": 89,
+       "precio_kg": 3024.17
+      },
+      {
+       "subcategoria": "Bovino Novillo Especial Adulto Pesado más de 430 kilos (8 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 2,
+       "precio_kg": 3000
+      },
+      {
+       "subcategoria": "Bovino Novillo Regular Liviano hasta 430 kilos (6 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 110,
+       "precio_kg": 3179.88
+      },
+      {
+       "subcategoria": "Bovino Novillo Regular Pesado más de 430 kilos (6 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 116,
+       "precio_kg": 2907.96
+      },
+      {
+       "subcategoria": "Bovino Novillito Especial Liviano hasta 390 kilos (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 247,
+       "precio_kg": 3105.95
+      },
+      {
+       "subcategoria": "Bovino Novillito Especial Pesado más de 390 kilos (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 262,
+       "precio_kg": 3199.19
+      },
+      {
+       "subcategoria": "Bovino Novillito Regular  (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 915,
+       "precio_kg": 3055.22
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Especial Liviana hasta 390 kilos (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 175,
+       "precio_kg": 3004.33
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Especial Pesada más de 390 kilos (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 258,
+       "precio_kg": 2906.36
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Regular (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 755,
+       "precio_kg": 2992.73
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Joven Liviana hasta 430 kilos (6 dientes)",
+       "categoria": "Vaca",
+       "cabezas": 742,
+       "precio_kg": 2156.18
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Joven Pesada más de 430 kilos (6 dientes)",
+       "categoria": "Vaca",
+       "cabezas": 140,
+       "precio_kg": 2047.76
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Adulta Pesada más de 430 kilos (8 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 40,
+       "precio_kg": 2120
+      },
+      {
+       "subcategoria": "Bovino Vaca Regular (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 559,
+       "precio_kg": 2145.79
+      },
+      {
+       "subcategoria": "Bovino Vaca Conserva Buena (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 86,
+       "precio_kg": 2165.74
+      },
+      {
+       "subcategoria": "Bovino Vaca Conserva Inferior (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 90,
+       "precio_kg": 2047.76
+      },
+      {
+       "subcategoria": "Bovino Toro Especial (más de 2 dientes)",
+       "categoria": "Toro",
+       "cabezas": 522,
+       "precio_kg": 2848.55
+      },
+      {
+       "subcategoria": "Bovino Toro Regular (más de 2 dientes)",
+       "categoria": "Toro",
+       "cabezas": 542,
+       "precio_kg": 2736.2
+      },
+      {
+       "subcategoria": "Bovino MEJ Especial Liviano hasta 430 kilos (2 dientes)",
+       "categoria": "MEJ",
+       "cabezas": 110,
+       "precio_kg": 3196.49
+      },
+      {
+       "subcategoria": "Bovino MEJ Especial Pesado más de 430 kilos (2 dientes)",
+       "categoria": "MEJ",
+       "cabezas": 10,
+       "precio_kg": 3150
+      },
+      {
+       "subcategoria": "Bovino MEJ Regular (hasta 2 dientes)",
+       "categoria": "MEJ",
+       "cabezas": 52,
+       "precio_kg": 2912.06
+      },
+      {
+       "subcategoria": "Bubalino Vaca",
+       "categoria": "Bubalino",
+       "cabezas": 35,
+       "precio_kg": 2991.42
+      },
+      {
+       "subcategoria": "Bubalino Vaquillona",
+       "categoria": "Bubalino",
+       "cabezas": 224,
+       "precio_kg": 3209.41
+      },
+      {
+       "subcategoria": "Bubalino Novillo",
+       "categoria": "Bubalino",
+       "cabezas": 123,
+       "precio_kg": 3709.33
+      },
+      {
+       "subcategoria": "Bubalino Novillito",
+       "categoria": "Bubalino",
+       "cabezas": 151,
+       "precio_kg": 2990.15
+      },
+      {
+       "subcategoria": "Bubalino Toro",
+       "categoria": "Bubalino",
+       "cabezas": 11,
+       "precio_kg": 2245.54
+      }
+     ]
+    },
+    "zona_3": {
+     "provincias": "Buenos Aires — oeste y sur",
+     "filas": [
+      {
+       "subcategoria": "Bovino Novillo Especial Joven Liviano hasta 430 kilos (6 dientes)",
+       "categoria": "Novillo",
+       "cabezas": 333,
+       "precio_kg": 3140.55
+      },
+      {
+       "subcategoria": "Bovino Novillo Especial Joven Pesado más de 430 kilos (6 dientes)",
+       "categoria": "Novillo",
+       "cabezas": 905,
+       "precio_kg": 2976.1
+      },
+      {
+       "subcategoria": "Bovino Novillo Especial Adulto Liviano hasta 430 kilos (8 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 1,
+       "precio_kg": 2700
+      },
+      {
+       "subcategoria": "Bovino Novillo Especial Adulto Pesado más de 430 kilos (8 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 52,
+       "precio_kg": 3016.43
+      },
+      {
+       "subcategoria": "Bovino Novillo Regular Liviano hasta 430 kilos (6 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 1228,
+       "precio_kg": 3159.78
+      },
+      {
+       "subcategoria": "Bovino Novillo Regular Pesado más de 430 kilos (6 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 898,
+       "precio_kg": 3178.18
+      },
+      {
+       "subcategoria": "Bovino Novillito Especial Liviano hasta 390 kilos (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 2300,
+       "precio_kg": 3149.32
+      },
+      {
+       "subcategoria": "Bovino Novillito Especial Pesado más de 390 kilos (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 982,
+       "precio_kg": 3134.28
+      },
+      {
+       "subcategoria": "Bovino Novillito Regular  (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 9108,
+       "precio_kg": 3055.07
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Especial Liviana hasta 390 kilos (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 1102,
+       "precio_kg": 3030.23
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Especial Pesada más de 390 kilos (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 257,
+       "precio_kg": 3077.95
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Regular (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 4198,
+       "precio_kg": 2991.48
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Joven Liviana hasta 430 kilos (6 dientes)",
+       "categoria": "Vaca",
+       "cabezas": 195,
+       "precio_kg": 2162.25
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Joven Pesada más de 430 kilos (6 dientes)",
+       "categoria": "Vaca",
+       "cabezas": 39,
+       "precio_kg": 2253.07
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Adulta Liviana hasta 430 kilos (8 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 23,
+       "precio_kg": 2040.21
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Adulta Pesada más de 430 kilos (8 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 136,
+       "precio_kg": 2220.71
+      },
+      {
+       "subcategoria": "Bovino Vaca Regular (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 1158,
+       "precio_kg": 2102.66
+      },
+      {
+       "subcategoria": "Bovino Vaca Conserva Buena (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 418,
+       "precio_kg": 2105.2
+      },
+      {
+       "subcategoria": "Bovino Vaca Conserva Inferior (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 2743,
+       "precio_kg": 1617.76
+      },
+      {
+       "subcategoria": "Bovino Toro Especial (más de 2 dientes)",
+       "categoria": "Toro",
+       "cabezas": 1102,
+       "precio_kg": 2901.71
+      },
+      {
+       "subcategoria": "Bovino Toro Regular (más de 2 dientes)",
+       "categoria": "Toro",
+       "cabezas": 1775,
+       "precio_kg": 2474.19
+      },
+      {
+       "subcategoria": "Bovino MEJ Especial Liviano hasta 430 kilos (2 dientes)",
+       "categoria": "MEJ",
+       "cabezas": 46,
+       "precio_kg": 2719.22
+      },
+      {
+       "subcategoria": "Bovino MEJ Especial Pesado más de 430 kilos (2 dientes)",
+       "categoria": "MEJ",
+       "cabezas": 96,
+       "precio_kg": 3024.87
+      },
+      {
+       "subcategoria": "Bovino MEJ Regular (hasta 2 dientes)",
+       "categoria": "MEJ",
+       "cabezas": 208,
+       "precio_kg": 3213.38
+      },
+      {
+       "subcategoria": "Bubalino Vaca",
+       "categoria": "Bubalino",
+       "cabezas": 781,
+       "precio_kg": 3382.26
+      },
+      {
+       "subcategoria": "Bubalino Vaquillona",
+       "categoria": "Bubalino",
+       "cabezas": 571,
+       "precio_kg": 3808.14
+      },
+      {
+       "subcategoria": "Bubalino Novillo",
+       "categoria": "Bubalino",
+       "cabezas": 96,
+       "precio_kg": 3874.29
+      },
+      {
+       "subcategoria": "Bubalino Novillito",
+       "categoria": "Bubalino",
+       "cabezas": 8215,
+       "precio_kg": 3716.47
+      },
+      {
+       "subcategoria": "Bubalino Ternero",
+       "categoria": "Bubalino",
+       "cabezas": 153,
+       "precio_kg": 3707.58
+      },
+      {
+       "subcategoria": "Bubalino Ternera",
+       "categoria": "Bubalino",
+       "cabezas": 12,
+       "precio_kg": 4000
+      },
+      {
+       "subcategoria": "Bubalino Toro",
+       "categoria": "Bubalino",
+       "cabezas": 188,
+       "precio_kg": 3223.96
+      }
+     ]
+    },
+    "zona_4": {
+     "provincias": "Buenos Aires — sudeste",
+     "filas": [
+      {
+       "subcategoria": "Bovino Novillo Especial Joven Liviano hasta 430 kilos (6 dientes)",
+       "categoria": "Novillo",
+       "cabezas": 24,
+       "precio_kg": 3115
+      },
+      {
+       "subcategoria": "Bovino Novillo Especial Joven Pesado más de 430 kilos (6 dientes)",
+       "categoria": "Novillo",
+       "cabezas": 433,
+       "precio_kg": 3191.53
+      },
+      {
+       "subcategoria": "Bovino Novillo Especial Adulto Liviano hasta 430 kilos (8 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 16,
+       "precio_kg": 3128.13
+      },
+      {
+       "subcategoria": "Bovino Novillo Especial Adulto Pesado más de 430 kilos (8 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 14,
+       "precio_kg": 3022.85
+      },
+      {
+       "subcategoria": "Bovino Novillo Regular Liviano hasta 430 kilos (6 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 703,
+       "precio_kg": 3119.71
+      },
+      {
+       "subcategoria": "Bovino Novillo Regular Pesado más de 430 kilos (6 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 693,
+       "precio_kg": 3087.53
+      },
+      {
+       "subcategoria": "Bovino Novillito Especial Liviano hasta 390 kilos (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 717,
+       "precio_kg": 3157.2
+      },
+      {
+       "subcategoria": "Bovino Novillito Especial Pesado más de 390 kilos (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 274,
+       "precio_kg": 3112.46
+      },
+      {
+       "subcategoria": "Bovino Novillito Regular  (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 3364,
+       "precio_kg": 2975.11
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Especial Liviana hasta 390 kilos (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 288,
+       "precio_kg": 3080.12
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Especial Pesada más de 390 kilos (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 184,
+       "precio_kg": 3112.44
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Regular (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 2649,
+       "precio_kg": 2941.29
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Joven Liviana hasta 430 kilos (6 dientes)",
+       "categoria": "Vaca",
+       "cabezas": 47,
+       "precio_kg": 2173.62
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Joven Pesada más de 430 kilos (6 dientes)",
+       "categoria": "Vaca",
+       "cabezas": 66,
+       "precio_kg": 1841.66
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Adulta Pesada más de 430 kilos (8 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 306,
+       "precio_kg": 2108.74
+      },
+      {
+       "subcategoria": "Bovino Vaca Regular (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 387,
+       "precio_kg": 2134.43
+      },
+      {
+       "subcategoria": "Bovino Vaca Conserva Buena (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 105,
+       "precio_kg": 2125.97
+      },
+      {
+       "subcategoria": "Bovino Vaca Conserva Inferior (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 274,
+       "precio_kg": 2050.66
+      },
+      {
+       "subcategoria": "Bovino Toro Especial (más de 2 dientes)",
+       "categoria": "Toro",
+       "cabezas": 494,
+       "precio_kg": 2889.96
+      },
+      {
+       "subcategoria": "Bovino Toro Regular (más de 2 dientes)",
+       "categoria": "Toro",
+       "cabezas": 788,
+       "precio_kg": 2647.9
+      },
+      {
+       "subcategoria": "Bovino MEJ Especial Liviano hasta 430 kilos (2 dientes)",
+       "categoria": "MEJ",
+       "cabezas": 3,
+       "precio_kg": 2832.58
+      },
+      {
+       "subcategoria": "Bovino MEJ Regular (hasta 2 dientes)",
+       "categoria": "MEJ",
+       "cabezas": 4,
+       "precio_kg": 2727.5
+      },
+      {
+       "subcategoria": "Bubalino Vaca",
+       "categoria": "Bubalino",
+       "cabezas": 421,
+       "precio_kg": 3045.76
+      },
+      {
+       "subcategoria": "Bubalino Vaquillona",
+       "categoria": "Bubalino",
+       "cabezas": 681,
+       "precio_kg": 4343.88
+      },
+      {
+       "subcategoria": "Bubalino Novillo",
+       "categoria": "Bubalino",
+       "cabezas": 128,
+       "precio_kg": 4216.6
+      },
+      {
+       "subcategoria": "Bubalino Novillito",
+       "categoria": "Bubalino",
+       "cabezas": 220,
+       "precio_kg": 3877.52
+      },
+      {
+       "subcategoria": "Bubalino Toro",
+       "categoria": "Bubalino",
+       "cabezas": 445,
+       "precio_kg": 3288.32
+      }
+     ]
+    },
+    "zona_5": {
+     "provincias": "Córdoba, Santa Fe y Entre Ríos",
+     "filas": [
+      {
+       "subcategoria": "Bovino Novillo Especial Joven Liviano hasta 430 kilos (6 dientes)",
+       "categoria": "Novillo",
+       "cabezas": 498,
+       "precio_kg": 2957.82
+      },
+      {
+       "subcategoria": "Bovino Novillo Especial Joven Pesado más de 430 kilos (6 dientes)",
+       "categoria": "Novillo",
+       "cabezas": 478,
+       "precio_kg": 2883.03
+      },
+      {
+       "subcategoria": "Bovino Novillo Especial Adulto Liviano hasta 430 kilos (8 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 67,
+       "precio_kg": 3064.71
+      },
+      {
+       "subcategoria": "Bovino Novillo Especial Adulto Pesado más de 430 kilos (8 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 56,
+       "precio_kg": 2587.93
+      },
+      {
+       "subcategoria": "Bovino Novillo Regular Liviano hasta 430 kilos (6 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 2084,
+       "precio_kg": 2958.75
+      },
+      {
+       "subcategoria": "Bovino Novillo Regular Pesado más de 430 kilos (6 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 1463,
+       "precio_kg": 2920.37
+      },
+      {
+       "subcategoria": "Bovino Novillito Especial Liviano hasta 390 kilos (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 4347,
+       "precio_kg": 3069.05
+      },
+      {
+       "subcategoria": "Bovino Novillito Especial Pesado más de 390 kilos (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 1055,
+       "precio_kg": 3165.86
+      },
+      {
+       "subcategoria": "Bovino Novillito Regular  (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 15239,
+       "precio_kg": 3029.65
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Especial Liviana hasta 390 kilos (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 1720,
+       "precio_kg": 2850.23
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Especial Pesada más de 390 kilos (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 374,
+       "precio_kg": 2860.02
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Regular (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 6418,
+       "precio_kg": 2903.41
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Joven Liviana hasta 430 kilos (6 dientes)",
+       "categoria": "Vaca",
+       "cabezas": 140,
+       "precio_kg": 1986.11
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Joven Pesada más de 430 kilos (6 dientes)",
+       "categoria": "Vaca",
+       "cabezas": 200,
+       "precio_kg": 1981.31
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Adulta Liviana hasta 430 kilos (8 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 122,
+       "precio_kg": 2001.71
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Adulta Pesada más de 430 kilos (8 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 335,
+       "precio_kg": 2040.98
+      },
+      {
+       "subcategoria": "Bovino Vaca Regular (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 2338,
+       "precio_kg": 2032.56
+      },
+      {
+       "subcategoria": "Bovino Vaca Conserva Buena (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 293,
+       "precio_kg": 2090.35
+      },
+      {
+       "subcategoria": "Bovino Vaca Conserva Inferior (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 382,
+       "precio_kg": 2031.38
+      },
+      {
+       "subcategoria": "Bovino Toro Especial (más de 2 dientes)",
+       "categoria": "Toro",
+       "cabezas": 417,
+       "precio_kg": 2854.72
+      },
+      {
+       "subcategoria": "Bovino Toro Regular (más de 2 dientes)",
+       "categoria": "Toro",
+       "cabezas": 1312,
+       "precio_kg": 2609.85
+      },
+      {
+       "subcategoria": "Bovino MEJ Especial Liviano hasta 430 kilos (2 dientes)",
+       "categoria": "MEJ",
+       "cabezas": 236,
+       "precio_kg": 2842.05
+      },
+      {
+       "subcategoria": "Bovino MEJ Especial Pesado más de 430 kilos (2 dientes)",
+       "categoria": "MEJ",
+       "cabezas": 40,
+       "precio_kg": 3043.29
+      },
+      {
+       "subcategoria": "Bovino MEJ Regular (hasta 2 dientes)",
+       "categoria": "MEJ",
+       "cabezas": 573,
+       "precio_kg": 2990.65
+      },
+      {
+       "subcategoria": "Bubalino Vaca",
+       "categoria": "Bubalino",
+       "cabezas": 1613,
+       "precio_kg": 2934.79
+      },
+      {
+       "subcategoria": "Bubalino Vaquillona",
+       "categoria": "Bubalino",
+       "cabezas": 824,
+       "precio_kg": 3648.92
+      },
+      {
+       "subcategoria": "Bubalino Novillo",
+       "categoria": "Bubalino",
+       "cabezas": 1828,
+       "precio_kg": 4234.49
+      },
+      {
+       "subcategoria": "Bubalino Novillito",
+       "categoria": "Bubalino",
+       "cabezas": 2606450,
+       "precio_kg": 3200.26
+      },
+      {
+       "subcategoria": "Bubalino Ternero",
+       "categoria": "Bubalino",
+       "cabezas": 8,
+       "precio_kg": 2947.5
+      },
+      {
+       "subcategoria": "Bubalino Ternera",
+       "categoria": "Bubalino",
+       "cabezas": 42,
+       "precio_kg": 3690.13
+      },
+      {
+       "subcategoria": "Bubalino Toro",
+       "categoria": "Bubalino",
+       "cabezas": 44,
+       "precio_kg": 2794.38
+      },
+      {
+       "subcategoria": "Bubalino Torito",
+       "categoria": "Bubalino",
+       "cabezas": 257,
+       "precio_kg": 3741.14
+      }
+     ]
+    },
+    "zona_6": {
+     "provincias": "La Pampa y San Luis",
+     "filas": [
+      {
+       "subcategoria": "Bovino Novillo Especial Joven Liviano hasta 430 kilos (6 dientes)",
+       "categoria": "Novillo",
+       "cabezas": 172,
+       "precio_kg": 3249.42
+      },
+      {
+       "subcategoria": "Bovino Novillo Especial Joven Pesado más de 430 kilos (6 dientes)",
+       "categoria": "Novillo",
+       "cabezas": 62,
+       "precio_kg": 3020.89
+      },
+      {
+       "subcategoria": "Bovino Novillo Especial Adulto Pesado más de 430 kilos (8 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 1,
+       "precio_kg": 3300
+      },
+      {
+       "subcategoria": "Bovino Novillo Regular Liviano hasta 430 kilos (6 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 327,
+       "precio_kg": 2812.75
+      },
+      {
+       "subcategoria": "Bovino Novillo Regular Pesado más de 430 kilos (6 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 254,
+       "precio_kg": 3171.52
+      },
+      {
+       "subcategoria": "Bovino Novillito Especial Liviano hasta 390 kilos (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 128,
+       "precio_kg": 3298.97
+      },
+      {
+       "subcategoria": "Bovino Novillito Especial Pesado más de 390 kilos (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 141,
+       "precio_kg": 3264.73
+      },
+      {
+       "subcategoria": "Bovino Novillito Regular  (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 1731,
+       "precio_kg": 3133.83
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Especial Liviana hasta 390 kilos (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 120,
+       "precio_kg": 2929.1
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Especial Pesada más de 390 kilos (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 124,
+       "precio_kg": 3098.09
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Regular (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 1052,
+       "precio_kg": 2932.32
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Joven Liviana hasta 430 kilos (6 dientes)",
+       "categoria": "Vaca",
+       "cabezas": 11,
+       "precio_kg": 1913.63
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Joven Pesada más de 430 kilos (6 dientes)",
+       "categoria": "Vaca",
+       "cabezas": 36,
+       "precio_kg": 2011.1
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Adulta Pesada más de 430 kilos (8 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 91,
+       "precio_kg": 2091.5
+      },
+      {
+       "subcategoria": "Bovino Vaca Regular (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 415,
+       "precio_kg": 2240.79
+      },
+      {
+       "subcategoria": "Bovino Vaca Conserva Buena (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 2,
+       "precio_kg": 1670.76
+      },
+      {
+       "subcategoria": "Bovino Toro Especial (más de 2 dientes)",
+       "categoria": "Toro",
+       "cabezas": 190,
+       "precio_kg": 2838.11
+      },
+      {
+       "subcategoria": "Bovino Toro Regular (más de 2 dientes)",
+       "categoria": "Toro",
+       "cabezas": 374,
+       "precio_kg": 2677
+      },
+      {
+       "subcategoria": "Bovino MEJ Especial Liviano hasta 430 kilos (2 dientes)",
+       "categoria": "MEJ",
+       "cabezas": 5,
+       "precio_kg": 2920
+      },
+      {
+       "subcategoria": "Bovino MEJ Especial Pesado más de 430 kilos (2 dientes)",
+       "categoria": "MEJ",
+       "cabezas": 28,
+       "precio_kg": 3157.96
+      },
+      {
+       "subcategoria": "Bovino MEJ Regular (hasta 2 dientes)",
+       "categoria": "MEJ",
+       "cabezas": 25,
+       "precio_kg": 2872
+      },
+      {
+       "subcategoria": "Bubalino Vaca",
+       "categoria": "Bubalino",
+       "cabezas": 120,
+       "precio_kg": 2515.71
+      },
+      {
+       "subcategoria": "Bubalino Vaquillona",
+       "categoria": "Bubalino",
+       "cabezas": 310,
+       "precio_kg": 3875.8
+      },
+      {
+       "subcategoria": "Bubalino Novillo",
+       "categoria": "Bubalino",
+       "cabezas": 119,
+       "precio_kg": 3991.69
+      },
+      {
+       "subcategoria": "Bubalino Novillito",
+       "categoria": "Bubalino",
+       "cabezas": 337,
+       "precio_kg": 4391.77
+      },
+      {
+       "subcategoria": "Bubalino Toro",
+       "categoria": "Bubalino",
+       "cabezas": 12,
+       "precio_kg": 3109.25
+      },
+      {
+       "subcategoria": "Bubalino Torito",
+       "categoria": "Bubalino",
+       "cabezas": 4,
+       "precio_kg": 3162.5
+      }
+     ]
+    },
+    "zona_7": {
+     "provincias": "Patagonia — Neuquén, Río Negro, Chubut y Santa Cruz",
+     "filas": [
+      {
+       "subcategoria": "Bovino Novillo Especial Joven Liviano hasta 430 kilos (6 dientes)",
+       "categoria": "Novillo",
+       "cabezas": 6,
+       "precio_kg": 3050
+      },
+      {
+       "subcategoria": "Bovino Novillo Regular Liviano hasta 430 kilos (6 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 2,
+       "precio_kg": 2430
+      },
+      {
+       "subcategoria": "Bovino Novillo Regular Pesado más de 430 kilos (6 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 34,
+       "precio_kg": 3167.76
+      },
+      {
+       "subcategoria": "Bovino Novillito Especial Liviano hasta 390 kilos (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 360,
+       "precio_kg": 2993.59
+      },
+      {
+       "subcategoria": "Bovino Novillito Regular  (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 806,
+       "precio_kg": 3229.77
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Especial Liviana hasta 390 kilos (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 208,
+       "precio_kg": 2652.28
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Regular (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 334,
+       "precio_kg": 2999.55
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Joven Liviana hasta 430 kilos (6 dientes)",
+       "categoria": "Vaca",
+       "cabezas": 9,
+       "precio_kg": 2159.44
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Joven Pesada más de 430 kilos (6 dientes)",
+       "categoria": "Vaca",
+       "cabezas": 17,
+       "precio_kg": 1965.29
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Adulta Liviana hasta 430 kilos (8 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 2,
+       "precio_kg": 1500
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Adulta Pesada más de 430 kilos (8 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 26,
+       "precio_kg": 2130.17
+      },
+      {
+       "subcategoria": "Bovino Vaca Regular (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 287,
+       "precio_kg": 2264.31
+      },
+      {
+       "subcategoria": "Bovino Vaca Conserva Buena (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 4,
+       "precio_kg": 2000
+      },
+      {
+       "subcategoria": "Bovino Vaca Conserva Inferior (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 4,
+       "precio_kg": 2132.9
+      },
+      {
+       "subcategoria": "Bovino Toro Especial (más de 2 dientes)",
+       "categoria": "Toro",
+       "cabezas": 62,
+       "precio_kg": 2760.65
+      },
+      {
+       "subcategoria": "Bovino Toro Regular (más de 2 dientes)",
+       "categoria": "Toro",
+       "cabezas": 82,
+       "precio_kg": 2708.7
+      },
+      {
+       "subcategoria": "Bovino MEJ Especial Liviano hasta 430 kilos (2 dientes)",
+       "categoria": "MEJ",
+       "cabezas": 151,
+       "precio_kg": 2851.12
+      },
+      {
+       "subcategoria": "Bovino MEJ Especial Pesado más de 430 kilos (2 dientes)",
+       "categoria": "MEJ",
+       "cabezas": 4,
+       "precio_kg": 1951.5
+      },
+      {
+       "subcategoria": "Bovino MEJ Regular (hasta 2 dientes)",
+       "categoria": "MEJ",
+       "cabezas": 397,
+       "precio_kg": 2999.38
+      },
+      {
+       "subcategoria": "Bubalino Vaca",
+       "categoria": "Bubalino",
+       "cabezas": 26,
+       "precio_kg": 2669.22
+      },
+      {
+       "subcategoria": "Bubalino Vaquillona",
+       "categoria": "Bubalino",
+       "cabezas": 298,
+       "precio_kg": 4741.5
+      },
+      {
+       "subcategoria": "Bubalino Novillo",
+       "categoria": "Bubalino",
+       "cabezas": 194,
+       "precio_kg": 3781.17
+      },
+      {
+       "subcategoria": "Bubalino Novillito",
+       "categoria": "Bubalino",
+       "cabezas": 196,
+       "precio_kg": 3967.48
+      },
+      {
+       "subcategoria": "Bubalino Ternero",
+       "categoria": "Bubalino",
+       "cabezas": 49,
+       "precio_kg": 3377.75
+      },
+      {
+       "subcategoria": "Bubalino Ternera",
+       "categoria": "Bubalino",
+       "cabezas": 15,
+       "precio_kg": 3288.88
+      },
+      {
+       "subcategoria": "Bubalino Toro",
+       "categoria": "Bubalino",
+       "cabezas": 6,
+       "precio_kg": 3799.38
+      },
+      {
+       "subcategoria": "Bubalino Torito",
+       "categoria": "Bubalino",
+       "cabezas": 67,
+       "precio_kg": 5131
+      }
+     ]
+    },
+    "zona_8": {
+     "provincias": "Cuyo — San Juan, La Rioja y Mendoza",
+     "filas": [
+      {
+       "subcategoria": "Bovino Novillo Regular Liviano hasta 430 kilos (6 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 150,
+       "precio_kg": 3241.57
+      },
+      {
+       "subcategoria": "Bovino Novillito Especial Liviano hasta 390 kilos (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 9,
+       "precio_kg": 2100
+      },
+      {
+       "subcategoria": "Bovino Novillito Especial Pesado más de 390 kilos (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 55,
+       "precio_kg": 3300
+      },
+      {
+       "subcategoria": "Bovino Novillito Regular  (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 63,
+       "precio_kg": 3070.79
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Especial Liviana hasta 390 kilos (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 6,
+       "precio_kg": 2100
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Regular (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 43,
+       "precio_kg": 2871.99
+      },
+      {
+       "subcategoria": "Bovino Vaca Conserva Inferior (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 61,
+       "precio_kg": 1796.43
+      },
+      {
+       "subcategoria": "Bovino Toro Regular (más de 2 dientes)",
+       "categoria": "Toro",
+       "cabezas": 44,
+       "precio_kg": 2845.75
+      },
+      {
+       "subcategoria": "Bubalino Vaquillona",
+       "categoria": "Bubalino",
+       "cabezas": 124,
+       "precio_kg": 4209.56
+      },
+      {
+       "subcategoria": "Bubalino Novillo",
+       "categoria": "Bubalino",
+       "cabezas": 23,
+       "precio_kg": 4618.29
+      },
+      {
+       "subcategoria": "Bubalino Novillito",
+       "categoria": "Bubalino",
+       "cabezas": 361,
+       "precio_kg": 4245.47
+      },
+      {
+       "subcategoria": "Bubalino Toro",
+       "categoria": "Bubalino",
+       "cabezas": 10,
+       "precio_kg": 2988.23
+      }
+     ]
+    },
+    "zona_9": {
+     "provincias": "NEA — Chaco, Corrientes, Misiones y Formosa",
+     "filas": [
+      {
+       "subcategoria": "Bovino Novillo Especial Joven Liviano hasta 430 kilos (6 dientes)",
+       "categoria": "Novillo",
+       "cabezas": 12,
+       "precio_kg": 2837.59
+      },
+      {
+       "subcategoria": "Bovino Novillo Especial Joven Pesado más de 430 kilos (6 dientes)",
+       "categoria": "Novillo",
+       "cabezas": 2,
+       "precio_kg": 2251.48
+      },
+      {
+       "subcategoria": "Bovino Novillo Especial Adulto Liviano hasta 430 kilos (8 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 12,
+       "precio_kg": 2455.37
+      },
+      {
+       "subcategoria": "Bovino Novillo Especial Adulto Pesado más de 430 kilos (8 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 2,
+       "precio_kg": 1900
+      },
+      {
+       "subcategoria": "Bovino Novillo Regular Liviano hasta 430 kilos (6 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 323,
+       "precio_kg": 2596.31
+      },
+      {
+       "subcategoria": "Bovino Novillo Regular Pesado más de 430 kilos (6 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 150,
+       "precio_kg": 2691.07
+      },
+      {
+       "subcategoria": "Bovino Novillito Especial Liviano hasta 390 kilos (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 1839,
+       "precio_kg": 2718.77
+      },
+      {
+       "subcategoria": "Bovino Novillito Especial Pesado más de 390 kilos (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 98,
+       "precio_kg": 2279.35
+      },
+      {
+       "subcategoria": "Bovino Novillito Regular  (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 1624,
+       "precio_kg": 2630.16
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Especial Liviana hasta 390 kilos (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 1039,
+       "precio_kg": 2718.51
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Especial Pesada más de 390 kilos (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 8,
+       "precio_kg": 2885
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Regular (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 1241,
+       "precio_kg": 2619.73
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Joven Liviana hasta 430 kilos (6 dientes)",
+       "categoria": "Vaca",
+       "cabezas": 276,
+       "precio_kg": 1769.86
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Joven Pesada más de 430 kilos (6 dientes)",
+       "categoria": "Vaca",
+       "cabezas": 175,
+       "precio_kg": 1672.4
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Adulta Liviana hasta 430 kilos (8 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 116,
+       "precio_kg": 1334.13
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Adulta Pesada más de 430 kilos (8 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 366,
+       "precio_kg": 2096.77
+      },
+      {
+       "subcategoria": "Bovino Vaca Regular (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 3062,
+       "precio_kg": 1727.24
+      },
+      {
+       "subcategoria": "Bovino Vaca Conserva Buena (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 300,
+       "precio_kg": 1950.78
+      },
+      {
+       "subcategoria": "Bovino Vaca Conserva Inferior (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 512,
+       "precio_kg": 1812.58
+      },
+      {
+       "subcategoria": "Bovino Toro Especial (más de 2 dientes)",
+       "categoria": "Toro",
+       "cabezas": 254,
+       "precio_kg": 2917.38
+      },
+      {
+       "subcategoria": "Bovino Toro Regular (más de 2 dientes)",
+       "categoria": "Toro",
+       "cabezas": 2164,
+       "precio_kg": 2772.04
+      },
+      {
+       "subcategoria": "Bovino MEJ Especial Liviano hasta 430 kilos (2 dientes)",
+       "categoria": "MEJ",
+       "cabezas": 261,
+       "precio_kg": 2701.91
+      },
+      {
+       "subcategoria": "Bovino MEJ Especial Pesado más de 430 kilos (2 dientes)",
+       "categoria": "MEJ",
+       "cabezas": 10,
+       "precio_kg": 3134.22
+      },
+      {
+       "subcategoria": "Bovino MEJ Regular (hasta 2 dientes)",
+       "categoria": "MEJ",
+       "cabezas": 659,
+       "precio_kg": 2717.56
+      },
+      {
+       "subcategoria": "Bubalino Vaca",
+       "categoria": "Bubalino",
+       "cabezas": 693,
+       "precio_kg": 1987.61
+      },
+      {
+       "subcategoria": "Bubalino Vaquillona",
+       "categoria": "Bubalino",
+       "cabezas": 140,
+       "precio_kg": 2789.05
+      },
+      {
+       "subcategoria": "Bubalino Novillo",
+       "categoria": "Bubalino",
+       "cabezas": 756,
+       "precio_kg": 1893.01
+      },
+      {
+       "subcategoria": "Bubalino Novillito",
+       "categoria": "Bubalino",
+       "cabezas": 544,
+       "precio_kg": 2495.28
+      },
+      {
+       "subcategoria": "Bubalino Ternero",
+       "categoria": "Bubalino",
+       "cabezas": 2,
+       "precio_kg": 3000
+      },
+      {
+       "subcategoria": "Bubalino Toro",
+       "categoria": "Bubalino",
+       "cabezas": 32,
+       "precio_kg": 2008.72
+      },
+      {
+       "subcategoria": "Bubalino Torito",
+       "categoria": "Bubalino",
+       "cabezas": 16,
+       "precio_kg": 2378.89
+      }
+     ]
+    },
+    "zona_10": {
+     "provincias": "NOA — Santiago del Estero, Salta, Tucumán y Jujuy",
+     "filas": [
+      {
+       "subcategoria": "Bovino Novillo Especial Joven Liviano hasta 430 kilos (6 dientes)",
+       "categoria": "Novillo",
+       "cabezas": 331,
+       "precio_kg": 2627.71
+      },
+      {
+       "subcategoria": "Bovino Novillo Especial Joven Pesado más de 430 kilos (6 dientes)",
+       "categoria": "Novillo",
+       "cabezas": 93,
+       "precio_kg": 2390.2
+      },
+      {
+       "subcategoria": "Bovino Novillo Regular Liviano hasta 430 kilos (6 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 890,
+       "precio_kg": 2749.86
+      },
+      {
+       "subcategoria": "Bovino Novillo Regular Pesado más de 430 kilos (6 o más dientes)",
+       "categoria": "Novillo",
+       "cabezas": 229,
+       "precio_kg": 2943.03
+      },
+      {
+       "subcategoria": "Bovino Novillito Especial Liviano hasta 390 kilos (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 610,
+       "precio_kg": 2904.04
+      },
+      {
+       "subcategoria": "Bovino Novillito Especial Pesado más de 390 kilos (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 72,
+       "precio_kg": 2693.93
+      },
+      {
+       "subcategoria": "Bovino Novillito Regular  (4 dientes)",
+       "categoria": "Novillito",
+       "cabezas": 2905,
+       "precio_kg": 2857.38
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Especial Liviana hasta 390 kilos (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 241,
+       "precio_kg": 2851.03
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Especial Pesada más de 390 kilos (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 6,
+       "precio_kg": 1858.45
+      },
+      {
+       "subcategoria": "Bovino Vaquillona Regular (4 dientes)",
+       "categoria": "Vaquillona",
+       "cabezas": 1749,
+       "precio_kg": 2648.19
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Joven Liviana hasta 430 kilos (6 dientes)",
+       "categoria": "Vaca",
+       "cabezas": 135,
+       "precio_kg": 1628.17
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Joven Pesada más de 430 kilos (6 dientes)",
+       "categoria": "Vaca",
+       "cabezas": 1,
+       "precio_kg": 1809.96
+      },
+      {
+       "subcategoria": "Bovino Vaca Especial Adulta Pesada más de 430 kilos (8 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 200,
+       "precio_kg": 1697.12
+      },
+      {
+       "subcategoria": "Bovino Vaca Regular (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 1629,
+       "precio_kg": 1930.12
+      },
+      {
+       "subcategoria": "Bovino Vaca Conserva Buena (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 118,
+       "precio_kg": 2127.11
+      },
+      {
+       "subcategoria": "Bovino Vaca Conserva Inferior (6 o más dientes)",
+       "categoria": "Vaca",
+       "cabezas": 148,
+       "precio_kg": 1791.93
+      },
+      {
+       "subcategoria": "Bovino Toro Especial (más de 2 dientes)",
+       "categoria": "Toro",
+       "cabezas": 9,
+       "precio_kg": 2448.87
+      },
+      {
+       "subcategoria": "Bovino Toro Regular (más de 2 dientes)",
+       "categoria": "Toro",
+       "cabezas": 200,
+       "precio_kg": 2477.72
+      },
+      {
+       "subcategoria": "Bovino MEJ Especial Liviano hasta 430 kilos (2 dientes)",
+       "categoria": "MEJ",
+       "cabezas": 284,
+       "precio_kg": 2700.26
+      },
+      {
+       "subcategoria": "Bovino MEJ Especial Pesado más de 430 kilos (2 dientes)",
+       "categoria": "MEJ",
+       "cabezas": 5,
+       "precio_kg": 1628.96
+      },
+      {
+       "subcategoria": "Bovino MEJ Regular (hasta 2 dientes)",
+       "categoria": "MEJ",
+       "cabezas": 709,
+       "precio_kg": 2862
+      },
+      {
+       "subcategoria": "Bubalino Vaca",
+       "categoria": "Bubalino",
+       "cabezas": 32,
+       "precio_kg": 2982.11
+      },
+      {
+       "subcategoria": "Bubalino Vaquillona",
+       "categoria": "Bubalino",
+       "cabezas": 73,
+       "precio_kg": 4261.14
+      },
+      {
+       "subcategoria": "Bubalino Novillo",
+       "categoria": "Bubalino",
+       "cabezas": 512,
+       "precio_kg": 4419.03
+      },
+      {
+       "subcategoria": "Bubalino Novillito",
+       "categoria": "Bubalino",
+       "cabezas": 444,
+       "precio_kg": 4530.5
+      },
+      {
+       "subcategoria": "Bubalino Toro",
+       "categoria": "Bubalino",
+       "cabezas": 1,
+       "precio_kg": 2520
+      },
+      {
+       "subcategoria": "Bubalino Torito",
+       "categoria": "Bubalino",
+       "cabezas": 13,
+       "precio_kg": 1990.95
+      }
+     ]
+    }
+   }
+  }
+ },
+ "fuente": "SIO Carnes — MAGyP (liquidaciones electrónicas RG 3964/2016 + DT-e SENASA)",
+ "url": "https://siocarnes.magyp.gob.ar/",
+ "alcance": "Hacienda bovina con destino a faena. El corte es por zona de DESTINO, no por provincia de origen."
+}

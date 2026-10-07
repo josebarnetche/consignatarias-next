@@ -275,6 +275,51 @@ def p_tierra(p: D.Paquete) -> str:
     )
 
 
+
+def p_sio(p: D.Paquete) -> str:
+    """
+    Lo que se pagó lejos del mercado. Es la página que le habla al que no vende en
+    Cañuelas, que son casi todos.
+    """
+    if not len(p.sio):
+        return (
+            '<h2>Lo que se pagó fuera de Cañuelas</h2>'
+            '<p class="ancho">SIO Carnes no devolvió datos para este mes. La página queda para que se note '
+            'la ausencia: no se reemplaza el dato por una estimación.</p>'
+        )
+    g = G.barras_sio_zonas(p.sio.puntos)
+    pub = [x for x in p.sio.puntos if x.get("representativo")]
+    peor = min(pub, key=lambda x: x["vs_pais_pct"]) if pub else None
+    mejor = max(pub, key=lambda x: x["vs_pais_pct"]) if pub else None
+
+    lectura = ""
+    if peor and mejor and peor is not mejor:
+        brecha = mejor["precio_kg"] - peor["precio_kg"]
+        # Lo que se muestra es la plata, no el porcentaje: 12 % no se siente,
+        # $230.000 en una jaula de 20 novillos sí.
+        jaula = brecha * 460 * 20
+        lectura = (
+            f'<p class="ancho">La distancia entre la zona que más pagó y la que menos es de '
+            f'<span class="fuerte">{G.ars(brecha)}</span> por kilo. Sobre una jaula de 20 novillos de 460 kg '
+            f'son <span class="fuerte">{G.ars(jaula)}</span> de diferencia por el mismo animal, según dónde '
+            f'termine. Esa brecha es flete, competencia entre plantas y poder de negociación: no es calidad.</p>'
+        )
+
+    return (
+        f'<h2>Lo que se pagó fuera de Cañuelas</h2>'
+        f'<p class="ancho">Todo lo anterior mira el Mercado Agroganadero, que es la referencia del país pero por donde '
+        f'pasa una parte de la hacienda. Esta página mira el resto: las operaciones con destino a faena declaradas en '
+        f'todo el territorio. Cada barra es cuánto se apartó esa zona del promedio nacional.</p>'
+        f'<figure>{g}{pie_figura(p.sio)}</figure>'
+        f'{lectura}'
+        f'<div class="aviso">Tres salvedades que conviene tener presentes. Es hacienda con destino a <span class="fuerte">faena</span>: '
+        f'no hay invernada ni cría, así que no sirve para leer el ternero. El corte es por zona de <span class="fuerte">destino</span>, '
+        f'no por provincia de origen: dice qué pagaron las plantas de una zona, no qué cobró el productor de una provincia. '
+        f'Y las zonas se agrupan a propósito, para no identificar al frigorífico. Las que no llegan a las '
+        f'{D.MINIMO_CABEZAS_ZONA} cabezas en el mes se nombran sin precio: con esos volúmenes el promedio es ruido, '
+        f'y el organismo no publica ningún aviso al respecto — el piso es nuestro.</div>'
+    )
+
 def p_planilla(p: D.Paquete) -> str:
     """La página que justifica imprimir el informe: se completa con lapicera."""
     c = p.cierre
@@ -382,7 +427,7 @@ def construir(p: D.Paquete) -> str:
     ventana = f"{p.mes.desde} → {p.mes.hasta} · {len(p.ruedas_mes)} ruedas"
     paginas = [
         (p_tapa, True), (p_resumen, False), (p_inmag_largo, False), (p_banda, False),
-        (p_amplitud, False), (p_oferta, False), (p_maiz, False), (p_tierra, False),
+        (p_amplitud, False), (p_oferta, False), (p_maiz, False), (p_sio, False), (p_tierra, False),
         (p_planilla, False), (p_remates, False), (p_metodologia, False),
     ]
     total = len(paginas)
