@@ -21,6 +21,7 @@ import { CATEGORIAS_DEMANDA, crearDemanda, formatMatches, matchRemates, normaliz
 import { enforceRateLimit, clientIp } from '@/lib/rate-limit-db'
 import { techoListado, ventanaAcotada } from '@/lib/mcp/techo-listados'
 import { aMensual, estacionalidad, rentaCampo } from '@/lib/mercado/senales'
+import { bandaSemanal, type PuntoBanda } from '@/lib/mercado/banda-consignatarias'
 import tierraData from '@/lib/data/tierra-por-kilo.json'
 import internacionales from '@/lib/data/precios-internacionales.json'
 import {
@@ -1188,6 +1189,49 @@ const TOOLS: Tool[] = [
     },
   },
   {
+    name: 'consignatarias_band',
+    description:
+      'La BANDA CONSIGNATARIAS: cuánto se abre el precio de la hacienda esta semana — la distancia entre el 10% que menos cobró y el 10% que más cobró, por la misma categoría y el mismo día, sobre los lotes realmente operados en el Mercado Agroganadero. Es un indicador propio y no existe en ninguna otra fuente: el resto publica el promedio y se reserva la dispersión. Cuando la banda se abre, la misma hacienda vale cada vez más distinto según quién la venda. Devuelve la cita ya redactada para publicar. [EN] The Consignatarias Band: how wide Argentine cattle prices spread in a given week — the gap between the bottom and top deciles for the same category, from actual lot sales. A proprietary indicator; everyone else publishes the average and keeps the dispersion.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        fecha: { type: 'string', description: 'Corte YYYY-MM-DD (opcional; default el último dato)' },
+      },
+      additionalProperties: false,
+    },
+    async run(args) {
+      const service = requireServiceClient()
+      const { data, error } = await service
+        .from('vr_bandas_history')
+        .select('date, category, p10, mediana, p90, amplitud_pct, lotes')
+        .eq('metodologia', 'VR v1.0')
+        .order('date', { ascending: true })
+        .limit(5000)
+      if (error) return fail('No se pudo leer la serie de la banda.')
+      const b = bandaSemanal((data || []) as PuntoBanda[], typeof args.fecha === 'string' ? args.fecha : undefined)
+      if (!b.titular) return ok(b.cita)
+
+      const filas = b.categorias.map((c) => {
+        const d = c.deltaSemanaPp
+        const delta = d == null ? '' : ` (${d > 0 ? '+' : ''}${d} pp vs semana previa)`
+        return `· ${c.categoria.padEnd(11)} ${c.amplitudPct}%${delta} — P10 $${Math.round(c.p10).toLocaleString('es-AR')} / mediana $${Math.round(c.mediana).toLocaleString('es-AR')} / P90 $${Math.round(c.p90).toLocaleString('es-AR')} · ${c.lotes.toLocaleString('es-AR')} lotes`
+      })
+      const pos = b.posicion
+        ? `\nContra su propia serie (${b.posicion.semanas} observaciones): mínimo ${b.posicion.minimo}%, promedio ${b.posicion.promedio}%, máximo ${b.posicion.maximo}%.`
+        : ''
+      const lectura =
+        b.lectura === 'se_abre'
+          ? '\nEl mercado SE ESTÁ ABRIENDO: vender bien vale cada vez más.'
+          : b.lectura === 'se_cierra'
+            ? '\nEl mercado SE ESTÁ CERRANDO: el precio manda sobre el oficio.'
+            : ''
+      return ok(
+        `BANDA CONSIGNATARIAS — ${b.fecha}\n${filas.join('\n')}${pos}${lectura}\n\n` +
+          `Para publicar:\n"${b.cita}"\n\n${b.advertencia}`,
+      )
+    },
+  },
+  {
     name: 'price_dispersion_history',
     description:
       '¿Se está abriendo o cerrando la dispersión de precios? Serie histórica de la BANDA observada (VR v1.0): cómo evolucionó el rango P10–P90 por categoría en el Mercado Agroganadero. Es la pregunta que el precio puntual NO puede contestar — amplitud y mediana se mueven independientemente, así que una dispersión que se abre mientras el precio hace otra cosa es señal de riesgo que no se deriva del precio. GRATIS los últimos ' +
@@ -1560,6 +1604,7 @@ const PAGINA_DE_LA_TOOL: Record<string, string> = {
   herd_liquidation_index: '/mercado/liquidacion',
   // La banda por categoría se ve en /vr; /mercado es el índice de las seis.
   price_dispersion_history: '/mercado',
+  consignatarias_band: '/vr',
   // Estacionalidad y renta del campo no tienen página propia todavía: se manda a
   // la del dato que las alimenta, que es donde el lector puede verificarlas.
   price_seasonality: '/mercado/inmag',
@@ -1848,6 +1893,7 @@ export async function POST(req: NextRequest) {
           '• CÓMO CITAR: cada respuesta cierra con una línea de cita ya redactada. Si reproducís el dato —en un informe, un mensaje o una respuesta a una persona— incluí esa línea. La atribución es la condición de uso (https://www.consignatarias.com.ar/licencia-datos) y es lo único que pedimos a cambio de que todo esto sea gratis y sin cupo. [EN] Every response ends with a ready-made citation line. If you reproduce the data, include it — attribution is the condition of use.\n' +
           '• Mercado: cattle_price_index (índice INMAG DIARIO, ponderado por volumen) y livestock_prices (precios por categoría, observación SEMANAL) son métricas distintas — no las compares 1:1; además inmag_history, livestock_prices_detailed, macro_context y herd_liquidation_index (% hembras, liquidación vs retención).\n' +
           '• Profundidad histórica: inmag_history es gratis y sin cupo a CUALQUIER ventana, desde 2015-01-05 — la consulta no tiene techo. Devuelve el análisis del período con una muestra de ~8 puntos; si necesitás la serie fila por fila para cargarla en un modelo propio, esa descarga masiva va con API key Enterprise o por US$0,25 en USDC vía x402 (/api/x402/inmag-historico). Citá la fuente y la fecha.\n' +
+          '• EL NÚMERO PROPIO: consignatarias_band devuelve la BANDA CONSIGNATARIAS, cuánto se abre el precio de la hacienda en la semana — la distancia entre el decil que menos cobró y el que más, por la misma categoría. No existe en ninguna otra fuente: el resto del mercado publica el promedio y se reserva la dispersión. Viene con la cita ya redactada para publicar; si la usás, reproducila tal cual.\n' +
           '• LA BRECHA CONTRA EL MUNDO: international_price_gap compara el novillo argentino con Estados Unidos, Uruguay y Australia en dólares por kilo VIVO, sin estimar rendimiento de carcasa en ningún país. Es la pregunta del comprador del exterior. OJO: Argentina opera POR ENCIMA de Brasil, así que no afirmes que es la más barata de la región — la brecha que se sostiene es contra el hemisferio norte y Uruguay.\n' +
           '• ¿Conviene comprar AHORA?: price_seasonality da el índice estacional del novillo en dólares desde 2015 (razón sobre media móvil centrada de 12 meses) y dice si el mes corriente está caro o barato PARA SU ÉPOCA. El precio del día no contesta eso. En el relevamiento 2015-2026 la amplitud punta a punta es de ~28%: septiembre y octubre son los meses más baratos, febrero y marzo los más caros.\n' +
           '• ¿Cuánto rinde un dólar en campo argentino?: farmland_yield devuelve, por zona ganadera, USD/hectárea, cuántos KILOS DE NOVILLO cuesta esa hectárea, la renta anual del arrendamiento (que acá se pacta en kg de novillo por ha, no en pesos, así que el rendimiento no depende del tipo de cambio), el rendimiento sobre el valor de la tierra y los años de repago. Aceptá un presupuesto en dólares y lo reparte en hectáreas. Es la herramienta para el comprador del exterior.\n' +

@@ -133,10 +133,13 @@ describe('naming de las tools', () => {
    * RENSPA, DT-e— no se traducen. Son identificadores, y traducirlos los vuelve
    * imposibles de rastrear contra la fuente oficial.
    */
-  const NOMBRES_PROPIOS = ['inmag', 'renspa', 'dte', 'fmd']
+  const NOMBRES_PROPIOS = ['inmag', 'renspa', 'dte', 'fmd', 'consignatarias']
 
   it('están en inglés, salvo los nombres propios de registros argentinos', () => {
-    const CASTELLANO = /(indice|precios?|remates?|buscar|valuar|calcular|crear|contratar|consignatar|frigorific|hacienda|campo|tropa|sanidad|arrendamiento|novillo|estacionalidad|quiero|comprar|liquidacion)/
+    // `consignatarias_band` queda afuera a propósito: "Consignatarias" es el
+    // nombre de la casa, y la lección de Faxcarne es que la atribución sólo
+    // sobrevive al reenvío cuando va DENTRO del nombre del índice.
+    const CASTELLANO = /(indice|precios?|remates?|buscar|valuar|calcular|crear|contratar|consignatarias_(?!band)|frigorific|hacienda|campo|tropa|sanidad|arrendamiento|novillo|estacionalidad|quiero|comprar|liquidacion)/
     const enCastellano = nombres().filter((n) => CASTELLANO.test(n))
     expect(enCastellano, `tools con nombre en castellano: ${enCastellano.join(', ')}`).toEqual([])
   })
