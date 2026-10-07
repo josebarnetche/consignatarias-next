@@ -13,6 +13,30 @@ async function getResend(): Promise<Resend | null> {
   return resendInstance
 }
 
+/**
+ * Enviar y FALLAR si Resend rechaza.
+ *
+ * ⚠️ `resend.emails.send()` NO lanza excepción cuando la API responde con error:
+ * devuelve `{ data, error }`. De los 45 envíos de este archivo, 38 ignoraban ese
+ * `error`, así que un rechazo de la API se leía como un envío exitoso. En el
+ * camino de una compra eso es grave: el webhook marcaba `delivery_email_at` y el
+ * que pagó quedaba registrado como "ya se le entregó" sin que le llegara nada.
+ *
+ * Esta función se usa en todo lo que respalda plata — entrega de informes, de
+ * guías, altas de suscripción —, donde un envío perdido no se puede descubrir
+ * por casualidad.
+ */
+async function enviarOFallar(
+  resend: Resend,
+  payload: Parameters<Resend['emails']['send']>[0],
+  contexto: string,
+): Promise<string> {
+  const { data, error } = await resend.emails.send(payload)
+  if (error) throw new Error(`Resend rechazó ${contexto}: ${error.name ?? ''} ${error.message ?? JSON.stringify(error)}`)
+  if (!data?.id) throw new Error(`Resend no devolvió id para ${contexto}`)
+  return data.id
+}
+
 function escapeHtml(str: string): string {
   return str
     .replace(/&/g, '&amp;')
@@ -3398,7 +3422,7 @@ export async function sendGuiaPurchaseDelivery(opts: {
   if (!resend) return
   const { to, guia } = opts
   const url = `${APP_URL}/api/guias-premium/${guia.slug}/download`
-  await resend.emails.send({
+  await enviarOFallar(resend, {
     from: FROM,
     to,
     subject: `Tu guía: ${guia.title}`,
@@ -3410,7 +3434,7 @@ export async function sendGuiaPurchaseDelivery(opts: {
       <p style="color:#a1a1aa;font-size:12px;line-height:1.7;margin:0 0 8px">El link es tuyo y no vence: entrá con <strong style="color:#fafafa">${escapeHtml(to)}</strong> y bajala las veces que quieras desde <a href="${APP_URL}/cuenta/guias" style="color:#38bdf8">tu cuenta</a>. Cada copia va marcada con tu email.</p>
       <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">¿Necesitás <strong style="color:#a1a1aa">factura A</strong>? La emite Memola Medios SAS (CUIT 30-71863222-2), que opera consignatarias.com.ar. Si no cargaste los datos al comprar, respondé este mail con razón social y CUIT y te la emitimos.</p>
     `),
-  })
+  }, 'sendGuiaPurchaseDelivery a ' + opts.to)
 }
 
 /**
@@ -3441,9 +3465,12 @@ export async function sendInformePurchaseDelivery(opts: {
   }`
   const titulo = varianteLabel ? `${producto.nombre} — ${varianteLabel}` : producto.nombre
 
-  await resend.emails.send({
+  await enviarOFallar(resend, {
     from: FROM,
     to,
+    // Sin replyTo, responder a la entrega de una compra caía en noreply@, que es
+    // un buzón que no existe. El que pagó tiene que poder contestar el mail.
+    replyTo: REPLY_TO,
     subject: `Tu informe: ${titulo}`,
     html: darkEmailShell(`
       <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Compra confirmada</p>
@@ -3454,7 +3481,7 @@ export async function sendInformePurchaseDelivery(opts: {
       <p style="color:#a1a1aa;font-size:12px;line-height:1.7;margin:0 0 8px"><strong style="color:#fafafa">Se actualiza solo.</strong> El informe se arma con el precio del día, así que si volvés en unos meses lo bajás con los números de ese momento, sin pagar de nuevo.</p>
       <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">¿Necesitás <strong style="color:#a1a1aa">factura A</strong>? La emite Memola Medios SAS (CUIT 30-71863222-2), que opera consignatarias.com.ar. Si no cargaste los datos al comprar, respondé este mail con razón social y CUIT y te la emitimos.</p>
     `),
-  })
+  }, `entrega del informe ${producto.slug} a ${to}`)
 }
 
 /**
@@ -3473,7 +3500,7 @@ export async function sendProductoSubscriptionWelcome(opts: {
   const { to, producto } = opts
   const url = `${APP_URL}/api/informes/${producto.slug}/download`
 
-  await resend.emails.send({
+  await enviarOFallar(resend, {
     from: FROM,
     to,
     subject: `Tu suscripción: ${producto.nombre}`,
@@ -3486,7 +3513,7 @@ export async function sendProductoSubscriptionWelcome(opts: {
       <p style="color:#a1a1aa;font-size:12px;line-height:1.7;margin:0 0 8px">Se renueva solo por ARS ${producto.precio.toLocaleString('es-AR')} por mes, y <strong style="color:#fafafa">lo cancelás cuando quieras</strong> desde tu cuenta, sin llamar a nadie. Si cancelás, seguís teniéndolo hasta que termine el mes que ya pagaste.</p>
       <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">¿Necesitás <strong style="color:#a1a1aa">factura A</strong>? La emite Memola Medios SAS (CUIT 30-71863222-2). Respondé este mail con razón social y CUIT si no los cargaste al suscribirte.</p>
     `),
-  })
+  }, 'sendProductoSubscriptionWelcome a ' + opts.to)
 }
 
 /**
