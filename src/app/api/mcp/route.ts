@@ -50,7 +50,7 @@ export const maxDuration = 60
  *
  * Implementación propia (sin mcp-handler) para no arrastrar el conflicto zod v3/v4 ni
  * Redis: el subset que necesita un tool-server es chico — initialize / tools/list /
- * tools/call. TODOS los tools son públicos: `crear_alerta_precio` tiene free tier
+ * tools/call. TODOS los tools son públicos: `create_price_alert` tiene free tier
  * (3 alertas activas por origen sin key; con key Enterprise sin límite) y las
  * las 24 tools responden gratis y sin cupo; lo pago es la descarga masiva (/api/x402/*, exports Enterprise).
  */
@@ -95,33 +95,33 @@ interface Tool {
 
 // Títulos humanos por tool (annotation `title`) — Glama y los clientes MCP los muestran.
 const TOOL_TITLES: Record<string, string> = {
-  indice_novillo: 'Índice Novillo (INMAG) hoy',
-  inmag_historico: 'Histórico del Índice Novillo (INMAG)',
-  precios_hacienda: 'Precios de hacienda por categoría',
-  precios_detallados: 'Precios por subcategoría',
-  contexto_macro: 'Contexto macro ganadero',
-  indice_liquidacion: 'Índice de Liquidación (% hembras)',
-  remates_programados: 'Próximos remates de hacienda',
-  buscar_consignataria: 'Buscar consignataria',
-  actividad_consignatarias: 'Ranking de actividad de consignatarias',
-  buscar_frigorifico: 'Buscar frigorífico',
-  calcular_arrendamiento: 'Calcular arrendamiento rural',
-  sanidad_plan: 'Plan sanitario SENASA (ficha)',
-  sanidad_calendario_aftosa: 'Calendario de vacunación antiaftosa',
-  sanidad_requisitos_movimiento: 'Requisitos sanitarios de movimiento',
-  sanidad_renspa: 'Validar / decodificar RENSPA',
-  sanidad_dte_tropa: 'DT-e (número de tropa) — referencia',
-  buenas_practicas: 'Buenas Prácticas Ganaderas (BPG)',
-  crear_alerta_precio: 'Crear alerta de precio',
+  cattle_price_index: 'Índice Novillo (INMAG) hoy',
+  inmag_history: 'Histórico del Índice Novillo (INMAG)',
+  livestock_prices: 'Precios de hacienda por categoría',
+  livestock_prices_detailed: 'Precios por subcategoría',
+  macro_context: 'Contexto macro ganadero',
+  herd_liquidation_index: 'Índice de Liquidación (% hembras)',
+  upcoming_auctions: 'Próximos remates de hacienda',
+  find_livestock_broker: 'Buscar consignataria',
+  broker_activity_ranking: 'Ranking de actividad de consignatarias',
+  find_meat_plant: 'Buscar frigorífico',
+  calculate_farmland_rent: 'Calcular arrendamiento rural',
+  animal_health_plan: 'Plan sanitario SENASA (ficha)',
+  fmd_vaccination_calendar: 'Calendario de vacunación antiaftosa',
+  livestock_movement_rules: 'Requisitos sanitarios de movimiento',
+  renspa_lookup: 'Validar / decodificar RENSPA',
+  dte_lookup: 'DT-e (número de tropa) — referencia',
+  good_farming_practices: 'Buenas Prácticas Ganaderas (BPG)',
+  create_price_alert: 'Crear alerta de precio',
 }
 
 // MCP tool annotations (spec 2025-03-26+): declaran el comportamiento de forma
 // ESTRUCTURADA — es lo que Glama (y otros scorers) esperan para la dimensión
 // "side effects / auth / destructive". Todas las tools son de solo lectura sobre
-// datos de mercado (open-world) salvo crear_alerta_precio, que crea un recurso.
+// datos de mercado (open-world) salvo create_price_alert, que crea un recurso.
 function toolAnnotations(t: Tool) {
-  // Única tool de escritura: crear_alerta_precio (ya sin auth obligatoria).
-  const readOnly = t.name !== 'crear_alerta_precio'
+  // Única tool de escritura: create_price_alert (ya sin auth obligatoria).
+  const readOnly = t.name !== 'create_price_alert'
   return {
     title: TOOL_TITLES[t.name] ?? t.name,
     readOnlyHint: readOnly, // no muta estado del mundo (solo consulta)
@@ -159,7 +159,7 @@ const fail = (text: string): ToolResult => ({ content: [{ type: 'text', text }],
  *
  * Una key INVÁLIDA es un error, no un free tier: si degradáramos en silencio, quien
  * cree estar autenticado se llevaría una serie recortada creyéndola completa y la
- * citaría como tal. Es el mismo criterio que usa crear_alerta_precio.
+ * citaría como tal. Es el mismo criterio que usa create_price_alert.
  */
 /** ¿Trae credencial válida? Para las tools de listado, donde una key inválida no
  *  es un error: simplemente no levanta el techo. */
@@ -269,7 +269,7 @@ async function serieInmagUsd(
  *
  * El 07-10-2026 se unificó el naming: la review automática de Glama (4,1/5) marcó
  * que mezclábamos inglés y español —`get_indice_novillo` junto a
- * `actividad_consignatarias`— y que los patrones eran inconsistentes: unos con
+ * `broker_activity_ranking`— y que los patrones eran inconsistentes: unos con
  * prefijo `get_`, otros verbos, otros sustantivos pelados. Ahora la regla es una:
  * **todo en castellano**, sustantivo para lo que devuelve un dato y verbo para lo
  * que hace algo (`buscar_`, `valuar_`, `calcular_`, `crear_`, `contratar_`).
@@ -279,21 +279,50 @@ async function serieInmagUsd(
  * un nombre de tool rompe integraciones ajenas en silencio, y eso no se hace.
  */
 const ALIAS_DE_TOOL: Record<string, string> = {
-  get_indice_novillo: 'indice_novillo',
-  get_inmag_historico: 'inmag_historico',
-  get_precios_hacienda: 'precios_hacienda',
-  get_precios_detallados: 'precios_detallados',
-  get_contexto_macro: 'contexto_macro',
-  get_indice_liquidacion: 'indice_liquidacion',
-  get_vr_historico: 'vr_historico',
-  list_remates: 'remates_programados',
+  get_indice_novillo: 'cattle_price_index',
+  get_inmag_historico: 'inmag_history',
+  get_precios_hacienda: 'livestock_prices',
+  get_precios_detallados: 'livestock_prices_detailed',
+  get_contexto_macro: 'macro_context',
+  get_indice_liquidacion: 'herd_liquidation_index',
+  get_vr_historico: 'price_dispersion_history',
+  list_remates: 'upcoming_auctions',
+  get_estacionalidad: 'price_seasonality',
+  get_renta_campo: 'farmland_yield',
+  indice_novillo: 'cattle_price_index',
+  inmag_historico: 'inmag_history',
+  precios_hacienda: 'livestock_prices',
+  precios_detallados: 'livestock_prices_detailed',
+  contexto_macro: 'macro_context',
+  indice_liquidacion: 'herd_liquidation_index',
+  vr_historico: 'price_dispersion_history',
+  estacionalidad_precio: 'price_seasonality',
+  renta_campo: 'farmland_yield',
+  remates_programados: 'upcoming_auctions',
+  buscar_consignataria: 'find_livestock_broker',
+  buscar_frigorifico: 'find_meat_plant',
+  actividad_consignatarias: 'broker_activity_ranking',
+  valuar_tropa: 'value_cattle_lot',
+  valuar_campo: 'value_farmland',
+  valuar_arrendamiento_campo: 'value_farmland_rent',
+  calcular_arrendamiento: 'calculate_farmland_rent',
+  sanidad_plan: 'animal_health_plan',
+  sanidad_calendario_aftosa: 'fmd_vaccination_calendar',
+  sanidad_requisitos_movimiento: 'livestock_movement_rules',
+  sanidad_renspa: 'renspa_lookup',
+  sanidad_dte_tropa: 'dte_lookup',
+  buenas_practicas: 'good_farming_practices',
+  crear_alerta_precio: 'create_price_alert',
+  contratar_pro_consignataria: 'subscribe_broker_pro',
+  quiero_comprar: 'cattle_buying_request',
 }
+
 
 const TOOLS: Tool[] = [
   {
-    name: 'indice_novillo',
+    name: 'cattle_price_index',
     description:
-      'INMAG diario del Mercado Agroganadero (MAG/Cañuelas): novillo de referencia HOY en ARS/kg vivo, ponderado por volumen. Devuelve valor, volumen, variación vs rueda previa (marca ruedas flacas) y promedio 5 ruedas. Sin args. Histórico: inmag_historico. NO da precios por categoría (precios_hacienda, semanal) ni subcategoría (precios_detallados); no comparar 1:1.',
+      'INMAG diario del Mercado Agroganadero (MAG/Cañuelas): novillo de referencia HOY en ARS/kg vivo, ponderado por volumen. Devuelve valor, volumen, variación vs rueda previa (marca ruedas flacas) y promedio 5 ruedas. Sin args. Histórico: inmag_history. NO da precios por categoría (livestock_prices, semanal) ni subcategoría (livestock_prices_detailed); no comparar 1:1. [EN] Today\'s Argentine cattle price index (INMAG): live-weight steer reference price in ARS/kg, volume-weighted, plus the daily change.',
     inputSchema: { type: 'object', properties: {}, additionalProperties: false },
     async run() {
       const series = prices.inmag.series || []
@@ -321,7 +350,7 @@ const TOOLS: Tool[] = [
               (thinPrev ? ' ⚠ la rueda previa fue de bajo volumen; la variación diaria puede exagerar' : '') + '\n'
             : '') +
           `Tendencia: promedio últimas 5 ruedas ${fmt(avg5)} — hoy ${vsAvg >= 0 ? '+' : ''}${vsAvg.toFixed(1)}% vs esa media\n` +
-          `Métrica: índice DIARIO ponderado por volumen del canal formal MAG (Cañuelas). Los precios por categoría (precios_hacienda) son una observación SEMANAL distinta — no comparar 1:1.\n\n` +
+          `Métrica: índice DIARIO ponderado por volumen del canal formal MAG (Cañuelas). Los precios por categoría (livestock_prices) son una observación SEMANAL distinta — no comparar 1:1.\n\n` +
           JSON.stringify({
             inmag: hoy.value, date: hoy.date, volume: hoy.volume,
             change_dia_pct: Math.round(diaChange * 10) / 10, prev_date: prevRueda?.date ?? null, prev: prevRueda?.value ?? null,
@@ -332,9 +361,9 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'inmag_historico',
+    name: 'inmag_history',
     description:
-      'Serie histórica del Índice Novillo (INMAG) — TENDENCIA. Serie diaria desde 2015-01-05: MAG/Cañuelas desde may-2022, antes era Mercado de Liniers (índice empalmado; la respuesta lo aclara cuando el rango cruza esa frontera). Devuelve valor inicial y final, variación %, mínimo, máximo, nº de ruedas y una muestra (~8 puntos). Índice DIARIO ponderado por volumen. Rango: dias (ventana atrás, default 30) o desde/hasta (YYYY-MM-DD, exacto — sirve para una fecha puntual: desde=hasta, GRATIS a cualquier profundidad). moneda: ars (default) o usd (dólar blue venta, último valor conocido a cada fecha). GRATIS y sin cupo a CUALQUIER profundidad, desde 2015-01-05: la consulta no tiene techo. Devuelve el análisis completo (inicio, fin, variación, mínimo, máximo) con una muestra de ~8 puntos. Si lo que necesitás es la serie fila por fila para cargarla en tu propio modelo, eso va por API key Enterprise o US$0,25 en USDC vía x402 (/api/x402/inmag-historico) — se cobra la descarga masiva y la redistribución, no la consulta. Valor de HOY → indice_novillo; por categoría (semanal) → precios_hacienda, no comparar 1:1.',
+      'Serie histórica del Índice Novillo (INMAG) — TENDENCIA. Serie diaria desde 2015-01-05: MAG/Cañuelas desde may-2022, antes era Mercado de Liniers (índice empalmado; la respuesta lo aclara cuando el rango cruza esa frontera). Devuelve valor inicial y final, variación %, mínimo, máximo, nº de ruedas y una muestra (~8 puntos). Índice DIARIO ponderado por volumen. Rango: dias (ventana atrás, default 30) o desde/hasta (YYYY-MM-DD, exacto — sirve para una fecha puntual: desde=hasta, GRATIS a cualquier profundidad). moneda: ars (default) o usd (dólar blue venta, último valor conocido a cada fecha). GRATIS y sin cupo a CUALQUIER profundidad, desde 2015-01-05: la consulta no tiene techo. Devuelve el análisis completo (inicio, fin, variación, mínimo, máximo) con una muestra de ~8 puntos. Si lo que necesitás es la serie fila por fila para cargarla en tu propio modelo, eso va por API key Enterprise o US$0,25 en USDC vía x402 (/api/x402/inmag-historico) — se cobra la descarga masiva y la redistribución, no la consulta. Valor de HOY → cattle_price_index; por categoría (semanal) → livestock_prices, no comparar 1:1. [EN] Historical Argentine cattle price series (INMAG) since 2015, in ARS or USD. Free, no cap, any window.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -396,9 +425,9 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'precios_hacienda',
+    name: 'livestock_prices',
     description:
-      'Precios de hacienda por categoría (novillos, novillitos, vaquillonas, vacas, toros, terneros) del Mercado Agroganadero: observación SEMANAL del SIO, ARS/kg vivo. Cada una: precio actual, cabezas y aviso si <200 cab (pocos datos). categoria (enum) filtra una; sin arg, todas. NO es el INMAG diario (indice_novillo, no comparar 1:1) ni subcategorías (precios_detallados).',
+      'Precios de hacienda por categoría (novillos, novillitos, vaquillonas, vacas, toros, terneros) del Mercado Agroganadero: observación SEMANAL del SIO, ARS/kg vivo. Cada una: precio actual, cabezas y aviso si <200 cab (pocos datos). categoria (enum) filtra una; sin arg, todas. NO es el INMAG diario (cattle_price_index, no comparar 1:1) ni subcategorías (livestock_prices_detailed). [EN] Argentine cattle prices by category (steer, young steer, heifer, cow, bull, calf), ARS per live kilogram.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -418,7 +447,7 @@ const TOOLS: Tool[] = [
       })
       return ok(
         `Precios de hacienda por categoría — observación SIO ${week ? `(${week})` : 'semanal'}, ARS/kg vivo\n` +
-          `⚠ Métrica SEMANAL por categoría — distinta del índice INMAG diario (ver indice_novillo). No comparar 1:1.\n` +
+          `⚠ Métrica SEMANAL por categoría — distinta del índice INMAG diario (ver cattle_price_index). No comparar 1:1.\n` +
           `${lines.join('\n')}\n\n` +
           JSON.stringify({
             metric: 'sio_weekly_by_category', week,
@@ -428,9 +457,9 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'precios_detallados',
+    name: 'livestock_prices_detailed',
     description:
-      'Precios por SUBCATEGORÍA del Mercado Agroganadero (MAG/Cañuelas), último día hábil: ej. "NOVILLOS Regular +430", "VACAS Conserva Buena" — mín/prom/máx en ARS/kg vivo + cabezas. Más granular que precios_hacienda (categorías); NO es el índice INMAG diario (indice_novillo). Param opcional grupo (novillos/novillitos/vaquillonas/vacas/toros); sin filtro, todas.',
+      'Precios por SUBCATEGORÍA del Mercado Agroganadero (MAG/Cañuelas), último día hábil: ej. "NOVILLOS Regular +430", "VACAS Conserva Buena" — mín/prom/máx en ARS/kg vivo + cabezas. Más granular que livestock_prices (categorías); NO es el índice INMAG diario (cattle_price_index). Param opcional grupo (novillos/novillitos/vaquillonas/vacas/toros); sin filtro, todas. [EN] Argentine cattle prices by sub-category with min/avg/max and head count.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -466,9 +495,9 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'contexto_macro',
+    name: 'macro_context',
     description:
-      'Contexto macro del mercado ganadero argentino, sin parámetros: dólar blue y oficial (ARS), maíz FOB (USD/tn y ARS/kg), novillo INMAG (ARS/kg) y el spread novillo/maíz (kg de maíz que compra 1 kg novillo; proxy de rentabilidad de feedlot); y, si hay, índice de arrendamiento MAG (ARS/kg). NO da la serie INMAG (→indice_novillo) ni precios por categoría (→precios_hacienda).',
+      'Contexto macro del mercado ganadero argentino, sin parámetros: dólar blue y oficial (ARS), maíz FOB (USD/tn y ARS/kg), novillo INMAG (ARS/kg) y el spread novillo/maíz (kg de maíz que compra 1 kg novillo; proxy de rentabilidad de feedlot); y, si hay, índice de arrendamiento MAG (ARS/kg). NO da la serie INMAG (→cattle_price_index) ni precios por categoría (→livestock_prices). [EN] Argentine macro context for cattle trading: parallel and official USD rates, FOB corn, and the steer/corn spread.',
     inputSchema: { type: 'object', properties: {}, additionalProperties: false },
     async run() {
       const maizArsKg = (prices.corn.current * prices.usdBlue.current) / 1000 // USD/tn → ARS/kg
@@ -496,9 +525,9 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'indice_liquidacion',
+    name: 'herd_liquidation_index',
     description:
-      'Índice de Liquidación: participación de HEMBRAS (vacas + vaquillonas) en la hacienda operada en el Mercado Agroganadero (Cañuelas) — indicador ADELANTADO de liquidación (descarga de vientres) vs. retención (armado de rodeo). Sin args. Devuelve la lectura fresca de Cañuelas (mensual, 2026→), el ancla nacional actual (YTD, PDF mensual MAGyP) y el contexto histórico de la faena de hembras NACIONAL (1998-2025: mensual MAGyP + trimestral IPCVA). Ojo: Cañuelas corre estructuralmente por encima de la faena nacional — no comparar 1:1.',
+      'Índice de Liquidación: participación de HEMBRAS (vacas + vaquillonas) en la hacienda operada en el Mercado Agroganadero (Cañuelas) — indicador ADELANTADO de liquidación (descarga de vientres) vs. retención (armado de rodeo). Sin args. Devuelve la lectura fresca de Cañuelas (mensual, 2026→), el ancla nacional actual (YTD, PDF mensual MAGyP) y el contexto histórico de la faena de hembras NACIONAL (1998-2025: mensual MAGyP + trimestral IPCVA). Ojo: Cañuelas corre estructuralmente por encima de la faena nacional — no comparar 1:1. [EN] Share of females in slaughter: tells whether the Argentine herd is liquidating or rebuilding.',
     inputSchema: { type: 'object', properties: {}, additionalProperties: false },
     async run() {
       const { actual, canuelas, nacional, nacionalActual, interpretacion, fuenteNacional } = await getLiquidacion()
@@ -528,9 +557,9 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'remates_programados',
+    name: 'upcoming_auctions',
     description:
-      'Calendario de próximos remates de hacienda en Argentina: solo programados, fecha ≥ hoy, ordenados por fecha. Devuelve fecha, hora, consignataria, localidad/provincia, categoría principal y si hay transmisión en vivo. Params: provincia (subcadena, opcional), limite (default 10, máx 50). No da precios ni INMAG: usá precios_hacienda/indice_novillo.',
+      'Calendario de próximos remates de hacienda en Argentina: solo programados, fecha ≥ hoy, ordenados por fecha. Devuelve fecha, hora, consignataria, localidad/provincia, categoría principal y si hay transmisión en vivo. Params: provincia (subcadena, opcional), limite (default 10, máx 50). No da precios ni INMAG: usá livestock_prices/cattle_price_index. [EN] Calendar of upcoming Argentine cattle auctions, filterable by province.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -543,7 +572,7 @@ const TOOLS: Tool[] = [
       const today = new Date().toISOString().slice(0, 10)
       const prov = typeof args.provincia === 'string' ? args.provincia.toLowerCase() : null
       const techo = await techoListado({
-        tool: 'remates_programados', req, autorizado: await tieneKey(args, req),
+        tool: 'upcoming_auctions', req, autorizado: await tieneKey(args, req),
         pedido: typeof args.limite === 'number' ? args.limite : undefined,
         tope: 50, porDefecto: 10, enumera: !prov,
       })
@@ -563,9 +592,9 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'buscar_consignataria',
+    name: 'find_livestock_broker',
     description:
-      'Directorio de consignatarias/casas de remate de hacienda por nombre, razón social o localidad. Devuelve nombre, localidad/provincia, categoría, CUIT, un contacto (WhatsApp/teléfono/web) y el perfil en consignatarias.com.ar. Alcanza con el nombre O con la provincia: "¿qué consignatarias hay en Salta?" es una consulta válida sin término. Limite def 8, máx 25. NO da actividad de mercado: para cabezas/precio en el MAG usá actividad_consignatarias.',
+      'Directorio de consignatarias/casas de remate de hacienda por nombre, razón social o localidad. Devuelve nombre, localidad/provincia, categoría, CUIT, un contacto (WhatsApp/teléfono/web) y el perfil en consignatarias.com.ar. Alcanza con el nombre O con la provincia: "¿qué consignatarias hay en Salta?" es una consulta válida sin término. Limite def 8, máx 25. NO da actividad de mercado: para cabezas/precio en el MAG usá broker_activity_ranking. [EN] Directory of Argentine livestock brokers and auction houses, by name, province or tax ID (CUIT).',
     inputSchema: {
       type: 'object',
       properties: {
@@ -584,7 +613,7 @@ const TOOLS: Tool[] = [
        * término de búsqueda. Antes `query` era obligatorio y con menos de dos
        * caracteres se rechazaba, así que esa pregunta se contestaba con un error:
        * 43 veces en una sola corrida de un banco de pruebas, siempre con la
-       * provincia puesta. `buscar_frigorifico` ya aceptaba la provincia sola —
+       * provincia puesta. `find_meat_plant` ya aceptaba la provincia sola —
        * eran dos tools del mismo directorio con reglas distintas.
        *
        * Lo que sí se mantiene: algo hay que acotar. Sin término NI provincia no
@@ -594,7 +623,7 @@ const TOOLS: Tool[] = [
         return fail('Pasá un término de al menos 2 caracteres o una provincia.')
       }
       const techo = await techoListado({
-        tool: 'buscar_consignataria', req, autorizado: await tieneKey(args, req),
+        tool: 'find_livestock_broker', req, autorizado: await tieneKey(args, req),
         pedido: typeof args.limite === 'number' ? args.limite : undefined,
         tope: 25, porDefecto: 8,
       })
@@ -622,9 +651,9 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'actividad_consignatarias',
+    name: 'broker_activity_ranking',
     description:
-      'Ranking de consignatarias por CABEZAS operadas en el Mercado Agroganadero (MAG, Cañuelas; mercado de referencia) en un período, con precio promedio ARS/kg por firma. Para "qué firma operó más"; NO da precio de mercado (precios_hacienda) ni índice diario (indice_novillo). Args: desde (def. 7d), hasta (hoy), categoria (NOVILLO/VACA… opc.), limite (def. 15, máx. 45).',
+      'Ranking de consignatarias por CABEZAS operadas en el Mercado Agroganadero (MAG, Cañuelas; mercado de referencia) en un período, con precio promedio ARS/kg por firma. Para "qué firma operó más"; NO da precio de mercado (livestock_prices) ni índice diario (cattle_price_index). Args: desde (def. 7d), hasta (hoy), categoria (NOVILLO/VACA… opc.), limite (def. 15, máx. 45). [EN] Ranking of livestock brokers by head traded at the Argentine reference market (Cañuelas), with average price per firm.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -649,7 +678,7 @@ const TOOLS: Tool[] = [
       // que es lo que vendemos. Sin credencial la ventana se acota y se avisa.
       const { desde, nota: notaVentana } = ventanaAcotada(desdePedido, hasta, autorizadoAct)
       const techo = await techoListado({
-        tool: 'actividad_consignatarias', req, autorizado: autorizadoAct,
+        tool: 'broker_activity_ranking', req, autorizado: autorizadoAct,
         pedido: typeof args.limite === 'number' ? args.limite : undefined,
         tope: 45, porDefecto: 15,
       })
@@ -719,9 +748,9 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'estacionalidad_precio',
+    name: 'price_seasonality',
     description:
-      'En qué mes del año la hacienda está típicamente cara o barata, y dónde está HOY contra esa norma. Índice estacional del INMAG EN DÓLARES desde 2015 (razón sobre media móvil centrada de 12 meses, mediana entre años, normalizado a 1,00). Contesta "¿conviene comprar ahora o esperar?" — que es lo que el precio del día NO contesta. Args: mes (YYYY-MM, opcional; default el último con índice). Se calcula en dólares a propósito: en pesos mediría la inflación, no el ciclo.',
+      'En qué mes del año la hacienda está típicamente cara o barata, y dónde está HOY contra esa norma. Índice estacional del INMAG EN DÓLARES desde 2015 (razón sobre media móvil centrada de 12 meses, mediana entre años, normalizado a 1,00). Contesta "¿conviene comprar ahora o esperar?" — que es lo que el precio del día NO contesta. Args: mes (YYYY-MM, opcional; default el último con índice). Se calcula en dólares a propósito: en pesos mediría la inflación, no el ciclo. [EN] Which month Argentine cattle is typically cheap or expensive, and where it stands today against that norm. Seasonal index on the USD series since 2015.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -757,9 +786,9 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'renta_campo',
+    name: 'farmland_yield',
     description:
-      'Qué renta un dólar puesto en campo argentino, por zona y para las TRES aptitudes (ganadera, agrícola y mixta): USD/hectárea, renta anual del arrendamiento en USD, el canon en su unidad real (kg de novillo o quintales de soja por ha/año), el rendimiento sobre el valor de la tierra y los años de repago. Para el comprador del exterior que evalúa entrar. Args: presupuesto_usd (opcional, lo reparte en hectáreas), provincia, aptitud (ganadera|agricola|mixta), limite (def 10). Cada aptitud rinde por lo suyo: la zona núcleo vale por la soja, no por los novillos.',
+      'Qué renta un dólar puesto en campo argentino, por zona y para las TRES aptitudes (ganadera, agrícola y mixta): USD/hectárea, renta anual del arrendamiento en USD, el canon en su unidad real (kg de novillo o quintales de soja por ha/año), el rendimiento sobre el valor de la tierra y los años de repago. Para el comprador del exterior que evalúa entrar. Args: presupuesto_usd (opcional, lo reparte en hectáreas), provincia, aptitud (ganadera|agricola|mixta), limite (def 10). Cada aptitud rinde por lo suyo: la zona núcleo vale por la soja, no por los novillos. [EN] What a dollar buys and earns in Argentine farmland, by zone: USD per hectare, annual rental yield, payback years. Covers grazing, cropping and mixed land.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -812,9 +841,9 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'buscar_frigorifico',
+    name: 'find_meat_plant',
     description:
-      'Directorio de frigoríficos y plantas de faena habilitados MAGYP/SENASA (1.102). Buscá por nombre, CUIT o provincia. Por planta devuelve nombre, provincia, matrícula, CUIT y ciclo; marca las inactivas en SENASA. Requiere query (nombre/CUIT) o provincia (una alcanza); limite default 10, máx 30. No da precios ni faena — es directorio.',
+      'Directorio de frigoríficos y plantas de faena habilitados MAGYP/SENASA (1.102). Buscá por nombre, CUIT o provincia. Por planta devuelve nombre, provincia, matrícula, CUIT y ciclo; marca las inactivas en SENASA. Requiere query (nombre/CUIT) o provincia (una alcanza); limite default 10, máx 30. No da precios ni faena — es directorio. [EN] Directory of Argentine meat plants and slaughterhouses licensed by SENASA/MAGYP, by name, tax ID or province.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -829,7 +858,7 @@ const TOOLS: Tool[] = [
       const prov = String(args.provincia || '').toLowerCase().trim()
       if (!q && !prov) return fail('Pasá un nombre/CUIT o una provincia.')
       const techo = await techoListado({
-        tool: 'buscar_frigorifico', req, autorizado: await tieneKey(args, req),
+        tool: 'find_meat_plant', req, autorizado: await tieneKey(args, req),
         pedido: typeof args.limite === 'number' ? args.limite : undefined,
         tope: 30, porDefecto: 10,
       })
@@ -848,9 +877,9 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'calcular_arrendamiento',
+    name: 'calculate_farmland_rent',
     description:
-      'Calcula el canon de arrendamiento de campo (ARS) = kg novillo/ha/mes × hectáreas × precio. Devuelve canon mensual, anual y por ha/mes. Sin precio_novillo usa el índice oficial de arrendamientos del MAG (haciinfo000013), o el INMAG del día si falta. Solo calcula: para consultar precios usá indice_novillo o precios_hacienda. Estimación, no asesoramiento.',
+      'Calcula el canon de arrendamiento de campo (ARS) = kg novillo/ha/mes × hectáreas × precio. Devuelve canon mensual, anual y por ha/mes. Sin precio_novillo usa el índice oficial de arrendamientos del MAG (haciinfo000013), o el INMAG del día si falta. Solo calcula: para consultar precios usá cattle_price_index o livestock_prices. Estimación, no asesoramiento. [EN] Convert a farmland rent in kilograms of steer per hectare into ARS and USD at today\'s price.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -893,9 +922,9 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'sanidad_plan',
+    name: 'animal_health_plan',
     description:
-      'Ficha de un plan sanitario obligatorio de SENASA para bovinos: aftosa, brucelosis, tuberculosis o garrapata/tristeza. Devuelve agente, régimen (vacunación/testeo), categorías afectadas, si es zoonosis y las resoluciones fuente (con URL oficial). Sin argumento lista los 4 planes. Es información regulatoria citada, no operativa (para mover hacienda usá sanidad_requisitos_movimiento).',
+      'Ficha de un plan sanitario obligatorio de SENASA para bovinos: aftosa, brucelosis, tuberculosis o garrapata/tristeza. Devuelve agente, régimen (vacunación/testeo), categorías afectadas, si es zoonosis y las resoluciones fuente (con URL oficial). Sin argumento lista los 4 planes. Es información regulatoria citada, no operativa (para mover hacienda usá livestock_movement_rules). [EN] Argentine animal health requirements (SENASA), with the regulation cited.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -923,9 +952,9 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'sanidad_calendario_aftosa',
+    name: 'fmd_vaccination_calendar',
     description:
-      'Calendario de vacunación antiaftosa 2026 de SENASA (Res. 711/2025) y estado de zona por provincia. Devuelve las ventanas de la 1ra campaña (todas las categorías) y 2da campaña (solo terneros/terneras), y si la provincia está en zona CON o SIN vacunación (Patagonia/Calingasta). El día exacto por distrito lo fija el Plan Local del Ente Sanitario — devuelve la ventana + la cita, nunca un día inventado.',
+      'Calendario de vacunación antiaftosa 2026 de SENASA (Res. 711/2025) y estado de zona por provincia. Devuelve las ventanas de la 1ra campaña (todas las categorías) y 2da campaña (solo terneros/terneras), y si la provincia está en zona CON o SIN vacunación (Patagonia/Calingasta). El día exacto por distrito lo fija el Plan Local del Ente Sanitario — devuelve la ventana + la cita, nunca un día inventado. [EN] Foot-and-mouth disease vaccination calendar in Argentina, by region and period.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -954,9 +983,9 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'sanidad_requisitos_movimiento',
+    name: 'livestock_movement_rules',
     description:
-      'Requisitos sanitarios de SENASA para mover hacienda bovina (RENSPA, DT-e, aftosa al día, serología de brucelosis, barrera de garrapata, transporte habilitado), con la resolución fuente de cada uno. Si pasás provincia de origen y destino, señala si el movimiento cruza la barrera de aftosa (zona con↔sin vacunación). No emite el DT-e (eso es SIGSA, requiere clave fiscal ARCA); informa qué se exige.',
+      'Requisitos sanitarios de SENASA para mover hacienda bovina (RENSPA, DT-e, aftosa al día, serología de brucelosis, barrera de garrapata, transporte habilitado), con la resolución fuente de cada uno. Si pasás provincia de origen y destino, señala si el movimiento cruza la barrera de aftosa (zona con↔sin vacunación). No emite el DT-e (eso es SIGSA, requiere clave fiscal ARCA); informa qué se exige. [EN] What is required to move cattle between Argentine provinces or regions.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -982,9 +1011,9 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'sanidad_renspa',
+    name: 'renspa_lookup',
     description:
-      'Valida y decodifica un código RENSPA (Registro Nacional Sanitario de Productores Agropecuarios): 17 caracteres, formato 00.000.0.00000.00. Devuelve los segmentos (provincia, departamento, jurisdicción de oficina local, establecimiento y productor) y explica qué identifica. NO consulta la vigencia en vivo (la base de SENASA está tras clave fiscal ARCA); para verificar vigencia remite a la consulta pública oficial.',
+      'Valida y decodifica un código RENSPA (Registro Nacional Sanitario de Productores Agropecuarios): 17 caracteres, formato 00.000.0.00000.00. Devuelve los segmentos (provincia, departamento, jurisdicción de oficina local, establecimiento y productor) y explica qué identifica. NO consulta la vigencia en vivo (la base de SENASA está tras clave fiscal ARCA); para verificar vigencia remite a la consulta pública oficial. [EN] Validate and decode a RENSPA, the Argentine farm registration number.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1017,9 +1046,9 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'sanidad_dte_tropa',
+    name: 'dte_lookup',
     description:
-      'Explica el DT-e (Documento de Tránsito electrónico) / número de tropa que ampara el movimiento de hacienda a remate o faena: qué es, qué requisitos hacen falta para emitirlo (RENSPA vigente, clave fiscal ARCA, vacunación al día) y cómo se encadena con los requisitos sanitarios. NO emite ni consulta un DT-e real (SIGSA está tras clave fiscal ARCA); es referencia. Para el detalle de requisitos por movimiento usá sanidad_requisitos_movimiento.',
+      'Explica el DT-e (Documento de Tránsito electrónico) / número de tropa que ampara el movimiento de hacienda a remate o faena: qué es, qué requisitos hacen falta para emitirlo (RENSPA vigente, clave fiscal ARCA, vacunación al día) y cómo se encadena con los requisitos sanitarios. NO emite ni consulta un DT-e real (SIGSA está tras clave fiscal ARCA); es referencia. Para el detalle de requisitos por movimiento usá livestock_movement_rules. [EN] Decode an Argentine DT-e (electronic transit document) or herd movement number.',
     inputSchema: { type: 'object', properties: {}, additionalProperties: false },
     async run() {
       const f = fuentesDe(DTE_INFO.fuentes).map((x) => `${x.norma}: ${x.url}`).join('\n  ')
@@ -1034,9 +1063,9 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'buenas_practicas',
+    name: 'good_farming_practices',
     description:
-      'Buenas Prácticas Ganaderas (BPG) para la producción de vacunos de carne, resumidas de la Guía de la Red BPA (2019). Sin argumento lista los 14 temas (organización, personal, establecimiento, instalaciones, suelo, agua, forrajes, estiércol, residuos, cambio climático, manejo de rodeo, alimentación, salud animal, bienestar animal). Con un tema, devuelve cómo implementarlo (secciones y prácticas). Son voluntarias — para lo sanitario OBLIGATORIO usá sanidad_plan / sanidad_requisitos_movimiento.',
+      'Buenas Prácticas Ganaderas (BPG) para la producción de vacunos de carne, resumidas de la Guía de la Red BPA (2019). Sin argumento lista los 14 temas (organización, personal, establecimiento, instalaciones, suelo, agua, forrajes, estiércol, residuos, cambio climático, manejo de rodeo, alimentación, salud animal, bienestar animal). Con un tema, devuelve cómo implementarlo (secciones y prácticas). Son voluntarias — para lo sanitario OBLIGATORIO usá animal_health_plan / livestock_movement_rules. [EN] Argentine Good Livestock Farming Practices (Red BPA guide), 14 topics.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1062,9 +1091,9 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'valuar_tropa',
+    name: 'value_cattle_lot',
     description:
-      '¿Cuánto valen 350 novillos en Formosa? Valúa una tropa de hacienda con la BANDA de precio realmente observada en las operaciones de lote del MAG (VR v1.0): conservador (P10), central (mediana) y optimista (P90), con la cantidad de lotes y cabezas que la sostiene, más el total en USD (blue y oficial) y la fuente fechada. Cuando una categoría no tiene base suficiente de lotes cae a la referencia nacional del MAG y lo declara — nunca inventa un rango. Metodología: https://www.consignatarias.com.ar/metodologia/vr. GRATIS y sin cupo. Params: categoria, cabezas, kg_promedio (opcional, si no se asume el peso típico de venta), provincia (opcional).',
+      '¿Cuánto valen 350 novillos en Formosa? Valúa una tropa de hacienda con la BANDA de precio realmente observada en las operaciones de lote del MAG (VR v1.0): conservador (P10), central (mediana) y optimista (P90), con la cantidad de lotes y cabezas que la sostiene, más el total en USD (blue y oficial) y la fuente fechada. Cuando una categoría no tiene base suficiente de lotes cae a la referencia nacional del MAG y lo declara — nunca inventa un rango. Metodología: https://www.consignatarias.com.ar/metodologia/vr. GRATIS y sin cupo. Params: categoria, cabezas, kg_promedio (opcional, si no se asume el peso típico de venta), provincia (opcional). [EN] Value a lot of cattle in Argentina: returns the observed P10/median/P90 price band, not a single point.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1095,13 +1124,14 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'vr_historico',
+    name: 'price_dispersion_history',
     description:
       '¿Se está abriendo o cerrando la dispersión de precios? Serie histórica de la BANDA observada (VR v1.0): cómo evolucionó el rango P10–P90 por categoría en el Mercado Agroganadero. Es la pregunta que el precio puntual NO puede contestar — amplitud y mediana se mueven independientemente, así que una dispersión que se abre mientras el precio hace otra cosa es señal de riesgo que no se deriva del precio. GRATIS los últimos ' +
       VR_SERIE_VENTANA_GRATIS_DIAS +
       ' días y también hacia atrás sin techo, gratis y sin cupo (la ventana publicada en /mercado y /vr es solo el default). Params: dias (default ' +
       VR_SERIE_VENTANA_GRATIS_DIAS +
-      '), categoria (opcional). Valor de HOY → precios_hacienda; valuar una tropa → valuar_tropa.',
+      '), categoria (opcional). Valor de HOY → livestock_prices; valuar una tropa → value_cattle_lot. ' +
+      '[EN] Is the market widening or tightening? Historical series of the observed P10-P90 price band by category in the Argentine reference market.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1114,7 +1144,7 @@ const TOOLS: Tool[] = [
     async run(args, req) {
       const pedidos = Math.max(1, Math.min(3650, Number(args.dias) || VR_SERIE_VENTANA_GRATIS_DIAS))
 
-      // Igual que en inmag_historico: una key inválida NO degrada a gratis en
+      // Igual que en inmag_history: una key inválida NO degrada a gratis en
       // silencio, o el que cree estar autenticado cita una serie recortada.
       const auth = await autorizacionEnterprise(args, req)
       if ('error' in auth) return fail(auth.error)
@@ -1139,7 +1169,7 @@ const TOOLS: Tool[] = [
       if (error) return fail(error)
       if (rows.length === 0) {
         // Respuesta normal, NO isError: "sin datos en este rango" es una
-        // respuesta válida, igual que en inmag_historico. La tool dice
+        // respuesta válida, igual que en inmag_history. La tool dice
         // "nunca niega" y devolver un error la contradecía.
         return ok(
           cod
@@ -1171,9 +1201,9 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'valuar_arrendamiento_campo',
+    name: 'value_farmland_rent',
     description:
-      '¿Cuánto cuesta arrendar un campo de 3.500 has en Corrientes? Canon de arrendamiento ganadero al índice oficial del MAG (haciinfo000013): anual y mensual, en ARS y USD. Con kg_ha_anio pactado da el canon exacto; sin él, escenarios de 40 a 100 kg/ha/año. GRATIS y sin cupo. Params: hectareas, kg_ha_anio (opcional), provincia (opcional).',
+      '¿Cuánto cuesta arrendar un campo de 3.500 has en Corrientes? Canon de arrendamiento ganadero al índice oficial del MAG (haciinfo000013): anual y mensual, en ARS y USD. Con kg_ha_anio pactado da el canon exacto; sin él, escenarios de 40 a 100 kg/ha/año. GRATIS y sin cupo. Params: hectareas, kg_ha_anio (opcional), provincia (opcional). [EN] Cost of renting Argentine farmland, quoted the way it is actually contracted: in kilograms of steer per hectare per year.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1185,7 +1215,7 @@ const TOOLS: Tool[] = [
       additionalProperties: false,
     },
     async run(args) {
-      // Sin cupo, misma razón que valuar_tropa.
+      // Sin cupo, misma razón que value_cattle_lot.
       try {
         return ok(
           valuarArrendamiento({
@@ -1200,9 +1230,9 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'valuar_campo',
+    name: 'value_farmland',
     description:
-      '¿Cuánto vale la hectárea en Corrientes? ¿Cuánto vale un campo de 800 has en la cuenca del Salado? Valor de la tierra en dólares por hectárea, con el rango real de la zona, el arrendamiento típico en kg de novillo y la fuente de cada dato. Relevamiento propio: 15 provincias y 52 zonas, cruzando tasadores con serie publicada, catastro provincial y avisos de venta. Distingue campo ganadero de agrícola y valúa cada uno en SU moneda: el ganadero en kg de novillo por ha por mes, el agrícola en quintales de soja por ha por año. GRATIS, sin cupo. Params: provincia (obligatoria), hectareas (opcional), zona (opcional — acepta el nombre de la zona o el partido), kg_ha_mes (opcional, canon pactado).',
+      '¿Cuánto vale la hectárea en Corrientes? ¿Cuánto vale un campo de 800 has en la cuenca del Salado? Valor de la tierra en dólares por hectárea, con el rango real de la zona, el arrendamiento típico en kg de novillo y la fuente de cada dato. Relevamiento propio: 15 provincias y 52 zonas, cruzando tasadores con serie publicada, catastro provincial y avisos de venta. Distingue campo ganadero de agrícola y valúa cada uno en SU moneda: el ganadero en kg de novillo por ha por mes, el agrícola en quintales de soja por ha por año. GRATIS, sin cupo. Params: provincia (obligatoria), hectareas (opcional), zona (opcional — acepta el nombre de la zona o el partido), kg_ha_mes (opcional, canon pactado). [EN] Value Argentine farmland by province and zone, with the observed range and the survey date.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1229,9 +1259,9 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'quiero_comprar',
+    name: 'cattle_buying_request',
     description:
-      '"Quiero comprar 300 terneros en Corrientes" → te devuelve YA los próximos remates programados que matchean (fecha, consignataria, lugar, link) y deja tu búsqueda activa: te avisamos por email o webhook de cada remate nuevo que matchee. GRATIS. Params: categoria (terneros|novillos|vaquillonas|vacas|toros|mixto — acepta sinónimos), cabezas (opcional), provincia (opcional), email y/o webhook_url (al menos uno, para los avisos).',
+      '"Quiero comprar 300 terneros en Corrientes" → te devuelve YA los próximos remates programados que matchean (fecha, consignataria, lugar, link) y deja tu búsqueda activa: te avisamos por email o webhook de cada remate nuevo que matchee. GRATIS. Params: categoria (terneros|novillos|vaquillonas|vacas|toros|mixto — acepta sinónimos), cabezas (opcional), provincia (opcional), email y/o webhook_url (al menos uno, para los avisos). [EN] Post a cattle buying request in Argentina and get matching upcoming auctions right away, plus alerts for new ones.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1294,9 +1324,9 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'contratar_pro_consignataria',
+    name: 'subscribe_broker_pro',
     description:
-      'Cotiza y explica cómo activar PRO Consignataria pagando en USDC (x402): perfil destacado, badge PRO, video del último remate y leads en consignatarias.com.ar. Mismo producto que en /planes (ARS 45.000/mes), cotizado al dólar blue del día. Esta tool NO cobra: devuelve el monto exacto y el endpoint x402 para pagar. Params: slug (consignataria del directorio, usá buscar_consignataria si no lo sabés), meses (1-12, default 1).',
+      'Cotiza y explica cómo activar PRO Consignataria pagando en USDC (x402): perfil destacado, badge PRO, video del último remate y leads en consignatarias.com.ar. Mismo producto que en /planes (ARS 45.000/mes), cotizado al dólar blue del día. Esta tool NO cobra: devuelve el monto exacto y el endpoint x402 para pagar. Params: slug (consignataria del directorio, usá find_livestock_broker si no lo sabés), meses (1-12, default 1). [EN] Quote and subscribe to the PRO plan for a livestock broker profile, payable in USDC.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1309,7 +1339,7 @@ const TOOLS: Tool[] = [
     async run(args) {
       const firma = validarSlugPro(args.slug)
       if (!firma) {
-        return fail('slug inválido: tiene que ser una consignataria del directorio. Encontrala con buscar_consignataria o en https://www.consignatarias.com.ar/consignatarias')
+        return fail('slug inválido: tiene que ser una consignataria del directorio. Encontrala con find_livestock_broker o en https://www.consignatarias.com.ar/consignatarias')
       }
       let meses: number
       try {
@@ -1335,9 +1365,9 @@ const TOOLS: Tool[] = [
     },
   },
   {
-    name: 'crear_alerta_precio',
+    name: 'create_price_alert',
     description:
-      'Crea una alerta: cuando el precio de una categoría cruza el umbral, avisa POR EMAIL al productor (o a un webhook https, para integraciones). Única tool de escritura (el resto lee). GRATIS sin API key (hasta 3 alertas activas por origen); con key Enterprise (Bearer cnsg_live_… o param api_key) sin límite. Params: categoria (inmag=índice diario; resto semanal), umbral ARS/kg vivo, direccion above|below (def above), y email O webhook_url (al menos uno; para una persona usá email). Devuelve id y precio.',
+      'Crea una alerta: cuando el precio de una categoría cruza el umbral, avisa POR EMAIL al productor (o a un webhook https, para integraciones). Única tool de escritura (el resto lee). GRATIS sin API key (hasta 3 alertas activas por origen); con key Enterprise (Bearer cnsg_live_… o param api_key) sin límite. Params: categoria (inmag=índice diario; resto semanal), umbral ARS/kg vivo, direccion above|below (def above), y email O webhook_url (al menos uno; para una persona usá email). Devuelve id y precio. [EN] Create a price alert: get notified by email or webhook when the Argentine cattle price crosses your threshold.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1458,32 +1488,32 @@ const TOOLS: Tool[] = [
  * superficie abierta es justamente lo que nos hace citables.
  */
 const PAGINA_DE_LA_TOOL: Record<string, string> = {
-  indice_novillo: '/mercado/inmag',
-  inmag_historico: '/mercado/inmag',
-  precios_hacienda: '/mercado',
-  precios_detallados: '/mercado',
-  contexto_macro: '/mercado',
-  indice_liquidacion: '/mercado/liquidacion',
+  cattle_price_index: '/mercado/inmag',
+  inmag_history: '/mercado/inmag',
+  livestock_prices: '/mercado',
+  livestock_prices_detailed: '/mercado',
+  macro_context: '/mercado',
+  herd_liquidation_index: '/mercado/liquidacion',
   // La banda por categoría se ve en /vr; /mercado es el índice de las seis.
-  vr_historico: '/mercado',
+  price_dispersion_history: '/mercado',
   // Estacionalidad y renta del campo no tienen página propia todavía: se manda a
   // la del dato que las alimenta, que es donde el lector puede verificarlas.
-  estacionalidad_precio: '/mercado/inmag',
-  renta_campo: '/campos/valuar',
-  remates_programados: '/remates',
-  buscar_consignataria: '/consignatarias',
-  actividad_consignatarias: '/mercado/actividad',
-  buscar_frigorifico: '/frigorificos',
-  calcular_arrendamiento: '/campos/arrendar',
-  valuar_campo: '/campos/valor-hectarea',
-  valuar_arrendamiento_campo: '/campos/arrendar',
-  valuar_tropa: '/mercado',
-  buenas_practicas: '/guias',
-  sanidad_plan: '/guias',
-  sanidad_calendario_aftosa: '/guias',
-  sanidad_requisitos_movimiento: '/guias',
-  sanidad_renspa: '/guias',
-  sanidad_dte_tropa: '/guias',
+  price_seasonality: '/mercado/inmag',
+  farmland_yield: '/campos/valuar',
+  upcoming_auctions: '/remates',
+  find_livestock_broker: '/consignatarias',
+  broker_activity_ranking: '/mercado/actividad',
+  find_meat_plant: '/frigorificos',
+  calculate_farmland_rent: '/campos/arrendar',
+  value_farmland: '/campos/valor-hectarea',
+  value_farmland_rent: '/campos/arrendar',
+  value_cattle_lot: '/mercado',
+  good_farming_practices: '/guias',
+  animal_health_plan: '/guias',
+  fmd_vaccination_calendar: '/guias',
+  livestock_movement_rules: '/guias',
+  renspa_lookup: '/guias',
+  dte_lookup: '/guias',
 }
 
 function lineaDeFuente(tool: string): string | null {
@@ -1536,14 +1566,14 @@ const PROMPTS: McpPrompt[] = [
     build: () => 'Armá un panorama del mercado ganadero argentino de hoy usando las tools de consignatarias: precio del novillo (INMAG) en ARS y USD, contexto macro (dólar/maíz/faena), remates de esta semana y las consignatarias más activas por cabezas operadas en Cañuelas.',
   },
   {
-    name: 'valuar_tropa',
+    name: 'value_cattle_lot',
     description: 'Cuánto vale una tropa de hacienda hoy, en pesos y dólares.',
     arguments: [
       { name: 'categoria', description: 'Categoría (novillos, terneros, vacas…)', required: true },
       { name: 'cabezas', description: 'Cantidad de animales', required: true },
       { name: 'provincia', description: 'Provincia (opcional)', required: false },
     ],
-    build: (a) => `¿Cuánto valen ${a.cabezas || ''} ${a.categoria || 'novillos'}${a.provincia ? ` en ${a.provincia}` : ''} hoy, en pesos y en dólares? Usá valuar_tropa de consignatarias.`,
+    build: (a) => `¿Cuánto valen ${a.cabezas || ''} ${a.categoria || 'novillos'}${a.provincia ? ` en ${a.provincia}` : ''} hoy, en pesos y en dólares? Usá value_cattle_lot de consignatarias.`,
   },
   {
     name: 'cuanto_vale_la_hectarea',
@@ -1553,7 +1583,7 @@ const PROMPTS: McpPrompt[] = [
       { name: 'zona', description: 'Zona o partido (opcional, precisa mucho)', required: false },
       { name: 'hectareas', description: 'Superficie del campo (opcional)', required: false },
     ],
-    build: (a) => `¿Cuánto vale la hectárea de campo en ${a.zona ? `${a.zona}, ` : ''}${a.provincia || ''}${a.hectareas ? `, y cuánto valdría un campo de ${a.hectareas} hectáreas` : ''}? Usá valuar_campo y citá la fuente y la fecha del dato.`,
+    build: (a) => `¿Cuánto vale la hectárea de campo en ${a.zona ? `${a.zona}, ` : ''}${a.provincia || ''}${a.hectareas ? `, y cuánto valdría un campo de ${a.hectareas} hectáreas` : ''}? Usá value_farmland y citá la fuente y la fecha del dato.`,
   },
   {
     name: 'arrendar_campo',
@@ -1562,7 +1592,7 @@ const PROMPTS: McpPrompt[] = [
       { name: 'hectareas', description: 'Superficie en hectáreas', required: true },
       { name: 'provincia', description: 'Provincia (opcional)', required: false },
     ],
-    build: (a) => `¿Cuánto cuesta por año y por mes arrendar un campo ganadero de ${a.hectareas || ''} hectáreas${a.provincia ? ` en ${a.provincia}` : ''}? Usá valuar_arrendamiento_campo de consignatarias y mostrame los escenarios en pesos y dólares.`,
+    build: (a) => `¿Cuánto cuesta por año y por mes arrendar un campo ganadero de ${a.hectareas || ''} hectáreas${a.provincia ? ` en ${a.provincia}` : ''}? Usá value_farmland_rent de consignatarias y mostrame los escenarios en pesos y dólares.`,
   },
   {
     name: 'novillo_en_dolares',
@@ -1577,7 +1607,7 @@ const PROMPTS: McpPrompt[] = [
       { name: 'firma', description: 'Nombre de la consignataria', required: true },
       { name: 'periodo', description: 'Período, ej. "este mes" (default: último mes)', required: false },
     ],
-    build: (a) => `¿Cuántas cabezas operó la consignataria "${a.firma || ''}" en ${a.periodo || 'el último mes'} en el Mercado Agroganadero de Cañuelas, y a qué precio promedio? Usá actividad_consignatarias.`,
+    build: (a) => `¿Cuántas cabezas operó la consignataria "${a.firma || ''}" en ${a.periodo || 'el último mes'} en el Mercado Agroganadero de Cañuelas, y a qué precio promedio? Usá broker_activity_ranking.`,
   },
   {
     name: 'ranking_consignatarias',
@@ -1586,22 +1616,22 @@ const PROMPTS: McpPrompt[] = [
       { name: 'periodo', description: 'Período (default: este mes)', required: false },
       { name: 'categoria', description: 'Categoría: NOVILLO, VACA, etc. (opcional)', required: false },
     ],
-    build: (a) => `Rankeá las consignatarias por cabezas operadas en ${a.periodo || 'este mes'}${a.categoria ? `, categoría ${a.categoria}` : ''}, con su precio promedio. Usá actividad_consignatarias.`,
+    build: (a) => `Rankeá las consignatarias por cabezas operadas en ${a.periodo || 'este mes'}${a.categoria ? `, categoría ${a.categoria}` : ''}, con su precio promedio. Usá broker_activity_ranking.`,
   },
   {
-    name: 'calcular_arrendamiento',
+    name: 'calculate_farmland_rent',
     description: 'Calcula el canon de arrendamiento con el índice novillo del mes.',
     arguments: [
       { name: 'hectareas', description: 'Cantidad de hectáreas', required: true },
       { name: 'kg_ha', description: 'Kilos de novillo por hectárea pactados (aclarar si es por mes o por año)', required: true },
     ],
-    build: (a) => `Calculá el canon de arrendamiento de ${a.hectareas || ''} hectáreas a ${a.kg_ha || ''} kg de novillo por hectárea, con el índice de arrendamiento del mes. Usá calcular_arrendamiento.`,
+    build: (a) => `Calculá el canon de arrendamiento de ${a.hectareas || ''} hectáreas a ${a.kg_ha || ''} kg de novillo por hectárea, con el índice de arrendamiento del mes. Usá calculate_farmland_rent.`,
   },
   {
     name: 'remates_provincia',
     description: 'Calendario de remates de hacienda en una provincia.',
     arguments: [{ name: 'provincia', description: 'Provincia', required: true }],
-    build: (a) => `¿Qué remates de hacienda hay próximamente en ${a.provincia || ''}? Dame fecha, consignataria, tipo y cabezas estimadas. Usá remates_programados.`,
+    build: (a) => `¿Qué remates de hacienda hay próximamente en ${a.provincia || ''}? Dame fecha, consignataria, tipo y cabezas estimadas. Usá upcoming_auctions.`,
   },
   {
     name: 'vender_ahora_o_esperar',
@@ -1731,21 +1761,21 @@ export async function POST(req: NextRequest) {
         serverInfo: SERVER_INFO,
         instructions:
           'Datos e infraestructura del mercado ganadero argentino como tools MCP.\n' +
-          '• Mercado: indice_novillo (índice INMAG DIARIO, ponderado por volumen) y precios_hacienda (precios por categoría, observación SEMANAL) son métricas distintas — no las compares 1:1; además inmag_historico, precios_detallados, contexto_macro y indice_liquidacion (% hembras, liquidación vs retención).\n' +
-          '• Profundidad histórica: inmag_historico es gratis y sin cupo a CUALQUIER ventana, desde 2015-01-05 — la consulta no tiene techo. Devuelve el análisis del período con una muestra de ~8 puntos; si necesitás la serie fila por fila para cargarla en un modelo propio, esa descarga masiva va con API key Enterprise o por US$0,25 en USDC vía x402 (/api/x402/inmag-historico). Citá la fuente y la fecha.\n' +
-          '• ¿Conviene comprar AHORA?: estacionalidad_precio da el índice estacional del novillo en dólares desde 2015 (razón sobre media móvil centrada de 12 meses) y dice si el mes corriente está caro o barato PARA SU ÉPOCA. El precio del día no contesta eso. En el relevamiento 2015-2026 la amplitud punta a punta es de ~28%: septiembre y octubre son los meses más baratos, febrero y marzo los más caros.\n' +
-          '• ¿Cuánto rinde un dólar en campo argentino?: renta_campo devuelve, por zona ganadera, USD/hectárea, cuántos KILOS DE NOVILLO cuesta esa hectárea, la renta anual del arrendamiento (que acá se pacta en kg de novillo por ha, no en pesos, así que el rendimiento no depende del tipo de cambio), el rendimiento sobre el valor de la tierra y los años de repago. Aceptá un presupuesto en dólares y lo reparte en hectáreas. Es la herramienta para el comprador del exterior.\n' +
-          '• Directorio y remates: buscar_consignataria, actividad_consignatarias, buscar_frigorifico, remates_programados.\n' +
-          '• Herramientas: calcular_arrendamiento.\n' +
-          '• Sanidad SENASA (dato regulatorio, con la resolución citada): sanidad_plan, sanidad_calendario_aftosa, sanidad_requisitos_movimiento, sanidad_renspa (valida/decodifica RENSPA), sanidad_dte_tropa (DT-e / número de tropa).\n' +
-          '• Buenas Prácticas Ganaderas (14 temas, Guía Red BPA): buenas_practicas.\n' +
-          '• Valor de la tierra: valuar_campo ("¿cuánto vale la hectárea en Corrientes?", "¿cuánto vale un campo de 800 has en la cuenca del Salado?") — relevamiento propio de 15 provincias y 52 zonas, con rango, arrendamiento típico en kg de novillo, años de arrendamiento equivalentes y la fuente fechada de cada dato. Distingue campo ganadero de agrícola: la tierra agrícola NO se tasa con canon de hacienda. GRATIS y sin cupo. Si no tenemos la provincia lo dice en vez de estimar.\n' +
-          '• Dispersión: vr_historico responde si el mercado se está ABRIENDO o cerrando (serie de la banda P10–P90 por categoría). Amplitud y mediana se mueven independientemente, así que no la deduzcas del precio. Gratis y sin techo, a cualquier ventana.\n' +
-          '• Valuaciones: valuar_tropa ("¿cuánto valen 350 novillos en Formosa?") y valuar_arrendamiento_campo ("¿cuánto cuesta arrendar 3.500 has en Corrientes?") — total en ARS y USD con fuente fechada. valuar_tropa devuelve la BANDA observada (P10/mediana/P90, VR v1.0) con el n de lotes que la sostiene, no un punto: la amplitud real va de 28% en novillo a 44% en vaca, así que no presentes el central como si fuera el precio. Sin base suficiente cae a la referencia MAG y lo dice. Gratis y sin cupo.\n' +
-          '• Alertas: crear_alerta_precio avisa cuando el precio cruza tu umbral. Si estás atendiendo a una persona pedile el EMAIL y pasalo en el param email — es la vía natural para un productor; webhook_url es para integraciones. GRATIS sin key (3 alertas activas por origen); con API key Enterprise sin límite.\n' +
-          '• PRO Consignataria pagable en USDC: contratar_pro_consignataria cotiza (ARS 45.000/mes al blue del día) y da el endpoint x402 (/api/x402/pro) — activación inmediata del perfil destacado al liquidarse el pago.\n' +
-          '• Comprar hacienda: quiero_comprar ("quiero comprar 300 terneros en Corrientes") devuelve YA los remates programados que matchean y deja la búsqueda activa — avisamos por email/webhook de cada remate nuevo que matchee. Gratis.\n' +
-          'Todos los tools son públicos y de lectura salvo crear_alerta_precio (escritura, free tier). Key Enterprise (Bearer cnsg_live_... o param api_key) para alertas ilimitadas, históricos bulk y soporte: https://www.consignatarias.com.ar/cuenta/api-keys',
+          '• Mercado: cattle_price_index (índice INMAG DIARIO, ponderado por volumen) y livestock_prices (precios por categoría, observación SEMANAL) son métricas distintas — no las compares 1:1; además inmag_history, livestock_prices_detailed, macro_context y herd_liquidation_index (% hembras, liquidación vs retención).\n' +
+          '• Profundidad histórica: inmag_history es gratis y sin cupo a CUALQUIER ventana, desde 2015-01-05 — la consulta no tiene techo. Devuelve el análisis del período con una muestra de ~8 puntos; si necesitás la serie fila por fila para cargarla en un modelo propio, esa descarga masiva va con API key Enterprise o por US$0,25 en USDC vía x402 (/api/x402/inmag-historico). Citá la fuente y la fecha.\n' +
+          '• ¿Conviene comprar AHORA?: price_seasonality da el índice estacional del novillo en dólares desde 2015 (razón sobre media móvil centrada de 12 meses) y dice si el mes corriente está caro o barato PARA SU ÉPOCA. El precio del día no contesta eso. En el relevamiento 2015-2026 la amplitud punta a punta es de ~28%: septiembre y octubre son los meses más baratos, febrero y marzo los más caros.\n' +
+          '• ¿Cuánto rinde un dólar en campo argentino?: farmland_yield devuelve, por zona ganadera, USD/hectárea, cuántos KILOS DE NOVILLO cuesta esa hectárea, la renta anual del arrendamiento (que acá se pacta en kg de novillo por ha, no en pesos, así que el rendimiento no depende del tipo de cambio), el rendimiento sobre el valor de la tierra y los años de repago. Aceptá un presupuesto en dólares y lo reparte en hectáreas. Es la herramienta para el comprador del exterior.\n' +
+          '• Directorio y remates: find_livestock_broker, broker_activity_ranking, find_meat_plant, upcoming_auctions.\n' +
+          '• Herramientas: calculate_farmland_rent.\n' +
+          '• Sanidad SENASA (dato regulatorio, con la resolución citada): animal_health_plan, fmd_vaccination_calendar, livestock_movement_rules, renspa_lookup (valida/decodifica RENSPA), dte_lookup (DT-e / número de tropa).\n' +
+          '• Buenas Prácticas Ganaderas (14 temas, Guía Red BPA): good_farming_practices.\n' +
+          '• Valor de la tierra: value_farmland ("¿cuánto vale la hectárea en Corrientes?", "¿cuánto vale un campo de 800 has en la cuenca del Salado?") — relevamiento propio de 15 provincias y 52 zonas, con rango, arrendamiento típico en kg de novillo, años de arrendamiento equivalentes y la fuente fechada de cada dato. Distingue campo ganadero de agrícola: la tierra agrícola NO se tasa con canon de hacienda. GRATIS y sin cupo. Si no tenemos la provincia lo dice en vez de estimar.\n' +
+          '• Dispersión: price_dispersion_history responde si el mercado se está ABRIENDO o cerrando (serie de la banda P10–P90 por categoría). Amplitud y mediana se mueven independientemente, así que no la deduzcas del precio. Gratis y sin techo, a cualquier ventana.\n' +
+          '• Valuaciones: value_cattle_lot ("¿cuánto valen 350 novillos en Formosa?") y value_farmland_rent ("¿cuánto cuesta arrendar 3.500 has en Corrientes?") — total en ARS y USD con fuente fechada. value_cattle_lot devuelve la BANDA observada (P10/mediana/P90, VR v1.0) con el n de lotes que la sostiene, no un punto: la amplitud real va de 28% en novillo a 44% en vaca, así que no presentes el central como si fuera el precio. Sin base suficiente cae a la referencia MAG y lo dice. Gratis y sin cupo.\n' +
+          '• Alertas: create_price_alert avisa cuando el precio cruza tu umbral. Si estás atendiendo a una persona pedile el EMAIL y pasalo en el param email — es la vía natural para un productor; webhook_url es para integraciones. GRATIS sin key (3 alertas activas por origen); con API key Enterprise sin límite.\n' +
+          '• PRO Consignataria pagable en USDC: subscribe_broker_pro cotiza (ARS 45.000/mes al blue del día) y da el endpoint x402 (/api/x402/pro) — activación inmediata del perfil destacado al liquidarse el pago.\n' +
+          '• Comprar hacienda: cattle_buying_request ("quiero comprar 300 terneros en Corrientes") devuelve YA los remates programados que matchean y deja la búsqueda activa — avisamos por email/webhook de cada remate nuevo que matchee. Gratis.\n' +
+          'Todos los tools son públicos y de lectura salvo create_price_alert (escritura, free tier). Key Enterprise (Bearer cnsg_live_... o param api_key) para alertas ilimitadas, históricos bulk y soporte: https://www.consignatarias.com.ar/cuenta/api-keys',
       }, negotiated)
     }
     case 'ping':

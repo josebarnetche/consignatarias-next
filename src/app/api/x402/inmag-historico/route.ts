@@ -18,7 +18,7 @@ export const maxDuration = 60
  * (US$0,25 en USDC/Base por consulta).
  *
  * La misma consulta, recortada a los últimos 365 días, está gratis y sin cupo como
- * tool `inmag_historico` del MCP. Lo que se paga acá es la PROFUNDIDAD —la serie
+ * tool `inmag_history` del MCP. Lo que se paga acá es la PROFUNDIDAD —la serie
  * empalmada Liniers→MAG desde 2015, que es el gráfico que una consultora compra— no
  * el acceso al dato: el valor de hoy, la tendencia del año y cualquier fecha puntual
  * siguen abiertos.

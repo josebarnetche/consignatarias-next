@@ -648,11 +648,11 @@ export default async function LandingPage() {
 }`}</pre>
                 {BANDAS_HOME[0] && (
                   <p className="text-sky-300 mt-4">
-                    valuar_tropa(&quot;{BANDAS_HOME[0].categoria.toLowerCase()}&quot;) → mediana ${fmt(BANDAS_HOME[0].mediana)}/kg · P10–P90 {fmt(BANDAS_HOME[0].p10)}–{fmt(BANDAS_HOME[0].p90)} · {fmt(BANDAS_HOME[0].lotes)} lotes
+                    value_cattle_lot(&quot;{BANDAS_HOME[0].categoria.toLowerCase()}&quot;) → mediana ${fmt(BANDAS_HOME[0].mediana)}/kg · P10–P90 {fmt(BANDAS_HOME[0].p10)}–{fmt(BANDAS_HOME[0].p90)} · {fmt(BANDAS_HOME[0].lotes)} lotes
                   </p>
                 )}
-                <p className="text-sky-300">precios_hacienda(&quot;vacas&quot;)</p>
-                <p className="text-sky-300">inmag_historico(desde, hasta)</p>
+                <p className="text-sky-300">livestock_prices(&quot;vacas&quot;)</p>
+                <p className="text-sky-300">inmag_history(desde, hasta)</p>
               </div>
             </div>
           </div>

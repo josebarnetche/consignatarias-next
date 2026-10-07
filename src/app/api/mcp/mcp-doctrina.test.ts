@@ -40,7 +40,7 @@ describe('doctrina del server MCP', () => {
     const conPagina = new Set([...mapa![1].matchAll(/^\s*(\w+):/gm)].map((m) => m[1]))
 
     // Las de escritura y las transaccionales traen su propio CTA: quedan afuera a propósito.
-    const SIN_PAGINA = new Set(['crear_alerta_precio', 'contratar_pro_consignataria', 'quiero_comprar'])
+    const SIN_PAGINA = new Set(['create_price_alert', 'subscribe_broker_pro', 'cattle_buying_request'])
     // Sólo el array TOOLS: PROMPTS declara `name` con la misma forma y no son tools.
     const bloque = ROUTE.slice(ROUTE.indexOf('const TOOLS: Tool[] = ['), ROUTE.indexOf('const PROMPTS'))
     const declaradas = [...bloque.matchAll(/^\s{4}name: '(\w+)',$/gm)].map((m) => m[1])
@@ -120,9 +120,32 @@ describe('naming de las tools', () => {
     return [...bloque.matchAll(/^\s{4}name: '(\w+)',$/gm)].map((m) => m[1])
   }
 
-  it('ninguna tool arranca con un verbo en inglés', () => {
-    const ingles = nombres().filter((n) => /^(get|list|fetch|search|create|find)_/.test(n))
-    expect(ingles, `nombres en inglés: ${ingles.join(', ')}`).toEqual([])
+  /**
+   * DOCTRINA (07-10-2026). Los nombres de las tools van en INGLÉS, aunque el
+   * producto y las descripciones sean argentinos. El motivo no es estético: los
+   * nombres no los lee ningún productor —los 1.951 que llegan por IA caen en
+   * páginas web en castellano y no ven una tool jamás—. El único público que lee
+   * un nombre de tool son agentes y desarrolladores, y Glama publica una página
+   * indexada POR TOOL con el nombre en la URL. En castellano, esas páginas
+   * compiten por frases que nadie busca.
+   *
+   * Excepción deliberada: los nombres propios de registros argentinos —INMAG,
+   * RENSPA, DT-e— no se traducen. Son identificadores, y traducirlos los vuelve
+   * imposibles de rastrear contra la fuente oficial.
+   */
+  const NOMBRES_PROPIOS = ['inmag', 'renspa', 'dte', 'fmd']
+
+  it('están en inglés, salvo los nombres propios de registros argentinos', () => {
+    const CASTELLANO = /(indice|precios?|remates?|buscar|valuar|calcular|crear|contratar|consignatar|frigorific|hacienda|campo|tropa|sanidad|arrendamiento|novillo|estacionalidad|quiero|comprar|liquidacion)/
+    const enCastellano = nombres().filter((n) => CASTELLANO.test(n))
+    expect(enCastellano, `tools con nombre en castellano: ${enCastellano.join(', ')}`).toEqual([])
+  })
+
+  it('los nombres propios sobreviven: INMAG, RENSPA y DT-e no se traducen', () => {
+    const todos = nombres().join(' ')
+    for (const propio of ['inmag', 'renspa', 'dte']) {
+      expect(todos, `se perdió el nombre propio ${propio}`).toContain(propio)
+    }
   })
 
   it('todas son snake_case', () => {
@@ -136,13 +159,25 @@ describe('naming de las tools', () => {
     const alias = Object.fromEntries(
       [...mapa![1].matchAll(/^\s*(\w+): '(\w+)',$/gm)].map((m) => [m[1], m[2]]),
     )
-    expect(Object.keys(alias).length).toBeGreaterThanOrEqual(8)
-    // Cada alias tiene que apuntar a una tool que exista hoy.
+    // Dos etapas de renombre: los get_*/list_* originales y los castellanos de
+    // la v1.6. Las dos tienen que seguir resolviendo.
+    expect(Object.keys(alias).length).toBeGreaterThanOrEqual(30)
+    expect(alias.get_indice_novillo).toBe('cattle_price_index')
+    expect(alias.buscar_consignataria).toBe('find_livestock_broker')
     const vivas = new Set(nombres())
     for (const [viejo, nuevo] of Object.entries(alias)) {
       expect(vivas.has(nuevo), `${viejo} → ${nuevo} no existe`).toBe(true)
     }
-    // Y la resolución tiene que estar cableada en tools/call.
     expect(ROUTE).toContain('ALIAS_DE_TOOL[name] ?? name')
+  })
+
+  it('cada tool declara también qué hace en inglés, no solo el nombre', () => {
+    const bloque = ROUTE.slice(ROUTE.indexOf('const TOOLS: Tool[] = ['), ROUTE.indexOf('const PROMPTS'))
+    // Se mira el tramo entre `name:` e `inputSchema:` de cada tool, porque varias
+    // descripciones son strings concatenados y un patrón de comillas no las ve.
+    const tramos = [...bloque.matchAll(/name: '(\w+)',\n\s*description:([\s\S]*?)\n\s*inputSchema:/g)]
+    expect(tramos.length).toBeGreaterThanOrEqual(20)
+    const sinIngles = tramos.filter((t) => !t[2].includes('[EN]')).map((t) => t[1])
+    expect(sinIngles, `tools sin línea [EN]: ${sinIngles.join(', ')}`).toEqual([])
   })
 })

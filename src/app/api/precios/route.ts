@@ -158,7 +158,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         }
       }
 
-      // El lector vive en lib/vr.ts y lo comparte la tool MCP `vr_historico`:
+      // El lector vive en lib/vr.ts y lo comparte la tool MCP `price_dispersion_history`:
       // dos copias de esta consulta se desincronizarían sin que nadie lo note.
       const { rows: data, error } = await leerSerieVr(admin, {
         desde: desde.toISOString().slice(0, 10),

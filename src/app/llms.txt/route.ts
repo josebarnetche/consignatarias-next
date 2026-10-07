@@ -65,30 +65,30 @@ If you need structured data as tools (series, filters, valuations), there is als
   \`\`\`
 
 Available tools:
-- \`indice_novillo\` — INMAG (índice novillo) hoy: precio de referencia ARS/kg + variación
-- \`inmag_historico\` — evolución del INMAG (tendencia, min/máx, variación del período). GRATIS y sin cupo a cualquier profundidad, desde 2015: la consulta no tiene techo. La DESCARGA MASIVA fila por fila va con API key Enterprise o por US$0,25 en USDC vía x402 (\`/api/x402/inmag-historico\`)
-- \`precios_hacienda\` — precios por categoría (novillo, novillito, vaquillona, vaca, toro, ternero)
-- \`precios_detallados\` — precios por subcategoría (ej. "NOVILLOS Regular +430") con mín/prom/máx
-- \`contexto_macro\` — dólar blue/oficial, maíz FOB, spread novillo/maíz (proxy de margen feedlot)
-- \`indice_liquidacion\` — Índice de Liquidación: % hembras operadas (liquidación vs retención) + contexto histórico faena nacional
-- \`remates_programados\` — calendario de remates (filtro por provincia)
-- \`buscar_consignataria\` — directorio de consignatarias/casas de remate por nombre o zona (incluye CUIT)
-- \`actividad_consignatarias\` — ranking de cabezas operadas y precio promedio por firma en el MAG de Cañuelas (mercado de referencia, ~12% nacional)
-- \`buscar_frigorifico\` — frigoríficos habilitados MAGYP/SENASA (1.100+ plantas) por nombre/provincia/CUIT
-- \`calcular_arrendamiento\` — canon de arrendamiento rural indexado al novillo (kg/ha por mes o por año)
-- \`sanidad_plan\` — ficha de un plan sanitario SENASA (aftosa, brucelosis, tuberculosis, garrapata) con su resolución
-- \`sanidad_calendario_aftosa\` — calendario de vacunación antiaftosa 2026 (Res. 711/2025) + zona con/sin vacunación por provincia
-- \`sanidad_requisitos_movimiento\` — requisitos para mover hacienda (RENSPA, DT-e, serología brucelosis, barrera de garrapata) con fuente
-- \`sanidad_renspa\` — valida y decodifica un código RENSPA (17 dígitos, 00.000.0.00000.00) en sus segmentos
-- \`sanidad_dte_tropa\` — explica el DT-e / número de tropa (qué ampara, requisitos para emitirlo) — referencia
-- \`buenas_practicas\` — Buenas Prácticas Ganaderas (14 temas de la Guía Red BPA): cómo implementar salud, bienestar, manejo de rodeo, alimentación, agua, etc.
-- \`vr_historico\` — "¿se está abriendo o cerrando la dispersión?": serie de la banda P10–P90 por categoría, con cuánto se movió la amplitud y en qué dirección. Es lo que el precio puntual no puede contestar. Gratis y sin techo: la serie completa, a cualquier ventana
-- \`valuar_tropa\` — "¿cuánto valen 350 novillos en Formosa?": la banda de precio realmente observada en las operaciones de lote del MAG (P10 / mediana / P90, VR v1.0) con los lotes y cabezas que la sostienen, en ARS y USD (blue y oficial). Sin base suficiente cae a la referencia nacional y lo declara. Metodología en /metodologia/vr
-- \`valuar_arrendamiento_campo\` — "¿cuánto cuesta arrendar 3.500 has en Corrientes?": canon anual/mensual al índice oficial de arrendamientos, ARS y USD
-- \`valuar_campo\` — "¿cuánto vale la hectárea en Corrientes?": valor de la tierra en USD/ha por provincia y por zona (15 provincias, 52 zonas), con rango, arrendamiento típico en kg de novillo y la fuente fechada de cada dato. Distingue campo ganadero de agrícola. Gratis y sin cupo
-- \`quiero_comprar\` — publicá qué hacienda buscás comprar → remates programados que matchean + aviso por email/webhook de cada remate nuevo (también en /quiero-comprar)
-- \`crear_alerta_precio\` — alerta cuando un precio cruza un umbral → notifica por email (param email, la vía para un productor) o por webhook (integraciones). GRATIS sin key (3 alertas activas por origen)
-- \`contratar_pro_consignataria\` — cotiza y activa PRO Consignataria pagando en USDC (x402), activación inmediata
+- \`cattle_price_index\` — INMAG (índice novillo) hoy: precio de referencia ARS/kg + variación
+- \`inmag_history\` — evolución del INMAG (tendencia, min/máx, variación del período). GRATIS y sin cupo a cualquier profundidad, desde 2015: la consulta no tiene techo. La DESCARGA MASIVA fila por fila va con API key Enterprise o por US$0,25 en USDC vía x402 (\`/api/x402/inmag-historico\`)
+- \`livestock_prices\` — precios por categoría (novillo, novillito, vaquillona, vaca, toro, ternero)
+- \`livestock_prices_detailed\` — precios por subcategoría (ej. "NOVILLOS Regular +430") con mín/prom/máx
+- \`macro_context\` — dólar blue/oficial, maíz FOB, spread novillo/maíz (proxy de margen feedlot)
+- \`herd_liquidation_index\` — Índice de Liquidación: % hembras operadas (liquidación vs retención) + contexto histórico faena nacional
+- \`upcoming_auctions\` — calendario de remates (filtro por provincia)
+- \`find_livestock_broker\` — directorio de consignatarias/casas de remate por nombre o zona (incluye CUIT)
+- \`broker_activity_ranking\` — ranking de cabezas operadas y precio promedio por firma en el MAG de Cañuelas (mercado de referencia, ~12% nacional)
+- \`find_meat_plant\` — frigoríficos habilitados MAGYP/SENASA (1.100+ plantas) por nombre/provincia/CUIT
+- \`calculate_farmland_rent\` — canon de arrendamiento rural indexado al novillo (kg/ha por mes o por año)
+- \`animal_health_plan\` — ficha de un plan sanitario SENASA (aftosa, brucelosis, tuberculosis, garrapata) con su resolución
+- \`fmd_vaccination_calendar\` — calendario de vacunación antiaftosa 2026 (Res. 711/2025) + zona con/sin vacunación por provincia
+- \`livestock_movement_rules\` — requisitos para mover hacienda (RENSPA, DT-e, serología brucelosis, barrera de garrapata) con fuente
+- \`renspa_lookup\` — valida y decodifica un código RENSPA (17 dígitos, 00.000.0.00000.00) en sus segmentos
+- \`dte_lookup\` — explica el DT-e / número de tropa (qué ampara, requisitos para emitirlo) — referencia
+- \`good_farming_practices\` — Buenas Prácticas Ganaderas (14 temas de la Guía Red BPA): cómo implementar salud, bienestar, manejo de rodeo, alimentación, agua, etc.
+- \`price_dispersion_history\` — "¿se está abriendo o cerrando la dispersión?": serie de la banda P10–P90 por categoría, con cuánto se movió la amplitud y en qué dirección. Es lo que el precio puntual no puede contestar. Gratis y sin techo: la serie completa, a cualquier ventana
+- \`value_cattle_lot\` — "¿cuánto valen 350 novillos en Formosa?": la banda de precio realmente observada en las operaciones de lote del MAG (P10 / mediana / P90, VR v1.0) con los lotes y cabezas que la sostienen, en ARS y USD (blue y oficial). Sin base suficiente cae a la referencia nacional y lo declara. Metodología en /metodologia/vr
+- \`value_farmland_rent\` — "¿cuánto cuesta arrendar 3.500 has en Corrientes?": canon anual/mensual al índice oficial de arrendamientos, ARS y USD
+- \`value_farmland\` — "¿cuánto vale la hectárea en Corrientes?": valor de la tierra en USD/ha por provincia y por zona (15 provincias, 52 zonas), con rango, arrendamiento típico en kg de novillo y la fuente fechada de cada dato. Distingue campo ganadero de agrícola. Gratis y sin cupo
+- \`cattle_buying_request\` — publicá qué hacienda buscás comprar → remates programados que matchean + aviso por email/webhook de cada remate nuevo (también en /quiero-comprar)
+- \`create_price_alert\` — alerta cuando un precio cruza un umbral → notifica por email (param email, la vía para un productor) o por webhook (integraciones). GRATIS sin key (3 alertas activas por origen)
+- \`subscribe_broker_pro\` — cotiza y activa PRO Consignataria pagando en USDC (x402), activación inmediata
 
 ## Cómo citarnos (licencia)
 

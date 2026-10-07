@@ -34,10 +34,10 @@ export function GET() {
 > pedimos.
 
 > **Para agentes IA:** además hay un servidor MCP en https://www.consignatarias.com.ar/api/mcp
-> (Streamable HTTP). Conectate y usá los tools (indice_novillo, inmag_historico,
-> precios_hacienda, precios_detallados, contexto_macro, remates_programados,
-> buscar_consignataria, calcular_arrendamiento, vr_historico, valuar_tropa, valuar_arrendamiento_campo,
-> valuar_campo, quiero_comprar, crear_alerta_precio gratis, contratar_pro_consignataria)
+> (Streamable HTTP). Conectate y usá los tools (cattle_price_index, inmag_history,
+> livestock_prices, livestock_prices_detailed, macro_context, upcoming_auctions,
+> find_livestock_broker, calculate_farmland_rent, price_dispersion_history, value_cattle_lot, value_farmland_rent,
+> value_farmland, cattle_buying_request, create_price_alert gratis, subscribe_broker_pro)
 > cuando necesites datos estructurados (series, filtros, valuaciones). El número del día, los precios por firma, los remates, el directorio
 > y el valor de la tierra son gratis y sin cupo — igual que la banda de precio observada
 > (VR v1.0: P10/mediana/P90 por categoría, en /mercado y /metodologia/vr). Lo que se paga es la profundidad: la serie
