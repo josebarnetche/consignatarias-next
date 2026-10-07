@@ -2,7 +2,7 @@
  * La serie histórica del INMAG: rango, techo gratuito y armado de la respuesta.
  *
  * Vive acá y no dentro del server MCP porque la consumen dos superficies que deben
- * responder EXACTAMENTE lo mismo: la tool `get_inmag_historico` (gratis hasta el techo)
+ * responder EXACTAMENTE lo mismo: la tool `inmag_historico` (gratis hasta el techo)
  * y el endpoint pago `/api/x402/inmag-historico` (sin techo). Si el formateo se
  * duplicara, la versión paga se despegaría de la gratis sin que nadie lo note.
  *
@@ -111,7 +111,7 @@ export function notaDeRecorte(recorte: Recorte, ruedasOcultas: number | null): s
     `misma consulta por US$0,${String(PRECIO_SERIE_COMPLETA_USD_CENTS).padStart(2, '0')} en USDC (red Base) vía x402 — ` +
     `GET https://www.consignatarias.com.ar/api/x402/inmag-historico con los mismos params; cualquier cliente ` +
     `x402-aware (@x402/fetch, etc.) lo resuelve solo.\n` +
-    `Sigue gratis y sin cupo: el valor de hoy (get_indice_novillo), la tendencia de hasta ${VENTANA_GRATIS_DIAS} días ` +
+    `Sigue gratis y sin cupo: el valor de hoy (indice_novillo), la tendencia de hasta ${VENTANA_GRATIS_DIAS} días ` +
     `y cualquier fecha puntual (desde=hasta).`
   )
 }

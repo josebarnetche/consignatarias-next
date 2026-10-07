@@ -590,7 +590,7 @@ export interface VrPuntoSerie {
  * Lee la serie de dispersión, paginando.
  *
  * Vive acá y no en el route handler porque la consumen DOS superficies que deben
- * devolver lo mismo: `/api/precios?vr=historico` y la tool MCP `get_vr_historico`.
+ * devolver lo mismo: `/api/precios?vr=historico` y la tool MCP `vr_historico`.
  * La lección ya la pagamos con `categoriaALote`: dos copias de la misma consulta
  * se desincronizan sin que nadie lo note.
  *

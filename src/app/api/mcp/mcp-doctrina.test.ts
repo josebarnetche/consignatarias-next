@@ -107,3 +107,42 @@ describe('las tools responden sin techo ni cupo (de-gateo)', () => {
     expect(ROUTE).toContain("action: 'demanda_compra'")
   })
 })
+
+/**
+ * Naming. La review automática de Glama (4,1/5, octubre 2026) marcó lo único
+ * concreto que se podía arreglar: mezclábamos inglés y español en los nombres y
+ * los patrones eran inconsistentes. La regla quedó fijada acá para que no vuelva
+ * a desprolijarse, y con ella la promesa de no romper a quien ya nos usaba.
+ */
+describe('naming de las tools', () => {
+  const nombres = () => {
+    const bloque = ROUTE.slice(ROUTE.indexOf('const TOOLS: Tool[] = ['), ROUTE.indexOf('const PROMPTS'))
+    return [...bloque.matchAll(/^\s{4}name: '(\w+)',$/gm)].map((m) => m[1])
+  }
+
+  it('ninguna tool arranca con un verbo en inglés', () => {
+    const ingles = nombres().filter((n) => /^(get|list|fetch|search|create|find)_/.test(n))
+    expect(ingles, `nombres en inglés: ${ingles.join(', ')}`).toEqual([])
+  })
+
+  it('todas son snake_case', () => {
+    const raras = nombres().filter((n) => !/^[a-z][a-z0-9_]*$/.test(n))
+    expect(raras).toEqual([])
+  })
+
+  it('los nombres viejos siguen resolviendo: renombrar no puede romper a un cliente ajeno', () => {
+    const mapa = ROUTE.match(/const ALIAS_DE_TOOL: Record<string, string> = \{([\s\S]*?)\n\}/)
+    expect(mapa).toBeTruthy()
+    const alias = Object.fromEntries(
+      [...mapa![1].matchAll(/^\s*(\w+): '(\w+)',$/gm)].map((m) => [m[1], m[2]]),
+    )
+    expect(Object.keys(alias).length).toBeGreaterThanOrEqual(8)
+    // Cada alias tiene que apuntar a una tool que exista hoy.
+    const vivas = new Set(nombres())
+    for (const [viejo, nuevo] of Object.entries(alias)) {
+      expect(vivas.has(nuevo), `${viejo} → ${nuevo} no existe`).toBe(true)
+    }
+    // Y la resolución tiene que estar cableada en tools/call.
+    expect(ROUTE).toContain('ALIAS_DE_TOOL[name] ?? name')
+  })
+})

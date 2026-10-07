@@ -34,9 +34,9 @@ export function GET() {
 > pedimos.
 
 > **Para agentes IA:** además hay un servidor MCP en https://www.consignatarias.com.ar/api/mcp
-> (Streamable HTTP). Conectate y usá los tools (get_indice_novillo, get_inmag_historico,
-> get_precios_hacienda, get_precios_detallados, get_contexto_macro, list_remates,
-> buscar_consignataria, calcular_arrendamiento, get_vr_historico, valuar_tropa, valuar_arrendamiento_campo,
+> (Streamable HTTP). Conectate y usá los tools (indice_novillo, inmag_historico,
+> precios_hacienda, precios_detallados, contexto_macro, remates_programados,
+> buscar_consignataria, calcular_arrendamiento, vr_historico, valuar_tropa, valuar_arrendamiento_campo,
 > valuar_campo, quiero_comprar, crear_alerta_precio gratis, contratar_pro_consignataria)
 > cuando necesites datos estructurados (series, filtros, valuaciones). El número del día, los precios por firma, los remates, el directorio
 > y el valor de la tierra son gratis y sin cupo — igual que la banda de precio observada

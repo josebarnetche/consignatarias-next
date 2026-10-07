@@ -157,25 +157,35 @@ export function estacionalidad(mensual: PuntoMensual[], ymConsultado?: string): 
 
 export interface ZonaTierra {
   provincia: string
+  region?: string | null
   zona: string | null
   usd_ha: number | null
+  /** Canon ganadero: kilos de novillo por hectárea y por año. */
   kg_ha_ano: number | null
+  /** Canon agrícola: quintales de soja por hectárea y por año. */
+  qq_soja_ha_anio?: number | null
   anos_repago: number | null
   aptitud?: string | null
   n?: number | null
   fecha?: string | null
 }
 
-export interface EntradaZona {
+export type Aptitud = 'ganadera' | 'agricola' | 'mixta'
+
+export interface RentaZona {
   provincia: string
   zona: string | null
+  aptitud: Aptitud
   usdHa: number
-  /** Kilos de novillo que cuesta una hectárea. La hacienda como unidad de cuenta. */
-  kgNovilloPorHa: number
-  /** Renta anual del campo en kg de novillo por hectárea (lo que paga un arrendatario). */
-  kgHaAno: number | null
-  rentaAnualUsdHa: number | null
-  /** Renta sobre el valor de la tierra. */
+  /** Renta anual de referencia en USD/ha, por el canon que corresponde a la aptitud. */
+  rentaUsdHa: number | null
+  /** De qué canon sale la renta de arriba. En zona mixta se informa cuál ganó. */
+  rentaSegun: 'ganadero' | 'agrícola' | null
+  rentaGanaderaUsdHa: number | null
+  rentaAgricolaUsdHa: number | null
+  /** El canon como se pacta de verdad, en su unidad. */
+  canonKgNovilloHaAno: number | null
+  canonQqSojaHaAno: number | null
   rendimientoPct: number | null
   aniosRepago: number | null
   hectareasPorPresupuesto: number | null
@@ -183,43 +193,90 @@ export interface EntradaZona {
   fechaDato: string | null
 }
 
+export interface PreciosRenta {
+  /** Novillo en pie, USD por kilo vivo. */
+  novilloUsdKg: number
+  /** Soja, USD por tonelada (FOB). */
+  sojaUsdTn?: number | null
+}
+
+const APTITUDES: Record<string, Aptitud> = {
+  ganadera: 'ganadera', ganadero: 'ganadera',
+  agricola: 'agricola', 'agrícola': 'agricola',
+  mixta: 'mixta', mixto: 'mixta',
+}
+
 /**
- * Qué compra un dólar en campo argentino, y qué renta.
+ * Qué renta una hectárea de campo argentino, en dólares, cualquiera sea su aptitud.
  *
- * El rendimiento sale del canon de arrendamiento, que en Argentina se pacta en
- * KILOS DE NOVILLO por hectárea y por año — no en pesos. Por eso el número es
- * estable aunque el peso se mueva, y por eso es el que mira un comprador de
- * afuera: le dice cuánta carne produce su dólar, sin pasar por el tipo de cambio.
+ * EL CANON NO SE PACTA EN PESOS. Se pacta en producto: en campo ganadero, kilos de
+ * novillo por hectárea y por año; en campo agrícola, quintales de soja. Por eso acá
+ * se guarda el canon en su unidad original y el dólar es una CONVERSIÓN, no la
+ * unidad de origen — si mañana cambia el tipo de cambio, el contrato no cambia.
  *
- * ⚠️ Sólo campo de aptitud GANADERA. La tierra agrícola se valúa por lo que
- * produce de soja o maíz y mezclarla acá da un rendimiento que no existe.
+ * ⚠️ NO SE MEZCLAN APTITUDES EN UN MISMO NÚMERO. La hectárea de la zona núcleo vale
+ * US$18.500 porque produce soja, no porque críe novillos: valuarla con canon de
+ * hacienda da un rendimiento que no existe. Cada zona rinde por lo suyo.
+ *
+ * En zona MIXTA se calculan las dos rentas y la de referencia es la mayor: el dueño
+ * de un campo mixto arrienda a quien le paga más. Queda declarado en `rentaSegun`.
  */
-export function entradaDeCapital(
+export function rentaCampo(
   zonas: ZonaTierra[],
-  precioNovilloUsdKg: number,
-  presupuestoUsd?: number,
-): EntradaZona[] {
-  if (!(precioNovilloUsdKg > 0)) return []
+  precios: PreciosRenta,
+  opciones: { presupuestoUsd?: number; aptitud?: Aptitud } = {},
+): RentaZona[] {
+  const { novilloUsdKg, sojaUsdTn } = precios
+  if (!(novilloUsdKg > 0) && !(sojaUsdTn && sojaUsdTn > 0)) return []
+  // Un quintal son 100 kg: la tonelada trae 10 quintales.
+  const sojaUsdQq = sojaUsdTn && sojaUsdTn > 0 ? sojaUsdTn / 10 : null
+
   return zonas
-    .filter((z) => (z.aptitud ?? 'ganadera').toLowerCase() === 'ganadera' && (z.usd_ha ?? 0) > 0)
+    .filter((z) => (z.usd_ha ?? 0) > 0)
     .map((z) => {
+      const apt = APTITUDES[String(z.aptitud ?? 'ganadera').toLowerCase()] ?? 'ganadera'
       const usdHa = z.usd_ha as number
-      const rentaUsd = z.kg_ha_ano != null ? z.kg_ha_ano * precioNovilloUsdKg : null
+
+      const rg =
+        z.kg_ha_ano != null && novilloUsdKg > 0 ? z.kg_ha_ano * novilloUsdKg : null
+      const ra =
+        z.qq_soja_ha_anio != null && sojaUsdQq ? z.qq_soja_ha_anio * sojaUsdQq : null
+
+      let renta: number | null = null
+      let segun: RentaZona['rentaSegun'] = null
+      if (apt === 'ganadera') {
+        renta = rg
+        segun = rg != null ? 'ganadero' : null
+      } else if (apt === 'agricola') {
+        renta = ra
+        segun = ra != null ? 'agrícola' : null
+      } else {
+        if (rg != null && (ra == null || rg >= ra)) { renta = rg; segun = 'ganadero' }
+        else if (ra != null) { renta = ra; segun = 'agrícola' }
+      }
+
       return {
         provincia: z.provincia,
-        zona: z.zona ?? null,
+        zona: z.zona ?? z.region ?? null,
+        aptitud: apt,
         usdHa,
-        kgNovilloPorHa: Math.round(usdHa / precioNovilloUsdKg),
-        kgHaAno: z.kg_ha_ano ?? null,
-        rentaAnualUsdHa: rentaUsd != null ? Number(rentaUsd.toFixed(1)) : null,
-        rendimientoPct: rentaUsd != null ? Number(((100 * rentaUsd) / usdHa).toFixed(2)) : null,
+        rentaUsdHa: renta != null ? Number(renta.toFixed(1)) : null,
+        rentaSegun: segun,
+        rentaGanaderaUsdHa: rg != null ? Number(rg.toFixed(1)) : null,
+        rentaAgricolaUsdHa: ra != null ? Number(ra.toFixed(1)) : null,
+        canonKgNovilloHaAno: z.kg_ha_ano ?? null,
+        canonQqSojaHaAno: z.qq_soja_ha_anio ?? null,
+        rendimientoPct: renta != null ? Number(((100 * renta) / usdHa).toFixed(2)) : null,
         aniosRepago: z.anos_repago ?? null,
         hectareasPorPresupuesto:
-          presupuestoUsd && presupuestoUsd > 0 ? Math.floor(presupuestoUsd / usdHa) : null,
+          opciones.presupuestoUsd && opciones.presupuestoUsd > 0
+            ? Math.floor(opciones.presupuestoUsd / usdHa)
+            : null,
         observaciones: z.n ?? null,
         fechaDato: z.fecha ?? null,
       }
     })
+    .filter((z) => !opciones.aptitud || z.aptitud === opciones.aptitud)
     .sort((a, b) => (b.rendimientoPct ?? -1) - (a.rendimientoPct ?? -1))
 }
 

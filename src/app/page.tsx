@@ -651,8 +651,8 @@ export default async function LandingPage() {
                     valuar_tropa(&quot;{BANDAS_HOME[0].categoria.toLowerCase()}&quot;) → mediana ${fmt(BANDAS_HOME[0].mediana)}/kg · P10–P90 {fmt(BANDAS_HOME[0].p10)}–{fmt(BANDAS_HOME[0].p90)} · {fmt(BANDAS_HOME[0].lotes)} lotes
                   </p>
                 )}
-                <p className="text-sky-300">get_precios_hacienda(&quot;vacas&quot;)</p>
-                <p className="text-sky-300">get_inmag_historico(desde, hasta)</p>
+                <p className="text-sky-300">precios_hacienda(&quot;vacas&quot;)</p>
+                <p className="text-sky-300">inmag_historico(desde, hasta)</p>
               </div>
             </div>
           </div>

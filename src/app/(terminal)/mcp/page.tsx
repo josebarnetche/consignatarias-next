@@ -28,27 +28,27 @@ const VSCODE_DEEPLINK =
   encodeURIComponent(JSON.stringify({ type: 'http', url: ENDPOINT }))
 
 const TOOL_ICONS: Record<string, string> = {
-  get_indice_novillo: 'indice', get_inmag_historico: 'indice', get_precios_hacienda: 'bascula',
-  get_precios_detallados: 'bascula', get_contexto_macro: 'dolar-billete', list_remates: 'calendario',
+  indice_novillo: 'indice', inmag_historico: 'indice', precios_hacienda: 'bascula',
+  precios_detallados: 'bascula', contexto_macro: 'dolar-billete', remates_programados: 'calendario',
   buscar_consignataria: 'casa-remates', buscar_frigorifico: 'frigorifico',
   calcular_arrendamiento: 'arrendamiento', crear_alerta_precio: 'alerta',
 }
 
 const TOOLS = [
-  { name: 'get_indice_novillo', desc: 'INMAG (índice novillo) hoy: precio de referencia + variación', auth: false },
-  { name: 'get_inmag_historico', desc: 'Evolución del INMAG: tendencia, mín/máx y variación del período — gratis y sin techo, desde 2015', auth: false },
-  { name: 'get_precios_hacienda', desc: 'Precios por categoría (novillo, novillito, vaquillona, vaca, toro, ternero)', auth: false },
-  { name: 'get_precios_detallados', desc: 'Precios por subcategoría con mínimo/promedio/máximo + cabezas', auth: false },
-  { name: 'get_contexto_macro', desc: 'Dólar blue/oficial, maíz FOB y spread novillo/maíz', auth: false },
-  { name: 'get_indice_liquidacion', desc: '% de hembras en la faena: liquidación vs retención del rodeo', auth: false },
+  { name: 'indice_novillo', desc: 'INMAG (índice novillo) hoy: precio de referencia + variación', auth: false },
+  { name: 'inmag_historico', desc: 'Evolución del INMAG: tendencia, mín/máx y variación del período — gratis y sin techo, desde 2015', auth: false },
+  { name: 'precios_hacienda', desc: 'Precios por categoría (novillo, novillito, vaquillona, vaca, toro, ternero)', auth: false },
+  { name: 'precios_detallados', desc: 'Precios por subcategoría con mínimo/promedio/máximo + cabezas', auth: false },
+  { name: 'contexto_macro', desc: 'Dólar blue/oficial, maíz FOB y spread novillo/maíz', auth: false },
+  { name: 'indice_liquidacion', desc: '% de hembras en la faena: liquidación vs retención del rodeo', auth: false },
   { name: 'get_estacionalidad', desc: 'En qué mes la hacienda está típicamente cara o barata, y dónde está hoy contra esa norma — índice estacional en dólares desde 2015', auth: false },
   { name: 'get_renta_campo', desc: 'Qué compra y qué renta un dólar en campo ganadero: USD/ha, kilos de novillo por hectárea, canon y años de repago por zona', auth: false },
-  { name: 'list_remates', desc: 'Calendario de remates (filtro por provincia)', auth: false },
+  { name: 'remates_programados', desc: 'Calendario de remates (filtro por provincia)', auth: false },
   { name: 'buscar_consignataria', desc: 'Directorio de consignatarias/casas de remate por nombre o zona (con CUIT)', auth: false },
   { name: 'actividad_consignatarias', desc: 'Ranking de cabezas y precio promedio por firma en el MAG de referencia (Cañuelas)', auth: false },
   { name: 'buscar_frigorifico', desc: 'Frigoríficos habilitados MAGYP/SENASA (1.100+ plantas)', auth: false },
   { name: 'calcular_arrendamiento', desc: 'Canon de arrendamiento rural indexado al novillo', auth: false },
-  { name: 'get_vr_historico', desc: '"¿Se está abriendo la dispersión?" — serie de la banda P10–P90 por categoría, completa y gratis', auth: false },
+  { name: 'vr_historico', desc: '"¿Se está abriendo la dispersión?" — serie de la banda P10–P90 por categoría, completa y gratis', auth: false },
   { name: 'valuar_tropa', desc: '"¿Cuánto valen 350 novillos?" — banda observada (P10/mediana/P90) con el n de lotes, en ARS y USD', auth: false },
   { name: 'valuar_arrendamiento_campo', desc: 'Canon de arrendamiento ganadero al índice oficial, anual y mensual, ARS y USD', auth: false },
   { name: 'valuar_campo', desc: 'Cuánto vale la hectárea: 15 provincias y 52 zonas, con rango, canon típico y fuente fechada', auth: false },

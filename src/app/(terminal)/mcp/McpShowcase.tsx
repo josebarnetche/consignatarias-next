@@ -62,7 +62,7 @@ function Scene({
 function ExtendedChat({ d }: { d: ShowcaseData }) {
   const msgs: Array<{ kind: 'u' | 'a' | 't'; body: React.ReactNode }> = [
     { kind: 'u', body: <>Tengo un lote de {d.lote.cab} novillos de ~450 kg. ¿Cuánto vale hoy?</> },
-    { kind: 't', body: <>get_indice_novillo()</> },
+    { kind: 't', body: <>indice_novillo()</> },
     {
       kind: 'a',
       body: (
@@ -75,7 +75,7 @@ function ExtendedChat({ d }: { d: ShowcaseData }) {
       ),
     },
     { kind: 'u', body: <>¿Y cómo viene el mercado?</> },
-    { kind: 't', body: <>get_inmag_historico()</> },
+    { kind: 't', body: <>inmag_historico()</> },
     {
       kind: 'a',
       body: (
@@ -186,7 +186,7 @@ export default function McpShowcase(d: ShowcaseData) {
         Y tool por tool ↓
       </p>
 
-      <Scene n={1} tool="get_indice_novillo" icon="indice" pregunta="¿A cuánto está el novillo hoy?">
+      <Scene n={1} tool="indice_novillo" icon="indice" pregunta="¿A cuánto está el novillo hoy?">
         <div className="text-xxs text-zinc-500 uppercase tracking-wider mb-1">INMAG · {d.fecha}</div>
         <div className="flex items-baseline gap-3 flex-wrap">
           <span className="text-3xl font-mono font-medium text-zinc-50 tabular-nums">${d.inmag.current}</span>
@@ -197,7 +197,7 @@ export default function McpShowcase(d: ShowcaseData) {
         </div>
       </Scene>
 
-      <Scene n={2} tool="get_precios_hacienda" icon="bascula" pregunta="Pasame todas las categorías.">
+      <Scene n={2} tool="precios_hacienda" icon="bascula" pregunta="Pasame todas las categorías.">
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-2">
           {d.cats.map((c) => (
             <div key={c.name} className="flex items-baseline justify-between gap-2 border-b border-terminal-border/60 pb-1">
@@ -208,7 +208,7 @@ export default function McpShowcase(d: ShowcaseData) {
         </div>
       </Scene>
 
-      <Scene n={3} tool="get_inmag_historico" icon="indice" pregunta="¿Cómo viene el índice este año?">
+      <Scene n={3} tool="inmag_historico" icon="indice" pregunta="¿Cómo viene el índice este año?">
         <svg viewBox="0 0 300 70" className="w-full h-16" preserveAspectRatio="none" aria-hidden="true">
           <polyline points={d.spark.points} fill="none" stroke="#34d399" strokeWidth="1.8" className="sc-line" />
         </svg>
@@ -219,7 +219,7 @@ export default function McpShowcase(d: ShowcaseData) {
         </div>
       </Scene>
 
-      <Scene n={4} tool="get_contexto_macro" icon="dolar-billete" pregunta="¿Dólar blue y maíz?">
+      <Scene n={4} tool="contexto_macro" icon="dolar-billete" pregunta="¿Dólar blue y maíz?">
         <div className="grid grid-cols-3 gap-4">
           <div><div className="text-xxs text-zinc-500 uppercase tracking-wider mb-0.5">USD blue</div><div className="font-mono tabular-nums text-zinc-100 text-lg">${d.macro.blue}</div></div>
           <div><div className="text-xxs text-zinc-500 uppercase tracking-wider mb-0.5">Maíz USD/tn</div><div className="font-mono tabular-nums text-zinc-100 text-lg">{d.macro.maiz}</div></div>
@@ -227,7 +227,7 @@ export default function McpShowcase(d: ShowcaseData) {
         </div>
       </Scene>
 
-      <Scene n={5} tool="list_remates" icon="calendario" pregunta="¿Qué remates vienen esta semana?">
+      <Scene n={5} tool="remates_programados" icon="calendario" pregunta="¿Qué remates vienen esta semana?">
         <div className="space-y-1.5">
           {d.remates.map((r, i) => (
             <div key={i} className="flex items-center gap-3 text-sm">

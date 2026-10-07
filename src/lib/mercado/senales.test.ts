@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
-  aMensual, estacionalidad, entradaDeCapital, posicionHistorica, MIN_ANIOS_ESTACIONAL,
+  aMensual, estacionalidad, rentaCampo, posicionHistorica, MIN_ANIOS_ESTACIONAL,
+  type ZonaTierra,
 } from './senales'
 
 /**
@@ -59,40 +60,73 @@ describe('estacionalidad', () => {
   })
 })
 
-describe('entrada de capital en campo', () => {
-  const zonas = [
-    { provincia: 'Corrientes', zona: 'Centro', usd_ha: 1900, kg_ha_ano: 150, anos_repago: 7, aptitud: 'ganadera', n: 12, fecha: '2026-08' },
-    { provincia: 'Buenos Aires', zona: 'Salado', usd_ha: 3200, kg_ha_ano: 180, anos_repago: 6.5, aptitud: 'ganadera', n: 17, fecha: '2026-08' },
-    { provincia: 'Córdoba', zona: 'Núcleo', usd_ha: 18500, kg_ha_ano: null, anos_repago: null, aptitud: 'agrícola', n: 9, fecha: '2026-08' },
+describe('renta del campo', () => {
+  const PRECIOS = { novilloUsdKg: 2.6, sojaUsdTn: 500 }
+  const zonas: ZonaTierra[] = [
+    { provincia: 'Corrientes', zona: 'Centro', usd_ha: 1900, kg_ha_ano: 150, qq_soja_ha_anio: null, anos_repago: 7, aptitud: 'ganadera', n: 12, fecha: '2026-08' },
+    { provincia: 'Buenos Aires', zona: 'Zona núcleo', usd_ha: 18500, kg_ha_ano: 300, qq_soja_ha_anio: 21, anos_repago: 21.1, aptitud: 'agricola', n: 10, fecha: '2026-06' },
+    { provincia: 'Córdoba', zona: null, usd_ha: 5100, kg_ha_ano: 120, qq_soja_ha_anio: 10.5, anos_repago: 14.6, aptitud: 'mixta', n: 26, fecha: '2024' },
   ]
 
-  it('deja afuera la tierra agrícola: no se valúa con canon de hacienda', () => {
-    const r = entradaDeCapital(zonas, 2.6)
-    expect(r.map((x) => x.provincia)).not.toContain('Córdoba')
-    expect(r).toHaveLength(2)
+  it('valúa cada aptitud por su propio canon, no todo con novillo', () => {
+    const r = rentaCampo(zonas, PRECIOS)
+    const nucleo = r.find((x) => x.zona === 'Zona núcleo')!
+    // 21 qq × US$50/qq = US$1.050/ha. Con canon ganadero habría dado 300 × 2,6 = 780.
+    expect(nucleo.rentaSegun).toBe('agrícola')
+    expect(nucleo.rentaUsdHa).toBeCloseTo(1050, 0)
+    const ctes = r.find((x) => x.provincia === 'Corrientes')!
+    expect(ctes.rentaSegun).toBe('ganadero')
+    expect(ctes.rentaUsdHa).toBeCloseTo(390, 0)
   })
 
-  it('ordena por rendimiento y lo calcula sobre el canon en kilos', () => {
-    const r = entradaDeCapital(zonas, 2.6)
-    // Corrientes: 150 kg × 2,6 USD = 390 USD/ha sobre 1.900 = 20,5 %
+  it('en zona mixta toma la renta mayor y declara cuál es', () => {
+    const r = rentaCampo(zonas, PRECIOS)
+    const cba = r.find((x) => x.provincia === 'Córdoba')!
+    // ganadero 120 × 2,6 = 312 · agrícola 10,5 × 50 = 525 → gana el agrícola
+    expect(cba.rentaSegun).toBe('agrícola')
+    expect(cba.rentaUsdHa).toBeCloseTo(525, 0)
+    expect(cba.rentaGanaderaUsdHa).toBeCloseTo(312, 0)
+  })
+
+  it('guarda el canon en su unidad real, que es como se firma', () => {
+    const r = rentaCampo(zonas, PRECIOS)
+    const ctes = r.find((x) => x.provincia === 'Corrientes')!
+    expect(ctes.canonKgNovilloHaAno).toBe(150)
+    const nucleo = r.find((x) => x.zona === 'Zona núcleo')!
+    expect(nucleo.canonQqSojaHaAno).toBe(21)
+  })
+
+  it('ya no excluye la tierra agrícola: ahora la valúa bien', () => {
+    expect(rentaCampo(zonas, PRECIOS)).toHaveLength(3)
+  })
+
+  it('filtra por aptitud cuando se la piden', () => {
+    const r = rentaCampo(zonas, PRECIOS, { aptitud: 'ganadera' })
+    expect(r).toHaveLength(1)
     expect(r[0].provincia).toBe('Corrientes')
-    expect(r[0].rendimientoPct).toBeCloseTo(20.53, 1)
-    expect(r[0].rentaAnualUsdHa).toBeCloseTo(390, 0)
-    expect(r[0].rendimientoPct!).toBeGreaterThan(r[1].rendimientoPct!)
   })
 
-  it('traduce la hectárea a kilos de novillo, que es como se piensa el precio acá', () => {
-    const r = entradaDeCapital(zonas, 2.5)
-    expect(r.find((x) => x.provincia === 'Corrientes')!.kgNovilloPorHa).toBe(760)
+  it('ordena por rendimiento', () => {
+    const r = rentaCampo(zonas, PRECIOS)
+    // Corrientes 20,5% · Córdoba 10,3% · núcleo 5,7%
+    expect(r[0].provincia).toBe('Corrientes')
+    expect(r.at(-1)!.zona).toBe('Zona núcleo')
+  })
+
+  it('sin precio de soja, la agrícola no inventa renta', () => {
+    const r = rentaCampo(zonas, { novilloUsdKg: 2.6, sojaUsdTn: null })
+    const nucleo = r.find((x) => x.zona === 'Zona núcleo')!
+    expect(nucleo.rentaUsdHa).toBeNull()
+    expect(nucleo.rendimientoPct).toBeNull()
   })
 
   it('reparte un presupuesto en hectáreas', () => {
-    const r = entradaDeCapital(zonas, 2.6, 500_000)
+    const r = rentaCampo(zonas, PRECIOS, { presupuestoUsd: 500_000 })
     expect(r.find((x) => x.provincia === 'Corrientes')!.hectareasPorPresupuesto).toBe(263)
   })
 
-  it('sin precio de novillo no devuelve nada en vez de devolver cualquier cosa', () => {
-    expect(entradaDeCapital(zonas, 0)).toEqual([])
+  it('sin ningún precio no devuelve nada en vez de devolver cualquier cosa', () => {
+    expect(rentaCampo(zonas, { novilloUsdKg: 0, sojaUsdTn: 0 })).toEqual([])
   })
 })
 
