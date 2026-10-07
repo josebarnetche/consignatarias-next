@@ -19,7 +19,7 @@ import { Badge } from '@/components/ui'
 /*  stay intact as the crawlable entry points.                         */
 /* ------------------------------------------------------------------ */
 
-export type Period = 'hoy' | 'proximos' | 'pasados'
+export type Period = 'hoy' | 'proximos'
 
 /** "INVERNADA" → "Invernada" (los TYPE_LABELS están en mayúsculas de terminal). */
 export function typeLabel(t: string): string {
@@ -176,7 +176,6 @@ export default function RematesFilterBar({
   const TABS: { key: Period; label: string }[] = [
     { key: 'hoy', label: 'Hoy' },
     { key: 'proximos', label: 'Próximos' },
-    { key: 'pasados', label: 'Anteriores' },
   ]
 
   return (

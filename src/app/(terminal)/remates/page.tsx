@@ -6,12 +6,27 @@ import rematesData from '@/lib/data/remates.json'
 import { getAllProfiles, getCanonicalSlug } from '@/lib/data/consignataria-slugs'
 import { SectionBreadcrumbSchema, FAQPageSchema, RematesListSchema, DatasetSchema } from '@/components/seo/JsonLd'
 import { LICENCIA_PROPIA } from '@/lib/seo/schemas'
+import type { Auction } from '@/lib/db/schema'
 import NewsletterSignup from '@/components/NewsletterSignup'
 import { Breadcrumb } from '@/components/ui'
 import { FaqList } from '@/components/seo/FaqList'
 import { remateHref } from '@/lib/remates-enlaces'
 import { FECHA_DATOS, fechaLarga } from '@/lib/datos-frescura'
 import { EXPO, REMATES_EXPO, expoVigente, posicionNacional } from '@/lib/data/expo-mercedes'
+
+/** Al navegador sólo le van los remates de hoy en adelante.
+ *
+ * La pestaña "Anteriores" mantenía 965 remates pasados vivos en memoria del
+ * cliente —561 KB de JSON en la página más visitada del sitio— duplicando una
+ * página que ya existe y se indexa: /remates/anteriores. Ahora el que los
+ * quiere va ahí, y el bundle baja a los ~200 que están por venir.
+ *
+ * El corte usa la fecha del servidor; el cliente recalcula su "hoy" (que después
+ * de las 20:00 ART salta al día siguiente) sobre este subconjunto, así que un
+ * remate de hoy nunca se pierde por la diferencia de huso.
+ */
+const hoyISO = new Date().toISOString().slice(0, 10)
+const rematesProximos = (rematesData as Auction[]).filter((a) => a.date >= hoyISO)
 
 // Regenerate hourly for fresh TODAY
 export const revalidate = 3600
@@ -188,7 +203,7 @@ export default function RematesPage() {
 
       {/* RematesClient ya no usa useSearchParams → renderiza SSR (lista en el
           HTML servido, visible para crawlers). Sin Suspense/fallback. */}
-      <RematesClient />
+      <RematesClient remates={rematesProximos} />
 
       {/* Pie: navegación a las páginas indexables + newsletter */}
       <section className="mx-auto max-w-5xl px-4 pb-10 sm:px-6">

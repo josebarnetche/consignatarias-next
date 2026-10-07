@@ -2,7 +2,6 @@
 
 import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
-import rematesData from '@/lib/data/remates.json'
 import type { Auction } from '@/lib/db/schema'
 import { normalizeUrl } from '@/lib/utils/url'
 import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
@@ -50,9 +49,18 @@ function getWhatsAppShareUrl(auction: Auction): string {
   return `https://wa.me/?text=${encodeURIComponent(parts.join('\n'))}`
 }
 
-const rawAuctions = rematesData as Auction[]
+/**
+ * Los remates llegan por prop desde el server, ya recortados a los de hoy en
+ * adelante. Antes este archivo importaba `remates.json` entero —1.173 remates,
+ * 561 KB— y el 82 % eran pasados que nadie filtra desde acá: para eso está
+ * /remates/anteriores, que ya existe y se indexa. El import metía esos 561 KB
+ * en el bundle del navegador de la página más visitada del sitio.
+ */
+export interface RematesClientProps {
+  remates: Auction[]
+}
 
-type Period = 'hoy' | 'proximos' | 'pasados'
+type Period = 'hoy' | 'proximos'
 
 /* ------------------------------------------------------------------ */
 /*  HELPERS                                                            */
@@ -308,7 +316,7 @@ function AddRemateModal({ onClose }: { onClose: () => void }) {
 /*  MAIN PAGE                                                          */
 /* ------------------------------------------------------------------ */
 
-export default function RematesPage() {
+export default function RematesPage({ remates }: RematesClientProps) {
   const router = useRouter()
   const session = useSessionTier()
   const [period, setPeriod] = useState<Period>('proximos')
@@ -345,12 +353,12 @@ export default function RematesPage() {
 
   // Merge featured flag from DB into auctions
   const auctions = useMemo(() =>
-    rawAuctions.map(a => {
+    remates.map(a => {
       const canonical = getCanonicalSlug(a.consignatariaSlug) || a.consignatariaSlug
       const dbFeatured = featuredSlugs.has(canonical)
       return dbFeatured ? { ...a, featured: true } : a
     }),
-    [featuredSlugs]
+    [featuredSlugs, remates]
   )
 
   // Dynamic "today" — after 20:00 ART, shifts to tomorrow
@@ -372,15 +380,9 @@ export default function RematesPage() {
     }),
     [today, auctions]
   )
-  const pastAuctions = useMemo(
-    () => auctions.filter((a) => a.date < today).sort((a, b) => b.date.localeCompare(a.date) || (b.time ?? '').localeCompare(a.time ?? '')),
-    [today, auctions]
-  )
-
   const counts: Record<Period, number> = {
     hoy: todayAuctions.length,
     proximos: upcomingAuctions.length,
-    pasados: pastAuctions.length,
   }
 
   /* ---- Base set for current tab ---- */
@@ -388,9 +390,8 @@ export default function RematesPage() {
     switch (period) {
       case 'hoy': return todayAuctions
       case 'proximos': return upcomingAuctions
-      case 'pasados': return pastAuctions
     }
-  }, [period, todayAuctions, upcomingAuctions, pastAuctions])
+  }, [period, todayAuctions, upcomingAuctions])
 
   /* ---- Apply filters ---- */
   const advancedActive = session.tier === 'pro' && (filterDateFrom || filterDateTo || filterMinHeads)
