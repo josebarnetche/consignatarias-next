@@ -1833,52 +1833,52 @@
       }
     ],
     "latestVolume": 9274,
-    "periodVolume": 147775
+    "periodVolume": 144207
   },
   "categories": {
     "novillos": {
-      "current": 4075.73,
+      "current": 4223.65,
       "prev": 4075.73,
-      "change": 0,
+      "change": 3.6,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 1082,
-      "observedDate": "02/10/2026"
+      "latestVolume": 1292,
+      "observedDate": "06/10/2026"
     },
     "novillitos": {
-      "current": 4340.56,
+      "current": 4582.66,
       "prev": 4340.56,
-      "change": 0,
+      "change": 5.6,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 1127,
-      "observedDate": "02/10/2026"
+      "latestVolume": 2049,
+      "observedDate": "06/10/2026"
     },
     "vaquillonas": {
-      "current": 4150.61,
+      "current": 4320.24,
       "prev": 4150.61,
-      "change": 0,
+      "change": 4.1,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 1922,
-      "observedDate": "02/10/2026"
+      "latestVolume": 2447,
+      "observedDate": "06/10/2026"
     },
     "vacas": {
-      "current": 3080.89,
+      "current": 3177.15,
       "prev": 3080.89,
-      "change": 0,
+      "change": 3.1,
       "source": "mercadoagroganadero.com.ar (observed)",
-      "latestVolume": 2891,
-      "observedDate": "02/10/2026"
+      "latestVolume": 3056,
+      "observedDate": "06/10/2026"
     },
     "toros": {
-      "current": 3550.52,
+      "current": 3639.5,
       "prev": 3550.52,
-      "change": 0,
+      "change": 2.5,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 280,
-      "observedDate": "02/10/2026"
+      "latestVolume": 320,
+      "observedDate": "06/10/2026"
     },
     "terneros": {
       "current": 4646,
@@ -1908,9 +1908,9 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-10-06",
+  "lastUpdate": "2026-10-07",
   "provinceEntry": {
-    "date": "2026-10-06",
+    "date": "2026-10-07",
     "totalCabezas": 9274,
     "provinces": [
       {
@@ -1952,7 +1952,7 @@
     ]
   },
   "detailedCategories": {
-    "date": "2026-10-06",
+    "date": "2026-10-07",
     "categories": [
       {
         "category": "NOVILLOS Esp.Joven + 430",
@@ -2090,8 +2090,112 @@
     ]
   },
   "auctionDayEntries": {
-    "date": "2026-10-06",
+    "date": "2026-10-07",
     "consignatarias": {
+      "campos-y-ganados": {
+        "magId": "110",
+        "totalCabezas": 148,
+        "entries": [
+          {
+            "remitente": "AGRO PARANA S.A.",
+            "localidad": "25 DE MAYO",
+            "provincia": "BUE",
+            "cabezas": 27
+          },
+          {
+            "remitente": "AGROPECUARIA CASCO CHICO S.R.L",
+            "localidad": "GRAL. BELGRANO",
+            "provincia": "BUE",
+            "cabezas": 4
+          },
+          {
+            "remitente": "CARNICERIA ARMENDARIZ S.R.L.",
+            "localidad": "SAN PEDRO",
+            "provincia": "BUE",
+            "cabezas": 7
+          },
+          {
+            "remitente": "CARNICERIA ARMENDARIZ S.R.L.",
+            "localidad": "SAN PEDRO",
+            "provincia": "BUE",
+            "cabezas": 4
+          },
+          {
+            "remitente": "FANTINO NESTOR DANIEL",
+            "localidad": "HUINCA RENANCO",
+            "provincia": "CBA",
+            "cabezas": 32
+          },
+          {
+            "remitente": "FUNDACION ARTURO F. SALAS",
+            "localidad": "BARADERO",
+            "provincia": "BUE",
+            "cabezas": 16
+          },
+          {
+            "remitente": "GARCIA MARIO LUIS",
+            "localidad": "CNEL. DORREGO",
+            "provincia": "BUE",
+            "cabezas": 34
+          },
+          {
+            "remitente": "IDIAQUEZ MARCOS ROMAN",
+            "localidad": "PILA",
+            "provincia": "BUE",
+            "cabezas": 9
+          },
+          {
+            "remitente": "LOS MOROS AGROG. DE 25 S.A.S.",
+            "localidad": "25 DE MAYO",
+            "provincia": "BUE",
+            "cabezas": 10
+          },
+          {
+            "remitente": "ORGANIZACION TERRA S.A.",
+            "localidad": "GRAL. BELGRANO",
+            "provincia": "BUE",
+            "cabezas": 3
+          },
+          {
+            "remitente": "URRUZOLA EFREN PEDRO",
+            "localidad": "PILA",
+            "provincia": "BUE",
+            "cabezas": 2
+          }
+        ],
+        "period": "07/09/2026 - 07/10/2026"
+      },
+      "colombo-y-colombo": {
+        "magId": "18",
+        "totalCabezas": 102,
+        "entries": [
+          {
+            "remitente": "BOMCHIL MAXIMO LUIS",
+            "localidad": "GRAL. BELGRANO",
+            "provincia": "BUE",
+            "cabezas": 15
+          },
+          {
+            "remitente": "EL BOYERO S.S.",
+            "localidad": "BOLIVAR",
+            "provincia": "BUE",
+            "cabezas": 25
+          },
+          {
+            "remitente": "LA MATILDE ARROYO S.A.",
+            "localidad": "DOLORES",
+            "provincia": "BUE",
+            "cabezas": 27
+          },
+          {
+            "remitente": "NORDHEIMER S.R.L.",
+            "localidad": "CA�UELAS",
+            "provincia": "BUE",
+            "cabezas": 35
+          }
+        ],
+        "period": "07/09/2026 - 07/10/2026"
+      },
       "colombo-y-magliano": {
         "magId": "165",
         "totalCabezas": 795,
@@ -2361,7 +2465,7 @@
             "cabezas": 8
           }
         ],
-        "period": "06/09/2026 - 06/10/2026"
+        "period": "07/09/2026 - 07/10/2026"
       }
     }
   },
