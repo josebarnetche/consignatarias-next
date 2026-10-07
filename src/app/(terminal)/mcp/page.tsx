@@ -41,6 +41,8 @@ const TOOLS = [
   { name: 'get_precios_detallados', desc: 'Precios por subcategoría con mínimo/promedio/máximo + cabezas', auth: false },
   { name: 'get_contexto_macro', desc: 'Dólar blue/oficial, maíz FOB y spread novillo/maíz', auth: false },
   { name: 'get_indice_liquidacion', desc: '% de hembras en la faena: liquidación vs retención del rodeo', auth: false },
+  { name: 'get_estacionalidad', desc: 'En qué mes la hacienda está típicamente cara o barata, y dónde está hoy contra esa norma — índice estacional en dólares desde 2015', auth: false },
+  { name: 'get_renta_campo', desc: 'Qué compra y qué renta un dólar en campo ganadero: USD/ha, kilos de novillo por hectárea, canon y años de repago por zona', auth: false },
   { name: 'list_remates', desc: 'Calendario de remates (filtro por provincia)', auth: false },
   { name: 'buscar_consignataria', desc: 'Directorio de consignatarias/casas de remate por nombre o zona (con CUIT)', auth: false },
   { name: 'actividad_consignatarias', desc: 'Ranking de cabezas y precio promedio por firma en el MAG de referencia (Cañuelas)', auth: false },

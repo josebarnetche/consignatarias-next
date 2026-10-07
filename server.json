@@ -1,8 +1,8 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
   "name": "ar.com.consignatarias/cattle-market",
-  "description": "Mercado ganadero argentino, gratis y sin cupo: INMAG, precios, dispersión, remates y tierra.",
-  "version": "1.5.0",
+  "description": "Mercado ganadero argentino: precios, estacionalidad, renta de campos, remates y directorio.",
+  "version": "1.6.0",
   "repository": {
     "url": "https://github.com/josebarnetche/consignatarias-next",
     "source": "github"

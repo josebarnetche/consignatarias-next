@@ -20,6 +20,8 @@ import { cotizarProUsdCents, proArsMensual, proMeses, validarSlugPro } from '@/l
 import { CATEGORIAS_DEMANDA, crearDemanda, formatMatches, matchRemates, normalizarCategoria } from '@/lib/demanda'
 import { enforceRateLimit, clientIp } from '@/lib/rate-limit-db'
 import { techoListado, ventanaAcotada } from '@/lib/mcp/techo-listados'
+import { aMensual, estacionalidad, entradaDeCapital } from '@/lib/mercado/senales'
+import tierraData from '@/lib/data/tierra-por-kilo.json'
 import {
   SERIE_ARRANCA, VENTANA_GRATIS_DIAS, aplicarTecho, contarRuedasOcultas,
   formatearSerie, leerSerie, notaDeRecorte, resolverRango,
@@ -59,7 +61,7 @@ export const maxDuration = 60
 const SERVER_INFO = {
   name: 'consignatarias',
   title: 'Consignatarias — Mercado Ganadero Argentino',
-  version: '1.5.0',
+  version: '1.6.0',
   websiteUrl: 'https://www.consignatarias.com.ar/mcp',
 }
 // Versiones del protocolo MCP que soportamos. Somos tools-only + stateless, así que
@@ -211,6 +213,54 @@ function cleanLocation(location: string | null | undefined, province: string | n
   if (!loc) return prov
   if (!prov || loc.toLowerCase().includes(prov.toLowerCase())) return loc
   return `${loc}, ${prov}`
+}
+
+
+/**
+ * La serie del INMAG dolarizada al blue, completa desde 2015.
+ *
+ * Pagina a mano porque PostgREST capea en 1.000 filas sin avisar, y rellena el
+ * blue hacia adelante: el dólar no cotiza fines de semana ni feriados y la rueda
+ * del lunes se cuelga del viernes. Sin el forward-fill se pierde un tercio de las
+ * ruedas y la estacionalidad se calcula sobre una serie con agujeros.
+ */
+async function serieInmagUsd(
+  service: ReturnType<typeof requireServiceClient>,
+): Promise<{ date: string; valor: number }[]> {
+  const PAGE = 1000
+  const inmag: { date: string; inmag_value: number | null }[] = []
+  for (let from = 0; ; from += PAGE) {
+    const { data } = await service
+      .from('mag_inmag_history')
+      .select('date, inmag_value')
+      .order('date', { ascending: true })
+      .range(from, from + PAGE - 1)
+    const lote = (data || []) as typeof inmag
+    inmag.push(...lote)
+    if (lote.length < PAGE) break
+  }
+  const blue: { date: string; venta: number | null }[] = []
+  for (let from = 0; ; from += PAGE) {
+    const { data } = await service
+      .from('usd_blue_history')
+      .select('date, venta')
+      .order('date', { ascending: true })
+      .range(from, from + PAGE - 1)
+    const lote = (data || []) as typeof blue
+    blue.push(...lote)
+    if (lote.length < PAGE) break
+  }
+  const porFecha = new Map(blue.filter((b) => b.venta).map((b) => [b.date, Number(b.venta)]))
+  const fechas = [...new Set([...blue.map((b) => b.date), ...inmag.map((i) => i.date)])].sort()
+  const lleno = new Map<string, number>()
+  let ultimo: number | null = null
+  for (const f of fechas) {
+    if (porFecha.has(f)) ultimo = porFecha.get(f)!
+    if (ultimo) lleno.set(f, ultimo)
+  }
+  return inmag
+    .filter((r) => r.inmag_value && lleno.get(r.date))
+    .map((r) => ({ date: r.date, valor: Number(r.inmag_value) / lleno.get(r.date)! }))
 }
 
 const TOOLS: Tool[] = [
@@ -639,6 +689,86 @@ const TOOLS: Tool[] = [
       )
       return ok(
         `Actividad en el MAG Cañuelas (mercado de referencia) ${desde} → ${hasta}${categoria ? ` · ${categoria}` : ''}:\n${lines.join('\n')}\n\nTop ${rows.length}: ${totalCab.toLocaleString('es-AR')} cabezas. Nota: es el mercado concentrador de referencia (~12% nacional) — no incluye lo operado fuera de Cañuelas (ferias del interior, venta directa).${notaVentana ? `\n\n${notaVentana}` : ''}`,
+      )
+    },
+  },
+  {
+    name: 'get_estacionalidad',
+    description:
+      'En qué mes del año la hacienda está típicamente cara o barata, y dónde está HOY contra esa norma. Índice estacional del INMAG EN DÓLARES desde 2015 (razón sobre media móvil centrada de 12 meses, mediana entre años, normalizado a 1,00). Contesta "¿conviene comprar ahora o esperar?" — que es lo que el precio del día NO contesta. Args: mes (YYYY-MM, opcional; default el último con índice). Se calcula en dólares a propósito: en pesos mediría la inflación, no el ciclo.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        mes: { type: 'string', description: 'Mes a evaluar, YYYY-MM (opcional)' },
+      },
+      additionalProperties: false,
+    },
+    async run(args) {
+      const service = requireServiceClient()
+      const serie = await serieInmagUsd(service)
+      if (serie.length < 60) return fail('Serie insuficiente para estacionalidad.')
+      const mensual = aMensual(serie)
+      // Los últimos 6 meses no tienen índice: la media móvil centrada necesita
+      // medio año por delante. Por defecto se evalúa el último que SÍ lo tiene.
+      const pedido = typeof args.mes === 'string' ? args.mes : mensual[mensual.length - 7]?.ym
+      const e = estacionalidad(mensual, pedido)
+      const filas = e.indicePorMes.map((x) => {
+        const marca = x.indice >= 1.03 ? ' ← caro' : x.indice <= 0.97 ? ' ← barato' : ''
+        return `  ${x.nombre.padEnd(11)} ${x.indice.toFixed(3)}${marca}`
+      })
+      const barato = [...e.indicePorMes].sort((a, b) => a.indice - b.indice)[0]
+      const caro = [...e.indicePorMes].sort((a, b) => b.indice - a.indice)[0]
+      const amplitud = ((caro.indice / barato.indice - 1) * 100).toFixed(0)
+      const m = e.mesConsultado
+      const lectura = m
+        ? `\n${m.nombre} de ${m.ym.slice(0, 4)}: índice ${m.indiceActual.toFixed(3)} contra ${m.indiceTipico.toFixed(3)} típico → ${m.desvioPct > 0 ? '+' : ''}${m.desvioPct}%, la hacienda está ${m.lectura === 'barata' ? 'más barata que lo normal para esa época' : m.lectura === 'cara' ? 'más cara que lo normal para esa época' : 'en su nivel estacional'}.`
+        : ''
+      return ok(
+        `Índice estacional del novillo (INMAG en USD, ${e.aniosBase} años):\n${filas.join('\n')}\n` +
+          `\nMes más barato: ${barato.nombre} (${barato.indice.toFixed(3)}). Más caro: ${caro.nombre} (${caro.indice.toFixed(3)}). ` +
+          `Amplitud estacional: ${amplitud}% entre punta y punta.${lectura}\n\n${e.nota}`,
+      )
+    },
+  },
+  {
+    name: 'get_renta_campo',
+    description:
+      'Qué compra y qué renta un dólar puesto en campo ganadero argentino, por zona: USD/hectárea, cuántos KILOS DE NOVILLO cuesta esa hectárea, la renta anual del arrendamiento (que acá se pacta en kg de novillo por ha, no en pesos), el rendimiento sobre el valor de la tierra y los años de repago. Para un comprador del exterior que evalúa entrar. Args: presupuesto_usd (opcional, reparte en hectáreas), provincia (opcional), limite (def 10). Solo campo de aptitud GANADERA: la tierra agrícola no se valúa con canon de hacienda.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        presupuesto_usd: { type: 'number', description: 'Capital a invertir en dólares (opcional)' },
+        provincia: { type: 'string', description: 'Filtra por provincia (opcional)' },
+        limite: { type: 'number', description: 'Máximo de zonas (default 10)' },
+      },
+      additionalProperties: false,
+    },
+    async run(args) {
+      const service = requireServiceClient()
+      const serie = await serieInmagUsd(service)
+      const novUsd = serie.length ? serie[serie.length - 1].valor : 0
+      if (!novUsd) return fail('Sin precio del novillo en dólares para convertir.')
+      const crudo = tierraData as unknown as Record<string, unknown>
+      const zonasTodas = (Array.isArray(crudo)
+        ? crudo
+        : (crudo.zonas as unknown[]) || Object.values(crudo).find(Array.isArray) || []) as Parameters<typeof entradaDeCapital>[0]
+      const prov = typeof args.provincia === 'string' ? args.provincia.toLowerCase().trim() : ''
+      const limite = Math.min(typeof args.limite === 'number' ? args.limite : 10, 30)
+      const presupuesto = typeof args.presupuesto_usd === 'number' ? args.presupuesto_usd : undefined
+      let filas = entradaDeCapital(zonasTodas, novUsd, presupuesto)
+      if (prov) filas = filas.filter((z) => z.provincia.toLowerCase().includes(prov))
+      if (!filas.length) return ok('Sin zonas ganaderas relevadas con esos filtros.')
+      const lineas = filas.slice(0, limite).map((z) => {
+        const nombre = `${z.provincia}${z.zona ? ` — ${z.zona}` : ''}`
+        const ha = z.hectareasPorPresupuesto != null ? ` · ${z.hectareasPorPresupuesto.toLocaleString('es-AR')} ha con tu presupuesto` : ''
+        const rend = z.rendimientoPct != null ? `${z.rendimientoPct}%/año` : 'sin canon relevado'
+        return `· ${nombre}: US$${z.usdHa.toLocaleString('es-AR')}/ha (${z.kgNovilloPorHa.toLocaleString('es-AR')} kg de novillo) · renta ${rend}${z.aniosRepago ? ` · repago ${z.aniosRepago} años` : ''}${ha} · n=${z.observaciones ?? '?'} · ${z.fechaDato ?? 's/f'}`
+      })
+      return ok(
+        `Campo ganadero, novillo a US$${novUsd.toFixed(2)}/kg vivo:\n${lineas.join('\n')}\n\n` +
+          'La renta es el canon de arrendamiento, que en Argentina se pacta en KILOS DE NOVILLO por hectárea y por año: por eso el rendimiento no depende del tipo de cambio. ' +
+          'Cada fila lleva su cantidad de observaciones y la fecha del relevamiento — una zona con una sola observación de 2024 no vale lo mismo como referencia. ' +
+          'Solo aptitud ganadera. Fuente: relevamiento propio + Compañía Argentina de Tierras.',
       )
     },
   },
@@ -1297,6 +1427,10 @@ const PAGINA_DE_LA_TOOL: Record<string, string> = {
   get_indice_liquidacion: '/mercado/liquidacion',
   // La banda por categoría se ve en /vr; /mercado es el índice de las seis.
   get_vr_historico: '/mercado',
+  // Estacionalidad y renta del campo no tienen página propia todavía: se manda a
+  // la del dato que las alimenta, que es donde el lector puede verificarlas.
+  get_estacionalidad: '/mercado/inmag',
+  get_renta_campo: '/campos/valuar',
   list_remates: '/remates',
   buscar_consignataria: '/consignatarias',
   actividad_consignatarias: '/mercado/actividad',
@@ -1560,6 +1694,8 @@ export async function POST(req: NextRequest) {
           'Datos e infraestructura del mercado ganadero argentino como tools MCP.\n' +
           '• Mercado: get_indice_novillo (índice INMAG DIARIO, ponderado por volumen) y get_precios_hacienda (precios por categoría, observación SEMANAL) son métricas distintas — no las compares 1:1; además get_inmag_historico, get_precios_detallados, get_contexto_macro y get_indice_liquidacion (% hembras, liquidación vs retención).\n' +
           '• Profundidad histórica: get_inmag_historico es gratis y sin cupo a CUALQUIER ventana, desde 2015-01-05 — la consulta no tiene techo. Devuelve el análisis del período con una muestra de ~8 puntos; si necesitás la serie fila por fila para cargarla en un modelo propio, esa descarga masiva va con API key Enterprise o por US$0,25 en USDC vía x402 (/api/x402/inmag-historico). Citá la fuente y la fecha.\n' +
+          '• ¿Conviene comprar AHORA?: get_estacionalidad da el índice estacional del novillo en dólares desde 2015 (razón sobre media móvil centrada de 12 meses) y dice si el mes corriente está caro o barato PARA SU ÉPOCA. El precio del día no contesta eso. En el relevamiento 2015-2026 la amplitud punta a punta es de ~28%: septiembre y octubre son los meses más baratos, febrero y marzo los más caros.\n' +
+          '• ¿Cuánto rinde un dólar en campo argentino?: get_renta_campo devuelve, por zona ganadera, USD/hectárea, cuántos KILOS DE NOVILLO cuesta esa hectárea, la renta anual del arrendamiento (que acá se pacta en kg de novillo por ha, no en pesos, así que el rendimiento no depende del tipo de cambio), el rendimiento sobre el valor de la tierra y los años de repago. Aceptá un presupuesto en dólares y lo reparte en hectáreas. Es la herramienta para el comprador del exterior.\n' +
           '• Directorio y remates: buscar_consignataria, actividad_consignatarias, buscar_frigorifico, list_remates.\n' +
           '• Herramientas: calcular_arrendamiento.\n' +
           '• Sanidad SENASA (dato regulatorio, con la resolución citada): sanidad_plan, sanidad_calendario_aftosa, sanidad_requisitos_movimiento, sanidad_renspa (valida/decodifica RENSPA), sanidad_dte_tropa (DT-e / número de tropa).\n' +
