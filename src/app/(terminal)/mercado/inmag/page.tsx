@@ -7,6 +7,7 @@ import { Suspense } from 'react'
 import marketData from '@/lib/data/market-prices.json'
 import { FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 import Breadcrumb from '@/components/ui/Breadcrumb'
+import Compartir from '@/components/Compartir'
 import { CitaBlock } from '@/components/seo/CitaBlock'
 import { InteractivePriceChart } from '@/components/charts/InteractivePriceChart'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
@@ -317,6 +318,15 @@ export default function InmagPage() {
             <CitaBlock
               citation={`INMAG (Índice Novillo del Mercado Agroganadero), vía consignatarias.com.ar, ${inmagSnapshotDate} — $${inmag.current.toLocaleString('es-AR', { maximumFractionDigits: 2 })}/kg vivo`}
               sourceUrl="https://www.consignatarias.com.ar/mercado/inmag"
+            />
+            {/* El precio del día es lo que más se reenvía por WhatsApp: el botón
+                arma el mensaje con el número y la fuente adentro, para que no
+                circule el dato pelado como pasa con el INMAG en los medios. */}
+            <Compartir
+              titulo={`INMAG hoy: $${fmt(inmag.current)}/kg vivo`}
+              path="/mercado/inmag"
+              resumen={`Índice Novillo del Mercado Agroganadero, ${marketData.lastUpdate}.`}
+              className="mb-6"
             />
           </div>
         </MarketHero>

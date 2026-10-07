@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import Script from 'next/script';
 import AnalyticsProvider from '@/components/AnalyticsProvider';
+import CitaAlCopiar from '@/components/CitaAlCopiar';
 import CookieConsent from '@/components/CookieConsent';
 import WhatsAppLeadFAB from '@/components/WhatsAppLeadFAB';
 import AccountNudge from '@/components/AccountNudge';
@@ -170,6 +171,8 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <AnalyticsProvider />
+        {/* El dato que se copia de acá viaja con su fuente puesta. */}
+        <CitaAlCopiar />
         <CookieConsent />
         {children}
         {/* Burbuja global de WhatsApp (lead "sumá tu consignataria" → whatsapp_lead).

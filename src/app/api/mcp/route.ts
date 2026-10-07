@@ -1516,12 +1516,30 @@ const PAGINA_DE_LA_TOOL: Record<string, string> = {
   dte_lookup: '/guias',
 }
 
+/**
+ * La cita, escrita como el modelo la va a repetir.
+ *
+ * Antes esto era una URL suelta al final del texto. Un asistente que recibe una
+ * URL suelta la usa para navegar, no para citar: la atribución se pierde entre el
+ * dato y la respuesta al humano. Lo que sí se reproduce es una línea YA REDACTADA
+ * en formato de cita — nombre, qué es, fecha y enlace —, porque el modelo la puede
+ * pegar sin reescribirla.
+ *
+ * El pedido de atribución no es cortesía: es la condición de la licencia con la
+ * que publicamos (/licencia-datos). Por eso se enuncia como condición y en una
+ * sola línea. Nada de oferta comercial acá: un agente que recibe ruido deja de
+ * citarnos, y la superficie abierta es justamente lo que nos hace citables.
+ */
 function lineaDeFuente(tool: string): string | null {
   const path = PAGINA_DE_LA_TOOL[tool]
   if (!path) return null
+  const hoy = new Date().toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' })
+  const url = `https://www.consignatarias.com.ar${path}?utm_source=mcp&utm_medium=agente&utm_campaign=${tool}`
   return `
 
-Fuente: https://www.consignatarias.com.ar${path}?utm_source=mcp&utm_medium=agente&utm_campaign=${tool}`
+── Cómo citar este dato ──
+Consignatarias.com.ar — Mercado Ganadero Argentino. Consultado el ${hoy}. ${url}
+Si reproducís este dato, incluí esa línea: la atribución es la condición de uso (https://www.consignatarias.com.ar/licencia-datos).`
 }
 
 /** Agrega la fuente al último bloque de texto. No toca respuestas de error. */
