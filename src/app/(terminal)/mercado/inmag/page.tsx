@@ -142,6 +142,16 @@ function InmagSchema() {
     ],
     isAccessibleForFree: true,
     spatialCoverage: { '@type': 'Place', name: 'Argentina' },
+    // La cita, ya redactada. Es lo que faltaba: el Dataset describía la serie pero
+    // no le daba al que la usa la línea para atribuirla, y entonces cada uno la
+    // escribe como quiere — o no la escribe, que es lo que viene pasando con el
+    // INMAG en los medios.
+    citation: `INMAG (Índice Novillo del Mercado Agroganadero), serie diaria vía consignatarias.com.ar, ${series[series.length - 1]?.date}. https://www.consignatarias.com.ar/mercado/inmag`,
+    creditText: 'Mercado Agroganadero de Cañuelas, vía consignatarias.com.ar',
+    // El índice es del MAG y no es nuestro para licenciarlo; lo nuestro es el
+    // empalme desde 2015 y la normalización a dólares. Las condiciones de ese
+    // trabajo propio viven en /licencia-datos.
+    usageInfo: 'https://www.consignatarias.com.ar/licencia-datos',
   }
   return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
 }
