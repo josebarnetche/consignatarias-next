@@ -489,22 +489,34 @@ const TOOLS: Tool[] = [
   {
     name: 'buscar_consignataria',
     description:
-      'Directorio de consignatarias/casas de remate de hacienda por nombre, razón social o localidad (query, mín 2 car). Devuelve nombre, localidad/provincia, categoría, CUIT, un contacto (WhatsApp/teléfono/web) y el perfil en consignatarias.com.ar. Opcional: provincia; limite (def 8, máx 25). NO da actividad de mercado: para cabezas/precio en el MAG usá actividad_consignatarias.',
+      'Directorio de consignatarias/casas de remate de hacienda por nombre, razón social o localidad. Devuelve nombre, localidad/provincia, categoría, CUIT, un contacto (WhatsApp/teléfono/web) y el perfil en consignatarias.com.ar. Alcanza con el nombre O con la provincia: "¿qué consignatarias hay en Salta?" es una consulta válida sin término. Limite def 8, máx 25. NO da actividad de mercado: para cabezas/precio en el MAG usá actividad_consignatarias.',
     inputSchema: {
       type: 'object',
       properties: {
-        query: { type: 'string', description: 'Nombre, localidad o razón social a buscar' },
-        provincia: { type: 'string', description: 'Filtra por provincia (opcional)' },
+        query: { type: 'string', description: 'Nombre, localidad o razón social (opcional si pasás provincia)' },
+        provincia: { type: 'string', description: 'Provincia (opcional si pasás query)' },
         limite: { type: 'number', description: 'Máximo de resultados (default 8)' },
       },
-      required: ['query'],
       additionalProperties: false,
     },
     async run(args, req) {
       // Sanitizar el término para el filtro .or() de PostgREST (evita romper la query).
       const q = String(args.query || '').replace(/[^\p{L}\p{N}\s]/gu, '').trim().slice(0, 80)
-      if (q.length < 2) return fail('Pasá un término de al menos 2 caracteres.')
       const prov = typeof args.provincia === 'string' ? args.provincia.replace(/[^\p{L}\p{N}\s]/gu, '').trim() : ''
+      /**
+       * "¿Qué consignatarias hay en Salta?" es una pregunta entera y no lleva
+       * término de búsqueda. Antes `query` era obligatorio y con menos de dos
+       * caracteres se rechazaba, así que esa pregunta se contestaba con un error:
+       * 43 veces en una sola corrida de un banco de pruebas, siempre con la
+       * provincia puesta. `buscar_frigorifico` ya aceptaba la provincia sola —
+       * eran dos tools del mismo directorio con reglas distintas.
+       *
+       * Lo que sí se mantiene: algo hay que acotar. Sin término NI provincia no
+       * es una búsqueda, es un volcado.
+       */
+      if (q.length < 2 && !prov) {
+        return fail('Pasá un término de al menos 2 caracteres o una provincia.')
+      }
       const techo = await techoListado({
         tool: 'buscar_consignataria', req, autorizado: await tieneKey(args, req),
         pedido: typeof args.limite === 'number' ? args.limite : undefined,
@@ -517,7 +529,9 @@ const TOOLS: Tool[] = [
       let qb = service
         .from('consignatarias')
         .select('display_name, canonical_slug, province, location, category, phone, whatsapp, website, cuit')
-        .or(`display_name.ilike.%${q}%,name.ilike.%${q}%,location.ilike.%${q}%`)
+      if (q.length >= 2) {
+        qb = qb.or(`display_name.ilike.%${q}%,name.ilike.%${q}%,location.ilike.%${q}%`)
+      }
       if (prov) qb = qb.ilike('province', `%${prov}%`)
       const { data, error } = await qb.limit(limite)
       if (error) return fail('Error buscando en el directorio.')
