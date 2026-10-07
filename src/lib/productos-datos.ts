@@ -199,23 +199,35 @@ export const PRODUCTOS_DATOS: ProductoDatos[] = [
     publicado: true,
   },  {
     slug: 'parte-semanal-mercado',
-    nombre: 'Parte semanal del mercado',
+    nombre: 'El Corredor Semanal',
     tagline:
-      'El cierre de la semana en PDF, con la lectura de si el movimiento fue señal o ruido, once años de contexto y los remates de los próximos siete días.',
+      'El cierre de la semana en PDF con tres números que no existen en ningún otro informe: la Banda Consignatarias, la brecha contra Estados Unidos y Uruguay, y la renta del campo en dólares. Más el INMAG con once años de contexto y los remates de los próximos siete días.',
     pregunta: '¿Lo de esta semana fue algo o fue ruido?',
     audiencia: 'A4-registrados',
     modalidad: 'suscripcion',
-    precioMin: 8000,
-    precioMax: 15000,
-    precio: 9900,
+    /**
+     * ⚠️ EL PRECIO VIVE EN `precio-corredor-semanal.ts`, NO ACÁ.
+     *
+     * Está anclado en DÓLARES —US$ 340 al año, US$ 33 al mes, la mitad de
+     * Faxcarne— y el importe en pesos se calcula al blue del día, para que cueste
+     * lo mismo acá que afuera. Los números de abajo son el reflejo en pesos a un
+     * blue de ~1.550 y quedan por compatibilidad con el catálogo y el panel;
+     * el checkout y la página toman el de la función.
+     *
+     * Venía a ARS 9.900/mes, que a este dólar son US$ 6,40: estaba regalado
+     * contra una banda local que va de ARS 232.000 a 450.000 al año.
+     */
+    precioMin: 450000,
+    precioMax: 600000,
+    precio: 530000,
     landing: '/informes/parte-semanal',
     icono: '/marca/iconos-color/indice.png',
     ilustracion: '/marca/ilus/ilu-sec-mercado.jpg',
     ilustracionAlt: 'Corrales del mercado con hacienda al amanecer',
-    metaArs: 100000,
-    fechaCorte: '2026-11-28',
+    metaArs: 1060000,
+    fechaCorte: '2026-12-31',
     siNoLlega:
-      'Se discontinúa la suscripción y el parte pasa a ser el contenido del newsletter gratuito, que ya sale igual. La franja de precio entre lo gratis y los informes técnicos está vacía en este mercado, y si no entra es la señal de que no existe.',
+      'Dos suscripciones anuales. Si en tres meses de ofrecerlo a los 90 suscriptores de El Corredor no entran dos, el precio o el producto están mal y se baja a la franja local (ARS 232.000, el piso de Informe Ganadero) antes de discontinuarlo. La franja entre lo gratis y los informes técnicos está vacía en este mercado: si no entra nadie es la señal de que no existe.',
     keywords: [
       'precio del novillo esta semana',
       'reporte semanal mercado ganadero',
