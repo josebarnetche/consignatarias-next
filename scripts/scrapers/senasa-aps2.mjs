@@ -160,6 +160,35 @@ function contactos(html) {
   return out
 }
 
+/**
+ * De los resultados de una búsqueda, el link de la fila cuya razón social
+ * coincide — no el de la primera, que es de donde salían los 36 cruces errados.
+ * Sin nombre esperado, la primera es lo único que hay.
+ */
+function filaQueCoincide(html, nombreEsperado) {
+  const links = [...html.matchAll(/oamSubmitForm\('Form1','(Form1:data:(\d+):_idJsp\d+)'\)/g)]
+  if (!links.length) return null
+  if (!nombreEsperado) return links[0][1]
+  // Las filas de resultados son: N° oficial | Establecimiento | Tipo.
+  const filas = [...html.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/g)]
+    .map((f) => [...f[1].matchAll(/<t[dh][^>]*>([\s\S]*?)<\/t[dh]>/g)].map((c) => limpiar(c[1])))
+    .filter((c) => c.length >= 3 && /^\d+$/.test(c[0]))
+  for (const [i, l] of links.entries()) {
+    if (filas[i] && mismaEmpresa(filas[i][1], nombreEsperado)) return l[1]
+  }
+  return null
+}
+
+/**
+ * El término con el que buscar por nombre. Se mandan las primeras palabras
+ * significativas: el buscador hace "contiene", y la forma societaria o un
+ * agregado del padrón ("S.A.", "(D.N.I. N° ...)") hacen que no encuentre nada.
+ */
+function terminoDeBusqueda(nombre) {
+  const palabras = normalizar(nombre).split(' ').filter((w) => w.length > 2)
+  return palabras.slice(0, 3).join(' ')
+}
+
 /** Para comparar razones sociales sin que la forma societaria decida el match. */
 function normalizar(s) {
   return (s || '')
@@ -188,24 +217,46 @@ function mismaEmpresa(a, b) {
  * ficha que volvió es de esta empresa o de otra con el mismo número.
  */
 export async function relevar(matricula, nombreEsperado = null) {
+  let via = 'número oficial'
   const jar = new Map()
   const res0 = await fetch(URL_REG, { headers: { 'User-Agent': UA } })
   guardarCookies(jar, res0)
   const vs0 = viewState(await leerLatin1(res0))
   if (!vs0) return { matricula, error: 'sin ViewState: el registro cambió o está caído' }
 
-  const busqueda = await postear(jar, vs0, {
+  // Primero por número oficial. Si no aparece —o aparece otra empresa— se
+  // reintenta por razón social, que es la identificación que de verdad vale:
+  // las dos numeraciones no se corresponden.
+  let busqueda = await postear(jar, vs0, {
     'Form1:_idJsp7': String(matricula),
     'Form1:_idJsp18': 'Buscar',
   })
-  const link = busqueda.match(/oamSubmitForm\('Form1','(Form1:data:0:_idJsp\d+)'\)/)
-  if (!link) return { matricula, error: 'no figura en el registro APS2' }
+  let campoBusqueda = { 'Form1:_idJsp7': String(matricula) }
+  let fila = filaQueCoincide(busqueda, nombreEsperado)
+
+  if (!fila && nombreEsperado) {
+    const vsN = viewState(busqueda)
+    const termino = terminoDeBusqueda(nombreEsperado)
+    busqueda = await postear(jar, vsN, {
+      'Form1:_idJsp12': termino,
+      'Form1:_idJsp18': 'Buscar',
+    })
+    campoBusqueda = { 'Form1:_idJsp12': termino }
+    fila = filaQueCoincide(busqueda, nombreEsperado)
+    if (fila) via = 'razón social'
+  }
+
+  if (!fila) {
+    return {
+      matricula: String(matricula),
+      error: nombreEsperado
+        ? 'no figura en APS2 ni por número ni por razón social'
+        : 'no figura en el registro APS2',
+    }
+  }
 
   const vs1 = viewState(busqueda)
-  const detalle = await postear(jar, vs1, {
-    'Form1:_idJsp7': String(matricula),
-    'Form1:_idcl': link[1],
-  })
+  const detalle = await postear(jar, vs1, { ...campoBusqueda, 'Form1:_idcl': fila })
 
   const razonSocial = campo(detalle, 'Razón social')
   if (nombreEsperado && !mismaEmpresa(razonSocial, nombreEsperado)) {
@@ -226,6 +277,7 @@ export async function relevar(matricula, nombreEsperado = null) {
     estadoFaenaBovina: faena ? faena.estado : null,
     rubros: rs,
     contactos: contactos(detalle),
+    identificadaPor: via,
     relevadoEl: new Date().toISOString().slice(0, 10),
   }
 }

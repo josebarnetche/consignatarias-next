@@ -1,502 +1,3691 @@
 {
-  "generadoEl": "2026-10-06T21:46:37.311Z",
+  "generadoEl": "2026-10-06T22:21:35.191Z",
   "fuente": "https://aps2.senasa.gov.ar/registros/faces/publico/establecimientos/tc_frigorificospublico.jsp",
   "plantas": [
     {
       "matricula": "39195",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "1727",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "SWIFT ARGENTINA S. A.",
+      "estado": "TRANSFERIDO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI B - MATADERO Y FRIGORIFICO C/FAENA ELABORADOR DE CARNES COCIDAS",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "XII - CARNES EN TROZOS O CORTES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXV - PREPARACION PRODUCTOS QUIMICOS Y FARMACOLOGICOS C/MATERIA PRIMA DE ANIMALES",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "03462-433464/426880"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "info@swift.com.ar"
+        },
+        {
+          "tipo": "FAX",
+          "valor": "03462-433464/426880 int 6032"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "3678",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "FRIGORIFICO RIOPLATENSE S A I C I F",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XII - CARNES EN TROZOS O CORTES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XIII - CARNE COCIDA Y CONGELADA",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "XXIII - ELABORADOR CALDOS CONCENTRADOS",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI B - MATADERO Y FRIGORIFICO C/FAENA ELABORADOR DE CARNES COCIDAS",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LI D - MATADERO Y FRIGORIFICO C/FAENA. FABRICA DE CHACINADOS Y AFINES",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI G - MATADERO Y FRIGORIFICO C/FAENA. SEBERIA INCOMESTIBLE",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI H - MATADERO Y FRIGORIFICO C/FAENA HARINA CARNE/HUESO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "VI - TRIPERIA",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LI H - 17. PROCESAMIENTO DE SANGRE INCOMESTIBLE",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LXII - IMPORTACION DE POLLOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LXIV - IMPORTACION DE CARNE PORCINA",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LXVII - IMPORTACION DE CARNE BOVINA",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "4066",
-      "error": "otra empresa: el N° 4066 de APS2 es \"AVÍCOLA D.T. DE EDUARDO GHISIO\", no \"ARRE BEEF S A\""
+      "razonSocial": "ARRE BEEF S A",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XII - CARNES EN TROZOS O CORTES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "03329-4492051/063/266/267"
+        },
+        {
+          "tipo": "TELEFONO",
+          "valor": "011-4313-3553"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "arrebeef@pm.arrebeef.com"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "15",
-      "error": "otra empresa: el N° 15 de APS2 es \"AB LOGÍSTICA S.A.\", no \"FRIGORIFICO GORINA S A I C\""
+      "razonSocial": "FRIGORIFICO GORINA S A I C",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XII - CARNES EN TROZOS O CORTES",
+          "estado": "REPOSICION"
+        }
+      ],
+      "contactos": [],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "67",
-      "error": "otra empresa: el N° 67 de APS2 es \"FRIGORIFICO D & M de MAIRA VIVIANA VILLALBA (DNI N° 38.377.722).\", no \"COTO CICSA\""
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "3545",
-      "error": "otra empresa: el N° 3545 de APS2 es \"MARDI S.A.\", no \"COMPAÑIA BERNAL S.A.\""
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "5726",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "ECOCARNES S.A.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "II - FABRICA DE CHACINADOS Y AFINES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XII - CARNES EN TROZOS O CORTES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXVI - PREPARADO PLASMA SANGUINEO USO COMESTIBLE",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI D - MATADERO Y FRIGORIFICO C/FAENA. FABRICA DE CHACINADOS Y AFINES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI F - MATADERO Y FRIGORIFICO C/FAENA. GRASERIAS, PRODUCCION, COMERCIALIZACION",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LI H - MATADERO Y FRIGORIFICO C/FAENA HARINA CARNE/HUESO",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LI E - 8. ELABORACION MENUDENCIAS SALADAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "4311",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "1686",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "3385",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "RUNFO SA",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XII - CARNES EN TROZOS O CORTES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "XXII - ELABORACION DE MENUDENCIAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "XXI - DEPOSITO, ACOPIO O DISTRIBUCION DE CABRITOS, LECHONES, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - 8. ELABORACION MENUDENCIAS SALADAS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "6814",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "FRIMSA S.A.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XII - CARNES EN TROZOS O CORTES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - 8. ELABORACION MENUDENCIAS SALADAS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "24222",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "SANTA GIULIA S A",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "III A - GRASERIA COMESTIBLE",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "III B - SEBERIA INCOMESTIBLE",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "XII - CARNES EN TROZOS O CORTES",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI B - MATADERO Y FRIGORIFICO C/FAENA ELABORADOR DE CARNES COCIDAS",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI F - MATADERO Y FRIGORIFICO C/FAENA. GRASERIAS, PRODUCCION, COMERCIALIZACION",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LI G - MATADERO Y FRIGORIFICO C/FAENA. SEBERIA INCOMESTIBLE",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "XXII - ELABORACION DE MENUDENCIAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - 8. ELABORACION MENUDENCIAS SALADAS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "FAX",
+          "valor": "02225-421376"
+        },
+        {
+          "tipo": "TELEFONO",
+          "valor": "02225-421113/421135"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "n.barreto@santagiulia.com.ar"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "a.grassini@santangiulia.com.ar"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "d.mumbach@santagiulia.com.ar"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "4793",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "FINLAR S.A.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI H - 19. ELAB. HARINA DE SANGRE, PLASMA Y HEMOGLOBINA NO COMESTIBLE",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "03476-496073/74/330"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "admin@finlar.com.ar"
+        },
+        {
+          "tipo": "FAX",
+          "valor": "03476-496073/74/330"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "299",
-      "error": "otra empresa: el N° 299 de APS2 es \"INSUGA S.A.\", no \"MATADERO Y FRIGORIFICO MERLO S.A.\""
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "7730",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "DELTACAR S A",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - 5. CUARTEO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "125",
-      "error": "otra empresa: el N° 125 de APS2 es \"GIBAUT HERMANOS MANUFACTURA DE CUEROS SOCIEDAD ANONIMA\", no \"FRIGORIFICO VISOM SA\""
+      "razonSocial": "FRIGORIFICO VISOM S.A.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - 6. CUARTEO Y TROCEO",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "XII - 4. DESPOSTADA BOVINA",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XII - 13. CUARTEO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXVI - 1. ELABORACION DE PLASMA SANGUINEO Y GLOBULOS ROJOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - 8. CAMARA FRIGORIFICA PARA DEPOSITO A TERCEROS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "3590",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "QUICKFOOD S.A.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": null,
+      "rubros": [
+        {
+          "rubro": "II - FABRICA DE CHACINADOS Y AFINES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "IX - CARNES SALADAS Y/O CURADAS",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LXIV - IMPORTACION DE CARNE PORCINA",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LXII - IMPORTACION DE POLLOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "03329-482214"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "jduarte@euroamerica.com.ar"
+        },
+        {
+          "tipo": "FAX",
+          "valor": "0329-81909"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "37755",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "INDUSTRIA CARNICA DEL OESTE S.R.L.",
+      "estado": "TRANSFERIDO",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": "TRANSFERIDO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "XII - CARNES EN TROZOS O CORTES",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "XXXIII - 8. CAMARA FRIGORIFICA PARA DEPOSITO A TERCEROS",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "XII - 15. ELABORACION DE CARNE PICADA",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXVIII - 1. SALADERO DE CUEROS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "5357",
-      "error": "otra empresa: el N° 5357 de APS2 es \"LE GURIE S.A.\", no \"COOPERATIVA DE TRABAJO SUBPGA DE LOS TRABAJADORES LTDA\""
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "1116",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "3511",
-      "error": "otra empresa: el N° 3511 de APS2 es \"TRIVE SRL\", no \"FRIGOLAR S.A.\""
+      "razonSocial": "FRIGOLAR S.A.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI D - MATADERO Y FRIGORIFICO C/FAENA. FABRICA DE CHACINADOS Y AFINES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LXII - IMPORTACION DE POLLOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XII - CARNES EN TROZOS O CORTES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXI - DEPOSITO, ACOPIO O DISTRIBUCION DE CABRITOS, LECHONES, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LXVII - IMPORTACION DE CARNE BOVINA",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "1540",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "LOGROS S.A.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI H - MATADERO Y FRIGORIFICO C/FAENA HARINA CARNE/HUESO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XI - PREPARACION CUEROS CURTIDOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXV - PREPARACION PRODUCTOS QUIMICOS Y FARMACOLOGICOS C/MATERIA PRIMA DE ANIMALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXVI - PREPARADO PLASMA SANGUINEO USO COMESTIBLE",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI G - MATADERO Y FRIGORIFICO C/FAENA. SEBERIA INCOMESTIBLE",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI H - 1. ELABORACIÓN DE HARINA DE SANGRE",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XI - 10. SALADO, SECADO Y ACOPIO DE CUEROS BOVINOS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "MAIL",
+          "valor": "Logros@arnet.com.ar"
+        },
+        {
+          "tipo": "TELEFONO",
+          "valor": "03572-425235/425418"
+        },
+        {
+          "tipo": "FAX",
+          "valor": "03572-425235/425418"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "info@frigorificorio2.com.ar"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "3164",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "JORGE LUIS TOLOSA S.A.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XII - CARNES EN TROZOS O CORTES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "XXXIV - REMATE DE CARNES",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "0220-4762310/11"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "Senasa3271@sinectis.com.ar"
+        },
+        {
+          "tipo": "FAX",
+          "valor": "0220-4761945"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "gercom@frigorificotolosa.com.ar"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "4943",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "RAFAELA ALIMENTOS S. A.",
+      "estado": "TRANSFERIDO",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": "REPOSICION",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I C - CABEZA DE OVINO FAENADO",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "I F - CABEZA DE LECHON FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I G - 4. FAENA DE CORDEROS",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - 12. CUARTEO BOVINO DE PROPIA FAENA",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI E - 9. MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS PORCINAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI D - 3. ELABORACIÓN DE CHACINADOS FRESCOS Y HAMBURGUESAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI D - 7. ELABORACION DE MILANESAS ENFRIADAS Y CONGELADAS DE PROPIA FAENA",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LXIV - IMPORTACION DE CARNE PORCINA",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XII - 4. DESPOSTADA BOVINA",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI D - 11. ELABORACION DE CHACINADOS COCIDOS DE PROPIA FAENA",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI D - 10. ELABORACION DE CHACINADOS CRUDOS Y SECOS",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LI D - 5 ELABORACION DE CHACINADOS NO EMBUTIDOS FAENA PROPIA",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "03492-438800-575668"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "victorialagrutta@lario.com.ar ,"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "amartinez@lario.com.ar"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "783",
-      "error": "otra empresa: el N° 783 de APS2 es \"EMEZETA S.A.\", no \"ARENALES 1842 VELSUD S.A.\""
+      "razonSocial": "ARENALES 1842 VELSUD S.A.",
+      "estado": "REPOSICION",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": "REPOSICION",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "1115",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "GANADERA SAN ROQUE S.A.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "24297",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "AZUL NATURAL BEEF S.A.",
+      "estado": "REPOSICION",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": "REPOSICION",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI E - 5. ELABORACIÓN MENUDENCIAS BOVINAS COCIDAS CONGELADAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI G - MATADERO Y FRIGORIFICO C/FAENA. SEBERIA INCOMESTIBLE",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI H - MATADERO Y FRIGORIFICO C/FAENA HARINA CARNE/HUESO",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "1152970000"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "aredigonda@devesa.com"
+        },
+        {
+          "tipo": "TELEFONO",
+          "valor": "2281460409"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "sdevito@devesa.com"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "33930",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "7677",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "5373",
-      "error": "otra empresa: el N° 5373 de APS2 es \"PAMPA COMPANIA DE CARNES S.A.S.\", no \"SOCIEDAD ANONIMA CARNES PAMPEANAS SA\""
+      "razonSocial": "SOCIEDAD ANONIMA CARNES PAMPEANAS S.A.",
+      "estado": "TRANSFERIDO",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": "TRANSFERIDO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "XXVIII - DEPOSITO / BARRACA P/CUEROS",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "LI E - 8. ELABORACION MENUDENCIAS SALADAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXX - 1. DEPOSITO Y TRANSBORDO DE MERCADERIAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - 3. DEPÓSITO DE PRODUCTOS ALIMENTICIOS C/CÁMARA FRIGORÍFICA PARA MERCADERÍA PROPIA Y DE TERCEROS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - 8. CAMARA FRIGORIFICA PARA DEPOSITO A TERCEROS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - 9. DEPOSITO DE CARNES BOVINAS Y OVINAS CONGELADAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XII - 10. DESPOSTADA BOVINA (CUARTOS)",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XII - 13. CUARTEO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XII - 14. CUARTEO BOVINO DE TERCEROS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XII - 4. DESPOSTADA BOVINA",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XII - CARNES EN TROZOS O CORTES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - 10. MATADERO Y FRIGORIFICO C/FAENA, C/ELABORACION DE CARNE MECANICAMENTE SEPARADA",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - 13. ELABORACION DE CARNE PICADA DE PROPIA FAENA",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "02954-452200"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "machaval@carnes-pampeanas.com"
+        },
+        {
+          "tipo": "FAX",
+          "valor": "02954-456456/456463"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "2642",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "2447",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "6341",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "FRIGORIFICO GENERAL PICO S.A.",
+      "estado": "TRANSFERIDO",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": "TRANSFERIDO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "XII - CARNES EN TROZOS O CORTES",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "LI H - 20. MATERIA PRIMA P/ELAB. ALIMENTOS P/MASCOTAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XIX - 25. MATERIA PRIMA P/ELAB. ALIMENTOS P/MASCOTAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "VI - 2. ELABORACION DE TRIPAS BOVINAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXVIII - 1. SALADERO DE CUEROS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXVIII - 2. ACOPIO Y SALADERO DE CUEROS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXVIII - 3. DEPÓSITO/BARRACA DE CUERO/SALADERO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXVIII - 5.ACOPIO DE CUEROS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXVIII - DEPOSITO / BARRACA P/CUEROS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "FAX",
+          "valor": "02302-499255"
+        },
+        {
+          "tipo": "TELEFONO",
+          "valor": "02302-499255"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "ftrenel@costren.com.ar"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "30953",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "EL CHILLEN S.A.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - 6. CUARTEO Y TROCEO",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "FAX",
+          "valor": "02226-430281"
+        },
+        {
+          "tipo": "TELEFONO",
+          "valor": "02226-430281"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "gustavomarcos@elchillen.com.ar"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "luismachelari@elchillen.com.ar"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "4919",
-      "error": "otra empresa: el N° 4919 de APS2 es \"ALBA Y CO S.A\", no \"MATADERO Y FRIGORIFICO EL MERCEDINO SA\""
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "7538",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "4684",
-      "error": "otra empresa: el N° 4684 de APS2 es \"ALIMENTOS MAGROS S A\", no \"FRIGORIFICO ALBERDI S.A.\""
+      "razonSocial": "FRIGORIFICO ALBERDI S.A.",
+      "estado": "REPOSICION",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": null,
+      "rubros": [
+        {
+          "rubro": "XXVIII - 2. ACOPIO Y SALADERO DE CUEROS",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "XXVIII - 3. DEPÓSITO/BARRACA DE CUERO/SALADERO",
+          "estado": "REPOSICION"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "0343-4975070/71"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "info@falberdi.com"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "22754",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "BLACK BAMBOO ENTERPRISES S.A.",
+      "estado": "TRANSFERIDO",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": "TRANSFERIDO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "LI G - MATADERO Y FRIGORIFICO C/FAENA. SEBERIA INCOMESTIBLE",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "LI H - MATADERO Y FRIGORIFICO C/FAENA HARINA CARNE/HUESO",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "XII - CARNES EN TROZOS O CORTES",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "TRANSFERIDO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "02473-491718"
+        },
+        {
+          "tipo": "FAX",
+          "valor": "02473-491722"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "info@abyp.com.ar"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "81",
-      "error": "otra empresa: el N° 81 de APS2 es \"PEZ-PEZ S.A.\", no \"MATTIEVICH S A\""
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "2970",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "PROCESADORA GANADERA ENTRERRIANA S.A.",
+      "estado": "TRANSFERIDO",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": "REPOSICION",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "XII - CARNES EN TROZOS O CORTES",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI C - MATADERO Y FRIGORÍFICO C/FAENA. ELABORADOR DE CONSERVAS",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "VI - TRIPERIA",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "XXXII - DEPOSITO PARA TRIPAS ELABORADAS C/S FRACCIONAMIENTO",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "XXVIII - 3. DEPÓSITO/BARRACA DE CUERO/SALADERO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - 8. ELABORACION MENUDENCIAS SALADAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "03447 - 471731"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "administracion@pgesa.com.ar"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "412",
-      "error": "otra empresa: el N° 412 de APS2 es \"BAJO CERO S.A.\", no \"GRUPO TRESNAL SRL\""
+      "razonSocial": "GRUPO TRESNAL S.R.L.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": "REPOSICION",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - 12. CUARTEO BOVINO DE PROPIA FAENA",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "MAIL",
+          "valor": "frignav@yahoo.com.ar"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "Navarro@hch.com.ar"
+        },
+        {
+          "tipo": "TELEFONO",
+          "valor": "02272-420644430433"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "4121",
-      "error": "otra empresa: el N° 4121 de APS2 es \"BAJO CERO S.A.\", no \"INDUSTRIAS FRIGORIFICAS RECREO SAIC\""
+      "razonSocial": "INDUSTRIAS FRIGORIFICAS RECREO S.A.I.C",
+      "estado": "TRANSFERIDO",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": null,
+      "rubros": [
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "LXII - IMPORTACION DE POLLOS",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "LXIV - IMPORTACION DE CARNE PORCINA",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "XXX - DEPOSITO PRODUCTOS CARNEOS",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "XXXIII - 12. CAMARA DEPOSITO DE CARNES OVINAS Y PORCINAS",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "XXXIII - 3. DEPÓSITO DE PRODUCTOS ALIMENTICIOS C/CÁMARA FRIGORÍFICA PARA MERCADERÍA PROPIA Y DE TERCEROS",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "XXXIII - 9. DEPOSITO DE CARNES BOVINAS Y OVINAS CONGELADAS",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "XXXIII - 6. DEPÓSITO FRIGORÍFICO DE PESCADOS Y MARISCOS FRESCOS Y CONGELADOS",
+          "estado": "TRANSFERIDO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "0342-490003/6"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "desvioe-@friar.com.ar"
+        },
+        {
+          "tipo": "FAX",
+          "valor": "0342-490003/6"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "5691",
-      "error": "otra empresa: el N° 5691 de APS2 es \"PRIMERA A S.A.S.\", no \"COOPERATIVA DE TRABAJO DE SERVICIOS AGROINDUSTRIALES LIMITADA\""
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "2607",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "INDUSTRIAS FRIGORIFICAS SUR SA",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXVIII - 3. DEPÓSITO/BARRACA DE CUERO/SALADERO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "II - 1. SOLO ELABORACIÓN HAMBURGUESAS",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - 5. CUARTEO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "1773",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "AGROINDUSTRIAS QUILMES S.A.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XII - CARNES EN TROZOS O CORTES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "25637",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "INDUSTRIA FRIGORIFICA LOBOS S.A.",
+      "estado": "TRANSFERIDO",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": "TRANSFERIDO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "LI A - 5. CUARTEO",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "02227-431906/432074"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "5186",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "LA GANADERA ARENALES S.A.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXII - ELABORACION DE MENUDENCIAS",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "XII - CARNES EN TROZOS O CORTES",
+          "estado": "SUSPENDIDO"
+        }
+      ],
+      "contactos": [],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "447",
-      "error": "otra empresa: el N° 447 de APS2 es \"B/P ALVAREZ ENTRENA I (CONARPESA S.A.)\", no \"FRIGORIFICO Y MATADERO CHIVILCOY S.A.\""
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "31271",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "35839",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "MATADERO OLIVERA S.A.",
+      "estado": "TRANSFERIDO",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": "TRANSFERIDO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "LI G - MATADERO Y FRIGORIFICO C/FAENA. SEBERIA INCOMESTIBLE",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "LI H - 11. ELABORACION EXPELLER",
+          "estado": "TRANSFERIDO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "MAIL",
+          "valor": "ruta5sa@gmail.com"
+        },
+        {
+          "tipo": "TELEFONO",
+          "valor": "02323-483092/93"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "iadeloeste@gmail.com"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "1455",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "24015",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "399",
-      "error": "otra empresa: el N° 399 de APS2 es \"EXPRESO EL DORADO S.A.\", no \"BUSTOS Y BELTRAN S.A.\""
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "2191",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "FRIGORIFICO CORONEL MOLDES S.A.",
+      "estado": "TRANSFERIDO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I F - CABEZA DE LECHON FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - 13. ELABORACION DE CARNE PICADA DE PROPIA FAENA",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXVIII - 5.ACOPIO DE CUEROS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "0358-4661157/58"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "plantariocuarto@frigorificomoldes.com.ar"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "4655",
-      "error": "otra empresa: el N° 4655 de APS2 es \"INDUSTRIAS FRIGORIFICAS NORTE GRANDE S.A.\", no \"MATADERO FRIGORIFICO MARIA DEL CARMEN S.A.C.I.G.A.\""
+      "razonSocial": "MATADERO FRIGORIFICO MARIA DEL CARMEN S A C I G A",
+      "estado": "REPOSICION",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": "REPOSICION",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI F - MATADERO Y FRIGORIFICO C/FAENA. GRASERIAS, PRODUCCION, COMERCIALIZACION",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI G - MATADERO Y FRIGORIFICO C/FAENA. SEBERIA INCOMESTIBLE",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI H - MATADERO Y FRIGORIFICO C/FAENA HARINA CARNE/HUESO",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "REPOSICION"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "0261-4454791/4455282"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "mdelc@speedy.com.ar"
+        },
+        {
+          "tipo": "FAX",
+          "valor": "0261-4454791/4455282"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "322",
-      "error": "otra empresa: el N° 322 de APS2 es \"CAROSSIO VAIROLATTI Y CIA SOC DE RESP LTDA\", no \"FRIGORIFICO NOVARA S.A.\""
+      "razonSocial": "FRIGORIFICO NOVARA SA",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXII - ELABORACION DE MENUDENCIAS",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LXII - IMPORTACION DE POLLOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "MAIL",
+          "valor": "Novara@sotlink.com"
+        },
+        {
+          "tipo": "TELEFONO",
+          "valor": "0351-4905042/43"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "administracion@frigorificonovora.com.ar"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "12838",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "FRIGORIFICO REGIONAL SAN ANTONIO DE ARECO S.A.C.E.I.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": "TRANSFERIDO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "02326-454270"
+        },
+        {
+          "tipo": "FAX",
+          "valor": "02326-456480"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "7718",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "4976",
-      "error": "otra empresa: el N° 4976 de APS2 es \"ZALEI AGROPECUARIA S.A.\", no \"PLANTA FAENADORA BANCALARI S.A.\""
+      "razonSocial": "PLANTA FAENADORA BANCALARI S.A.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - 6. CUARTEO Y TROCEO",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "37293",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "4202",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "FRIGORIFICO GENERAL DEHEZA SA",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I F - CABEZA DE LECHON FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI D - MATADERO Y FRIGORIFICO C/FAENA. FABRICA DE CHACINADOS Y AFINES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XII - 10. DESPOSTADA BOVINA (CUARTOS)",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XII - 16. FRACCIONAMIENTO Y/O ENVASADO Y/O CONGELADO DE CORTES PORCINOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - 13. ELABORACION DE CARNE PICADA DE PROPIA FAENA",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "01150310041"
+        },
+        {
+          "tipo": "TELEFONO",
+          "valor": "0358-4950733"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "Frideza@cgweb.com.ar"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "gfrassia@frideza.com.ar"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "48416",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "LARAGON S.A",
+      "estado": "REPOSICION",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": "TRANSFERIDO",
+      "rubros": [
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LI D - MATADERO Y FRIGORIFICO C/FAENA. FABRICA DE CHACINADOS Y AFINES",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "LI G - MATADERO Y FRIGORIFICO C/FAENA. SEBERIA INCOMESTIBLE",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI H - 6. ELABORACIÓN DE EXPELLER Y HARINA DE CARNE Y HUESOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XIX - 10. MOLIENDA Y FRACCIONAMIENTO DE EXPELLER DE CHICHARRON ANIMAL",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XIX - 13. ELABORACIÓN DE EXPELLER Y HARINA DE CARNE Y HUESOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - 6. CUARTEO Y TROCEO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "III A - GRASERIA COMESTIBLE",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "02474-423081"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "4736",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "MICROGAUSS S.A.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "0221-155527182"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "2810",
-      "error": "otra empresa: el N° 2810 de APS2 es \"B/P Centurión del Atlántico (Estremar S.A.U.)\", no \"PILOTTI S.A.E.F.\""
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "14597",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "INDUSTRIAS FRIGORIFICAS JUNCAR S.A.",
+      "estado": "TRANSFERIDO",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": "TRANSFERIDO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "2354-420067- 420111"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "subcom@alem.mun.gba.gov.ar"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "3050",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "417",
-      "error": "otra empresa: el N° 417 de APS2 es \"ANAN S.A.\", no \"MATADERO FRIGORIFICO UNION S. A.\""
+      "razonSocial": "MATADERO FRIGORIFICO UNION S A",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XII - CARNES EN TROZOS O CORTES",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XII - 3. DESPOSTADA PORCINA",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "XXXIII - 10. DEPOSITO DE FRIO PARA TERCEROS (CARNES PORCINAS)",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LI A - 12. CUARTEO BOVINO DE PROPIA FAENA",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "03491-491358/362"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "Sergio@mfusa.com.ar"
+        },
+        {
+          "tipo": "FAX",
+          "valor": "03491-491358/362"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "30137",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "363",
-      "error": "otra empresa: el N° 363 de APS2 es \"ARTESANIAS AVICOLAS S.R.L.\", no \"FRIGORIFICO H V S A\""
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "27804",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "LOS LEONES AGROPECUARIA S.A.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - 5. CUARTEO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "9075",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "FRIGORIFICO BOLIVAR SA",
+      "estado": "REPOSICION",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": "REPOSICION",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "I F - CABEZA DE LECHON FAENADO",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "REPOSICION"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "02314-428097"
+        },
+        {
+          "tipo": "FAX",
+          "valor": "02314-424981"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "14510",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "9171",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "826",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "FRIDEVI S.A.F.I.C.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I C - CABEZA DE OVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XII - CARNES EN TROZOS O CORTES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI D - MATADERO Y FRIGORIFICO C/FAENA. FABRICA DE CHACINADOS Y AFINES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "II - FABRICA DE CHACINADOS Y AFINES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LXIV - IMPORTACION DE CARNE PORCINA",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I F - CABEZA DE LECHON FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "III B - SEBERIA INCOMESTIBLE",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI H - 9. ELABORACION HARINA DE SANGRE P/ALIMENTACION ANIMAL",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XIX - 13. ELABORACIÓN DE EXPELLER Y HARINA DE CARNE Y HUESOS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "02920-425114"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "Fridevi@fridevi.com.ar"
+        },
+        {
+          "tipo": "FAX",
+          "valor": "02920-425303"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "37767",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "2068",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "NATILLA S.A.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXVIII - DEPOSITO / BARRACA P/CUEROS",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - 12. CUARTEO BOVINO DE PROPIA FAENA",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "MAIL",
+          "valor": "natilla@cedeconet.com.ar"
+        },
+        {
+          "tipo": "TELEFONO",
+          "valor": "03833-454430"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "matila -info@hotmail.com"
+        },
+        {
+          "tipo": "FAX",
+          "valor": "03833-454430"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "29462",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "AGROTRES S.A.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I C - CABEZA DE OVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXVIII - DEPOSITO / BARRACA P/CUEROS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I G - 4. FAENA DE CORDEROS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "I F - CABEZA DE LECHON FAENADO",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "III B - SEBERIA INCOMESTIBLE",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - 12. CUARTEO BOVINO DE PROPIA FAENA",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XIX - 2. SOLO HARINA DE CARNE Y HUESO",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "0280-468-1335"
+        },
+        {
+          "tipo": "TELEFONO",
+          "valor": "0280-456-6957"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "frigoagrotressa@gmail.com"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "52144",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "2931",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "886",
-      "error": "otra empresa: el N° 886 de APS2 es \"CIMMINO HNOS S.A.\", no \"CUNDIR S.A.\""
+      "razonSocial": "CUNDIR S.A.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - 6. CUARTEO Y TROCEO",
+          "estado": "REPOSICION"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "02266-424190"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "administración@frigoríficobalcarce.com.ar"
+        },
+        {
+          "tipo": "FAX",
+          "valor": "011-43263619 / 0223-4760839"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "2883",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "AGROPECUARIA TRANSUR S.A.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI H - 19. ELAB. HARINA DE SANGRE, PLASMA Y HEMOGLOBINA NO COMESTIBLE",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I F - CABEZA DE LECHON FAENADO",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "0358-4961313/14"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "agropecuariatransur@gmail.com"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "942",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "LIVORNO S.A.",
+      "estado": "REPOSICION",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": "REPOSICION",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "I C - CABEZA DE OVINO FAENADO",
+          "estado": "REPOSICION"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "MAIL",
+          "valor": "livorno.sa@gmail.com"
+        },
+        {
+          "tipo": "TELEFONO",
+          "valor": "0358-4977785"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "2928",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "LA PUNA S.R.L.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXVIII - 1. SALADERO DE CUEROS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXVIII - DEPOSITO / BARRACA P/CUEROS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "FAX",
+          "valor": "0388-4277245"
+        },
+        {
+          "tipo": "TELEFONO",
+          "valor": "0388-4277245"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "lapunasrl@hotmail.com"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "1028",
-      "error": "otra empresa: el N° 1028 de APS2 es \"MAYORISTANET .COM. S.A.\", no \"LA PELLEGRINENSE SA\""
+      "razonSocial": "LA PELLEGRINENSE SA",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI G - MATADERO Y FRIGORIFICO C/FAENA. SEBERIA INCOMESTIBLE",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LI H - MATADERO Y FRIGORIFICO C/FAENA HARINA CARNE/HUESO",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXVIII - 3. DEPÓSITO/BARRACA DE CUERO/SALADERO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - 12. CUARTEO BOVINO DE PROPIA FAENA",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "MAIL",
+          "valor": "Senasacp@reders.com.ar"
+        },
+        {
+          "tipo": "TELEFONO",
+          "valor": "03401-480525"
+        },
+        {
+          "tipo": "FAX",
+          "valor": "03401-480525"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "3595",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "1962",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "8290",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "1094",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "8735",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "MERCO MEAT SA",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LXIV - IMPORTACION DE CARNE PORCINA",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXVIII - DEPOSITO / BARRACA P/CUEROS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I C - CABEZA DE OVINO FAENADO",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "0343 - 4940688"
+        },
+        {
+          "tipo": "TELEFONO",
+          "valor": "0343 - 4940479"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "mercomeat@gmail.com"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "1878",
-      "error": "otra empresa: el N° 1878 de APS2 es \"REDONA S.A.\", no \"SAN ISIDRO SA\""
+      "razonSocial": "SAN ISIDRO S. A.",
+      "estado": "TRANSFERIDO",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": null,
+      "rubros": [
+        {
+          "rubro": "XII - CARNES EN TROZOS O CORTES",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "TRANSFERIDO"
+        },
+        {
+          "rubro": "XXII - ELABORACION DE MENUDENCIAS",
+          "estado": "TRANSFERIDO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "MAIL",
+          "valor": "sebastianrigalli@hotmail.com"
+        },
+        {
+          "tipo": "TELEFONO",
+          "valor": "0342-4982572"
+        },
+        {
+          "tipo": "FAX",
+          "valor": "0342-4982572"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "43112",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "4387",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "MATADERO FRIGORIFICO DON RAUL S.A.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XII - CARNES EN TROZOS O CORTES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I C - CABEZA DE OVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I G - 1. FAENA DE CAPRINOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "II - FABRICA DE CHACINADOS Y AFINES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "03483-420234/421969"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "donraul@csdnet.com.ar"
+        },
+        {
+          "tipo": "FAX",
+          "valor": "03483-420234/421969"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "1163",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "EL NONO S.R.L.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I C - CABEZA DE OVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI A - 5. CUARTEO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "III A - GRASERIA COMESTIBLE",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - 13. ELABORACION DE CARNE PICADA DE PROPIA FAENA",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I G - CABEZA DE CABRITO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - 11. DESPOSTADA OVINA",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I F - CABEZA DE LECHON FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "III A - 2. ELABORACIÓN DE GRASA DE CERDO",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "0343 - 4975802"
+        },
+        {
+          "tipo": "TELEFONO",
+          "valor": "0343 - 4975478"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "frigoelnonosrl@hotmail.com"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "elnonosrl2013@hotmail.com"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "889",
-      "error": "otra empresa: el N° 889 de APS2 es \"COTO CENTRO INTEGRAL DE COMERCIALIZACION S.A.\", no \"MATADERO FRIGORIFICO SAN RAFAEL S.A.\""
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "3504",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "FRI NEA SRL",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LI G - MATADERO Y FRIGORIFICO C/FAENA. SEBERIA INCOMESTIBLE",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "03734-427027"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "frineaplazaventas@hotmail.com"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "2136",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "EL HUECO SOCIEDAD ANONIMA",
+      "estado": "REPOSICION",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": "REPOSICION",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "562",
-      "error": "otra empresa: el N° 562 de APS2 es \"B/P HAI XIANG 17 ( PESQUERA RÍO QUEQUÉN S.A.)\", no \"DISTRIMEAT SA\""
+      "razonSocial": "DISTRIMEAT S.A.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I F - CABEZA DE LECHON FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I C - CABEZA DE OVINO FAENADO",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "03462 - 438565"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "nmeat@arnet.com.ar"
+        },
+        {
+          "tipo": "FAX",
+          "valor": "03462 - 438565"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "1705",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "6097",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "8336",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "VICENTIN FAENAS S.R.L.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI F - MATADERO Y FRIGORIFICO C/FAENA. GRASERIAS, PRODUCCION, COMERCIALIZACION",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI G - MATADERO Y FRIGORIFICO C/FAENA. SEBERIA INCOMESTIBLE",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LI H - MATADERO Y FRIGORIFICO C/FAENA HARINA CARNE/HUESO",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "XXVIII - DEPOSITO / BARRACA P/CUEROS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "1408",
-      "error": "otra empresa: el N° 1408 de APS2 es \"COOPERATIVA DE TRABAJO SUBPGA DE LOS TRABAJADORES LTDA.\", no \"SUPERCARNE S.A.\""
+      "razonSocial": "SUPERCARNE S.A.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I C - CABEZA DE OVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I G - 4. FAENA DE CORDEROS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "1138144343"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "frigorifico@supercarne.com.ar"
+        },
+        {
+          "tipo": "TELEFONO",
+          "valor": "02922-462618"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "4162",
-      "error": "otra empresa: el N° 4162 de APS2 es \"SUINO S.A.\", no \"FRIGORIFICO ORONA SA\""
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "2061",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "ALBA Y CO S.A",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I F - CABEZA DE LECHON FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I C - CABEZA DE OVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "MAIL",
+          "valor": "ibdemarcodae@gmail.com"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "cintiachanseaud@hotmail.com"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "8570",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "8479",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "3146",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "28677",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "AGROSERVICE S.A.",
+      "estado": "REPOSICION",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXVIII - 2. ACOPIO Y SALADERO DE CUEROS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "0298-154571209"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "gpinolini@hotmail.com"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "1882",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "LA ESPERANZA S.R.L.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - 4. PROCESAMIENTO Y SALAZON DE TRIPAS DE FAENA PROPIA",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "0343 - 4902666"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "laesperanzasrl@friglaesperanza.com.ar"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "5068",
-      "error": "otra empresa: el N° 5068 de APS2 es \"FRIDEVI S.A.F.I.C.\", no \"COOPERATIVA GANADERA LIMITADA MANUEL GREGORET\""
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "4197",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "42048",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "9333",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "823",
-      "error": "otra empresa: el N° 823 de APS2 es \"HUACHANA S.R.L.\", no \"DISTRIBUIDORA DE CARNES DEL SUR SRL\""
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "37643",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "3937",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "8370",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "SANTA INES MEAT S.R.L.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I C - CABEZA DE OVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I F - CABEZA DE LECHON FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI A - 12. CUARTEO BOVINO DE PROPIA FAENA",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXVIII - 1. SALADERO DE CUEROS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "03462-435629/03404-480010"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "adminplanta@santainesmeat.com.ar"
+        },
+        {
+          "tipo": "FAX",
+          "valor": "03462-435629/03404-480010"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "1959",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "GUILLERMO HUARTE S.A.",
+      "estado": "REPOSICION",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": "REPOSICION",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI D - 3. ELABORACIÓN DE CHACINADOS FRESCOS Y HAMBURGUESAS",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "XXVIII - 3. DEPÓSITO/BARRACA DE CUERO/SALADERO",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "03436 - 573425"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "administracion@nuevavictoria.com.ar"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "8732",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "LA MULITA SA.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I C - CABEZA DE OVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XVI B - ELABORACION DE CONSERVAS - ALIMENTOS P/PERROS, GATOS, ETC.",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XLI B - 3. FAENA DE ÑANDÚES",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI C - MATADERO Y FRIGORÍFICO C/FAENA. ELABORADOR DE CONSERVAS",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LI D - 2. ELABORACIÓN DE HAMBURGUESAS Y MILANESAS",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "XII - CARNES EN TROZOS O CORTES",
+          "estado": "SUSPENDIDO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "03455 - 421083"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "lamulita@viguay.com.ar"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "5551",
-      "error": "otra empresa: el N° 5551 de APS2 es \"ESTABLECIMIENTO FRIGOCAR de DELGADO ANA MARÍA\", no \"ARMANDO S.R.L.\""
+      "razonSocial": "ARMANDO S.R.L.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LI F - MATADERO Y FRIGORIFICO C/FAENA. GRASERIAS, PRODUCCION, COMERCIALIZACION",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "LI G - MATADERO Y FRIGORIFICO C/FAENA. SEBERIA INCOMESTIBLE",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "I A - 1. SOLO BUBALINOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXVIII - 3. DEPÓSITO/BARRACA DE CUERO/SALADERO",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "FAX",
+          "valor": "03491-470612"
+        },
+        {
+          "tipo": "TELEFONO",
+          "valor": "03491-470612"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "armando@tostado.com"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "8782",
-      "error": "no figura en el registro APS2"
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "2587",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "EL TURCO SRL",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": true,
+      "estadoFaenaBovina": "HABILITADO",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I C - CABEZA DE OVINO FAENADO",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "03444 - 487043/44"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "frigorificoelturco@hotmail.com"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "3745",
-      "error": "otra empresa: el N° 3745 de APS2 es \"COTO CENTRO INTEGRAL DE COMERCIALIZACION SOCIEDAD ANONIMA\", no \"HERMOSO CARLOS ALBERTO\""
+      "error": "no figura en APS2 ni por número ni por razón social"
     },
     {
       "matricula": "3988",
-      "error": "no figura en el registro APS2"
+      "razonSocial": "FRIGORIFICO TRELEW SRL",
+      "estado": "REPOSICION",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": "REPOSICION",
+      "rubros": [
+        {
+          "rubro": "I A - CABEZA DE BOVINO FAENADO",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "I C - CABEZA DE OVINO FAENADO",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "I G - 4. FAENA DE CORDEROS",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "XI - PREPARACION CUEROS CURTIDOS",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "XXV - PREPARACION PRODUCTOS QUIMICOS Y FARMACOLOGICOS C/MATERIA PRIMA DE ANIMALES",
+          "estado": "SUSPENDIDO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "Actividad",
+          "estado": "INHABILITADO"
+        },
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "02965-443130"
+        },
+        {
+          "tipo": "FAX",
+          "valor": "02965-443274"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "frigtrelew@infovia.com.ar"
+        }
+      ],
+      "identificadaPor": "razón social",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "2328",
@@ -536,6 +3725,7 @@
           "valor": "02944-448392"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -599,6 +3789,7 @@
         }
       ],
       "contactos": [],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -671,6 +3862,7 @@
           "valor": "asalva@acacopp.com.ar"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -703,6 +3895,7 @@
           "valor": "frigorificochacimer@gmail.com"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -758,6 +3951,7 @@
         }
       ],
       "contactos": [],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -798,6 +3992,7 @@
           "valor": "zonniaeme@hotmail.com"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -858,6 +4053,7 @@
           "valor": "011 5432-1800"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -898,6 +4094,7 @@
           "valor": "zhuangyi0612@hotmail.com"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -958,6 +4155,7 @@
           "valor": "02338-499136"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -997,6 +4195,7 @@
         }
       ],
       "contactos": [],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -1029,6 +4228,7 @@
           "valor": "011-4821-0387"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -1056,6 +4256,7 @@
         }
       ],
       "contactos": [],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -1083,6 +4284,7 @@
         }
       ],
       "contactos": [],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -1119,6 +4321,7 @@
           "valor": "03460-15696503"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -1147,6 +4350,7 @@
           "valor": "frima@uaa.com.ar"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -1202,6 +4406,7 @@
         }
       ],
       "contactos": [],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -1246,6 +4451,7 @@
           "valor": "03462-499095/490630"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -1294,6 +4500,7 @@
           "valor": "02948-421423"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -1334,6 +4541,7 @@
           "valor": "codepojujuy@gmail.com"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -1378,6 +4586,7 @@
           "valor": "0341-4561784"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -1430,6 +4639,7 @@
           "valor": "3404 528987"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -1498,6 +4708,7 @@
           "valor": "02396-474930"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -1518,6 +4729,7 @@
           "valor": "02353-461372"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -1554,6 +4766,7 @@
           "valor": "maximiliano_bellese@hotmail.com"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -1618,6 +4831,7 @@
           "valor": "02325-440300"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -1718,6 +4932,7 @@
           "valor": "ricardoserena@hotmail.com"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -1798,6 +5013,7 @@
           "valor": "02966-436263/436418"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -1826,6 +5042,7 @@
           "valor": "0342-4905361"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -1894,6 +5111,7 @@
           "valor": "flamar@friglamar.com"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -1934,6 +5152,7 @@
           "valor": "yasefbecher@hotmail.com"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -1974,6 +5193,7 @@
           "valor": "03525-460500"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -2014,6 +5234,7 @@
           "valor": "02243-454485"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -2041,6 +5262,7 @@
         }
       ],
       "contactos": [],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -2081,6 +5303,7 @@
           "valor": "granja4518@gmail.com"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -2117,6 +5340,7 @@
           "valor": "humosdelbayo@gmail.com"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -2149,6 +5373,7 @@
           "valor": "03722-463517"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -2217,6 +5442,7 @@
           "valor": "info@lafrancisca.com"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -2301,6 +5527,7 @@
           "valor": "0223-464-2190/2447"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -2341,11 +5568,97 @@
           "valor": "compras@lanoblezasrl.com.ar"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "131",
-      "error": "otra empresa: el N° 131 de APS2 es \"AVICOLA CAPITAN SARMIENTO S.A.\", no \"LA PIAMONTESA S.A.\""
+      "razonSocial": "LA PIAMONTESA S.A.",
+      "estado": "HABILITADO",
+      "faenaBovinaHabilitada": false,
+      "estadoFaenaBovina": null,
+      "rubros": [
+        {
+          "rubro": "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LXIV - IMPORTACION DE CARNE PORCINA",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "II - FABRICA DE CHACINADOS Y AFINES",
+          "estado": "REPOSICION"
+        },
+        {
+          "rubro": "LI D - 1. ELABORACIÓN DE HAMBURGUESAS C/MATERIA PRIMA PROPIA. FAENA",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I B - CABEZA DE PORCINO FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "I F - CABEZA DE LECHON FAENADO",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LXVI - IMPORTACION DE CHACINADOS Y SALAZONES",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "LXII - IMPORTACION DE POLLOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - 10. DEPOSITO DE FRIO PARA TERCEROS (CARNES PORCINAS)",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - 3. DEPÓSITO DE PRODUCTOS ALIMENTICIOS C/CÁMARA FRIGORÍFICA PARA MERCADERÍA PROPIA Y DE TERCEROS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XII - 16. FRACCIONAMIENTO Y/O ENVASADO Y/O CONGELADO DE CORTES PORCINOS",
+          "estado": "HABILITADO"
+        },
+        {
+          "rubro": "XII - 3. DESPOSTADA PORCINA",
+          "estado": "HABILITADO"
+        }
+      ],
+      "contactos": [
+        {
+          "tipo": "TELEFONO",
+          "valor": "03562-480142"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "Lapiamontesa@lapiamontesa.com"
+        },
+        {
+          "tipo": "FAX",
+          "valor": "03562-480327"
+        },
+        {
+          "tipo": "MAIL",
+          "valor": "agiacosa@lapiamontesa.com"
+        }
+      ],
+      "identificadaPor": "número oficial",
+      "relevadoEl": "2026-10-06"
     },
     {
       "matricula": "2009",
@@ -2393,6 +5706,7 @@
           "valor": "wcabrera@landlsa.com"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -2449,6 +5763,7 @@
           "valor": "domiciliofiscal@lascamelias.com.ar"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -2488,6 +5803,7 @@
         }
       ],
       "contactos": [],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -2528,6 +5844,7 @@
           "valor": "info@camposyalimentos.com.ar"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -2580,6 +5897,7 @@
           "valor": "0549-24661"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -2648,6 +5966,7 @@
           "valor": "gerardo.zarratea@marfrig.com"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -2700,6 +6019,7 @@
           "valor": "bernasconilp@gmail.com"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -2728,6 +6048,7 @@
           "valor": "cabritos_moyanodf@hotmail.com"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -2760,6 +6081,7 @@
           "valor": "frigorificolavalle@hotmail.com"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -2796,6 +6118,7 @@
           "valor": "frigorifico@malargue.gov.ar"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -2848,6 +6171,7 @@
           "valor": "calidad@frigoporc.com"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -2884,6 +6208,7 @@
           "valor": "osdagropecuaria.s.a@gmail.com"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -2916,6 +6241,7 @@
           "valor": "gustavomenescaldi@yahoo.com.ar"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -2984,6 +6310,7 @@
           "valor": "calidad@patagoniameat.com.ar"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -3012,6 +6339,7 @@
           "valor": "faenafrigorifico@hotmail.com"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -3064,6 +6392,7 @@
           "valor": "03544-420788"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -3112,6 +6441,7 @@
           "valor": "info@solemar.com.ar"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -3160,6 +6490,7 @@
           "valor": "agroporc@supertoledo.com"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -3212,6 +6543,7 @@
           "valor": "porkys@arnet.com.ar"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -3256,6 +6588,7 @@
           "valor": "yalecor@speedy.com.ar"
         }
       ],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     },
     {
@@ -3279,6 +6612,7 @@
         }
       ],
       "contactos": [],
+      "identificadaPor": "número oficial",
       "relevadoEl": "2026-10-06"
     }
   ]
