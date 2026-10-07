@@ -19,6 +19,7 @@ import { getX402Config } from '@/lib/x402'
 import { cotizarProUsdCents, proArsMensual, proMeses, validarSlugPro } from '@/lib/pro-x402'
 import { CATEGORIAS_DEMANDA, crearDemanda, formatMatches, matchRemates, normalizarCategoria } from '@/lib/demanda'
 import { enforceRateLimit, clientIp } from '@/lib/rate-limit-db'
+import { techoListado, ventanaAcotada } from '@/lib/mcp/techo-listados'
 import {
   SERIE_ARRANCA, VENTANA_GRATIS_DIAS, aplicarTecho, contarRuedasOcultas,
   formatearSerie, leerSerie, notaDeRecorte, resolverRango,
@@ -158,6 +159,16 @@ const fail = (text: string): ToolResult => ({ content: [{ type: 'text', text }],
  * cree estar autenticado se llevaría una serie recortada creyéndola completa y la
  * citaría como tal. Es el mismo criterio que usa crear_alerta_precio.
  */
+/** ¿Trae credencial válida? Para las tools de listado, donde una key inválida no
+ *  es un error: simplemente no levanta el techo. */
+async function tieneKey(
+  args: Record<string, unknown>,
+  req: NextRequest,
+): Promise<boolean> {
+  const r = await autorizacionEnterprise(args, req)
+  return 'autorizado' in r && r.autorizado
+}
+
 async function autorizacionEnterprise(
   args: Record<string, unknown>,
   req: NextRequest,
@@ -452,10 +463,16 @@ const TOOLS: Tool[] = [
       },
       additionalProperties: false,
     },
-    async run(args) {
+    async run(args, req) {
       const today = new Date().toISOString().slice(0, 10)
       const prov = typeof args.provincia === 'string' ? args.provincia.toLowerCase() : null
-      const limite = Math.min(typeof args.limite === 'number' ? args.limite : 10, 50)
+      const techo = await techoListado({
+        tool: 'list_remates', req, autorizado: await tieneKey(args, req),
+        pedido: typeof args.limite === 'number' ? args.limite : undefined,
+        tope: 50, porDefecto: 10, enumera: !prov,
+      })
+      if (techo.corte) return ok(techo.corte)
+      const limite = techo.limite
       const upcoming = remates
         .filter((r) => r.status === 'scheduled' && r.date >= today && (!prov || r.province.toLowerCase().includes(prov)))
         .sort((a, b) => a.date.localeCompare(b.date))
@@ -483,12 +500,18 @@ const TOOLS: Tool[] = [
       required: ['query'],
       additionalProperties: false,
     },
-    async run(args) {
+    async run(args, req) {
       // Sanitizar el término para el filtro .or() de PostgREST (evita romper la query).
       const q = String(args.query || '').replace(/[^\p{L}\p{N}\s]/gu, '').trim().slice(0, 80)
       if (q.length < 2) return fail('Pasá un término de al menos 2 caracteres.')
       const prov = typeof args.provincia === 'string' ? args.provincia.replace(/[^\p{L}\p{N}\s]/gu, '').trim() : ''
-      const limite = Math.min(typeof args.limite === 'number' ? args.limite : 8, 25)
+      const techo = await techoListado({
+        tool: 'buscar_consignataria', req, autorizado: await tieneKey(args, req),
+        pedido: typeof args.limite === 'number' ? args.limite : undefined,
+        tope: 25, porDefecto: 8,
+      })
+      if (techo.corte) return ok(techo.corte)
+      const limite = techo.limite
 
       const service = requireServiceClient()
       let qb = service
@@ -522,16 +545,26 @@ const TOOLS: Tool[] = [
       },
       additionalProperties: false,
     },
-    async run(args) {
+    async run(args, req) {
       const service = requireServiceClient()
       const today = new Date().toISOString().slice(0, 10)
       const hasta = typeof args.hasta === 'string' ? args.hasta : today
-      const desde =
+      const desdePedido =
         typeof args.desde === 'string'
           ? args.desde
           : new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10)
       const categoria = typeof args.categoria === 'string' ? args.categoria.toUpperCase().trim() : ''
-      const limite = Math.min(typeof args.limite === 'number' ? args.limite : 15, 45)
+      const autorizadoAct = await tieneKey(args, req)
+      // Barrer ventana por ventana es como se reconstruye la serie entera del MAG,
+      // que es lo que vendemos. Sin credencial la ventana se acota y se avisa.
+      const { desde, nota: notaVentana } = ventanaAcotada(desdePedido, hasta, autorizadoAct)
+      const techo = await techoListado({
+        tool: 'actividad_consignatarias', req, autorizado: autorizadoAct,
+        pedido: typeof args.limite === 'number' ? args.limite : undefined,
+        tope: 45, porDefecto: 15,
+      })
+      if (techo.corte) return ok(techo.corte)
+      const limite = techo.limite
 
       // PAGINADO. PostgREST corta en 1.000 filas por respuesta y `.limit(50000)` no
       // lo cambia: no falla, devuelve menos y no avisa. En 30 días hay ~3.800 lotes,
@@ -591,7 +624,7 @@ const TOOLS: Tool[] = [
           `${i + 1}. ${r.name} — ${r.cabezas.toLocaleString('es-AR')} cab${r.precio ? ` · $${r.precio.toLocaleString('es-AR')}/kg prom` : ''}`,
       )
       return ok(
-        `Actividad en el MAG Cañuelas (mercado de referencia) ${desde} → ${hasta}${categoria ? ` · ${categoria}` : ''}:\n${lines.join('\n')}\n\nTop ${rows.length}: ${totalCab.toLocaleString('es-AR')} cabezas. Nota: es el mercado concentrador de referencia (~12% nacional) — no incluye lo operado fuera de Cañuelas (ferias del interior, venta directa).`,
+        `Actividad en el MAG Cañuelas (mercado de referencia) ${desde} → ${hasta}${categoria ? ` · ${categoria}` : ''}:\n${lines.join('\n')}\n\nTop ${rows.length}: ${totalCab.toLocaleString('es-AR')} cabezas. Nota: es el mercado concentrador de referencia (~12% nacional) — no incluye lo operado fuera de Cañuelas (ferias del interior, venta directa).${notaVentana ? `\n\n${notaVentana}` : ''}`,
       )
     },
   },
@@ -608,11 +641,17 @@ const TOOLS: Tool[] = [
       },
       additionalProperties: false,
     },
-    async run(args) {
+    async run(args, req) {
       const q = String(args.query || '').toLowerCase().trim()
       const prov = String(args.provincia || '').toLowerCase().trim()
-      const limite = Math.min(typeof args.limite === 'number' ? args.limite : 10, 30)
       if (!q && !prov) return fail('Pasá un nombre/CUIT o una provincia.')
+      const techo = await techoListado({
+        tool: 'buscar_frigorifico', req, autorizado: await tieneKey(args, req),
+        pedido: typeof args.limite === 'number' ? args.limite : undefined,
+        tope: 30, porDefecto: 10,
+      })
+      if (techo.corte) return ok(techo.corte)
+      const limite = techo.limite
       const res = frigorificos
         .filter((f) => (!q || f.name.toLowerCase().includes(q) || (f.cuit || '').includes(q)) && (!prov || (f.province || '').toLowerCase().includes(prov)))
         .slice(0, limite)
