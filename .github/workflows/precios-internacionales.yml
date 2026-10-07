@@ -1,0 +1,34 @@
+name: Precios internacionales — la brecha contra el mundo
+
+# Diario, después del cierre de los mercados del norte. Las tres fuentes tienen
+# cadencias distintas (USDA semanal, MLA diaria, INAC semanal), así que correrlo
+# todos los días es lo más simple: cada una trae lo último que tenga.
+#
+# Si una fuente se cae, el scraper declara la ausencia y sigue: publicar la
+# comparación sin decir que falta un país sería peor que no publicarla.
+on:
+  schedule:
+    - cron: '0 12 * * *' # 09:00 ART
+  workflow_dispatch:
+
+jobs:
+  bajar:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: pdftotext (lo necesita el PDF de INAC)
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+      - name: Bajar precios internacionales
+        run: node scripts/scrapers/precios-internacionales.mjs
+      - name: Commitear si cambió
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/lib/data/precios-internacionales.json
+          git diff --staged --quiet || git commit -m "data: precios internacionales — $(date -u +%Y-%m-%d)"
+          git push

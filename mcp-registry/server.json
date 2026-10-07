@@ -1,8 +1,8 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
   "name": "ar.com.consignatarias/cattle-market",
-  "description": "Mercado ganadero argentino: precios, estacionalidad, renta de campos, remates y directorio.",
-  "version": "1.6.0",
+  "description": "Mercado ganadero argentino y la brecha de precio contra EE.UU., Uruguay y Australia.",
+  "version": "1.7.0",
   "websiteUrl": "https://www.consignatarias.com.ar",
   "remotes": [
     {

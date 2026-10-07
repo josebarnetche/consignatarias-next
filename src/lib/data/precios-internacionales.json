@@ -1,0 +1,44 @@
+{
+ "generadoEl": "2026-10-07T16:21:41.914Z",
+ "unidad": "USD por kilogramo de novillo en pie (peso vivo)",
+ "metodo": "Sólo fuentes que publican peso vivo: no se estima rendimiento de carcasa en ningún país. Brasil queda afuera porque la licencia de CEPEA prohíbe la transmisión de series de precios.",
+ "tipoCambio": {
+  "aud_por_usd": 1.4386,
+  "fuente": "frankfurter.dev"
+ },
+ "paises": [
+  {
+   "pais": "Estados Unidos",
+   "usd_kg_vivo": 4.846,
+   "nativo": "219.8 USD/cwt",
+   "base": "peso vivo (LIVE FOB), sin estimar rendimiento",
+   "fecha": "10/05/2026",
+   "fuente": "USDA AMS Market News — LM_CT150, 5 Area Weekly Weighted Average Direct Slaughter Cattle",
+   "url": "https://mpr.datamart.ams.usda.gov/services/v1.1/reports/2477/Detail",
+   "licencia": "Dominio público (obra del gobierno federal de EE.UU.)"
+  },
+  {
+   "pais": "Uruguay",
+   "usd_kg_vivo": 3.378,
+   "nativo": "3.378 USD/kg en pie",
+   "base": "peso vivo, publicado así por la fuente",
+   "fecha": "30/09/2026",
+   "semana": "del 20/09/2026 al 26/09/2026",
+   "fuente": "INAC — Precios de Hacienda Bovinos y Ovinos",
+   "url": "https://www.inac.uy/innovaportal/v/17274/37/innova.bs/precios-de-hacienda-bovinos-y-ovinos",
+   "licencia": "Organismo público, sin licencia declarada: se cita"
+  },
+  {
+   "pais": "Australia",
+   "usd_kg_vivo": 3.163,
+   "nativo": "455.0 c/kg lwt (AUD)",
+   "base": "peso vivo (indicador lwt), sin estimar rendimiento",
+   "fecha": "2026-10-06",
+   "fuente": "Meat & Livestock Australia — National Heavy Steer Indicator (NLRS)",
+   "url": "https://api-mlastatistics.mla.com.au/",
+   "licencia": "Uso comercial autorizado con atribución",
+   "atribucion": "Reproduced courtesy of Meat & Livestock Australia Limited – www.mla.com.au"
+  }
+ ],
+ "fallas": []
+}

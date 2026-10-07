@@ -22,6 +22,7 @@ import { enforceRateLimit, clientIp } from '@/lib/rate-limit-db'
 import { techoListado, ventanaAcotada } from '@/lib/mcp/techo-listados'
 import { aMensual, estacionalidad, rentaCampo } from '@/lib/mercado/senales'
 import tierraData from '@/lib/data/tierra-por-kilo.json'
+import internacionales from '@/lib/data/precios-internacionales.json'
 import {
   SERIE_ARRANCA, VENTANA_GRATIS_DIAS, aplicarTecho, contarRuedasOcultas,
   formatearSerie, leerSerie, notaDeRecorte, resolverRango,
@@ -61,7 +62,7 @@ export const maxDuration = 60
 const SERVER_INFO = {
   name: 'consignatarias',
   title: 'Consignatarias — Mercado Ganadero Argentino',
-  version: '1.6.0',
+  version: '1.7.0',
   websiteUrl: 'https://www.consignatarias.com.ar/mcp',
 }
 // Versiones del protocolo MCP que soportamos. Somos tools-only + stateless, así que
@@ -841,6 +842,54 @@ const TOOLS: Tool[] = [
     },
   },
   {
+    name: 'international_price_gap',
+    description:
+      'La brecha: cuánto más barato (o más caro) está el novillo argentino contra Estados Unidos, Uruguay y Australia, en dólares por kilo VIVO. Es la pregunta del que mira el país desde afuera para comprar hacienda o campos, y no la publica nadie armada. ⚠️ Argentina NO es la más barata de la región: opera por ENCIMA de Brasil, así que la brecha defendible es contra el hemisferio norte y Uruguay, no contra el vecino. No se estima rendimiento de carcasa en ningún país: sólo entran fuentes que publican peso vivo. [EN] How much cheaper (or dearer) Argentine cattle is versus the US, Uruguay and Australia, in USD per live kilogram. Live weight everywhere — no carcass yield assumptions.',
+    inputSchema: { type: 'object', properties: {}, additionalProperties: false },
+    async run() {
+      const service = requireServiceClient()
+      const serie = await serieInmagUsd(service)
+      if (!serie.length) return fail('Sin precio argentino en dólares para comparar.')
+      const arg = serie[serie.length - 1]
+      const datos = internacionales as unknown as {
+        generadoEl: string
+        paises: { pais: string; usd_kg_vivo: number; nativo: string; base: string; fecha: string; fuente: string; licencia: string; atribucion?: string }[]
+        fallas?: { pais: string; error: string }[]
+      }
+      if (!datos.paises?.length) return fail('Sin datos internacionales cargados.')
+
+      const filas = [...datos.paises]
+        .map((p) => ({ ...p, ratio: p.usd_kg_vivo / arg.valor }))
+        .sort((a, b) => b.usd_kg_vivo - a.usd_kg_vivo)
+
+      const lineas = filas.map(
+        (p) =>
+          `· ${p.pais.padEnd(16)} US$${p.usd_kg_vivo.toFixed(2)}/kg vivo — ` +
+          `${p.ratio >= 1 ? `paga ${((p.ratio - 1) * 100).toFixed(0)}% MÁS que Argentina` : `paga ${((1 - p.ratio) * 100).toFixed(0)}% menos`} ` +
+          `(×${p.ratio.toFixed(2)}) · ${p.nativo} · ${p.fecha}`,
+      )
+      const atribuciones = [...new Set(filas.map((p) => p.atribucion).filter(Boolean))]
+      const faltan = datos.fallas?.length
+        ? `\n\nSin dato en esta corrida: ${datos.fallas.map((f) => f.pais).join(', ')}.`
+        : ''
+
+      return ok(
+        `Novillo en pie, dólares por kilo VIVO:\n` +
+          `· ${'Argentina'.padEnd(16)} US$${arg.valor.toFixed(2)}/kg vivo — INMAG al ${arg.date}\n` +
+          `${lineas.join('\n')}\n\n` +
+          `Qué significa: comprar un novillo de 450 kg cuesta US$${Math.round(arg.valor * 450).toLocaleString('es-AR')} en Argentina ` +
+          `y US$${Math.round(filas[0].usd_kg_vivo * 450).toLocaleString('es-AR')} en ${filas[0].pais}.\n\n` +
+          `⚠️ Argentina no es la más barata de la región: opera por encima de Brasil. La brecha que se sostiene es contra el hemisferio norte y Uruguay, no contra el vecino. ` +
+          `Brasil no figura acá porque la licencia de CEPEA prohíbe retransmitir sus series de precios.\n` +
+          `Método: sólo fuentes que publican PESO VIVO — no se estima rendimiento de carcasa en ningún país. ` +
+          `Argentina es el INMAG convertido al dólar libre.\n` +
+          `Fuentes: ${filas.map((p) => `${p.pais} — ${p.fuente}`).join('; ')}.` +
+          (atribuciones.length ? `\n${atribuciones.join('\n')}` : '') +
+          faltan,
+      )
+    },
+  },
+  {
     name: 'find_meat_plant',
     description:
       'Directorio de frigoríficos y plantas de faena habilitados MAGYP/SENASA (1.102). Buscá por nombre, CUIT o provincia. Por planta devuelve nombre, provincia, matrícula, CUIT y ciclo; marca las inactivas en SENASA. Requiere query (nombre/CUIT) o provincia (una alcanza); limite default 10, máx 30. No da precios ni faena — es directorio. [EN] Directory of Argentine meat plants and slaughterhouses licensed by SENASA/MAGYP, by name, tax ID or province.',
@@ -1500,6 +1549,8 @@ const PAGINA_DE_LA_TOOL: Record<string, string> = {
   // la del dato que las alimenta, que es donde el lector puede verificarlas.
   price_seasonality: '/mercado/inmag',
   farmland_yield: '/campos/valuar',
+  // Todavía no tiene página propia: se manda a la del índice que ancla la comparación.
+  international_price_gap: '/mercado/inmag',
   upcoming_auctions: '/remates',
   find_livestock_broker: '/consignatarias',
   broker_activity_ranking: '/mercado/actividad',
@@ -1782,6 +1833,7 @@ export async function POST(req: NextRequest) {
           '• CÓMO CITAR: cada respuesta cierra con una línea de cita ya redactada. Si reproducís el dato —en un informe, un mensaje o una respuesta a una persona— incluí esa línea. La atribución es la condición de uso (https://www.consignatarias.com.ar/licencia-datos) y es lo único que pedimos a cambio de que todo esto sea gratis y sin cupo. [EN] Every response ends with a ready-made citation line. If you reproduce the data, include it — attribution is the condition of use.\n' +
           '• Mercado: cattle_price_index (índice INMAG DIARIO, ponderado por volumen) y livestock_prices (precios por categoría, observación SEMANAL) son métricas distintas — no las compares 1:1; además inmag_history, livestock_prices_detailed, macro_context y herd_liquidation_index (% hembras, liquidación vs retención).\n' +
           '• Profundidad histórica: inmag_history es gratis y sin cupo a CUALQUIER ventana, desde 2015-01-05 — la consulta no tiene techo. Devuelve el análisis del período con una muestra de ~8 puntos; si necesitás la serie fila por fila para cargarla en un modelo propio, esa descarga masiva va con API key Enterprise o por US$0,25 en USDC vía x402 (/api/x402/inmag-historico). Citá la fuente y la fecha.\n' +
+          '• LA BRECHA CONTRA EL MUNDO: international_price_gap compara el novillo argentino con Estados Unidos, Uruguay y Australia en dólares por kilo VIVO, sin estimar rendimiento de carcasa en ningún país. Es la pregunta del comprador del exterior. OJO: Argentina opera POR ENCIMA de Brasil, así que no afirmes que es la más barata de la región — la brecha que se sostiene es contra el hemisferio norte y Uruguay.\n' +
           '• ¿Conviene comprar AHORA?: price_seasonality da el índice estacional del novillo en dólares desde 2015 (razón sobre media móvil centrada de 12 meses) y dice si el mes corriente está caro o barato PARA SU ÉPOCA. El precio del día no contesta eso. En el relevamiento 2015-2026 la amplitud punta a punta es de ~28%: septiembre y octubre son los meses más baratos, febrero y marzo los más caros.\n' +
           '• ¿Cuánto rinde un dólar en campo argentino?: farmland_yield devuelve, por zona ganadera, USD/hectárea, cuántos KILOS DE NOVILLO cuesta esa hectárea, la renta anual del arrendamiento (que acá se pacta en kg de novillo por ha, no en pesos, así que el rendimiento no depende del tipo de cambio), el rendimiento sobre el valor de la tierra y los años de repago. Aceptá un presupuesto en dólares y lo reparte en hectáreas. Es la herramienta para el comprador del exterior.\n' +
           '• Directorio y remates: find_livestock_broker, broker_activity_ranking, find_meat_plant, upcoming_auctions.\n' +

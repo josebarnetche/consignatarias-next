@@ -46,6 +46,7 @@ const TOOLS = [
   { name: 'upcoming_auctions', desc: 'Calendario de remates (filtro por provincia)', auth: false },
   { name: 'find_livestock_broker', desc: 'Directorio de consignatarias/casas de remate por nombre o zona (con CUIT)', auth: false },
   { name: 'broker_activity_ranking', desc: 'Ranking de cabezas y precio promedio por firma en el MAG de referencia (Cañuelas)', auth: false },
+  { name: 'international_price_gap', desc: 'La brecha: cuánto más barato está el novillo argentino contra Estados Unidos, Uruguay y Australia, en USD por kilo vivo', auth: false },
   { name: 'find_meat_plant', desc: 'Frigoríficos habilitados MAGYP/SENASA (1.100+ plantas)', auth: false },
   { name: 'calculate_farmland_rent', desc: 'Canon de arrendamiento rural indexado al novillo', auth: false },
   { name: 'price_dispersion_history', desc: '"¿Se está abriendo la dispersión?" — serie de la banda P10–P90 por categoría, completa y gratis', auth: false },
