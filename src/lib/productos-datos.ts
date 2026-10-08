@@ -206,20 +206,24 @@ export const PRODUCTOS_DATOS: ProductoDatos[] = [
     audiencia: 'A4-registrados',
     modalidad: 'suscripcion',
     /**
-     * ⚠️ EL PRECIO VIVE EN `precio-corredor-semanal.ts`, NO ACÁ.
+     * ⚠️⚠️ ESTE IMPORTE ES MENSUAL. Rebill cobra en cada ciclo y el webhook corre
+     * `current_period_end` UN MES hacia adelante, así que lo que se ponga acá se
+     * cobra todos los meses. Poner el precio anual sería cobrar doce veces el año.
      *
-     * Está anclado en DÓLARES —US$ 340 al año, US$ 33 al mes, la mitad de
-     * Faxcarne— y el importe en pesos se calcula al blue del día, para que cueste
-     * lo mismo acá que afuera. Los números de abajo son el reflejo en pesos a un
-     * blue de ~1.550 y quedan por compatibilidad con el catálogo y el panel;
-     * el checkout y la página toman el de la función.
+     * El ancla del precio vive en `precio-corredor-semanal.ts`: US$ 33 al mes,
+     * convertidos al blue del día para que cueste lo mismo acá que afuera. El
+     * número de abajo es el reflejo en pesos a un blue de ~1.545 y queda para el
+     * catálogo y el panel.
      *
-     * Venía a ARS 9.900/mes, que a este dólar son US$ 6,40: estaba regalado
-     * contra una banda local que va de ARS 232.000 a 450.000 al año.
+     * El anual (US$ 340, 14 % menos) todavía NO tiene camino de cobro propio: este
+     * flujo sólo hace recurrencia mensual. Se arma a mano hasta que exista.
+     *
+     * Venía a ARS 9.900/mes, que a este dólar son US$ 6,40: estaba regalado contra
+     * una banda local que va de ARS 232.000 a 450.000 al año.
      */
-    precioMin: 450000,
-    precioMax: 600000,
-    precio: 530000,
+    precioMin: 40000,
+    precioMax: 60000,
+    precio: 51000,
     landing: '/informes/parte-semanal',
     icono: '/marca/iconos-color/indice.png',
     ilustracion: '/marca/ilus/ilu-sec-mercado.jpg',
