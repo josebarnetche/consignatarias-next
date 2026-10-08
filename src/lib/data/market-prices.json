@@ -1837,48 +1837,48 @@
   },
   "categories": {
     "novillos": {
-      "current": 4223.65,
+      "current": 3998.49,
       "prev": 4223.65,
-      "change": 0,
+      "change": -5.3,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 1292,
-      "observedDate": "06/10/2026"
+      "latestVolume": 1026,
+      "observedDate": "07/10/2026"
     },
     "novillitos": {
-      "current": 4582.58,
+      "current": 4426.7,
       "prev": 4582.58,
-      "change": 0,
+      "change": -3.4,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 2049,
-      "observedDate": "06/10/2026"
+      "latestVolume": 1501,
+      "observedDate": "07/10/2026"
     },
     "vaquillonas": {
-      "current": 4320.24,
+      "current": 4062.57,
       "prev": 4320.24,
-      "change": 0,
+      "change": -6,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 2447,
-      "observedDate": "06/10/2026"
+      "latestVolume": 2101,
+      "observedDate": "07/10/2026"
     },
     "vacas": {
-      "current": 3177.15,
+      "current": 3079.23,
       "prev": 3177.15,
-      "change": 0,
+      "change": -3.1,
       "source": "mercadoagroganadero.com.ar (observed)",
-      "latestVolume": 3056,
-      "observedDate": "06/10/2026"
+      "latestVolume": 2767,
+      "observedDate": "07/10/2026"
     },
     "toros": {
-      "current": 3639.5,
+      "current": 3443.24,
       "prev": 3639.5,
-      "change": 0,
+      "change": -5.4,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 320,
-      "observedDate": "06/10/2026"
+      "latestVolume": 423,
+      "observedDate": "07/10/2026"
     },
     "terneros": {
       "current": 4398,
@@ -1908,9 +1908,9 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-10-07",
+  "lastUpdate": "2026-10-08",
   "provinceEntry": {
-    "date": "2026-10-07",
+    "date": "2026-10-08",
     "totalCabezas": 7997,
     "provinces": [
       {
@@ -1952,7 +1952,7 @@
     ]
   },
   "detailedCategories": {
-    "date": "2026-10-07",
+    "date": "2026-10-08",
     "categories": [
       {
         "category": "NOVILLOS Esp.Joven + 430",
