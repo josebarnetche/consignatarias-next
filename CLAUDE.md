@@ -114,7 +114,7 @@ neto en mano, comparador, spread, seasonality, INMAG history) are free. The prod
 | Sitemap URLs | ~2700 | `src/app/sitemap.ts` (dedup por URL; excluye perfiles thin noindex; varía con el scrape) |
 | Páginas de valor de la tierra | 67 (15 provincias + 52 zonas) | `/campos/valor-hectarea/[provincia]/[zona]` desde `tierra-por-kilo.json` |
 | Guías indexadas | 52 en 6 temas | `src/lib/data/guias.ts` → hub `/guias` |
-| MCP tools | 24 | `src/app/api/mcp/route.ts` · registry `ar.com.consignatarias/cattle-market` v1.5.0 |
+| MCP tools | 24 | `src/app/api/mcp/route.ts` · registry `ar.com.consignatarias/cattle-market` v1.7.0 |
 | Lotes de hacienda en vidriera | lo que dCaC publica cada día (catálogo acumulativo) | `src/lib/data/lotes-dcac.json` → `/lotes` |
 | API endpoints | 137 under `src/app/api/` | route handlers |
 | Public Enterprise endpoints (auth-gated) | 2 — `/api/precios`, `/api/lots` | |
