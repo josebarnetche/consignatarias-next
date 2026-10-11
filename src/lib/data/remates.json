@@ -18921,7 +18921,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6711-rosgan-invernada-y-cria",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "live",
+    "status": "completed",
     "id": 996
   },
   {
@@ -18941,7 +18941,7 @@
     "source": "web",
     "sourceUrl": "www.pedronoelireysrl.com.ar",
     "id": 997,
-    "status": "live"
+    "status": "completed"
   },
   {
     "title": "REPRODUCTORES SAN LUIS",
@@ -18960,7 +18960,7 @@
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
     "id": 998,
-    "status": "live"
+    "status": "completed"
   },
   {
     "title": ". Tambo - 18.00hs.",
@@ -18979,7 +18979,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 999,
-    "status": "live"
+    "status": "completed"
   },
   {
     "title": "REPRODUCTORES",
@@ -18998,7 +18998,7 @@
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
     "id": 1000,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Faena",
