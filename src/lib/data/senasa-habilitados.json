@@ -1,13 +1,13 @@
 {
-  "scrapedAt": "2026-10-05T16:10:10.057Z",
+  "scrapedAt": "2026-10-12T16:49:06.380Z",
   "source": "https://aps2.senasa.gov.ar/registros/faces/publico/establecimientos/tc_frigorificospublico.jsp",
   "ciclos": [
     "CICLO I - MAT.FRIG.",
     "CICLO II - ELABORADOR",
     "CICLO III - DADOR DE FRIO"
   ],
-  "totalRowsScraped": 1000,
-  "distinctCuits": 863,
+  "totalRowsScraped": 1004,
+  "distinctCuits": 866,
   "unparsableCuits": 0,
   "byCuit": {
     "30707283250": {
@@ -2664,7 +2664,7 @@
     "30504677032": {
       "cuit": "30504677032",
       "tipo": "CICLO I - MAT.FRIG.",
-      "propietario": "INDUSTRIAS FRIGORIFICAS RECREO S. A.",
+      "propietario": "INDUSTRIAS FRIGORIFICAS RECREO S.A.I.C.",
       "nombre": "INDUSTRIAS FRIGORIFICAS RECREO SAIC",
       "provincia": "SANTA FE",
       "partido": "LA CAPITAL",
@@ -6091,18 +6091,18 @@
       "cuit": "30710664966",
       "tipo": "CICLO II - ELABORADOR",
       "propietario": "DISTRIBUIDORA FLORIDA S.R.L.",
-      "nombre": "DISTRIBUIDORA FLORIDA S.R.L.",
+      "nombre": "DISTRIBUIDORA FLORIDA S.R.L",
       "provincia": "BUENOS AIRES",
-      "partido": "VICENTE LOPEZ",
-      "localidad": "FLORIDA",
-      "nroOficial": "5001",
+      "partido": "LA MATANZA",
+      "localidad": "TABLADA",
+      "nroOficial": "5730",
       "actividades": [
-        "XII - CARNES EN TROZOS O CORTES",
-        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
-        "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
-        "LXIV - IMPORTACION DE CARNE PORCINA",
+        "XXII - ELABORACION DE MENUDENCIAS",
         "II - 8. SOLO ELABORACIÓN EMBUTIDOS FRESCOS",
-        "II - 19. ELABORACION DE MILANESAS ENFRIADAS Y CONGELADAS"
+        "XII - 4. DESPOSTADA BOVINA",
+        "XII - 11. CARNE EN TROZOS Y/O CORTES DE AVES",
+        "XII - 16. FRACCIONAMIENTO Y/O ENVASADO Y/O CONGELADO DE CORTES PORCINOS",
+        "XII - 15. ELABORACION DE CARNE PICADA"
       ],
       "ciclos": [
         "CICLO II - ELABORADOR",
@@ -6659,18 +6659,14 @@
       "tipo": "CICLO II - ELABORADOR",
       "propietario": "ESTABLECIMIENTO LOS CALVOS S R L",
       "nombre": "ESTABLECIMIENTO LOS CALVOS  S.R.L.",
-      "provincia": "BUENOS AIRES",
-      "partido": "LA MATANZA",
-      "localidad": "SAN JUSTO",
-      "nroOficial": "3252",
+      "provincia": "CIUDAD AUTONOMA DE BUENOS AIRES",
+      "partido": "CIUDAD AUTONOMA DE BUENOS AIRES",
+      "localidad": "ALBERDI JUAN BAUTISTA 1/1100",
+      "nroOficial": "42",
       "actividades": [
+        "II - FABRICA DE CHACINADOS Y AFINES",
         "IX - CARNES SALADAS Y/O CURADAS",
-        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
-        "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
-        "LXII - IMPORTACION DE POLLOS",
-        "LXIV - IMPORTACION DE CARNE PORCINA",
-        "XII - 3. DESPOSTADA PORCINA",
-        "LXV - IMPORTACION DE TRIPAS (NATURALES Y SINTÉTICAS)"
+        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC."
       ],
       "ciclos": [
         "CICLO II - ELABORADOR"
@@ -13613,6 +13609,22 @@
         "CICLO III - DADOR DE FRIO"
       ]
     },
+    "30641218916": {
+      "cuit": "30641218916",
+      "tipo": "CICLO III - DADOR DE FRIO",
+      "propietario": "COOPERATIVA GANADERA INDIGENA LIMITADA",
+      "nombre": "COOPERATIVA GANADERA INDIGENA LIMITADA",
+      "provincia": "RIO NEGRO",
+      "partido": "VEINTICINCO DE MAYO",
+      "localidad": "INGENIERO JACOBACCI",
+      "nroOficial": "5674",
+      "actividades": [
+        "XXVIII - 4. BARRACA P/LANAS"
+      ],
+      "ciclos": [
+        "CICLO III - DADOR DE FRIO"
+      ]
+    },
     "30714922919": {
       "cuit": "30714922919",
       "tipo": "CICLO III - DADOR DE FRIO",
@@ -13645,6 +13657,22 @@
       "nroOficial": "5191",
       "actividades": [
         "XXVIII - DEPOSITO / BARRACA P/CUEROS"
+      ],
+      "ciclos": [
+        "CICLO III - DADOR DE FRIO"
+      ]
+    },
+    "30712236422": {
+      "cuit": "30712236422",
+      "tipo": "CICLO III - DADOR DE FRIO",
+      "propietario": "DAJOSO S.R.L.",
+      "nombre": "DAJOSO S.R.L.",
+      "provincia": "CHACO",
+      "partido": "SAN FERNANDO",
+      "localidad": "RESISTENCIA",
+      "nroOficial": "5728",
+      "actividades": [
+        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC."
       ],
       "ciclos": [
         "CICLO III - DADOR DE FRIO"
@@ -13708,13 +13736,15 @@
       "propietario": "DIA ARGENTINA S A",
       "nombre": "DIA ARGENTINA  S.A.",
       "provincia": "BUENOS AIRES",
-      "partido": "ALMIRANTE BROWN",
-      "localidad": "BURZACO",
-      "nroOficial": "4459",
+      "partido": "VICENTE LOPEZ",
+      "localidad": "FLORIDA",
+      "nroOficial": "4346",
       "actividades": [
-        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
         "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
-        "LXIII - IMPORTACION PRODUCTOS DE LA PESCA EN CONSERVAS"
+        "L - LOCAL HABILITADO P/DEPOSITO CONSERVA DE PESCADO",
+        "LXIII - IMPORTACION PRODUCTOS DE LA PESCA EN CONSERVAS",
+        "XXXIII - 1. SÓLO CÁMARA P/DEPÓSITO DE PESCADOS",
+        "XXX -  DEPOSITO PRODUCTOS CARNEOS"
       ],
       "ciclos": [
         "CICLO III - DADOR DE FRIO"
@@ -15501,14 +15531,12 @@
       "tipo": "CICLO III - DADOR DE FRIO",
       "propietario": "MATTINA HNOS S.A.C.I.A.N.",
       "nombre": "MATTINA HERMANOS SOCIEDAD ANONIMA COMERCIAL",
-      "provincia": "CIUDAD AUTONOMA DE BUENOS AIRES",
-      "partido": "CIUDAD AUTONOMA DE BUENOS AIRES",
-      "localidad": "ARAOZ DE LAMADRID 101/1200",
-      "nroOficial": "4691",
+      "provincia": "SANTA CRUZ",
+      "partido": "DESEADO",
+      "localidad": "PUERTO DESEADO",
+      "nroOficial": "4041",
       "actividades": [
-        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
-        "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
-        "L - LOCAL HABILITADO P/DEPOSITO CONSERVA DE PESCADO"
+        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC."
       ],
       "ciclos": [
         "CICLO III - DADOR DE FRIO"
@@ -15630,7 +15658,7 @@
       "provincia": "SANTA FE",
       "partido": "ROSARIO",
       "localidad": "ROSARIO",
-      "nroOficial": "5591",
+      "nroOficial": "4952",
       "actividades": [
         "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC."
       ],
@@ -16303,17 +16331,36 @@
         "CICLO III - DADOR DE FRIO"
       ]
     },
+    "30710387571": {
+      "cuit": "30710387571",
+      "tipo": "CICLO III - DADOR DE FRIO",
+      "propietario": "TRANSPORTE FRIOS DEL NORTE S.R.L.",
+      "nombre": "TRANSPORTE FRIOS DEL NORTE S.R.L.",
+      "provincia": "TUCUMAN",
+      "partido": "SAN MIGUEL DE TUCUMAN",
+      "localidad": "SAN MIGUEL DE TUCUMAN",
+      "nroOficial": "5727",
+      "actividades": [
+        "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
+        "XXX - 1. DEPOSITO Y TRANSBORDO DE MERCADERIAS",
+        "XXXIII - 4. DEPÓSITO Y DISTRIBUCIÓN DE GRASAS Y MARGARINAS (REFRIGERADAS)",
+        "XXXIII - 6. DEPÓSITO FRIGORÍFICO DE PESCADOS Y MARISCOS FRESCOS Y CONGELADOS",
+        "XXXIII - 8. CAMARA FRIGORIFICA PARA DEPOSITO A TERCEROS"
+      ],
+      "ciclos": [
+        "CICLO III - DADOR DE FRIO"
+      ]
+    },
     "30517535954": {
       "cuit": "30517535954",
       "tipo": "CICLO III - DADOR DE FRIO",
       "propietario": "TRANSPORTES NUEVO HORIZONTE SOCIEDAD DE RESPONSABILIDAD LIMI",
       "nombre": "TRANSPORTE NUEVO HORIZONTE S.R.L.",
-      "provincia": "CHUBUT",
-      "partido": "ESCALANTE",
-      "localidad": "COMODORO RIVADAVIA",
-      "nroOficial": "3961",
+      "provincia": "BUENOS AIRES",
+      "partido": "LA MATANZA",
+      "localidad": "LOMAS DEL MIRADOR",
+      "nroOficial": "1198",
       "actividades": [
-        "XXX - 1. DEPOSITO Y TRANSBORDO DE MERCADERIAS",
         "XXX -  DEPOSITO PRODUCTOS CARNEOS"
       ],
       "ciclos": [
@@ -16396,13 +16443,12 @@
       "tipo": "CICLO III - DADOR DE FRIO",
       "propietario": "TRANSPORTES VESPRINI S A",
       "nombre": "TRANSPORTES VESPRINI S.A.",
-      "provincia": "RIO NEGRO",
-      "partido": "ADOLFO ALSINA",
-      "localidad": "VIEDMA",
-      "nroOficial": "5708",
+      "provincia": "CHUBUT",
+      "partido": "BIEDMA",
+      "localidad": "PUERTO MADRYN",
+      "nroOficial": "4939",
       "actividades": [
-        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
-        "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC."
+        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC."
       ],
       "ciclos": [
         "CICLO III - DADOR DE FRIO"

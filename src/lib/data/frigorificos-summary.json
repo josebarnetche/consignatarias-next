@@ -1,23 +1,23 @@
 {
-  "total": 1116,
-  "habilitados": 863,
+  "total": 1119,
+  "habilitados": 866,
   "provincias": 25,
-  "generadoEl": "2026-10-05",
+  "generadoEl": "2026-10-12",
   "byProvince": {
     "BUENOS AIRES": 398,
     "SANTA FE": 125,
     "CORDOBA": 86,
     "CIUDAD AUTONOMA DE BUENOS AIRES": 85,
     "ENTRE RIOS": 66,
-    "CHACO": 56,
+    "CHACO": 57,
     "CORRIENTES": 42,
     "CHUBUT": 32,
     "SALTA": 31,
     "LA PAMPA": 29,
     "MENDOZA": 25,
-    "RIO NEGRO": 21,
+    "RIO NEGRO": 22,
+    "TUCUMAN": 20,
     "MISIONES": 20,
-    "TUCUMAN": 19,
     "NEUQUEN": 18,
     "SANTA CRUZ": 12,
     "SANTIAGO DEL ESTERO": 11,
@@ -33,13 +33,13 @@
   "byStage": {
     "1": 185,
     "2": 536,
-    "3": 395
+    "3": 398
   },
   "topProvinces": [
     {
       "province": "BUENOS AIRES",
       "count": 398,
-      "pct": 35.7
+      "pct": 35.6
     },
     {
       "province": "SANTA FE",
@@ -63,8 +63,8 @@
     },
     {
       "province": "CHACO",
-      "count": 56,
-      "pct": 5
+      "count": 57,
+      "pct": 5.1
     },
     {
       "province": "CORRIENTES",
@@ -93,18 +93,18 @@
     },
     {
       "province": "RIO NEGRO",
-      "count": 21,
-      "pct": 1.9
+      "count": 22,
+      "pct": 2
+    },
+    {
+      "province": "TUCUMAN",
+      "count": 20,
+      "pct": 1.8
     },
     {
       "province": "MISIONES",
       "count": 20,
       "pct": 1.8
-    },
-    {
-      "province": "TUCUMAN",
-      "count": 19,
-      "pct": 1.7
     },
     {
       "province": "NEUQUEN",
