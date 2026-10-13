@@ -1,5 +1,5 @@
 {
-  "generado": "2026-10-13T21:44:26.916Z",
+  "generado": "2026-10-13T23:15:29.335Z",
   "leads_de_compra": 7,
   "matches": [
     {
@@ -12,6 +12,16 @@
         "estado": "new"
       },
       "lotes": [
+        {
+          "sku": "34135",
+          "titulo": "65 Terneros y Terneras Brangus Negro y Colorado de 145kg",
+          "score": 50,
+          "motivos": [
+            "el lead no declaró categoría",
+            "misma provincia"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/65-Terneros-y-Terneras-145kg-invernada-34135"
+        },
         {
           "sku": "33912",
           "titulo": "110 Vaquillonas Preñadas Aberdeen Angus Negro y Colorado 410kg",
