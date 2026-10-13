@@ -55,7 +55,11 @@
   "pnpm": {
     "overrides": {
       "protobufjs@<7.5.5": "^7.5.5",
-      "baseline-browser-mapping": ">=2.11.0"
+      "baseline-browser-mapping": ">=2.11.0",
+      "source-map-js@<1.2.2": "1.2.2",
+      "jspdf>dompurify": "3.4.17",
+      "tailwindcss>postcss-selector-parser": "7.1.6",
+      "postcss-nested>postcss-selector-parser": "7.1.6"
     }
   },
   "browserslist": [
