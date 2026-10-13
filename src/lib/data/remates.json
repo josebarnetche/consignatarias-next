@@ -19305,25 +19305,6 @@
     "status": "scheduled"
   },
   {
-    "title": ". Consumo y Conserva - 14.00hs",
-    "consignatariaName": "Colombo y Magliano S.A.",
-    "consignatariaSlug": "colombo-y-magliano-s-a",
-    "date": "2026-10-14",
-    "time": "14:00",
-    "location": "Brandsen, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Brandsen. Consumo y Conserva - 14.00hs",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1017,
-    "status": "scheduled"
-  },
-  {
     "title": "Haciendas generales Bella Vista",
     "consignatariaName": "Reggi & Cía",
     "consignatariaSlug": "reggi-y-cia",
@@ -19340,7 +19321,26 @@
     "source": "tv",
     "sourceUrl": "https://reggiycia.com/remate/31807",
     "status": "scheduled",
-    "id": 1018
+    "id": 1017
+  },
+  {
+    "title": ". Consumo y Conserva - 14.00hs",
+    "consignatariaName": "Colombo y Magliano S.A.",
+    "consignatariaSlug": "colombo-y-magliano-s-a",
+    "date": "2026-10-14",
+    "time": "14:00",
+    "location": "Brandsen, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Brandsen. Consumo y Conserva - 14.00hs",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1018,
+    "status": "scheduled"
   },
   {
     "title": "Faena, Invernada y Cria - 15.00hs.",
@@ -20312,25 +20312,6 @@
     "status": "scheduled"
   },
   {
-    "title": "Invernada, Cria y Consumo - 14.00hs.",
-    "consignatariaName": "Colombo y Magliano S.A.",
-    "consignatariaSlug": "colombo-y-magliano-s-a",
-    "date": "2026-10-20",
-    "time": "14:00",
-    "location": "Chascomús, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Chascomús Invernada, Cria y Consumo - 14.00hs.",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1070,
-    "status": "scheduled"
-  },
-  {
     "title": "Remate anual cuarto de milla de Aguay",
     "consignatariaName": "Reggi & Cía",
     "consignatariaSlug": "reggi-y-cia",
@@ -20347,7 +20328,26 @@
     "source": "web",
     "sourceUrl": "https://reggiycia.com/remate/31871",
     "status": "scheduled",
-    "id": 1071
+    "id": 1070
+  },
+  {
+    "title": "Invernada, Cria y Consumo - 14.00hs.",
+    "consignatariaName": "Colombo y Magliano S.A.",
+    "consignatariaSlug": "colombo-y-magliano-s-a",
+    "date": "2026-10-20",
+    "time": "14:00",
+    "location": "Chascomús, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Chascomús Invernada, Cria y Consumo - 14.00hs.",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1071,
+    "status": "scheduled"
   },
   {
     "title": "GORDO, INVERNADA y CRÍA",
