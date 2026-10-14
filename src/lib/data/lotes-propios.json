@@ -1,5 +1,12 @@
 [
   {
+    "id": 44,
+    "categoria": "novillos",
+    "cabezas": 10,
+    "provincia": "Salta",
+    "desde": "2026-10-14"
+  },
+  {
     "id": 34,
     "categoria": "vacas",
     "cabezas": 20,
