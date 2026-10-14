@@ -1,5 +1,5 @@
 {
-  "generado": "2026-10-13T23:15:29.335Z",
+  "generado": "2026-10-14T00:15:03.434Z",
   "leads_de_compra": 7,
   "matches": [
     {
@@ -199,54 +199,54 @@
       },
       "lotes": [
         {
-          "sku": "34148",
-          "titulo": "75 Novillitos Aberdeen Angus Negro y Colorado de 340kg",
+          "sku": "34114",
+          "titulo": "50 Novillitos Aberdeen Angus Negro y Colorado de 360kg",
           "score": 50,
           "motivos": [
             "el lead no declaró categoría",
             "misma provincia"
           ],
-          "url": "https://www.decampoacampo.com/__dcac/75-Novillitos-340kg-invernada-34148"
+          "url": "https://www.decampoacampo.com/__dcac/50-Novillitos-360kg-invernada-34114"
         },
         {
-          "sku": "34139",
-          "titulo": "95 Vaquillonas para madre Aberdeen Angus Negro y Colorado 315kg",
+          "sku": "33967",
+          "titulo": "20 Vacas con cría Aberdeen Angus Negro de 440kg",
           "score": 50,
           "motivos": [
             "el lead no declaró categoría",
             "misma provincia"
           ],
-          "url": "https://www.decampoacampo.com/__dcac/95-Vaquillonas-para-madre-315kg-invernada-34139"
+          "url": "https://www.decampoacampo.com/__dcac/20-Vacas-con-cria-440kg-invernada-33967"
         },
         {
-          "sku": "34119",
-          "titulo": "120 Vaquillonas Preñadas Aberdeen Angus Negro de 400kg",
+          "sku": "33905",
+          "titulo": "45 Vacas preñadas Aberdeen Angus Negro y Colorado de 430kg",
           "score": 50,
           "motivos": [
             "el lead no declaró categoría",
             "misma provincia"
           ],
-          "url": "https://www.decampoacampo.com/__dcac/120-Vaquillonas-Prenadas-400kg-invernada-34119"
+          "url": "https://www.decampoacampo.com/__dcac/45-Vacas-prenadas-430kg-invernada-33905"
         },
         {
-          "sku": "34115",
-          "titulo": "25 Vacas preñadas Aberdeen Angus Negro y Colorado de 425kg",
+          "sku": "33874",
+          "titulo": "65 Vaquillonas para madre Aberdeen Angus Negro y Colorado 290kg",
           "score": 50,
           "motivos": [
             "el lead no declaró categoría",
             "misma provincia"
           ],
-          "url": "https://www.decampoacampo.com/__dcac/25-Vacas-prenadas-425kg-invernada-34115"
+          "url": "https://www.decampoacampo.com/__dcac/65-Vaquillonas-para-madre-290kg-invernada-33874"
         },
         {
-          "sku": "34111",
-          "titulo": "100 Terneros Aberdeen Angus Negro y Colorado de 240kg",
+          "sku": "33704",
+          "titulo": "40 Vaquillonas para madre Limangus de 285kg",
           "score": 50,
           "motivos": [
             "el lead no declaró categoría",
             "misma provincia"
           ],
-          "url": "https://www.decampoacampo.com/__dcac/100-Terneros-240kg-invernada-34111"
+          "url": "https://www.decampoacampo.com/__dcac/40-Vaquillonas-para-madre-285kg-invernada-33704"
         }
       ]
     },
@@ -317,26 +317,26 @@
           "url": "https://www.decampoacampo.com/__dcac/325-Terneros-y-Terneras-210kg-invernada-34121"
         },
         {
-          "sku": "34148",
-          "titulo": "75 Novillitos Aberdeen Angus Negro y Colorado de 340kg",
-          "score": 35,
-          "motivos": [
-            "el lead no declaró categoría",
-            "otra provincia (Buenos Aires)",
-            "cantidad compatible"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/75-Novillitos-340kg-invernada-34148"
-        },
-        {
-          "sku": "34140",
-          "titulo": "85 Terneros y Terneras Braford de 215kg",
+          "sku": "34136",
+          "titulo": "35 Vaquillonas Preñadas Aberdeen Angus Negro y Colorado de 360kg",
           "score": 35,
           "motivos": [
             "el lead no declaró categoría",
             "otra provincia (La Pampa)",
             "cantidad compatible"
           ],
-          "url": "https://www.decampoacampo.com/__dcac/85-Terneros-y-Terneras-215kg-invernada-34140"
+          "url": "https://www.decampoacampo.com/__dcac/35-Vaquillonas-Prenadas-360kg-invernada-34136"
+        },
+        {
+          "sku": "34126",
+          "titulo": "35 Vacas con cría Aberdeen Angus Colorado de 440kg",
+          "score": 35,
+          "motivos": [
+            "el lead no declaró categoría",
+            "otra provincia (Entre Ríos)",
+            "cantidad compatible"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/35-Vacas-con-cria-440kg-invernada-34126"
         }
       ]
     },
@@ -384,6 +384,17 @@
           "url": "https://www.decampoacampo.com/__dcac/45-Novillitos-340kg-invernada-33999"
         },
         {
+          "sku": "34114",
+          "titulo": "50 Novillitos Aberdeen Angus Negro y Colorado de 360kg",
+          "score": 70,
+          "motivos": [
+            "misma categoría",
+            "otra provincia (Buenos Aires)",
+            "cantidad compatible"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/50-Novillitos-360kg-invernada-34114"
+        },
+        {
           "sku": "34148",
           "titulo": "75 Novillitos Aberdeen Angus Negro y Colorado de 340kg",
           "score": 70,
@@ -393,17 +404,6 @@
             "cantidad compatible"
           ],
           "url": "https://www.decampoacampo.com/__dcac/75-Novillitos-340kg-invernada-34148"
-        },
-        {
-          "sku": "34100",
-          "titulo": "40 Novillitos Brangus Negro de 400kg",
-          "score": 70,
-          "motivos": [
-            "misma categoría",
-            "otra provincia (Córdoba)",
-            "cantidad compatible"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/40-Novillitos-400kg-invernada-34100"
         }
       ]
     }
