@@ -19,11 +19,13 @@ CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD 2>/dev/null || echo "")
 
 if [ -n "$CHANGED_FILES" ]; then
   # JSON files in src/lib/data/ ARE the data layer — every change must rebuild.
-  # Only skip when the diff is pure docs (markdown, README, LICENSE, /docs/**).
-  NON_DOC_FILES=$(echo "$CHANGED_FILES" | grep -v -E '\.(md|txt)$|^docs/|^README|^CHANGELOG|^LICENSE' || true)
+  # Skip when the diff is only docs (markdown, README, LICENSE, /docs/**), internal
+  # reports (reports/** — the GSC CSVs the bots commit daily, not part of the site)
+  # or workflow files (.github/**).
+  NON_DOC_FILES=$(echo "$CHANGED_FILES" | grep -v -E '\.(md|txt)$|^docs/|^reports/|^\.github/|^README|^CHANGELOG|^LICENSE' || true)
 
   if [ -z "$NON_DOC_FILES" ]; then
-    echo "🚫 Skipping build: only documentation files changed"
+    echo "🚫 Skipping build: only docs, reports or workflow files changed"
     exit 0
   fi
 fi

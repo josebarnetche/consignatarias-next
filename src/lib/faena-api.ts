@@ -30,6 +30,9 @@ export async function getFaenaStats(): Promise<FaenaStats | null> {
   try {
     const res = await fetch(FAENA_API_URL, {
       next: { revalidate: 86400 }, // Cache for 24h (data updates monthly)
+      // Sin timeout, cuando apis.datos.gob.ar se cuelga /frigorificos pasa los 60 s
+      // de generación estática y voltea el build entero (pasó el 09 y 10-10-2026).
+      signal: AbortSignal.timeout(10_000),
     });
 
     if (!res.ok) return null;

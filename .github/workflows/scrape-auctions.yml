@@ -81,9 +81,17 @@ jobs:
       # scraper found no new data (e.g., weekend, MAG hasn't published yet).
       # Without this, ~13 pages that snapshot `new Date()` at SSG time freeze
       # — which is exactly how /remates/manana ended up showing 26-Apr.
+      # Una sola vez por día UTC: el workflow corre 3 veces (principal + 2 respaldos) y
+      # reescribir el trigger en cada corrida forzaba 3 builds completos diarios aunque
+      # no hubiera datos nuevos. Si ya se tocó hoy, el refresco diario ya ocurrió.
       - name: Update build trigger
         run: |
           mkdir -p src/lib/data
+          TODAY=$(date -u +%Y-%m-%d)
+          if grep -q "\"updatedAt\": \"$TODAY" src/lib/data/last-build-trigger.json 2>/dev/null; then
+            echo "Trigger ya tocado hoy ($TODAY): no se fuerza otro build."
+            exit 0
+          fi
           cat > src/lib/data/last-build-trigger.json <<EOF
           {
             "updatedAt": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
