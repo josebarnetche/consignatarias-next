@@ -1,5 +1,5 @@
 {
-  "generado": "2026-10-16T19:49:53.243Z",
+  "generado": "2026-10-16T22:00:01.972Z",
   "leads_de_compra": 7,
   "matches": [
     {
@@ -65,6 +65,17 @@
       },
       "lotes": [
         {
+          "sku": "34220",
+          "titulo": "175 Novillitos y Vaquillonas Brangus Colorado de 260kg",
+          "score": 50,
+          "motivos": [
+            "el lead no declaró categoría",
+            "misma provincia",
+            "el lote es grande (175 contra 11 pedidas)"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/175-Novillitos-y-Vaquillonas-260kg-invernada-34220"
+        },
+        {
           "sku": "34198",
           "titulo": "70 Novillitos Braford de 235kg",
           "score": 50,
@@ -107,17 +118,6 @@
             "el lote es grande (130 contra 11 pedidas)"
           ],
           "url": "https://www.decampoacampo.com/__dcac/130-Terneros-160kg-invernada-34085"
-        },
-        {
-          "sku": "34080",
-          "titulo": "120 Terneros y Terneras Aberdeen Angus Negro y Colorado de 200kg",
-          "score": 50,
-          "motivos": [
-            "el lead no declaró categoría",
-            "misma provincia",
-            "el lote es grande (120 contra 11 pedidas)"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/120-Terneros-y-Terneras-200kg-invernada-34080"
         }
       ]
     },
@@ -165,6 +165,17 @@
           "url": "https://www.decampoacampo.com/__dcac/90-Novillitos-275kg-invernada-33981"
         },
         {
+          "sku": "34220",
+          "titulo": "175 Novillitos y Vaquillonas Brangus Colorado de 260kg",
+          "score": 35,
+          "motivos": [
+            "el lead no declaró categoría",
+            "otra provincia (Corrientes)",
+            "cantidad compatible"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/175-Novillitos-y-Vaquillonas-260kg-invernada-34220"
+        },
+        {
           "sku": "34207",
           "titulo": "200 Terneros Aberdeen Angus Negro y Colorado de 260kg",
           "score": 35,
@@ -174,17 +185,6 @@
             "cantidad compatible"
           ],
           "url": "https://www.decampoacampo.com/__dcac/200-Terneros-260kg-invernada-34207"
-        },
-        {
-          "sku": "34202",
-          "titulo": "160 Terneras Aberdeen Angus Negro y Colorado de 240kg",
-          "score": 35,
-          "motivos": [
-            "el lead no declaró categoría",
-            "otra provincia (Córdoba)",
-            "cantidad compatible"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/160-Terneras-240kg-invernada-34202"
         }
       ]
     },
@@ -209,6 +209,16 @@
           "url": "https://www.decampoacampo.com/__dcac/45-Terneras-255kg-invernada-34215"
         },
         {
+          "sku": "34212",
+          "titulo": "75 Vaquillonas para madre Aberdeen Angus Negro y Colorado 290kg",
+          "score": 50,
+          "motivos": [
+            "el lead no declaró categoría",
+            "misma provincia"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/75-Vaquillonas-para-madre-290kg-invernada-34212"
+        },
+        {
           "sku": "34178",
           "titulo": "55 Terneros y Terneras Aberdeen Angus Negro de 230kg",
           "score": 50,
@@ -229,24 +239,14 @@
           "url": "https://www.decampoacampo.com/__dcac/35-Vacas-CUT-con-cria-470kg-invernada-34159"
         },
         {
-          "sku": "34190",
-          "titulo": "60 Terneras Aberdeen Angus Negro y Colorado de 240kg",
+          "sku": "34149",
+          "titulo": "50 Vaquillonas para madre Aberdeen Angus Negro y Colorado 260kg",
           "score": 50,
           "motivos": [
             "el lead no declaró categoría",
             "misma provincia"
           ],
-          "url": "https://www.decampoacampo.com/__dcac/60-Terneras-240kg-invernada-34190"
-        },
-        {
-          "sku": "34189",
-          "titulo": "55 Novillitos Aberdeen Angus Negro y Colorado de 330kg",
-          "score": 50,
-          "motivos": [
-            "el lead no declaró categoría",
-            "misma provincia"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/55-Novillitos-330kg-invernada-34189"
+          "url": "https://www.decampoacampo.com/__dcac/50-Vaquillonas-para-madre-260kg-invernada-34149"
         }
       ]
     },
