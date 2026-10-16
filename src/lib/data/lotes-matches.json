@@ -1,5 +1,5 @@
 {
-  "generado": "2026-10-16T22:00:01.972Z",
+  "generado": "2026-10-16T23:25:39.213Z",
   "leads_de_compra": 7,
   "matches": [
     {
@@ -76,15 +76,15 @@
           "url": "https://www.decampoacampo.com/__dcac/175-Novillitos-y-Vaquillonas-260kg-invernada-34220"
         },
         {
-          "sku": "34198",
-          "titulo": "70 Novillitos Braford de 235kg",
+          "sku": "34205",
+          "titulo": "110 Terneros Braford de 205kg",
           "score": 50,
           "motivos": [
             "el lead no declaró categoría",
             "misma provincia",
-            "el lote es grande (70 contra 11 pedidas)"
+            "el lote es grande (110 contra 11 pedidas)"
           ],
-          "url": "https://www.decampoacampo.com/__dcac/70-Novillitos-235kg-invernada-34198"
+          "url": "https://www.decampoacampo.com/__dcac/110-Terneros-205kg-invernada-34205"
         },
         {
           "sku": "34187",
@@ -98,6 +98,17 @@
           "url": "https://www.decampoacampo.com/__dcac/80-Terneros-y-Terneras-155kg-invernada-34187"
         },
         {
+          "sku": "34198",
+          "titulo": "70 Novillitos Braford de 235kg",
+          "score": 50,
+          "motivos": [
+            "el lead no declaró categoría",
+            "misma provincia",
+            "el lote es grande (70 contra 11 pedidas)"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/70-Novillitos-235kg-invernada-34198"
+        },
+        {
           "sku": "34165",
           "titulo": "55 Vacas de invernada Braford de 395kg",
           "score": 50,
@@ -107,17 +118,6 @@
             "el lote es grande (55 contra 11 pedidas)"
           ],
           "url": "https://www.decampoacampo.com/__dcac/55-Vacas-de-invernada-395kg-invernada-34165"
-        },
-        {
-          "sku": "34085",
-          "titulo": "130 Terneros Brangus Negro y Colorado de 160kg",
-          "score": 50,
-          "motivos": [
-            "el lead no declaró categoría",
-            "misma provincia",
-            "el lote es grande (130 contra 11 pedidas)"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/130-Terneros-160kg-invernada-34085"
         }
       ]
     },
