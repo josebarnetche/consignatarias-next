@@ -366,7 +366,10 @@ export default async function LandingPage() {
     .map(s => ({ slug: s, name: getAllProfiles().find(p => p.canonicalSlug === s)?.displayName ?? s }))
   const showcaseItems = [...activeConsignatarias, ...featured]
     .map(c => ({ slug: c.slug, name: c.name, logoUrl: getLogoUrl(c.slug), brandColor: getBrandColor(c.slug), keepColor: getBrandKeepColor(c.slug), solidLogo: getBrandSolidLogo(c.slug), isPro: proSlugs.has(c.slug) }))
-    .filter(c => c.logoUrl && c.brandColor)
+    // Sin logo curado, una firma común no entra al muro (el muro es de marcas).
+    // 17-10-2026: una PRO entra igual — la promesa es "en el muro de la home" — y
+    // ConsignatariasShowcase la dibuja como baldosa de nombre con su sello.
+    .filter(c => c.isPro || (c.logoUrl && c.brandColor))
     // PRO firms first — paying firms appear with priority on the wall.
     .sort((a, b) => Number(b.isPro) - Number(a.isPro))
 

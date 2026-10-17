@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: `Activar PRO — ${profile.displayName}`,
-    description: `Activá el perfil PRO de ${profile.displayName} en Consignatarias.com.ar: prioridad, badge verificado y analítica de tu perfil.`,
+    description: `Activá el perfil PRO de ${profile.displayName} en Consignatarias.com.ar: primera en el directorio con el sello ★ PRO, consultas con nombre y contacto y el panel de quién te mira.`,
     robots: {
       index: false,
       follow: false,

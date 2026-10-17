@@ -13,7 +13,9 @@ import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
 import marketPrices from '@/lib/data/market-prices.json'
 import existenciasData from '@/lib/data/existencias-bovinas.json'
-import { getAllProfiles, consignatariaProfilePath } from '@/lib/data/consignataria-slugs'
+import { getAllProfiles, consignatariaProfilePath, getCanonicalSlug } from '@/lib/data/consignataria-slugs'
+import { getFeaturedSlugs } from '@/lib/featured'
+import ProBadge from '@/components/badges/ProBadge'
 import { getConsignatariaProfile } from '@/lib/dal/consignatarias'
 import { normalizeUrl } from '@/lib/utils/url'
 import { BreadcrumbSchema, EventSchema, VideoObjectSchema } from '@/components/seo/JsonLd'
@@ -335,7 +337,16 @@ export default async function RemateDetailPage({ params }: Props) {
 
   // Enriched profile (Supabase): "persona detrás" + region/especialidad/años.
   // Falls back gracefully to null if unavailable.
-  const consigEnriched = consigProfile ? await getConsignatariaProfile(consigProfile.canonicalSlug) : null
+  // PRO (17-10-2026): la promesa "en las fichas de remate". La página es SSG y se
+  // regenera a diario, así que el set se pide una vez por render. El slug del
+  // remate suele ser una VARIANTE: se compara el canónico.
+  const [consigEnriched, proSlugs] = await Promise.all([
+    consigProfile ? getConsignatariaProfile(consigProfile.canonicalSlug) : Promise.resolve(null),
+    getFeaturedSlugs(),
+  ])
+  const isPro = proSlugs.has(
+    getCanonicalSlug(remate.consignatariaSlug) ?? consigProfile?.canonicalSlug ?? remate.consignatariaSlug,
+  )
 
   // INMAG market context at the auction date — the price reference a
   // buyer/seller had on the day. Real observed series, not derived.
@@ -538,6 +549,15 @@ export default async function RemateDetailPage({ params }: Props) {
                     </Link>
                   ) : (
                     <p className="text-ink font-medium">{remate.consignatariaName}</p>
+                  )}
+                  {isPro && (
+                    <Link
+                      href={consignatariaProfilePath(remate.consignatariaSlug)}
+                      className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-sky-400 claro:text-accent hover:underline"
+                    >
+                      <ProBadge size="sm" animated={false} />
+                      Consignataria PRO
+                    </Link>
                   )}
                 </div>
               </div>
@@ -775,7 +795,10 @@ export default async function RemateDetailPage({ params }: Props) {
                     {consigProfile.displayName.charAt(0)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-lg font-semibold text-ink">{consigProfile.displayName}</p>
+                    <p className="text-lg font-semibold text-ink flex items-center gap-2">
+                      {consigProfile.displayName}
+                      {isPro && <ProBadge size="sm" className="flex-shrink-0" />}
+                    </p>
                     {consigEnriched?.referenteNombre && (
                       <p className="text-slate-400 text-sm">
                         {consigEnriched.referenteNombre}

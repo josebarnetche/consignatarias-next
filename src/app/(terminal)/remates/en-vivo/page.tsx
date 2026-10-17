@@ -21,6 +21,9 @@ import { remateAnchor, remateHref } from '@/lib/remates-enlaces'
 import { getBandasPublicas, vrCobertura } from '@/lib/vr'
 import { Calendar, Clock, MapPin, Users, Play, FileText, Youtube, Radio } from 'lucide-react'
 import LiveRemateTicker from '@/components/LiveRemateTicker'
+import ProBadge from '@/components/badges/ProBadge'
+import { getFeaturedSlugs } from '@/lib/featured'
+import { esRematePro } from '@/lib/remates-pro'
 
 /**
  * Cinco minutos, no una hora.
@@ -110,7 +113,9 @@ function extractYouTubeId(url: string): string | null {
   return (match && match[7]?.length === 11) ? match[7] : null
 }
 
-function LiveRemateCard({ remate, isToday, isLive, confidence, watchUrl, anclaStream }: { remate: Remate; isToday: boolean; isLive: boolean; confidence: 'confirmed' | 'probable'; watchUrl: string; anclaStream?: string | null }) {
+// `pro`: firma PRO — mismo resaltado que la fila PRO de RematesClient (barra de
+// acento, tinte y sello), 17-10-2026.
+function LiveRemateCard({ remate, isToday, isLive, confidence, watchUrl, anclaStream, pro = false }: { remate: Remate; isToday: boolean; isLive: boolean; confidence: 'confirmed' | 'probable'; watchUrl: string; anclaStream?: string | null; pro?: boolean }) {
   const typeColors: Record<string, string> = {
     invernada: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
     cria: 'bg-amber-500/10 text-amber-400 border-amber-500/30',
@@ -126,9 +131,12 @@ function LiveRemateCard({ remate, isToday, isLive, confidence, watchUrl, anclaSt
   const catalogo = normalizeUrl(remate.catalogUrl)
 
   return (
-    <article className={`bg-zinc-900/50 border rounded-lg overflow-hidden hover:border-zinc-600 transition-colors ${
-      isLive ? 'border-red-500/50 ring-1 ring-red-500/20' : isToday ? 'border-sky-500/30' : isProbable ? 'border-zinc-800/70' : 'border-zinc-800'
+    <article className={`relative border rounded-lg overflow-hidden hover:border-zinc-600 transition-colors ${
+      pro ? 'bg-accent/[0.04]' : 'bg-zinc-900/50'
+    } ${
+      isLive ? 'border-red-500/50 ring-1 ring-red-500/20' : isToday ? 'border-sky-500/30' : pro ? 'border-accent/30' : isProbable ? 'border-zinc-800/70' : 'border-zinc-800'
     }`}>
+      {pro && <span aria-hidden className="absolute inset-y-0 left-0 z-[1] w-1 bg-accent" />}
       {/* YouTube Thumbnail — only when we have a confirmed video id */}
       {videoId && (
         <a
@@ -191,14 +199,17 @@ function LiveRemateCard({ remate, isToday, isLive, confidence, watchUrl, anclaSt
         {/* Header */}
         <div className="flex items-start justify-between gap-3 mb-3">
           <div className="flex-1 min-w-0">
-            <Link
-              href={ficha ?? consignatariaProfilePath(remate.consignatariaSlug)}
-              aria-label={ficha ? remateAnchor(remate) : undefined}
-              title={ficha ? remateAnchor(remate) : undefined}
-              className="text-lg font-medium text-zinc-100 hover:text-accent transition-colors line-clamp-1"
-            >
-              {nombrePropio(remate.consignatariaName)}
-            </Link>
+            <div className="flex min-w-0 items-center gap-2">
+              <Link
+                href={ficha ?? consignatariaProfilePath(remate.consignatariaSlug)}
+                aria-label={ficha ? remateAnchor(remate) : undefined}
+                title={ficha ? remateAnchor(remate) : undefined}
+                className="text-lg font-medium text-zinc-100 hover:text-accent transition-colors line-clamp-1"
+              >
+                {nombrePropio(remate.consignatariaName)}
+              </Link>
+              {pro && <ProBadge size="sm" className="flex-shrink-0" />}
+            </div>
             <div className="flex items-center gap-2 mt-1 text-sm text-zinc-500">
               <MapPin className="w-3.5 h-3.5" />
               <span>{[nombrePropio(getCity(remate.location)), provinciaNombre(remate.province)].filter(Boolean).join(', ')}</span>
@@ -285,6 +296,8 @@ function LiveRemateCard({ remate, isToday, isLive, confidence, watchUrl, anclaSt
 
 export default async function RematesEnVivoPage() {
   const todayStr = getTodayStr()
+  // Remates de firmas PRO resaltados en el calendario (17-10-2026).
+  const proSlugs = await getFeaturedSlugs()
 
   // Todo lo transmisible de hoy en adelante. La cuenta vive en
   // `src/lib/remates-en-vivo.ts` porque el endpoint del muro hace la misma.
@@ -411,6 +424,7 @@ export default async function RematesEnVivoPage() {
                       confidence={remate.confidence}
                       watchUrl={remate.watchUrl}
                       anclaStream={null}
+                      pro={esRematePro(remate, proSlugs)}
                     />
                   ))}
                 </div>

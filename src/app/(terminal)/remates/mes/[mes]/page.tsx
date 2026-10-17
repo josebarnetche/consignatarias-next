@@ -5,6 +5,8 @@ import remates from '@/lib/data/remates.json'
 import { RematesListSchema, BreadcrumbSchema } from '@/components/seo/JsonLd'
 import { Calendar, ArrowLeft, ArrowRight, ChevronRight } from 'lucide-react'
 import { RemateFila } from '@/components/remates/RemateFila'
+import { getFeaturedSlugs } from '@/lib/featured'
+import { esRematePro } from '@/lib/remates-pro'
 import type { Auction } from '@/lib/db/schema'
 import { EmptyState } from '@/components/ui'
 import { MESES, mesIndexable, mesPasado, rematesDelMes } from '@/lib/seo/indexacion'
@@ -136,6 +138,8 @@ export default async function MonthRematesPage({ params }: { params: Promise<{ m
     notFound()
   }
 
+  // Firmas PRO: sus remates van resaltados en el calendario (17-10-2026).
+  const proSlugs = await getFeaturedSlugs()
   const year = getCurrentYear()
   const currentMonth = getCurrentMonth()
   const auctionList = getAuctionsForMonth(mes)
@@ -286,7 +290,7 @@ export default async function MonthRematesPage({ params }: { params: Promise<{ m
                         .slice()
                         .sort((a, b) => a.date.localeCompare(b.date))
                         .map(auction => (
-                          <RemateFila key={auction.id} remate={auction} conFecha />
+                          <RemateFila key={auction.id} remate={auction} conFecha pro={esRematePro(auction, proSlugs)} />
                         ))}
                     </ul>
                   </div>

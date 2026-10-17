@@ -8,6 +8,8 @@ import { authorizeCron } from '@/lib/cron-auth'
 import rematesData from '@/lib/data/remates.json'
 import { registrarCampanas } from '@/lib/promotion'
 import type { Auction } from '@/lib/db/schema'
+import { getFeaturedSlugs } from '@/lib/featured'
+import { armarRematesNewsletter } from '@/lib/newsletter/remates-semana'
 
 /**
  * Weekly newsletter — sends featured PRO remates to all newsletter subscribers.
@@ -39,34 +41,12 @@ export async function POST(req: NextRequest) {
       .filter(a => a.date >= todayStr && a.date <= nextWeekStr)
       .sort((a, b) => a.date.localeCompare(b.date))
 
-    const { data: proConsignatarias } = await supabase
-      .from('consignatarias')
-      .select('canonical_slug, display_name, featured')
-      .or('featured.eq.true')
-
-    const { data: proSubscriptions } = await supabase
-      .from('subscriptions')
-      .select('entity_slug')
-      .eq('entity_type', 'consignataria')
-      .in('status', ['active', 'past_due'])
-
-    const proSlugs = new Set<string>()
-    proConsignatarias?.forEach(c => { if (c.featured) proSlugs.add(c.canonical_slug) })
-    proSubscriptions?.forEach(s => proSlugs.add(s.entity_slug))
-
-    const proAuctions = upcomingAuctions.filter(a => proSlugs.has(a.consignatariaSlug))
-    const regularAuctions = upcomingAuctions.filter(a => !proSlugs.has(a.consignatariaSlug))
-
-    const featuredRemates = [
-      ...proAuctions.map(a => ({
-        title: a.title, date: a.date, time: a.time, location: a.location || '',
-        consignataria: a.consignatariaName, slug: a.consignatariaSlug, heads: a.estimatedHeads, isPro: true,
-      })),
-      ...regularAuctions.slice(0, Math.max(0, 10 - proAuctions.length)).map(a => ({
-        title: a.title, date: a.date, time: a.time, location: a.location || '',
-        consignataria: a.consignatariaName, slug: a.consignatariaSlug, heads: a.estimatedHeads, isPro: false,
-      })),
-    ].slice(0, 10)
+    // PRO = la fuente única (featured o suscripción vigente, con la gracia de
+    // la cancelada) y comparada contra el slug CANÓNICO del remate. Antes esta
+    // ruta tenía su propia regla (active/past_due) y comparaba el slug crudo.
+    // PRO primero, dentro del tope de 10 (17-10-2026).
+    const proSlugs = await getFeaturedSlugs()
+    const { remates: featuredRemates, proCount } = armarRematesNewsletter(upcomingAuctions, proSlugs)
 
     if (featuredRemates.length === 0) {
       return { message: 'No hay remates para la próxima semana', metadata: { message: 'No hay remates para la próxima semana', sent: 0 } }
@@ -130,7 +110,7 @@ export async function POST(req: NextRequest) {
       skipped,
       weekRange,
       featuredCount: featuredRemates.length,
-      proCount: proAuctions.length,
+      proCount,
       totalRemates: upcomingAuctions.length,
       errors: errors.length > 0 ? errors : undefined,
     }

@@ -23,6 +23,7 @@ import { getConsignatariaProfile, getRelatedConsignatarias } from '@/lib/dal/con
 import { getMergedAuctionsForConsignataria, OWNER_ID_OFFSET } from '@/lib/dal/auctions'
 import { getApprovedReviewsForSlug, getReviewStatsForSlug } from '@/lib/dal/reviews'
 import { getEntityTier } from '@/lib/features'
+import { getFeaturedSlugs } from '@/lib/featured'
 import { createServiceClient } from '@/lib/supabase'
 import { BreadcrumbSchema, LocalBusinessSchema, EventSchema, VideoObjectSchema, DatasetSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import { FaqList } from '@/components/seo/FaqList'
@@ -273,7 +274,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   // Thin profiles (0–1 remates, no SEO enhancement) have too little unique
   // content to index — keep them crawlable/followable but out of the index.
-  const thin = profileAuctions.length < 2 && !customSEO
+  // 17-10-2026: una firma PRO nunca va noindex — paga por estar lista para
+  // buscadores y respuestas de IA, aunque todavía tenga pocos remates cargados.
+  // El sitemap aplica la misma excepción (src/app/sitemap.ts).
+  const thin = profileAuctions.length < 2 && !customSEO && !(await getFeaturedSlugs()).has(canonical)
 
   return {
     title,

@@ -14,6 +14,7 @@ import { eventWeight } from '@/lib/value-events'
 import { getCanonicalSlug, getProfile } from '@/lib/data/consignataria-slugs'
 import crypto from 'crypto'
 import { logEvent } from '@/lib/ops'
+import { asegurarReclamoPorPago } from '@/lib/claims/reclamo-por-pago'
 
 // Verify Rebill webhook signature (HMAC-SHA256)
 /**
@@ -625,10 +626,11 @@ export async function POST(request: NextRequest) {
         }
 
         if (entityType === 'consignataria') {
-          await service
-            .from('consignatarias')
-            .update({ featured: true })
-            .eq('canonical_slug', entitySlug)
+          // `featured` NO se toca al cobrar (revisión del 17-10-2026). Es el destaque
+          // MANUAL y getConsignatariaPlanStatus lo trata como PRO permanente: prenderlo
+          // acá hacía que un pago dejara a la firma PRO para siempre aunque dejara de
+          // pagar (past_due o fin de período sin renovar). El PRO pagado lo gobierna
+          // sólo la fila de `subscriptions` con su current_period_end.
 
           // El perfil es estático (revalidate=false) → sin esto, el PRO recién se vería
           // en el próximo deploy. Revalidamos on-demand para que el hero PRO (logo
@@ -639,8 +641,28 @@ export async function POST(request: NextRequest) {
             // La landing /go (QR/flyers) también es estática → sin esto el QR seguiría
             // mostrando FREE tras pagar. Se revalida junto con el perfil.
             revalidatePath(`/go/${cslug}`)
+            // Directorio (PRO primero + sello) y muro de la home (17-10-2026).
+            revalidatePath('/consignatarias')
+            revalidatePath('/')
           } catch (err) {
             console.error('revalidatePath consignataria PRO (activación) failed:', err)
+          }
+
+          // Quien pagó tiene que poder abrir el panel: si la ficha no es suya todavía,
+          // queda un reclamo pendiente a su nombre (no la ficha: pagar no prueba ser
+          // la firma). Ver lib/claims/reclamo-por-pago.ts.
+          try {
+            const reclamo = await asegurarReclamoPorPago(
+              service as unknown as Parameters<typeof asegurarReclamoPorPago>[0],
+              getCanonicalSlug(entitySlug) || entitySlug,
+              metadata?.customerEmail,
+            )
+            if (reclamo === 'creado' || reclamo === 'error' || reclamo === 'otro_dueno') {
+              logEvent({ eventType: reclamo === 'creado' ? 'webhook_received' : 'error', status: reclamo === 'creado' ? 'ok' : 'error', route: '/api/webhooks/rebill',
+                         metadata: { motivo: 'reclamo_por_pago', resultado: reclamo, slug: entitySlug } })
+            }
+          } catch (err) {
+            console.error('reclamo por pago falló:', err)
           }
 
           // Welcome email (best-effort, non-blocking). Tier=pro is already granted
@@ -664,10 +686,7 @@ export async function POST(request: NextRequest) {
           // El plan PRO ya está otorgado por el upsert de subscriptions (getFrigorifico
           // PlanStatus lo lee), así que la vitrina de carne se habilita aunque no exista
           // fila de perfil. Si el frigorífico reclamó, prendemos también featured.
-          await service
-            .from('frigorifico_profiles')
-            .update({ featured: true })
-            .eq('cuit', entitySlug)
+          // Igual que consignataria: `featured` es el destaque manual, no se escribe al cobrar.
           // El perfil es estático → revalidar para que la vitrina + RFQ aparezcan ya.
           try {
             revalidatePath(`/frigorificos/${entitySlug}`)
@@ -695,6 +714,14 @@ export async function POST(request: NextRequest) {
             .from('subscriptions')
             .update({ status: 'past_due', updated_at: new Date().toISOString() })
             .eq('rebill_subscription_id', subscription_id)
+          // past_due ya no cuenta como PRO (getFeaturedSlugs): directorio y muro
+          // dejan de ponerla primera al instante (17-10-2026).
+          try {
+            revalidatePath('/consignatarias')
+            revalidatePath('/')
+          } catch (err) {
+            console.error('revalidatePath (pago fallido) failed:', err)
+          }
         } else {
           // Try user PRO Usuario first, then Enterprise
           const updates = { status: 'past_due', updated_at: new Date().toISOString() }
@@ -757,29 +784,23 @@ export async function POST(request: NextRequest) {
             .eq('rebill_subscription_id', subscription_id)
 
           if (entSub.entity_type === 'consignataria') {
-            // featured=false a propósito: la permanencia PRO durante la gracia la gobierna
-            // current_period_end de la sub, no el flag manual (que sería PRO para siempre).
-            await service
-              .from('consignatarias')
-              .update({ featured: false })
-              .eq('canonical_slug', entSub.entity_slug)
+            // `featured` no se toca: es el destaque manual (si la firma lo tenía antes de
+            // pagar, lo conserva). La gracia la gobierna current_period_end de la sub.
             // Revalidar perfil + landing /go para que dejen de mostrar el hero PRO al instante.
             try {
               const cslug = getCanonicalSlug(entSub.entity_slug) || entSub.entity_slug
               revalidatePath(`/consignatarias/${cslug}`)
               revalidatePath(`/go/${cslug}`)
+              revalidatePath('/consignatarias')
+              revalidatePath('/')
             } catch (err) {
               console.error('revalidatePath consignataria (cancelación) failed:', err)
             }
           }
 
           if (entSub.entity_type === 'frigorifico') {
-            // Misma gracia que consignataria: featured=false, pero el helper honra la
-            // sub cancelada hasta current_period_end (la vitrina sigue hasta fin de mes).
-            await service
-              .from('frigorifico_profiles')
-              .update({ featured: false })
-              .eq('cuit', entSub.entity_slug)
+            // Misma gracia que consignataria: el helper honra la sub cancelada hasta
+            // current_period_end; `featured` (destaque manual) no se toca.
             try {
               revalidatePath(`/frigorificos/${entSub.entity_slug}`)
             } catch (err) {

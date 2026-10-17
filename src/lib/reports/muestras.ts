@@ -14,6 +14,7 @@ import type { Cartera } from './cartera'
 import type { Benchmark } from './benchmark'
 import type { Participacion } from './participacion'
 import type { Territorio } from './territorio'
+import type { OrigenVisitas } from './origen-visitas'
 
 export const CARTERA_MUESTRA: Cartera = {
   slug: 'ejemplo',
@@ -131,4 +132,31 @@ export const TERRITORIO_MUESTRA: Territorio = {
     { partido: 'Trenque Lauquen', slugProvincia: 'buenos-aires', slugDepartamento: 'trenque-lauquen', propios: 0, totales: 79, cuota: 0, casas: 11, cabezasPropias: 0, stock: 361889, establecimientos: 724, escalaMedia: 500, indice: 0.66 },
     { partido: 'Adolfo Alsina', slugProvincia: 'buenos-aires', slugDepartamento: 'adolfo-alsina', propios: 0, totales: 68, cuota: 0, casas: 8, cabezasPropias: 0, stock: 245349, establecimientos: 812, escalaMedia: 302, indice: 0.64 },
   ],
+}
+
+/** Muestra del bloque "Quién te mira" (OrigenVisitas). Inventada, como todo lo de acá. */
+export const ORIGEN_VISITAS_MUESTRA: OrigenVisitas = {
+  porDia: Array.from({ length: 30 }, (_, i) => ({
+    dia: new Date(Date.UTC(2026, 0, 1 + i)).toISOString().slice(0, 10),
+    vistas: [2, 4, 3, 6, 1, 0, 5][i % 7] + (i % 5),
+  })),
+  total: 142,
+  porOrigen: [
+    { origen: 'buscadores', vistas: 58 },
+    { origen: 'sitio', vistas: 47 },
+    { origen: 'directo', vistas: 21 },
+    { origen: 'ias', vistas: 9 },
+    { origen: 'redes', vistas: 7 },
+  ],
+  porSeccion: [
+    { seccion: 'remates', vistas: 26 },
+    { seccion: 'directorio', vistas: 21 },
+  ],
+  sinDato: 0,
+  ias: [
+    { motor: 'ChatGPT', visitas: 6 },
+    { motor: 'Copilot', visitas: 3 },
+  ],
+  iasTotal: 9,
+  diaFuerte: 3,
 }

@@ -182,17 +182,19 @@ export default function PlanesToggle() {
               Tu sistema sabe a quién le facturaste. No sabe qué hizo el resto del mercado.
             </p>
             <p className="text-zinc-400 text-sm leading-relaxed mb-4">
-              Cruzamos las operaciones que el Mercado Agroganadero publica lote por lote —las
-              22 casas, todos los días de remate— contra las tuyas.
+              Si operás en el Mercado Agroganadero de Cañuelas, cruzamos las operaciones que
+              publica lote por lote —las 22 casas, todos los días de remate— contra las tuyas.
             </p>
+            {/* Verificado contra el código el 17-10-2026: los tres ítems de Cañuelas
+                aplican solo a firmas que operan ahí; el lead trae teléfono O email. */}
             <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-2">
               {[
-                'Qué remitentes dejaron de consignarte, y cuáles están operando en otra casa',
-                'Si vendés arriba o abajo del promedio del mercado, categoría por categoría',
-                'Tu cuota sobre las cabezas operadas y tu puesto entre las 22 casas',
-                'Los productores que te consultan por el sitio, con nombre y teléfono',
-                'Tus remates primero en el newsletter semanal, y tu perfil destacado',
-                'Tu propia página y código QR para tus catálogos',
+                'Si operás en el Mercado de Cañuelas: qué remitentes dejaron de consignarte, y cuáles están operando en otra casa',
+                'Si operás en el Mercado de Cañuelas: si vendés arriba o abajo del promedio de las 22 casas, categoría por categoría',
+                'Si operás en el Mercado de Cañuelas: tu cuota sobre las cabezas operadas y tu puesto entre las 22 casas',
+                'Los productores que te consultan desde tu perfil y tu página, con nombre y contacto',
+                'Tus remates primero en el newsletter semanal y resaltados en el calendario; tu firma primera en el directorio, con el sello ★ PRO',
+                'Tu página con logo, sello y código QR para tus catálogos, y el widget de remates para tu web',
               ].map((f) => (
                 <li key={f} className="flex items-start gap-2 text-data text-zinc-300">
                   <span style={{ color: '#fbbf24' }} className="mt-0.5">+</span>

@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import { createServiceClient } from '@/lib/supabase'
-import { getFrigorificoPlanStatus, getConsignatariaPlanStatus } from '@/lib/features'
+import { getFrigorificoPlanStatus, getConsignatariaPlanStatus, type ConsignatariaPlanStatus } from '@/lib/features'
 import DashboardClient, { type FrigoProduct, type FrigoRfq } from './DashboardClient'
 import ProductorDashboard from './ProductorDashboard'
 import rematesData from '@/lib/data/remates.json'
@@ -18,6 +18,8 @@ import { getAgendaRegional, type AgendaRegional } from '@/lib/reports/agenda-reg
 import { intentarAutoAprobar } from '@/lib/claims/auto-approve'
 import marketPrices from '@/lib/data/market-prices.json'
 import { normalizarEmail } from '@/lib/claims/aprobar'
+import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
+import { construirOrigenVisitas, type OrigenVisitas } from '@/lib/reports/origen-visitas'
 
 export const dynamic = 'force-dynamic'
 
@@ -139,7 +141,7 @@ export default async function DashboardPage() {
   const today = new Date().toISOString().slice(0, 10)
   const scrapedAuctions = consignataria
     ? (rematesData as { consignatariaSlug: string; date: string; title: string; location: string; time: string | null }[])
-        .filter(r => r.consignatariaSlug === consignataria.canonical_slug && r.date >= today)
+        .filter(r => (getCanonicalSlug(r.consignatariaSlug) || r.consignatariaSlug) === consignataria.canonical_slug && r.date >= today)
         .sort((a, b) => a.date.localeCompare(b.date))
         .slice(0, 10)
     : []
@@ -221,6 +223,44 @@ export default async function DashboardPage() {
     }
   }
 
+  // QUIÉN TE MIRA, CUÁNDO Y DESDE DÓNDE (promesa 06 de PRO). Vistas de 30 días con su
+  // origen, y las visitas que llegaron a la ficha desde una IA en 90 días. Paginado:
+  // PostgREST corta en 1.000 filas sin avisar.
+  let origenVisitas: OrigenVisitas | null = null
+  if (consignataria) {
+    try {
+      const vistas: { viewed_at: string; referrer: string | null }[] = []
+      for (let desde = 0; desde < 20_000; desde += 1000) {
+        const { data } = await service
+          .from('profile_views')
+          .select('viewed_at, referrer')
+          .eq('entity_type', 'consignataria')
+          .eq('entity_slug', consignataria.canonical_slug)
+          .gte('viewed_at', thirtyDaysAgo)
+          .order('id', { ascending: true })
+          .range(desde, desde + 999)
+        for (const v of data ?? []) if (v.viewed_at) vistas.push({ viewed_at: v.viewed_at, referrer: v.referrer })
+        if (!data || data.length < 1000) break
+      }
+      const noventaDias = new Date(Date.now() - 90 * 86_400_000).toISOString()
+      const fichaPath = `/consignatarias/${consignataria.canonical_slug}`
+      const { data: aiRefs } = await service
+        .from('ai_referrals')
+        .select('engine, path')
+        .gte('created_at', noventaDias)
+        .like('path', `${fichaPath}%`)
+        .limit(5000)
+      // El LIKE deja pasar /consignatarias/reggi-otra: se filtra el slug exacto.
+      const propias = (aiRefs ?? []).filter((r) => {
+        const p = (r.path ?? '').split(/[?#]/)[0].replace(/\/+$/, '')
+        return p === fichaPath || p.startsWith(fichaPath + '/')
+      })
+      origenVisitas = construirOrigenVisitas(vistas, propias, fichaPath)
+    } catch (e) {
+      console.error('[dashboard] origen de visitas falló:', e)
+    }
+  }
+
   // Get leads count (last 30 days)
   let leadsCount = 0
   let leads: Array<{ id: number; name: string; phone: string | null; email: string | null; message: string | null; source: string | null; status: string | null; created_at: string }> = []
@@ -261,7 +301,12 @@ export default async function DashboardPage() {
         // posible entre lo que hizo y lo que le decimos que hizo.
         rematesPorMes: rematesPorMes(
           [
-            ...(rematesData as Array<{ consignatariaSlug?: string; date?: string }>),
+            // Slug canónico: el scrape trae variantes ("reggi-y-cia") que no
+            // coincidían con la firma y su reporte decía "ningún remate este mes".
+            ...(rematesData as Array<{ consignatariaSlug?: string; date?: string }>).map((r) => ({
+              ...r,
+              consignatariaSlug: r.consignatariaSlug ? getCanonicalSlug(r.consignatariaSlug) || r.consignatariaSlug : r.consignatariaSlug,
+            })),
             ...ownerAuctions.map((a) => ({
               consignatariaSlug: consignataria.canonical_slug,
               date: a.date,
@@ -422,10 +467,10 @@ export default async function DashboardPage() {
     const allAuctions = rematesData as { consignatariaSlug: string; province: string }[]
     
     // Find this consignataria's province from their auctions
-    const myAuctions = allAuctions.filter(a => 
-      a.consignatariaSlug === consignataria.canonical_slug ||
-      a.consignatariaSlug?.toLowerCase().includes(consignataria.canonical_slug.toLowerCase())
-    )
+    // Por slug canónico, no por `includes`: con includes, "reggi" contaba los remates de
+    // cualquier slug que lo contuviera y el ranking se armaba con firmas mezcladas.
+    const canon = (s: string | undefined) => (s ? getCanonicalSlug(s) || s : '')
+    const myAuctions = allAuctions.filter(a => canon(a.consignatariaSlug) === consignataria.canonical_slug)
     const myProvince = myAuctions[0]?.province || ''
     
     if (myProvince) {
@@ -435,7 +480,8 @@ export default async function DashboardPage() {
       
       for (const a of provinceAuctions) {
         if (a.consignatariaSlug) {
-          remateCounts[a.consignatariaSlug] = (remateCounts[a.consignatariaSlug] || 0) + 1
+          const c = canon(a.consignatariaSlug)
+          remateCounts[c] = (remateCounts[c] || 0) + 1
         }
       }
       
@@ -443,10 +489,7 @@ export default async function DashboardPage() {
       const sorted = Object.entries(remateCounts)
         .sort(([, a], [, b]) => b - a)
       
-      const myPosition = sorted.findIndex(([slug]) => 
-        slug === consignataria.canonical_slug ||
-        slug.toLowerCase().includes(consignataria.canonical_slug.toLowerCase())
-      )
+      const myPosition = sorted.findIndex(([slug]) => slug === consignataria.canonical_slug)
       
       provincialRank = {
         position: myPosition >= 0 ? myPosition + 1 : 0,
@@ -456,7 +499,8 @@ export default async function DashboardPage() {
     }
   }
 
-  // Fetch subscription data
+  // Fetch subscription data. `cancelled` también: dentro del período pagado sigue
+  // siendo PRO (gracia) y el panel tiene que poder decir "PRO hasta el X".
   let subscription = null
   if (consignataria) {
     const { data: sub } = await service
@@ -464,8 +508,8 @@ export default async function DashboardPage() {
       .select('plan_name, status, current_period_end, rebill_subscription_id')
       .eq('entity_type', 'consignataria')
       .eq('entity_slug', consignataria.canonical_slug)
-      .in('status', ['active', 'past_due'])
-      .single()
+      .in('status', ['active', 'past_due', 'cancelled'])
+      .maybeSingle()
 
     subscription = sub
   }
@@ -485,8 +529,16 @@ export default async function DashboardPage() {
   // acá. `hayDatosMag` le dice al cliente si la firma opera en Cañuelas, para saber
   // si tiene sentido ofrecerle la muestra o no mostrar nada.
   let hayDatosMag = false
+  // EL PLAN SE DECIDE ACÁ Y SÓLO ACÁ (revisión del 17-10-2026). Antes el cliente
+  // armaba su propio "PRO" con la fila de suscripción y el canje de puntos, y el server
+  // gateaba con getConsignatariaPlanStatus: una firma con destaque manual (las 4 PRO
+  // que había) recibía los datos pero veía el panel FREE con las muestras de ejemplo,
+  // y un canje de puntos vencido seguía diciendo PRO para siempre con los datos ya
+  // cortados. Ahora el cliente recibe este mismo estado y no calcula nada.
+  let plan: ConsignatariaPlanStatus = { isPro: false, tier: 'free', source: null, periodEnd: null }
   if (consignataria) {
-    const { isPro } = await getConsignatariaPlanStatus(consignataria.canonical_slug)
+    plan = await getConsignatariaPlanStatus(consignataria.canonical_slug)
+    const { isPro } = plan
     hayDatosMag = !!(cartera || benchmark || participacion)
     if (!isPro) {
       leads = leads.map((l) => ({ ...l, phone: null, email: null }))
@@ -494,6 +546,7 @@ export default async function DashboardPage() {
       benchmark = null
       participacion = null
       territorio = null
+      origenVisitas = null
       // La bandeja se rearma sin las señales del MAG: sus entradas citan nombres de
       // remitentes y cifras de la cartera.
       bandeja = construirBandeja({
@@ -591,6 +644,8 @@ export default async function DashboardPage() {
       provincialRank={provincialRank}
       completedFields={completedFields}
       subscription={subscription}
+      plan={plan}
+      origenVisitas={origenVisitas}
       frigorifico={frigorifico}
       frigoClaims={frigoClaims || []}
       frigoProducts={frigoProducts}

@@ -256,6 +256,9 @@ export async function sendPreofertaAlert(opts: {
   }).catch(() => {})
 }
 
+// Copy de PRO verificado contra el código el 17-10-2026: sello ★ PRO (no "verificado",
+// eso sale de reclamar el perfil), primera en directorio/muro, remates resaltados,
+// primera en el newsletter semanal, leads con nombre y contacto, panel de quién te mira.
 export async function sendConsignatariaProWelcome(email: string, displayName: string, slug: string) {
   const resend = await getResend()
   if (!resend) return
@@ -267,7 +270,7 @@ export async function sendConsignatariaProWelcome(email: string, displayName: st
     html: darkEmailShell(`
       <p style="color:#fbbf24;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">&#9733; Consignataria PRO</p>
       <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 12px">Bienvenida a PRO</h2>
-      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 16px">El perfil de <strong style="color:#fafafa">${safeName}</strong> en consignatarias.com.ar quedó <strong style="color:#fafafa">activo como PRO</strong>: aparecés con prioridad (destacado) ante los productores que buscan consignataria, con tu historial de remates, tu calendario y la analítica de tu perfil.</p>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 16px">El perfil de <strong style="color:#fafafa">${safeName}</strong> en consignatarias.com.ar quedó <strong style="color:#fafafa">activo como PRO</strong>: tu firma va primera en el directorio y en el muro de la portada, con el sello &#9733; PRO; tus remates van resaltados en el calendario y primeros en el newsletter semanal; las consultas de productores te llegan con nombre y contacto, y en tu panel ves quién te mira.</p>
       <p style="margin:0 0 20px"><a href="${APP_URL}/consignatarias/${slug}" style="color:#38bdf8">Ver tu perfil</a> &middot; <a href="${APP_URL}/dashboard" style="color:#38bdf8">Ir a tu panel</a></p>
       <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">Consignatarias.com.ar — la referencia del mercado ganadero</p>
     `),
@@ -296,11 +299,11 @@ export async function sendConsignatariaViewsOutreach(opts: {
       // List-Unsubscribe RFC 8058 (warm outreach): prerrequisito de deliverability.
       // Mismo bloque de headers que el digest / sendRemateResultsToProducer.
       headers: listUnsubHeaders(opts.to, 'views_outreach'),
-      subject: `Tu perfil en consignatarias.com.ar fue visto ${opts.views} veces este mes`,
+      subject: `Tu perfil en consignatarias.com.ar recibió ${opts.views} visitas en los últimos 30 días`,
       html: darkEmailShell(`
         <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Hola, equipo de <strong style="color:#fafafa">${safeName}</strong>:</p>
-        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Tu perfil en consignatarias.com.ar fue visto <strong style="color:#fafafa">${opts.views} veces</strong> en los últimos 30 días por productores que buscan dónde y con quién operar.</p>
-        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Con <strong style="color:#fbbf24">PRO</strong> aparecés con prioridad (destacado), con tu badge verificado, tu calendario y la analítica de tu perfil — para que esas visitas se vuelvan consultas.</p>
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Tu perfil en consignatarias.com.ar recibió <strong style="color:#fafafa">${opts.views} visitas</strong> en los últimos 30 días.</p>
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Con <strong style="color:#fbbf24">PRO</strong> tu firma va primera en el directorio con el sello &#9733; PRO, tus remates van resaltados en el calendario y primeros en el newsletter semanal, y las consultas te llegan con nombre y contacto — para que esas visitas se vuelvan consultas.</p>
         <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 16px"><a href="${APP_URL}/consignatarias/${opts.slug}/activar" style="color:#38bdf8">Activá PRO acá</a> — ARS 45.000/mes, cancelás cuando quieras.</p>
         <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 4px">Saludos,<br>José — consignatarias.com.ar</p>
         ${legalIdentificationHtml(opts.to)}
@@ -767,7 +770,7 @@ export async function sendMonthlyMetrics(
         <div style="background:#18181b;border:1px solid #27272a;border-radius:2px;padding:16px;text-align:center;margin-bottom:16px">
           <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:.12em">Vistas del perfil</p>
           <p style="color:#38bdf8;font-size:32px;font-weight:bold;margin:0">${viewsFormatted}</p>
-          <p style="color:#71717a;font-size:11px;margin:4px 0 0">productores vieron tu perfil este mes</p>
+          <p style="color:#71717a;font-size:11px;margin:4px 0 0">visitas a tu perfil este mes</p>
         </div>
 
         ${views > 0 ? `
@@ -1212,7 +1215,7 @@ export function buildWeeklyNewsletterHtml(
 
     <tr><td style="background:#18181b;border:1px solid rgba(251,191,36,.4);border-radius:2px;padding:12px 14px;text-align:center">
       <p style="font-family:${MONO};color:#fbbf24;font-size:11px;margin:0 0 4px;font-weight:700;letter-spacing:.08em">&#9733; CONSIGNATARIAS PRO</p>
-      <p style="font-family:${MONO};color:#a1a1aa;font-size:11px;margin:0;line-height:1.5">Los remates destacados son de consignatarias PRO verificadas. <a href="${APP_URL}/planes" style="color:#fbbf24">Conoc&eacute; los beneficios &rarr;</a></p>
+      <p style="font-family:${MONO};color:#a1a1aa;font-size:11px;margin:0;line-height:1.5">Los remates destacados son de consignatarias PRO. <a href="${APP_URL}/planes" style="color:#fbbf24">Conoc&eacute; los beneficios &rarr;</a></p>
     </td></tr>
 
     <tr><td style="border-top:1px solid #27272a;padding:14px 0 0;margin-top:18px">

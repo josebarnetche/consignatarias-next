@@ -67,7 +67,7 @@ export default function ActivarProForm({ slug, displayName, views }: Props) {
 
         <p className="text-data text-zinc-400 font-terminal">
           Activá el perfil PRO de <span className="text-zinc-200 font-semibold">{displayName}</span> y
-          aparecé con prioridad ante los productores que buscan consignataria.
+          que tu firma aparezca primera ante los productores que buscan consignataria.
         </p>
 
         {state === 'error' && (
@@ -114,19 +114,23 @@ export default function ActivarProForm({ slug, displayName, views }: Props) {
           <ul className="space-y-1.5 text-xs text-zinc-400 font-terminal">
             <li className="flex items-center gap-2">
               <span className="text-positive">✓</span>
-              Prioridad de aparición (destacado) + badge PRO
+              Primera en el directorio y en el muro de la portada, con el sello ★ PRO
             </li>
             <li className="flex items-center gap-2">
               <span className="text-positive">✓</span>
-              Analítica de tu perfil (vistas, ranking)
+              Tus remates resaltados en el calendario y primeros en el newsletter semanal
             </li>
             <li className="flex items-center gap-2">
               <span className="text-positive">✓</span>
-              Promoción de tus remates por email
+              Consultas de productores con nombre y contacto, por mail y en tu panel
             </li>
             <li className="flex items-center gap-2">
               <span className="text-positive">✓</span>
-              Tu calendario distribuible y tu historial verificable
+              Quién te mira: vistas por día y por dónde llegan
+            </li>
+            <li className="flex items-center gap-2">
+              <span className="text-positive">✓</span>
+              Widget de remates para tu web y página con QR
             </li>
           </ul>
         </div>

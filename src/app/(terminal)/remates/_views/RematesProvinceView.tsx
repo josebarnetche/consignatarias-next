@@ -9,6 +9,9 @@ import { BreadcrumbSchema, FAQPageSchema, SpeakableSchema, RematesListSchema } f
 import { FaqList } from '@/components/seo/FaqList'
 import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
 import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
+import { getFeaturedSlugs } from '@/lib/featured'
+import { esRematePro } from '@/lib/remates-pro'
+import ProBadge from '@/components/badges/ProBadge'
 import { EmptyState } from '@/components/ui'
 import {
   formatDateShort,
@@ -192,10 +195,14 @@ export async function rematesProvinceMetadata(provincia: string): Promise<Metada
 /*  AUCTION ROW (server-rendered, simpler than client)                  */
 /* ------------------------------------------------------------------ */
 
-function AuctionRowStatic({ auction }: { auction: Auction }) {
+// `pro` lo calcula la página con getFeaturedSlugs + slug canónico (17-10-2026).
+// Antes se leía `auction.featured` de remates.json: un flag estático que quedaba
+// viejo (firmas que dieron de baja el PRO seguían resaltadas, y las que pagan
+// desde la suscripción no aparecían).
+function AuctionRowStatic({ auction, pro = false }: { auction: Auction; pro?: boolean }) {
   const city = getCity(auction.location)
   const profileSlug = getCanonicalSlug(auction.consignatariaSlug) || auction.consignatariaSlug
-  const isFeatured = !!(auction as Auction & { featured?: boolean }).featured
+  const isFeatured = pro
   // La ficha del remate es el destino principal; sin ficha, el perfil de la firma.
   const ficha = remateHref(auction)
   const anchor = ficha ? remateAnchor(auction) : `Consignataria ${nombrePropio(auction.consignatariaName)}`
@@ -207,12 +214,7 @@ function AuctionRowStatic({ auction }: { auction: Auction }) {
       {/* Mobile */}
       <div className="md:hidden p-3 space-y-1.5">
         <div className="flex items-center gap-2">
-          {isFeatured && (
-            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 border border-sky-500/50 bg-sky-500/10">
-              <span className="text-sky-400 text-[10px]">★</span>
-              <span className="text-sky-400 font-terminal text-[10px] font-bold tracking-wider">PRO</span>
-            </span>
-          )}
+          {isFeatured && <ProBadge size="sm" animated={false} className="flex-shrink-0" />}
           <span className={`text-data tabular-nums font-terminal ${isFeatured ? 'text-sky-300' : 'text-zinc-300'}`}>
             {formatDateShort(auction.date)}
           </span>
@@ -246,12 +248,7 @@ function AuctionRowStatic({ auction }: { auction: Auction }) {
 
       {/* Desktop */}
       <div className="hidden md:flex items-center gap-0 px-cell py-1.5" style={isFeatured ? { paddingLeft: '1rem' } : undefined}>
-        {isFeatured && (
-          <span className="inline-flex items-center gap-1 mr-2 px-1.5 py-0.5 border border-sky-500/50 bg-sky-500/10 flex-shrink-0">
-            <span className="text-sky-400 text-[10px]">★</span>
-            <span className="text-sky-400 font-terminal text-[10px] font-bold tracking-wider">PRO</span>
-          </span>
-        )}
+        {isFeatured && <ProBadge size="sm" animated={false} className="mr-2 flex-shrink-0" />}
         <span className={`w-[56px] flex-shrink-0 text-data tabular-nums font-terminal ${isFeatured ? 'text-sky-300 font-medium' : 'text-zinc-300'}`}>
           {formatDateShort(auction.date)}
         </span>
@@ -296,6 +293,8 @@ function AuctionRowStatic({ auction }: { auction: Auction }) {
 export async function RematesProvinceView({ provincia }: { provincia: string }) {
   const config = slugToProvince(provincia)
   if (!config) return null
+  // Remates de firmas PRO resaltados en el calendario de la provincia.
+  const proSlugs = await getFeaturedSlugs()
 
   const provinceAuctions = auctions
     .filter(a => a.province === config.name)
@@ -525,7 +524,7 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
 
               <div className="divide-y-0">
                 {upcomingAuctions.map(auction => (
-                  <AuctionRowStatic key={auction.id} auction={auction} />
+                  <AuctionRowStatic key={auction.id} auction={auction} pro={esRematePro(auction, proSlugs)} />
                 ))}
               </div>
             </>
@@ -542,7 +541,7 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
 
               <div className="divide-y-0 opacity-60">
                 {pastAuctions.slice(0, 20).map(auction => (
-                  <AuctionRowStatic key={auction.id} auction={auction} />
+                  <AuctionRowStatic key={auction.id} auction={auction} pro={esRematePro(auction, proSlugs)} />
                 ))}
                 {pastAuctions.length > 20 && (
                   <div className="px-panel py-3 text-center">

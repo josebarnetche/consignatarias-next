@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next'
 import { PROVINCIAS_CON_DATO, ZONAS_CON_DATO, zonaIndexable } from '@/lib/campos-seo'
 import { getAllCanonicalSlugs, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
 import { getProfileSEO } from '@/lib/data/profile-seo'
+import { getFeaturedSlugs } from '@/lib/featured'
 import type { Auction } from '@/lib/db/schema'
 import rematesData from '@/lib/data/remates.json'
 import frigorificosData from '@/lib/data/frigorificos.json'
@@ -743,8 +744,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const max = getAuctionsForProfile(auctionsForSitemap, slug).reduce((m, a) => (a.date > m ? a.date : m), '')
     return max ? clampToday(max) : latestRemateDate
   }
+  // 17-10-2026: las firmas PRO entran siempre (su ficha nunca va noindex, ver el
+  // `thin` de la página). getFeaturedSlugs no tira: si falla, devuelve vacío y
+  // queda el criterio de siempre.
+  const proSlugs = await getFeaturedSlugs()
   const consignatariaPages: MetadataRoute.Sitemap = getAllCanonicalSlugs()
-    .filter((slug) => getAuctionsForProfile(auctionsForSitemap, slug).length >= 2 || getProfileSEO(slug))
+    .filter((slug) => getAuctionsForProfile(auctionsForSitemap, slug).length >= 2 || getProfileSEO(slug) || proSlugs.has(slug))
     .map((slug) => ({
       url: `${baseUrl}/consignatarias/${slug}`,
       lastModified: ultimoRemateDe(slug),

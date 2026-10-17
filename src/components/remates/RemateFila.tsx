@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { consignatariaProfilePath } from '@/lib/data/consignataria-slugs'
 import { remateHref } from '@/lib/remates-enlaces'
 import { nombrePropio, provinciaNombre, getCity } from '@/lib/ui/tokens'
+import ProBadge from '@/components/badges/ProBadge'
 
 export interface RemateFilaData {
   id: number | string
@@ -23,7 +24,12 @@ export interface RemateFilaData {
  * veces —HTML y payload RSC— y la página pasaba de 1 MB. El enlace principal va a la
  * ficha del remate (si existe); el perfil de la firma queda al lado.
  */
-export function RemateFila({ remate, conFecha = false }: { remate: RemateFilaData; conFecha?: boolean }) {
+/**
+ * `pro`: la firma es PRO (lo decide la página con `esRematePro` de lib/remates-pro).
+ * Mismo resaltado que la fila PRO de RematesClient: barra de acento a la izquierda,
+ * tinte suave y el sello — "remates destacados en el calendario" (17-10-2026).
+ */
+export function RemateFila({ remate, conFecha = false, pro = false }: { remate: RemateFilaData; conFecha?: boolean; pro?: boolean }) {
   const ciudad = nombrePropio(getCity(remate.location ?? ''))
   const provincia = provinciaNombre(remate.province)
   const fecha = conFecha
@@ -38,7 +44,12 @@ export function RemateFila({ remate, conFecha = false }: { remate: RemateFilaDat
   const titulo = `${nombrePropio(remate.consignatariaName)} — remate ${remate.type ? remate.type.toLowerCase() : 'general'}`
   const href = remateHref(remate as Parameters<typeof remateHref>[0])
   return (
-    <li className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 py-2.5">
+    <li
+      className={`flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 py-2.5 ${
+        pro ? 'relative -mx-3 bg-accent/[0.04] px-3' : ''
+      }`}
+    >
+      {pro && <span aria-hidden className="absolute inset-y-0 left-0 w-1 bg-accent" />}
       <div className="min-w-0">
         {href ? (
           <Link href={href} className="font-medium text-zinc-200 transition-colors hover:text-accent">
@@ -47,6 +58,7 @@ export function RemateFila({ remate, conFecha = false }: { remate: RemateFilaDat
         ) : (
           <span className="font-medium text-zinc-200">{titulo}</span>
         )}
+        {pro && <ProBadge size="sm" animated={false} className="ml-2 align-middle" />}
         {detalle && <p className="text-xs text-zinc-500">{detalle}</p>}
       </div>
       <Link

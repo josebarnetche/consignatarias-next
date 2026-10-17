@@ -17,6 +17,7 @@ import { valuarTropa, valuarArrendamiento, KG_DEFAULT } from '@/lib/valuaciones'
 import { valuarCampoTexto, TIERRA_PROVINCIAS } from '@/lib/valuacion-campos'
 import { getX402Config } from '@/lib/x402'
 import { cotizarProUsdCents, proArsMensual, proMeses, validarSlugPro } from '@/lib/pro-x402'
+import { getFeaturedSlugs } from '@/lib/featured'
 import { CATEGORIAS_DEMANDA, crearDemanda, formatMatches, matchRemates, normalizarCategoria } from '@/lib/demanda'
 import { enforceRateLimit, clientIp } from '@/lib/rate-limit-db'
 import { techoListado, ventanaAcotada } from '@/lib/mcp/techo-listados'
@@ -639,14 +640,23 @@ const TOOLS: Tool[] = [
         qb = qb.or(`display_name.ilike.%${q}%,name.ilike.%${q}%,location.ilike.%${q}%`)
       }
       if (prov) qb = qb.ilike('province', `%${prov}%`)
-      const { data, error } = await qb.limit(limite)
+      // PRO primero (17-10-2026): "primera en el directorio que consultan los
+      // agentes de IA". Se traen TODAS las coincidencias (la tabla tiene ~110
+      // firmas; 200 es holgura) y recién después de ordenar se corta en `limite`
+      // — cortar en la base dejaba afuera a una PRO que no cayera en las primeras
+      // filas. La salida sigue respetando el límite pedido.
+      const [{ data: todas, error }, proSlugs] = await Promise.all([qb.limit(200), getFeaturedSlugs()])
       if (error) return fail('Error buscando en el directorio.')
-      if (!data || data.length === 0) return ok(`Sin resultados para "${q}".`)
+      if (!todas || todas.length === 0) return ok(`Sin resultados para "${q}".`)
+      const data = todas
+        .map((c, i) => ({ c, i, pro: proSlugs.has(c.canonical_slug) }))
+        .sort((a, b) => Number(b.pro) - Number(a.pro) || a.i - b.i)
+        .slice(0, limite)
 
-      const lines = data.map((c) => {
+      const lines = data.map(({ c, pro }) => {
         const contacto = c.whatsapp || c.phone || c.website || ''
-        return `${c.display_name}${c.location ? ' · ' + c.location : c.province ? ' · ' + c.province : ''}` +
-          `${c.category ? ' · ' + c.category : ''}${c.cuit ? ' · CUIT ' + c.cuit : ''}${contacto ? ' · ' + contacto : ''}\n  https://www.consignatarias.com.ar/consignatarias/${c.canonical_slug}`
+        return `${pro ? '★ PRO · ' : ''}${c.display_name}${c.location ? ' · ' + c.location : c.province ? ' · ' + c.province : ''}` +
+          `${c.category ? ' · ' + c.category : ''}${c.cuit ? ' · CUIT ' + c.cuit : ''}${contacto ? ' · ' + contacto : ''}${pro ? ' · pro: true' : ''}\n  https://www.consignatarias.com.ar/consignatarias/${c.canonical_slug}`
       })
       return ok(`${data.length} resultado(s) para "${q}":\n${lines.join('\n')}`)
     },
@@ -1433,7 +1443,7 @@ const TOOLS: Tool[] = [
   {
     name: 'subscribe_broker_pro',
     description:
-      'Cotiza y explica cómo activar PRO Consignataria pagando en USDC (x402): perfil destacado, badge PRO, video del último remate y leads en consignatarias.com.ar. Mismo producto que en /planes (ARS 45.000/mes), cotizado al dólar blue del día. Esta tool NO cobra: devuelve el monto exacto y el endpoint x402 para pagar. Params: slug (consignataria del directorio, usá find_livestock_broker si no lo sabés), meses (1-12, default 1). [EN] Quote and subscribe to the PRO plan for a livestock broker profile, payable in USDC.',
+      'Cotiza y explica cómo activar PRO Consignataria pagando en USDC (x402): sello ★ PRO; primera en el directorio y en el muro de la home; remates resaltados en el calendario y en sus fichas; primera en el newsletter semanal con registro de envíos; primera en el directorio que consultan los agentes de IA (este MCP); leads con nombre y contacto; panel con quién mira el perfil, cuándo y desde dónde (incluidas visitas desde IAs); cruce contra el Mercado de Cañuelas si opera ahí. Mismo producto que en /planes (ARS 45.000/mes), cotizado al dólar blue del día. Esta tool NO cobra: devuelve el monto exacto y el endpoint x402 para pagar. Params: slug (consignataria del directorio, usá find_livestock_broker si no lo sabés), meses (1-12, default 1). [EN] Quote and subscribe to the PRO plan for a livestock broker profile, payable in USDC.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1461,7 +1471,19 @@ const TOOLS: Tool[] = [
       return ok(
         `PRO Consignataria — ${firma.nombre} (${firma.canonical})\n\n` +
           `${meses} mes${meses > 1 ? 'es' : ''}: ARS ${ars.toLocaleString('es-AR')} ≈ US$${usd} en USDC (al blue del día)\n` +
-          `Incluye: perfil destacado en el directorio, badge PRO, video del último remate embebido y leads.\n\n` +
+          // Beneficios que el código cumple hoy (17-10-2026), uno por superficie.
+          // El video del último remate en el perfil sí es solo PRO, pero aparece
+          // únicamente si la firma transmitió en los últimos 45 días: se dice así.
+          `Incluye:\n` +
+          `• Sello ★ PRO.\n` +
+          `• Primera en el directorio (nacional y por provincia) y en el muro de la home.\n` +
+          `• Sus remates resaltados en el calendario y en sus fichas de remate.\n` +
+          `• Primera en el newsletter semanal, con registro de envíos.\n` +
+          `• Primera en el directorio que consultan los agentes de IA (este MCP).\n` +
+          `• Leads con nombre y contacto.\n` +
+          `• Panel con quién mira el perfil, cuándo y desde dónde (incluidas las visitas desde IAs).\n` +
+          `• Cruce contra el Mercado de Cañuelas, si opera ahí.\n` +
+          `• Si transmitió un remate en los últimos 45 días, ese video arriba en el perfil.\n\n` +
           (pagoDisponible
             ? `Para pagar con USDC (x402): GET https://www.consignatarias.com.ar/api/x402/pro?slug=${firma.canonical}&meses=${meses} — ` +
               `la respuesta 402 trae el monto exacto y las instrucciones (scheme "exact", header X-PAYMENT); cualquier cliente x402-aware lo resuelve. ` +

@@ -242,7 +242,9 @@ function Tile({ item, nameIndex }: { item: ShowcaseItem; nameIndex: number }) {
     );
   }
 
-  // Plain name tile (no logo yet).
+  // Plain name tile (no logo yet). También es el lugar de una PRO sin marca
+  // curada en logo-map: entra igual al muro (17-10-2026), con el nombre más
+  // legible que el de una baldosa común para que el sello no quede solo.
   return (
     <Link
       href={`/consignatarias/${item.slug}`}
@@ -250,7 +252,7 @@ function Tile({ item, nameIndex }: { item: ShowcaseItem; nameIndex: number }) {
     >
       <PixelCanvas colors={NAME_PALETTES[nameIndex % NAME_PALETTES.length]} />
       {item.isPro && <ProBadge size="sm" className="absolute top-2 right-2 z-[2]" />}
-      <span className="relative z-[1] text-center text-xs font-medium leading-tight text-zinc-500 transition-colors duration-300 group-hover:text-zinc-100">
+      <span className={`relative z-[1] text-center text-xs font-medium leading-tight transition-colors duration-300 group-hover:text-zinc-100 ${item.isPro ? "text-zinc-300" : "text-zinc-500"}`}>
         {item.name}
       </span>
     </Link>
@@ -274,7 +276,7 @@ export default function ConsignatariasShowcase({ items }: { items: ShowcaseItem[
           Las consignatarias más activas del mercado
         </h2>
         <p className="mt-2 text-sm text-zinc-500 max-w-xl mx-auto">
-          Casas de remate con actividad reciente. No son clientes — es el directorio.
+          Casas de remate con actividad reciente: es el directorio. Las marcadas ★ PRO van primero.
           Pasá el mouse y tocá cualquiera para ver su calendario y perfil.
         </p>
       </div>

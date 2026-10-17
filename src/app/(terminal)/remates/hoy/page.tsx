@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import remates from '@/lib/data/remates.json'
 import { RemateCardSimple } from '@/components/remates/RemateCardSimple'
+import { getFeaturedSlugs } from '@/lib/featured'
+import { esRematePro } from '@/lib/remates-pro'
 import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/JsonLd'
 import { Calendar, MapPin } from 'lucide-react'
 import DteCtaClient from './DteCtaClient'
@@ -80,11 +82,13 @@ interface Remate {
   status: string
 }
 
-function RemateCard({ remate }: { remate: Remate }) {
-  return <RemateCardSimple remate={remate} />
+function RemateCard({ remate, pro = false }: { remate: Remate; pro?: boolean }) {
+  return <RemateCardSimple remate={remate} pro={pro} />
 }
 
 export default async function RematesHoyPage() {
+  // Remates de firmas PRO resaltados en el calendario (17-10-2026).
+  const proSlugs = await getFeaturedSlugs()
   const todayStr = getTodayStr()
   const formattedDate = formatDate(todayStr)
 
@@ -196,7 +200,7 @@ export default async function RematesHoyPage() {
                     </h2>
                     <div className="space-y-3">
                       {provinceRemates.map(remate => (
-                        <RemateCard key={remate.id} remate={remate} />
+                        <RemateCard key={remate.id} remate={remate} pro={esRematePro(remate, proSlugs)} />
                       ))}
                     </div>
                   </section>

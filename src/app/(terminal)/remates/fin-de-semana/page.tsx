@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import remates from '@/lib/data/remates.json'
 import { RemateCardSimple } from '@/components/remates/RemateCardSimple'
+import { getFeaturedSlugs } from '@/lib/featured'
+import { esRematePro } from '@/lib/remates-pro'
 import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/JsonLd'
 import { Calendar } from 'lucide-react'
 import { EmptyState } from '@/components/ui'
@@ -109,11 +111,13 @@ interface Remate {
   status: string
 }
 
-function RemateCard({ remate }: { remate: Remate }) {
-  return <RemateCardSimple remate={remate} fecha={formatDateShort(remate.date)} />
+function RemateCard({ remate, pro = false }: { remate: Remate; pro?: boolean }) {
+  return <RemateCardSimple remate={remate} fecha={formatDateShort(remate.date)} pro={pro} />
 }
 
-export default function RematesFinDeSemanaPage() {
+export default async function RematesFinDeSemanaPage() {
+  // Remates de firmas PRO resaltados en el calendario (17-10-2026).
+  const proSlugs = await getFeaturedSlugs()
   const { saturday, sunday } = getWeekendDates()
 
   const weekendRemates = (remates as Remate[])
@@ -252,7 +256,7 @@ export default function RematesFinDeSemanaPage() {
                 </h2>
                 <div className="space-y-3">
                   {saturdayRemates.map((remate) => (
-                    <RemateCard key={remate.id} remate={remate} />
+                    <RemateCard key={remate.id} remate={remate} pro={esRematePro(remate, proSlugs)} />
                   ))}
                 </div>
               </section>
@@ -267,7 +271,7 @@ export default function RematesFinDeSemanaPage() {
                 </h2>
                 <div className="space-y-3">
                   {sundayRemates.map((remate) => (
-                    <RemateCard key={remate.id} remate={remate} />
+                    <RemateCard key={remate.id} remate={remate} pro={esRematePro(remate, proSlugs)} />
                   ))}
                 </div>
               </section>
