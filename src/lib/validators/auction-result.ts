@@ -1,8 +1,27 @@
 import { z } from 'zod'
+import { SLUGS_CATEGORIA_RESULTADO } from '@/lib/reports/resultado-categorias'
 
+/**
+ * Fila del desglose por categoría.
+ *
+ * 17-10-2026 — se suman `categoria_vr` y `peso_kg` para poder comparar el resultado
+ * contra el Valor de Referencia. Las dos son opcionales: las filas viejas (categoría
+ * en texto libre, sin peso) siguen pasando la validación tal cual, y la columna
+ * `category_results` es JSON, así que no hace falta migración.
+ *
+ * Los precios son ARS por kg vivo, como ya decía el formulario ("Prom. ($/kg)") y como
+ * mide el VR. El techo de 1500 kg en el peso frena un error de tipeo (kg totales del
+ * lote en vez de promedio por cabeza), que daría una banda equivocada.
+ */
 const categoryResultSchema = z.object({
   category: z.string().min(1, 'Categoría requerida').max(100),
+  categoria_vr: z
+    .string()
+    .refine((s) => SLUGS_CATEGORIA_RESULTADO.includes(s), 'Categoría desconocida')
+    .optional()
+    .nullable(),
   heads: z.number().int().positive().optional(),
+  peso_kg: z.number().positive().max(1500, 'El peso es por cabeza, en kg').optional(),
   avg_price: z.number().positive().optional(),
   max_price: z.number().positive().optional(),
 })

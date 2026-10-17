@@ -6,6 +6,8 @@ import { getDatosFirma, getDatosSitio } from '@/lib/propuesta/datos'
 import { getDatosFunciones } from '@/lib/propuesta/funciones'
 import { ALCANCE_GOOGLE } from '@/lib/data/alcance-google'
 import { Presentacion } from './Presentacion'
+import { getBusquedasFicha } from '@/lib/gsc/fichas'
+import { createServiceClient } from '@/lib/supabase'
 
 const SITIO = 'https://www.consignatarias.com.ar'
 
@@ -15,11 +17,13 @@ const mesAnio = (iso: string) =>
 /** El PDF de la propuesta PRO de una firma, con sus datos de hoy. */
 export async function generarPresentacionPro(profile: ConsignatariaProfile, contacto?: string): Promise<Buffer> {
   const slug = profile.canonicalSlug
-  const [datos, sitio, f, qrDataUrl] = await Promise.all([
+  const db = createServiceClient()
+  const [datos, sitio, f, qrDataUrl, busquedas] = await Promise.all([
     getDatosFirma(profile),
     getDatosSitio(),
     getDatosFunciones(profile),
     QRCode.toDataURL(`${SITIO}/go/${slug}?utm_source=qr`, { margin: 1, width: 480, color: { dark: '#111827', light: '#ffffff' } }),
+    db ? getBusquedasFicha(db as unknown as Parameters<typeof getBusquedasFicha>[0], slug).catch(() => null) : Promise.resolve(null),
   ])
   const generado = new Date().toLocaleDateString('es-AR', {
     day: 'numeric',
@@ -40,6 +44,7 @@ export async function generarPresentacionPro(profile: ConsignatariaProfile, cont
       qrDataUrl={qrDataUrl}
       linkActivar={`${SITIO}/consignatarias/${slug}/activar`}
       porMes={[...ALCANCE_GOOGLE.porMes]}
+      busquedas={busquedas}
     />,
   )
 }

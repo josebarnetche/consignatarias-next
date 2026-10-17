@@ -1518,6 +1518,42 @@ export type Database = {
         }
         Relationships: []
       }
+      gsc_fichas: {
+        Row: {
+          actualizado: string
+          clics: number
+          consultas: Json
+          desde: string
+          hasta: string
+          impresiones: number
+          periodo_dias: number
+          posicion: number | null
+          slug: string
+        }
+        Insert: {
+          actualizado?: string
+          clics?: number
+          consultas?: Json
+          desde: string
+          hasta: string
+          impresiones?: number
+          periodo_dias: number
+          posicion?: number | null
+          slug: string
+        }
+        Update: {
+          actualizado?: string
+          clics?: number
+          consultas?: Json
+          desde?: string
+          hasta?: string
+          impresiones?: number
+          periodo_dias?: number
+          posicion?: number | null
+          slug?: string
+        }
+        Relationships: []
+      }
       guia_purchases: {
         Row: {
           amount_ars: number | null

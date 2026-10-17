@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
 import { requireServiceClient } from '@/lib/supabase'
 import { auctionResultSchema } from '@/lib/validators/auction-result'
+import { normalizarEmail } from '@/lib/claims/aprobar'
 
 export async function POST(req: NextRequest) {
   try {
@@ -24,13 +25,16 @@ export async function POST(req: NextRequest) {
 
     const service = requireServiceClient()
 
-    // Verify the user owns this consignataria
+    // Verify the user owns this consignataria.
+    // 17-10-2026: el mail se normaliza igual que en la página del formulario
+    // (`resultados/nuevo/page.tsx`). Comparando contra `user.email` crudo, una firma
+    // cuyo claim quedó en minúsculas veía el formulario y después recibía un 403.
     const { data: consignataria } = await service
       .from('consignatarias')
       .select('canonical_slug')
       .eq('canonical_slug', parsed.data.consignataria_slug)
-      .eq('claimed_by_email', user.email!)
-      .single()
+      .eq('claimed_by_email', normalizarEmail(user.email))
+      .maybeSingle()
 
     if (!consignataria) {
       return NextResponse.json(
@@ -39,10 +43,23 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    // Filas del desglose: precios en ARS por kg vivo (lo que mide el VR). `categoria_vr`
+    // y `peso_kg` se guardan sólo si vinieron, para que una fila "Otra" no cargue un
+    // null que después haya que interpretar. Las filas viejas no tienen ninguno de los dos.
+    const categoryResults = parsed.data.category_results?.map((c) => ({
+      category: c.category.trim(),
+      ...(c.categoria_vr ? { categoria_vr: c.categoria_vr } : {}),
+      ...(c.heads !== undefined ? { heads: c.heads } : {}),
+      ...(c.peso_kg !== undefined ? { peso_kg: c.peso_kg } : {}),
+      ...(c.avg_price !== undefined ? { avg_price: c.avg_price } : {}),
+      ...(c.max_price !== undefined ? { max_price: c.max_price } : {}),
+    })) ?? null
+
     const { data: result, error: insertError } = await service
       .from('auction_results')
       .insert({
         ...parsed.data,
+        category_results: categoryResults,
         location: parsed.data.location || null,
         notes: parsed.data.notes || null,
         submitted_by: user.id,

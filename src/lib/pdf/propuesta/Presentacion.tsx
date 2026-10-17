@@ -20,6 +20,7 @@ import { ISO_RING } from '@/lib/og/brand'
 import { BENEFICIOS_PRO_CONSIGNATARIA } from '@/lib/pro-consignataria-beneficios'
 import type { DatosFirma, DatosSitio } from '@/lib/propuesta/datos'
 import type { DatosFunciones } from '@/lib/propuesta/funciones'
+import { consultasDeRemate, type BusquedasFicha } from '@/lib/gsc/fichas'
 
 const FUENTES = path.join(process.cwd(), 'src/fonts')
 Font.register({
@@ -193,6 +194,7 @@ export interface PresentacionProps {
   qrDataUrl: string
   linkActivar: string
   porMes: { mes: string; impresiones: number; parcial?: boolean }[]
+  busquedas: BusquedasFicha | null
 }
 
 export function Presentacion(p: PresentacionProps) {
@@ -282,6 +284,48 @@ export function Presentacion(p: PresentacionProps) {
           </View>
         )}
       </Diapo>
+
+      {/* LO QUE BUSCAN EN GOOGLE — sus búsquedas reales (Search Console, 90 días). */}
+      {p.busquedas?.d90 && p.busquedas.d90.impresiones > 0 && (() => {
+        const b = p.busquedas!.d90!
+        const enVivo = consultasDeRemate(b.consultas)
+        const fmtD = (iso: string) => new Date(`${iso}T12:00:00`).toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })
+        return (
+          <Diapo firma={firma}>
+            <Text style={s.kicker}>Lo que buscan en Google sobre su firma</Text>
+            <Text style={[s.h1, { maxWidth: 640 }]}>
+              Su ficha apareció {n(b.impresiones)} veces en Google en 90 días
+            </Text>
+            <Text style={[s.p, { marginTop: 8, maxWidth: 600 }]}>
+              Estas son las búsquedas reales que mostraron la ficha de {firma} en consignatarias.com.ar
+              {enVivo.length > 0 ? `. ${n(enVivo.reduce((a, c) => a + c.impresiones, 0))} de ellas buscaban su remate en vivo. Es gente que ya lo está buscando: con PRO la ficha la recibe con su sello, sus próximos remates destacados y el formulario de consulta.` : '.'}
+            </Text>
+            <View style={{ flexDirection: 'row', gap: 28, marginTop: 20 }}>
+              <View style={{ flex: 1 }}>
+                <View style={{ flexDirection: 'row', borderBottomWidth: 0.75, borderBottomColor: C.tinta, paddingBottom: 4 }}>
+                  <Text style={{ flex: 1, fontSize: 8, fontWeight: 600, color: C.tinta }}>Búsqueda</Text>
+                  <Text style={{ width: 70, textAlign: 'right', fontSize: 8, fontWeight: 600, color: C.tinta }}>Apariciones</Text>
+                  <Text style={{ width: 50, textAlign: 'right', fontSize: 8, fontWeight: 600, color: C.tinta }}>Clics</Text>
+                </View>
+                {b.consultas.slice(0, 8).map((c) => {
+                  const vivo = enVivo.includes(c)
+                  return (
+                    <View key={c.query} style={{ flexDirection: 'row', paddingVertical: 5, borderBottomWidth: 0.5, borderBottomColor: C.linea, backgroundColor: vivo ? C.acentoSuave : '#ffffff' }}>
+                      <Text style={{ flex: 1, fontSize: 9.5, color: C.tinta, fontWeight: vivo ? 600 : 400 }}>{c.query}</Text>
+                      <Text style={{ width: 70, textAlign: 'right', fontSize: 9.5, color: C.tinta }}>{n(c.impresiones)}</Text>
+                      <Text style={{ width: 50, textAlign: 'right', fontSize: 9.5, color: C.gris }}>{n(c.clics)}</Text>
+                    </View>
+                  )
+                })}
+              </View>
+              <View style={{ width: 200, gap: 18 }}>
+                <Cifra valor={n(b.impresiones)} texto="veces que su ficha apareció en una búsqueda" detalle={`${fmtD(b.desde)} – ${fmtD(b.hasta)} · Search Console`} />
+                <Cifra valor={n(b.clics)} texto="personas entraron a su ficha desde Google" detalle="Mismo período" />
+              </View>
+            </View>
+          </Diapo>
+        )
+      })()}
 
       {/* 1 · CALENDARIO */}
       <Funcion
@@ -455,6 +499,21 @@ export function Presentacion(p: PresentacionProps) {
         >
           <Ventana url="consignatarias.com.ar/dashboard · Mercado" ejemplo>
             <Image src={capt('mercado')} style={{ width: '100%', maxHeight: 400, objectFit: 'contain', objectPosition: 'top' }} />
+          </Ventana>
+        </Funcion>
+      )}
+
+      {/* PRECIO CONTRA EL MERCADO (interior: sin dato del MAG) */}
+      {!datos.mag && (
+        <Funcion
+          firma={firma}
+          numero={++num}
+          titulo="Su precio contra el mercado"
+          texto="Carga los promedios de su remate por categoría y se los comparamos con el Valor de Referencia de esa semana: la banda de lo que se pagó de verdad por esa categoría y peso."
+          puntos={['Sabe si vendió arriba o abajo de la mediana, categoría por categoría', 'Un número para mostrarle al remitente', 'La referencia está publicada y su método es abierto']}
+        >
+          <Ventana url="consignatarias.com.ar/dashboard · Tu precio contra el mercado" ejemplo>
+            <Image src={capt('precio')} style={{ width: '100%' }} />
           </Ventana>
         </Funcion>
       )}

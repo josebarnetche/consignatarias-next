@@ -7,6 +7,8 @@ import CarteraPanel from '@/components/dashboard/CarteraPanel'
 import BenchmarkMercado from '@/components/dashboard/BenchmarkMercado'
 import { CARTERA_MUESTRA, BENCHMARK_MUESTRA, ORIGEN_VISITAS_MUESTRA } from '@/lib/reports/muestras'
 import { PREOFERTA_EJEMPLO, OFERTAS_EJEMPLO, LEADS_EJEMPLO } from '@/lib/propuesta/muestras'
+import ResultadoVsMercado from '@/components/dashboard/ResultadoVsMercado'
+import { RESULTADO_VS_MERCADO_MUESTRA } from '@/lib/reports/muestras'
 
 export const dynamic = 'force-dynamic'
 export const metadata: Metadata = { robots: { index: false, follow: false } }
@@ -61,6 +63,10 @@ export default async function CapturasPage() {
 
       <Bloque id="visitas">
         <OrigenVisitas d={ORIGEN_VISITAS_MUESTRA} />
+      </Bloque>
+
+      <Bloque id="precio">
+        <ResultadoVsMercado resultados={RESULTADO_VS_MERCADO_MUESTRA} />
       </Bloque>
 
       <Bloque id="mercado">

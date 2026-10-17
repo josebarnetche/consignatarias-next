@@ -21,6 +21,8 @@ import { normalizarEmail } from '@/lib/claims/aprobar'
 import { getCanonicalSlug, getProfile } from '@/lib/data/consignataria-slugs'
 import { construirOrigenVisitas, type OrigenVisitas } from '@/lib/reports/origen-visitas'
 import { getPreofertasDeFirma, getOfertasDeFirma } from '@/lib/preofertas-firma'
+import { getResultadosVsMercado, type ResultadoVsMercado } from '@/lib/reports/resultado-vs-mercado'
+import { getBusquedasFicha, type BusquedasFicha } from '@/lib/gsc/fichas'
 
 export const dynamic = 'force-dynamic'
 
@@ -308,6 +310,16 @@ export default async function DashboardPage({
     }
   }
 
+  // LO QUE BUSCAN EN GOOGLE (17-10-2026): las búsquedas que mostraron su ficha, de
+  // gsc_fichas (cron semanal gsc-fichas). Sin dato, el bloque no aparece.
+  let busquedasGoogle: BusquedasFicha | null = null
+  if (consignataria) {
+    busquedasGoogle = await getBusquedasFicha(
+      service as unknown as Parameters<typeof getBusquedasFicha>[0],
+      consignataria.canonical_slug,
+    ).catch(() => null)
+  }
+
   // Get leads count (last 30 days)
   let leadsCount = 0
   let leads: Array<{ id: number; name: string; phone: string | null; email: string | null; message: string | null; source: string | null; status: string | null; created_at: string }> = []
@@ -429,6 +441,17 @@ export default async function DashboardPage({
   ])
   ;[benchmark, cartera, participacion] = mag
   territorio = territorioLeido
+
+  // TU PRECIO CONTRA EL MERCADO (17-10-2026): para las casas que no rematan en
+  // Cañuelas, sus resultados cargados contra el Valor de Referencia.
+  let resultadosVR: ResultadoVsMercado[] | null = null
+  if (consignataria) {
+    resultadosVR = await getResultadosVsMercado(
+      service as unknown as Parameters<typeof getResultadosVsMercado>[0],
+      user.id,
+      consignataria.canonical_slug,
+    )
+  }
 
   // BANDEJA — junta todas las señales en una sola lista ordenada por lo que está en
   // juego. Va última en el cálculo porque consume lo que los demás bloques ya
@@ -604,6 +627,8 @@ export default async function DashboardPage({
       participacion = null
       territorio = null
       origenVisitas = null
+      resultadosVR = null
+      busquedasGoogle = null
       // La bandeja se rearma sin las señales del MAG: sus entradas citan nombres de
       // remitentes y cifras de la cartera.
       bandeja = construirBandeja({
@@ -714,6 +739,8 @@ export default async function DashboardPage({
       vistaAdmin={vistaAdmin}
       preofertasFirma={preofertasFirma}
       ofertasFirma={ofertasFirma}
+      resultadosVR={resultadosVR}
+      busquedasGoogle={busquedasGoogle}
       origenVisitas={origenVisitas}
       frigorifico={frigorifico}
       frigoClaims={frigoClaims || []}

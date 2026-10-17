@@ -758,6 +758,8 @@ export interface ReporteMensualFirma {
   salidas: number
   seguidores: number
   esPro: boolean
+  /** Search Console, últimos 28 días (gsc_fichas). null = sin dato. */
+  google?: { impresiones: number; top: string[] } | null
 }
 
 /**
@@ -795,6 +797,7 @@ export async function sendMonthlyMetrics(
           ${fila('Consultas recibidas', n(datos.consultas), 'productores que dejaron sus datos en tu perfil o tu página')}
           ${fila('Envíos con tus remates', n(datos.envios), datos.salidas > 0 ? `newsletter semanal, en ${datos.salidas} ${datos.salidas === 1 ? 'salida' : 'salidas'}` : 'newsletter semanal')}
           ${fila('Productores que siguen tu casa', n(datos.seguidores), 'total a fin de mes')}
+          ${datos.google ? fila('Veces que tu ficha apareció en Google', n(datos.google.impresiones), datos.google.top.length ? `buscaron: ${datos.google.top.map((q) => escapeHtml(q)).join(' · ')}` : 'últimos 28 días · Search Console') : ''}
         </table>
         <p style="color:#71717a;font-size:12px;line-height:1.6;margin:0 0 18px">
           ${datos.esPro

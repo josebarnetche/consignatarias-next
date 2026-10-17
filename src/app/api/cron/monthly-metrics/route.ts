@@ -5,6 +5,7 @@ import { authorizeCron } from '@/lib/cron-auth'
 import { getFeaturedSlugs } from '@/lib/featured'
 import { esMotorIA } from '@/lib/reports/origen-visitas'
 import { logEvent } from '@/lib/ops'
+import { getBusquedasFicha } from '@/lib/gsc/fichas'
 
 export const dynamic = 'force-dynamic'
 
@@ -82,6 +83,9 @@ export async function POST(req: NextRequest) {
         salidas: (campanas.data ?? []).length,
         seguidores: seguidores.count ?? 0,
         esPro: pro.has(f.canonical_slug),
+        google: await getBusquedasFicha(db as unknown as Parameters<typeof getBusquedasFicha>[0], f.canonical_slug)
+          .then((b) => (b?.d28 ? { impresiones: b.d28.impresiones, top: b.d28.consultas.slice(0, 3).map((c) => c.query) } : null))
+          .catch(() => null),
       }
       const res = await sendMonthlyMetrics(f.claimed_by_email, f.display_name, f.canonical_slug, datos, monthName)
       if (res?.error) errors.push(`${f.canonical_slug}: ${res.error.message}`)

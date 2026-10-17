@@ -32,7 +32,7 @@ import type { Bandeja } from '@/lib/reports/bandeja'
 import AgendaRegionalPanel from '@/components/dashboard/AgendaRegionalPanel'
 import type { AgendaRegional } from '@/lib/reports/agenda-regional'
 import MuestraPro from '@/components/dashboard/MuestraPro'
-import { CARTERA_MUESTRA, BENCHMARK_MUESTRA, PARTICIPACION_MUESTRA, ORIGEN_VISITAS_MUESTRA } from '@/lib/reports/muestras'
+import { CARTERA_MUESTRA, BENCHMARK_MUESTRA, PARTICIPACION_MUESTRA, ORIGEN_VISITAS_MUESTRA, RESULTADO_VS_MERCADO_MUESTRA, BUSQUEDAS_GOOGLE_MUESTRA } from '@/lib/reports/muestras'
 import type { ResumenDistribucion } from '@/lib/promotion'
 import { whatsappLink } from '@/lib/leads/routing'
 import type { Performance } from '@/lib/reports/performance'
@@ -40,6 +40,10 @@ import type { ConsignatariaPlanStatus } from '@/lib/features'
 import { BENEFICIOS_PRO_CONSIGNATARIA } from '@/lib/pro-consignataria-beneficios'
 import OrigenVisitas from '@/components/dashboard/OrigenVisitas'
 import PreofertasManager, { type PreofertaFirma, type OfertaRecibida } from '@/components/dashboard/PreofertasManager'
+import ResultadoVsMercado from '@/components/dashboard/ResultadoVsMercado'
+import BusquedasGoogle from '@/components/dashboard/BusquedasGoogle'
+import type { BusquedasFicha } from '@/lib/gsc/fichas'
+import type { ResultadoVsMercado as ResultadoVsMercadoDatos } from '@/lib/reports/resultado-vs-mercado'
 import type { OrigenVisitas as OrigenVisitasDatos } from '@/lib/reports/origen-visitas'
 
 interface Consignataria {
@@ -219,6 +223,8 @@ interface Props {
   vistaAdmin?: VistaAdmin | null
   preofertasFirma?: PreofertaFirma[]
   ofertasFirma?: OfertaRecibida[]
+  resultadosVR?: ResultadoVsMercadoDatos[] | null
+  busquedasGoogle?: BusquedasFicha | null
   frigorifico?: Frigorifico | null
   frigoClaims?: FrigoClaim[]
   frigoProducts?: FrigoProduct[]
@@ -246,7 +252,7 @@ type TabKey = 'resumen' | 'leads' | 'remates' | 'preofertas' | 'editar' | 'resul
 
 export default function DashboardClient({
   email, consignataria, claims, scrapedAuctions, ownerAuctions: initialOwnerAuctions,
-  auctionResults, viewCount, whatsappClicks, leadsCount, followersCount = 0, marksCount = 0, leads = [], totalWatchers, viewPercentile, provincialRank, completedFields, subscription, plan = PLAN_FREE, origenVisitas = null, vistaAdmin = null, preofertasFirma = [], ofertasFirma = [], frigorifico, frigoClaims = [],
+  auctionResults, viewCount, whatsappClicks, leadsCount, followersCount = 0, marksCount = 0, leads = [], totalWatchers, viewPercentile, provincialRank, completedFields, subscription, plan = PLAN_FREE, origenVisitas = null, vistaAdmin = null, preofertasFirma = [], ofertasFirma = [], resultadosVR = null, busquedasGoogle = null, frigorifico, frigoClaims = [],
   frigoProducts = [], frigoRfqs = [], frigoIsPro = false,
   dteCount = 0, alreadyRedeemed = false, performance = null, distribucion = null, benchmark = null, cartera = null, territorio = null, territorioTitular = '', participacion = null, bandeja = null, hayDatosMag = false, agenda = null,
 }: Props) {
@@ -687,6 +693,19 @@ export default function DashboardClient({
                   </MuestraPro>
                 )}
 
+                {/* Tu precio contra el mercado: para las casas sin dato del MAG (el
+                    interior), sus resultados cargados contra el Valor de Referencia. */}
+                {(!hayDatosMag || (resultadosVR?.length ?? 0) > 0) && (
+                  <MuestraPro
+                    esPro={tierLabel !== 'FREE'}
+                    titulo="Tu precio contra el mercado"
+                    beneficio="Cargá los promedios de tu remate y mirá cada categoría contra el Valor de Referencia de esa semana."
+                    muestra={<ResultadoVsMercado resultados={RESULTADO_VS_MERCADO_MUESTRA} />}
+                  >
+                    {resultadosVR && <ResultadoVsMercado resultados={resultadosVR} />}
+                  </MuestraPro>
+                )}
+
                 {performance && <PerformanceMes perf={performance} />}
 
                 {/* Quién te mira, cuándo y desde dónde: lo que vende "Analytics de tu
@@ -698,6 +717,15 @@ export default function DashboardClient({
                   muestra={<OrigenVisitas d={ORIGEN_VISITAS_MUESTRA} />}
                 >
                   {origenVisitas && <OrigenVisitas d={origenVisitas} />}
+                </MuestraPro>
+
+                <MuestraPro
+                  esPro={tierLabel !== 'FREE'}
+                  titulo="Lo que buscan en Google sobre tu firma"
+                  beneficio="Qué escribe la gente en Google cuando aparece tu ficha, cuántas veces apareció y cuántos entraron."
+                  muestra={<BusquedasGoogle d={BUSQUEDAS_GOOGLE_MUESTRA} />}
+                >
+                  {busquedasGoogle && <BusquedasGoogle d={busquedasGoogle} />}
                 </MuestraPro>
 
                 {/* Distribución: sólo PRO, y sólo si hubo. Es literalmente lo que

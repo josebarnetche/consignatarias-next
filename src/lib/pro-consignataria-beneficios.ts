@@ -12,6 +12,8 @@
  *  - quién te mira: lib/reports/origen-visitas.ts.
  *  - Cañuelas: lib/reports/{cartera,benchmark,participacion,territorio}.ts, sólo si la
  *    firma opera en el MAG.
+ *  - precio contra el mercado (interior): lib/reports/resultado-vs-mercado.ts, con los
+ *    resultados que carga la firma contra el VR.
  *  - widget: panel PRO; landing /go con logo, sello y formulario de consulta.
  *  - pre-oferta: lib/preofertas-firma.ts + pestaña del panel (PRO publica; las ofertas
  *    le llegan a la firma por mail y quedan en el panel).
@@ -24,6 +26,7 @@ export const BENEFICIOS_PRO_CONSIGNATARIA = [
   'Los productores que te consultan, con nombre y contacto',
   'Quién mira tu perfil: cuándo y desde dónde (Google, el calendario, una IA)',
   'Si operás en Cañuelas: tu cartera, tu precio y tu cuota contra las 22 casas',
+  'Tu precio contra el mercado: cargás los promedios de tu remate y te mostramos cada categoría contra el precio de referencia',
   'Widget de remates para tu web y tu landing con QR, logo y formulario',
   'Pre-oferta: publicás tus lotes con video antes del remate y los interesados te dejan su oferta y contacto',
 ] as const

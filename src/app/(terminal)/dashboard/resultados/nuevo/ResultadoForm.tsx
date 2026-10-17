@@ -2,20 +2,42 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { CATEGORIAS_RESULTADO, etiquetaCategoria } from '@/lib/reports/resultado-categorias'
 
+/**
+ * Fila del desglose. 17-10-2026: la categoría pasa de texto libre a un desplegable con
+ * las categorías del Valor de Referencia (más "Otra", que conserva el texto libre) y se
+ * suma el peso promedio por cabeza. Es lo que permite comparar el remate contra el VR
+ * en el panel ("Tu precio contra el mercado"): con texto libre, "Vacas c/cría" o
+ * "VACA CONS." no se podían cruzar. Los precios siguen en ARS por kg vivo, que es lo
+ * que ya pedía el formulario y lo que mide el VR.
+ */
 interface CategoryRow {
+  /** Slug del VR, o OTRA para texto libre. */
+  categoria_vr: string
+  /** Texto libre, sólo cuando categoria_vr === OTRA. */
   category: string
   heads: string
+  peso_kg: string
   avg_price: string
   max_price: string
 }
+
+const OTRA = 'otra'
 
 interface Props {
   consignatariaSlug: string
   consignatariaName: string
 }
 
-const EMPTY_CATEGORY: CategoryRow = { category: '', heads: '', avg_price: '', max_price: '' }
+const EMPTY_CATEGORY: CategoryRow = { categoria_vr: '', category: '', heads: '', peso_kg: '', avg_price: '', max_price: '' }
+
+/** La etiqueta que se guarda en `category`: la del desplegable, o el texto de "Otra". */
+function nombreCategoria(c: CategoryRow): string {
+  if (c.categoria_vr === OTRA) return c.category.trim()
+  return etiquetaCategoria(c.categoria_vr) ?? ''
+}
 
 export default function ResultadoForm({ consignatariaSlug, consignatariaName }: Props) {
   const router = useRouter()
@@ -51,10 +73,12 @@ export default function ResultadoForm({ consignatariaSlug, consignatariaName }: 
     setError(null)
 
     const categoryResults = categories
-      .filter(c => c.category.trim())
+      .filter(c => nombreCategoria(c))
       .map(c => ({
-        category: c.category.trim(),
+        category: nombreCategoria(c),
+        categoria_vr: c.categoria_vr && c.categoria_vr !== OTRA ? c.categoria_vr : undefined,
         heads: c.heads ? parseInt(c.heads) : undefined,
+        peso_kg: c.peso_kg ? parseFloat(c.peso_kg) : undefined,
         avg_price: c.avg_price ? parseFloat(c.avg_price) : undefined,
         max_price: c.max_price ? parseFloat(c.max_price) : undefined,
       }))
@@ -183,7 +207,7 @@ export default function ResultadoForm({ consignatariaSlug, consignatariaName }: 
             </div>
             <div className="grid grid-cols-3 gap-3">
               <div>
-                <label className={labelClass}>Precio mín. ($/kg)</label>
+                <label className={labelClass}>Precio mín. ($/kg vivo)</label>
                 <input
                   type="number"
                   min="0"
@@ -194,7 +218,7 @@ export default function ResultadoForm({ consignatariaSlug, consignatariaName }: 
                 />
               </div>
               <div>
-                <label className={labelClass}>Precio prom. ($/kg)</label>
+                <label className={labelClass}>Precio prom. ($/kg vivo)</label>
                 <input
                   type="number"
                   min="0"
@@ -205,7 +229,7 @@ export default function ResultadoForm({ consignatariaSlug, consignatariaName }: 
                 />
               </div>
               <div>
-                <label className={labelClass}>Precio máx. ($/kg)</label>
+                <label className={labelClass}>Precio máx. ($/kg vivo)</label>
                 <input
                   type="number"
                   min="0"
@@ -236,13 +260,18 @@ export default function ResultadoForm({ consignatariaSlug, consignatariaName }: 
               {categories.map((cat, i) => (
                 <div key={i} className="px-panel py-2 space-y-2">
                   <div className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      value={cat.category}
-                      onChange={e => updateCategory(i, 'category', e.target.value)}
-                      placeholder="Ej: Novillos, Terneros, Vacas"
+                    <select
+                      value={cat.categoria_vr}
+                      onChange={e => updateCategory(i, 'categoria_vr', e.target.value)}
+                      aria-label="Categoría"
                       className={`${inputClass} flex-1`}
-                    />
+                    >
+                      <option value="" disabled>Elegí la categoría</option>
+                      {CATEGORIAS_RESULTADO.map(c => (
+                        <option key={c.slug} value={c.slug}>{c.etiqueta}</option>
+                      ))}
+                      <option value={OTRA}>Otra</option>
+                    </select>
                     <button
                       type="button"
                       onClick={() => removeCategory(i)}
@@ -251,7 +280,17 @@ export default function ResultadoForm({ consignatariaSlug, consignatariaName }: 
                       Quitar
                     </button>
                   </div>
-                  <div className="grid grid-cols-3 gap-2">
+                  {cat.categoria_vr === OTRA && (
+                    <input
+                      type="text"
+                      value={cat.category}
+                      onChange={e => updateCategory(i, 'category', e.target.value)}
+                      placeholder="Ej: Vaca con cría, Vientres preñados"
+                      aria-label="Nombre de la categoría"
+                      className={inputClass}
+                    />
+                  )}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     <div>
                       <label className={labelClass}>Cabezas</label>
                       <input
@@ -263,7 +302,20 @@ export default function ResultadoForm({ consignatariaSlug, consignatariaName }: 
                       />
                     </div>
                     <div>
-                      <label className={labelClass}>Prom. ($/kg)</label>
+                      <label className={labelClass}>Peso prom. (kg)</label>
+                      <input
+                        type="number"
+                        min="0"
+                        max="1500"
+                        step="1"
+                        value={cat.peso_kg}
+                        onChange={e => updateCategory(i, 'peso_kg', e.target.value)}
+                        placeholder="Opcional"
+                        className={inputClass}
+                      />
+                    </div>
+                    <div>
+                      <label className={labelClass}>Prom. ($/kg vivo)</label>
                       <input
                         type="number"
                         min="0"
@@ -274,7 +326,7 @@ export default function ResultadoForm({ consignatariaSlug, consignatariaName }: 
                       />
                     </div>
                     <div>
-                      <label className={labelClass}>Máx. ($/kg)</label>
+                      <label className={labelClass}>Máx. ($/kg vivo)</label>
                       <input
                         type="number"
                         min="0"
@@ -287,12 +339,20 @@ export default function ResultadoForm({ consignatariaSlug, consignatariaName }: 
                   </div>
                 </div>
               ))}
+              <div className="px-panel py-2">
+                <span className="text-xxs font-terminal text-zinc-500">
+                  Precios en $ por kg vivo, como los mide el{' '}
+                  <Link href="/metodologia/vr" className="text-accent hover:underline">Valor de Referencia</Link>.
+                  Con el peso promedio por cabeza, tu precio se compara contra los lotes de ese mismo peso.
+                  Si vendiste por cabeza, dejá el precio vacío y anotalo en observaciones.
+                </span>
+              </div>
             </div>
           )}
           {categories.length === 0 && (
             <div className="px-panel py-3">
               <span className="text-xxs font-terminal text-zinc-500">
-                Opcional — agregá categorías para detallar precios por tipo de hacienda.
+                Opcional — agregá categorías para ver, en tu panel, cómo quedó cada una contra el Valor de Referencia.
               </span>
             </div>
           )}
