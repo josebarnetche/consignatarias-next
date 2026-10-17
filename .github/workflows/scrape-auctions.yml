@@ -32,15 +32,17 @@ jobs:
             -d '{"workflow_name":"scrape-auctions","phase":"start"}' | jq -r '.run_id // empty')
           echo "run_id=$RUN_ID" >> "$GITHUB_OUTPUT"
 
-      # TODO: bump to setup-node@v5 once pnpm-lock.yaml is removed or corepack
-      # is wired up — v5 autodetects pnpm-lock.yaml and fails (no pnpm in runner).
+      # TODO: bump to setup-node@v5 — it autodetects pnpm-lock.yaml, which failed
+      # while the runner had no pnpm; pnpm/action-setup (version from package.json
+      # "packageManager") now installs it first, so the bump is unblocked.
       # Node 20 deprecation: required action by 2026-06-02.
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
 
       - name: Install dependencies
-        run: npm install --legacy-peer-deps
+        run: pnpm install --frozen-lockfile
 
       - name: Run scraper
         run: node scripts/scrape-auctions.mjs
