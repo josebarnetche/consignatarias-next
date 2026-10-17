@@ -1,5 +1,5 @@
 {
-  "generado": "2026-10-16T23:25:39.213Z",
+  "generado": "2026-10-17T19:01:42.223Z",
   "leads_de_compra": 7,
   "matches": [
     {
@@ -199,26 +199,6 @@
       },
       "lotes": [
         {
-          "sku": "34215",
-          "titulo": "45 Terneras Aberdeen Angus Negro de 255kg",
-          "score": 50,
-          "motivos": [
-            "el lead no declaró categoría",
-            "misma provincia"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/45-Terneras-255kg-invernada-34215"
-        },
-        {
-          "sku": "34212",
-          "titulo": "75 Vaquillonas para madre Aberdeen Angus Negro y Colorado 290kg",
-          "score": 50,
-          "motivos": [
-            "el lead no declaró categoría",
-            "misma provincia"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/75-Vaquillonas-para-madre-290kg-invernada-34212"
-        },
-        {
           "sku": "34178",
           "titulo": "55 Terneros y Terneras Aberdeen Angus Negro de 230kg",
           "score": 50,
@@ -239,14 +219,34 @@
           "url": "https://www.decampoacampo.com/__dcac/35-Vacas-CUT-con-cria-470kg-invernada-34159"
         },
         {
-          "sku": "34149",
-          "titulo": "50 Vaquillonas para madre Aberdeen Angus Negro y Colorado 260kg",
+          "sku": "34153",
+          "titulo": "70 Vaquillonas para madre Aberdeen Angus Negro y Colorado 320kg",
           "score": 50,
           "motivos": [
             "el lead no declaró categoría",
             "misma provincia"
           ],
-          "url": "https://www.decampoacampo.com/__dcac/50-Vaquillonas-para-madre-260kg-invernada-34149"
+          "url": "https://www.decampoacampo.com/__dcac/70-Vaquillonas-para-madre-320kg-invernada-34153"
+        },
+        {
+          "sku": "34142",
+          "titulo": "40 Vaquillonas para madre Aberdeen Angus Negro y Colorado 300kg",
+          "score": 50,
+          "motivos": [
+            "el lead no declaró categoría",
+            "misma provincia"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/40-Vaquillonas-para-madre-300kg-invernada-34142"
+        },
+        {
+          "sku": "34115",
+          "titulo": "25 Vacas preñadas Aberdeen Angus Negro y Colorado de 425kg",
+          "score": 50,
+          "motivos": [
+            "el lead no declaró categoría",
+            "misma provincia"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/25-Vacas-prenadas-425kg-invernada-34115"
         }
       ]
     },
@@ -328,26 +328,26 @@
           "url": "https://www.decampoacampo.com/__dcac/325-Terneros-y-Terneras-210kg-invernada-34121"
         },
         {
-          "sku": "34215",
-          "titulo": "45 Terneras Aberdeen Angus Negro de 255kg",
+          "sku": "34195",
+          "titulo": "55 Novillitos Aberdeen Angus Negro y Colorado de 300kg",
+          "score": 35,
+          "motivos": [
+            "el lead no declaró categoría",
+            "otra provincia (La Pampa)",
+            "cantidad compatible"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/55-Novillitos-300kg-invernada-34195"
+        },
+        {
+          "sku": "34178",
+          "titulo": "55 Terneros y Terneras Aberdeen Angus Negro de 230kg",
           "score": 35,
           "motivos": [
             "el lead no declaró categoría",
             "otra provincia (Buenos Aires)",
             "cantidad compatible"
           ],
-          "url": "https://www.decampoacampo.com/__dcac/45-Terneras-255kg-invernada-34215"
-        },
-        {
-          "sku": "34213",
-          "titulo": "40 Vaquillonas Preñadas Braford de 450kg",
-          "score": 35,
-          "motivos": [
-            "el lead no declaró categoría",
-            "otra provincia (Córdoba)",
-            "cantidad compatible"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/40-Vaquillonas-Prenadas-450kg-invernada-34213"
+          "url": "https://www.decampoacampo.com/__dcac/55-Terneros-y-Terneras-230kg-invernada-34178"
         }
       ]
     },
