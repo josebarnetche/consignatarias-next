@@ -13,6 +13,8 @@
  *  - Cañuelas: lib/reports/{cartera,benchmark,participacion,territorio}.ts, sólo si la
  *    firma opera en el MAG.
  *  - widget: panel PRO; landing /go con logo, sello y formulario de consulta.
+ *  - pre-oferta: lib/preofertas-firma.ts + pestaña del panel (PRO publica; las ofertas
+ *    le llegan a la firma por mail y quedan en el panel).
  */
 export const BENEFICIOS_PRO_CONSIGNATARIA = [
   'Sello ★ PRO y primer lugar en el directorio, las provincias y el muro de la portada',
@@ -23,4 +25,5 @@ export const BENEFICIOS_PRO_CONSIGNATARIA = [
   'Quién mira tu perfil: cuándo y desde dónde (Google, el calendario, una IA)',
   'Si operás en Cañuelas: tu cartera, tu precio y tu cuota contra las 22 casas',
   'Widget de remates para tu web y tu landing con QR, logo y formulario',
+  'Pre-oferta: publicás tus lotes con video antes del remate y los interesados te dejan su oferta y contacto',
 ] as const

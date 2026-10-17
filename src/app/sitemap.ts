@@ -10,6 +10,8 @@ import marketPrices from '@/lib/data/market-prices.json'
 import { getQualitySegments, CABEZAS_INDEX_THRESHOLD } from '@/lib/data/quality-segments'
 import { BPG_TEMAS } from '@/lib/data/bpg-ganaderas'
 import { getActivePreofertas } from '@/lib/data/preofertas'
+import { getPreofertasFirmaAbiertas, urlPreofertaFirma } from '@/lib/preofertas-firma'
+import { createServiceClient } from '@/lib/supabase'
 import { PRODUCTOS_DATOS } from '@/lib/productos-datos'
 import { getProveedoresPublicados } from '@/lib/proveedores'
 import { getDepartamentosPublicables, ultimoAnio, fichaIndexable, META as PRODUCTIVIDAD_META } from '@/lib/productividad/panel'
@@ -154,8 +156,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '',
   )
   const frigorificosDate = maxSenasa ? clampToday(maxSenasa.slice(0, 10)) : editado('/frigorificos')
-  /** /preofertas solo se ofrece mientras haya alguna abierta (si no, la página es un aviso vacío y va noindex). */
-  const preofertasAbiertas = getActivePreofertas(Date.now()).length > 0
+  /** /preofertas solo se ofrece mientras haya alguna abierta (si no, la página es un aviso vacío y va noindex).
+   *  Desde el 17-10-2026 cuentan también las que publican las firmas (preofertas_firma), y cada
+   *  una abierta suma su ficha; la cerrada va noindex y sale del sitemap con el mismo criterio. */
+  const preofertasFirma = await getPreofertasFirmaAbiertas(createServiceClient(), Date.now())
+  const preofertasAbiertas = getActivePreofertas(Date.now()).length > 0 || preofertasFirma.length > 0
   const currentYear = priceDate.getFullYear()
 
   // Static pages
@@ -675,6 +680,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...(preofertasAbiertas
       ? [{ url: `${baseUrl}/preofertas`, lastModified: latestRemateDate, changeFrequency: 'daily' as const, priority: 0.6 }]
       : []),
+    ...preofertasFirma.map((p) => ({
+      url: `${baseUrl}${urlPreofertaFirma(p.id)}`,
+      lastModified: new Date(p.updated_at),
+      changeFrequency: 'daily' as const,
+      priority: 0.5,
+    })),
     {
       url: `${baseUrl}/exportar`,
       lastModified: editado('/exportar'),

@@ -39,6 +39,7 @@ import type { Performance } from '@/lib/reports/performance'
 import type { ConsignatariaPlanStatus } from '@/lib/features'
 import { BENEFICIOS_PRO_CONSIGNATARIA } from '@/lib/pro-consignataria-beneficios'
 import OrigenVisitas from '@/components/dashboard/OrigenVisitas'
+import PreofertasManager, { type PreofertaFirma, type OfertaRecibida } from '@/components/dashboard/PreofertasManager'
 import type { OrigenVisitas as OrigenVisitasDatos } from '@/lib/reports/origen-visitas'
 
 interface Consignataria {
@@ -215,6 +216,9 @@ interface Props {
   /** Estado de plan decidido en el server (getConsignatariaPlanStatus). Única fuente. */
   plan?: ConsignatariaPlanStatus
   origenVisitas?: OrigenVisitasDatos | null
+  vistaAdmin?: VistaAdmin | null
+  preofertasFirma?: PreofertaFirma[]
+  ofertasFirma?: OfertaRecibida[]
   frigorifico?: Frigorifico | null
   frigoClaims?: FrigoClaim[]
   frigoProducts?: FrigoProduct[]
@@ -222,6 +226,12 @@ interface Props {
   frigoIsPro?: boolean
   dteCount?: number
   alreadyRedeemed?: boolean
+}
+
+/** "Ver como" de admin: el panel de una firma, con el plan forzado o el real. */
+export interface VistaAdmin {
+  slug: string
+  vista: 'pro' | 'free' | 'real'
 }
 
 const PLAN_FREE: ConsignatariaPlanStatus = { isPro: false, tier: 'free', source: null, periodEnd: null }
@@ -232,11 +242,11 @@ function formatDate(d: string) {
   return `${parts[2]}/${parts[1]}`
 }
 
-type TabKey = 'resumen' | 'leads' | 'remates' | 'editar' | 'resultados' | 'plan' | 'frigorifico' | 'catalogo' | 'pedidos'
+type TabKey = 'resumen' | 'leads' | 'remates' | 'preofertas' | 'editar' | 'resultados' | 'plan' | 'frigorifico' | 'catalogo' | 'pedidos'
 
 export default function DashboardClient({
   email, consignataria, claims, scrapedAuctions, ownerAuctions: initialOwnerAuctions,
-  auctionResults, viewCount, whatsappClicks, leadsCount, followersCount = 0, marksCount = 0, leads = [], totalWatchers, viewPercentile, provincialRank, completedFields, subscription, plan = PLAN_FREE, origenVisitas = null, frigorifico, frigoClaims = [],
+  auctionResults, viewCount, whatsappClicks, leadsCount, followersCount = 0, marksCount = 0, leads = [], totalWatchers, viewPercentile, provincialRank, completedFields, subscription, plan = PLAN_FREE, origenVisitas = null, vistaAdmin = null, preofertasFirma = [], ofertasFirma = [], frigorifico, frigoClaims = [],
   frigoProducts = [], frigoRfqs = [], frigoIsPro = false,
   dteCount = 0, alreadyRedeemed = false, performance = null, distribucion = null, benchmark = null, cartera = null, territorio = null, territorioTitular = '', participacion = null, bandeja = null, hayDatosMag = false, agenda = null,
 }: Props) {
@@ -352,6 +362,7 @@ export default function DashboardClient({
   if (consignataria?.verified) {
     tabs.push({ key: 'leads', label: `Leads (${leadsCount})`, icon: <Inbox className="w-3.5 h-3.5" /> })
     tabs.push({ key: 'remates', label: `Remates (${scrapedAuctions.length + ownerAuctions.length})`, icon: <CalendarDays className="w-3.5 h-3.5" /> })
+    tabs.push({ key: 'preofertas', label: `Pre-ofertas${ofertasFirma.length ? ` (${ofertasFirma.length})` : ''}`, icon: <Package className="w-3.5 h-3.5" /> })
     tabs.push({ key: 'editar', label: 'Editar', icon: <Pencil className="w-3.5 h-3.5" /> })
     tabs.push({ key: 'resultados', label: 'Resultados', icon: <BarChart3 className="w-3.5 h-3.5" /> })
   }
@@ -369,6 +380,28 @@ export default function DashboardClient({
 
   return (
     <div className="max-w-3xl mx-auto px-2 sm:px-4 py-4 space-y-4">
+      {vistaAdmin && (
+        <div className="rounded-terminal border border-warning/40 bg-warning/10 px-4 py-3">
+          <p className="text-sm text-zinc-100">
+            Estás viendo el panel de <strong>{consignataria?.display_name ?? vistaAdmin.slug}</strong> como lo vería
+            su dueño{vistaAdmin.vista === 'pro' ? ' con PRO' : vistaAdmin.vista === 'free' ? ' sin PRO' : ', con su plan real'}.
+            Es de sólo lectura: los cambios no se guardan.
+          </p>
+          <div className="mt-2 flex flex-wrap gap-3 text-xs">
+            {(['pro', 'free', 'real'] as const).map((v) => (
+              <a
+                key={v}
+                href={`/dashboard?como=${vistaAdmin.slug}&vista=${v}`}
+                className={vistaAdmin.vista === v ? 'font-semibold text-ink underline' : 'text-accent hover:underline'}
+              >
+                {v === 'pro' ? 'Vista PRO' : v === 'free' ? 'Vista FREE' : 'Plan real'}
+              </a>
+            ))}
+            <a href="/admin/ver-como" className="text-zinc-400 hover:underline">Otra firma</a>
+            <a href="/dashboard" className="text-zinc-400 hover:underline">Salir</a>
+          </div>
+        </div>
+      )}
       {/* Fire the GA4 pro_upgrade conversion only once PRO is DB-confirmed
           (subscription prop or polled /api/subscription-status), never on the
           bare ?upgraded=true redirect param. */}
@@ -1237,6 +1270,9 @@ export default function DashboardClient({
       )}
 
       {/* ============ TAB: MI PLAN ============ */}
+      {activeTab === 'preofertas' && consignataria?.verified && (
+        <PreofertasManager slug={consignataria.canonical_slug} esPro={plan.isPro} inicial={preofertasFirma} ofertas={ofertasFirma} />
+      )}
       {activeTab === 'plan' && <SubscriptionPanel tier={tierLabel} subscription={subscription} plan={plan} />}
 
       {/* ============ TAB: FRIGORIFICO ============ */}
@@ -2238,7 +2274,12 @@ function SubscriptionPanel({ tier, subscription, plan }: { tier: string; subscri
         }`}>{tier}</span>
       </div>
       <div className="px-panel py-3 space-y-3">
-        {plan.source === 'featured' ? (
+        {plan.isPro && !plan.source && !subscription ? (
+          <p className="text-xs text-zinc-300">
+            Vista previa de administrador: así ve la firma su panel con PRO activo. Lo que pagaría:
+            ARS 45.000/mes, sin permanencia.
+          </p>
+        ) : plan.source === 'featured' ? (
           // Destaque manual: PRO sin cargo y sin vencimiento, otorgado por nosotros.
           <div className="space-y-2">
             <p className="text-xs text-zinc-200">Tu firma tiene PRO sin cargo, otorgado por consignatarias.com.ar.</p>

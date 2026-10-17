@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import { createServiceClient } from '@/lib/supabase'
 import { getFrigorificoPlanStatus, getConsignatariaPlanStatus, type ConsignatariaPlanStatus } from '@/lib/features'
-import DashboardClient, { type FrigoProduct, type FrigoRfq } from './DashboardClient'
+import DashboardClient, { type FrigoProduct, type FrigoRfq, type VistaAdmin } from './DashboardClient'
 import ProductorDashboard from './ProductorDashboard'
 import rematesData from '@/lib/data/remates.json'
 import { getPerformance, rematesPorMes, type Performance } from '@/lib/reports/performance'
@@ -18,8 +18,9 @@ import { getAgendaRegional, type AgendaRegional } from '@/lib/reports/agenda-reg
 import { intentarAutoAprobar } from '@/lib/claims/auto-approve'
 import marketPrices from '@/lib/data/market-prices.json'
 import { normalizarEmail } from '@/lib/claims/aprobar'
-import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
+import { getCanonicalSlug, getProfile } from '@/lib/data/consignataria-slugs'
 import { construirOrigenVisitas, type OrigenVisitas } from '@/lib/reports/origen-visitas'
+import { getPreofertasDeFirma, getOfertasDeFirma } from '@/lib/preofertas-firma'
 
 export const dynamic = 'force-dynamic'
 
@@ -28,7 +29,11 @@ export const metadata = {
   robots: { index: false },
 }
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ como?: string | string[]; vista?: string | string[] }>
+}) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -37,12 +42,31 @@ export default async function DashboardPage() {
   const service = createServiceClient()
   if (!service) redirect('/login') // Supabase unavailable
 
+  // VER COMO (sólo admin, 17-10-2026). `/dashboard?como=<firma>&vista=pro|free|real`
+  // muestra el panel exactamente como lo vería esa firma, sin tocar su ficha ni su
+  // dueño: es para revisar qué recibe un PRO antes de ofrecérselo y para mostrárselo
+  // en una reunión. Es de sólo lectura: las acciones del panel van a las rutas de
+  // dueño, que piden ser el titular de la ficha y responden 403.
+  const sp = await searchParams
+  const comoParam = typeof sp.como === 'string' ? sp.como.trim() : ''
+  const comoSlug = comoParam ? getCanonicalSlug(comoParam) || null : null
+  let vistaAdmin: VistaAdmin | null = null
+  const { data: rol } = await service.from('user_roles').select('role').eq('user_id', user.id).maybeSingle()
+  if (rol?.role === 'admin') {
+    // Sin firma pedida, el admin va a su panel (antes lo hacía el layout).
+    if (!comoSlug) redirect('/admin/claims')
+    const v = typeof sp.vista === 'string' ? sp.vista : 'pro'
+    vistaAdmin = { slug: comoSlug, vista: v === 'free' || v === 'real' ? v : 'pro' }
+  }
+
   // Get user's claims
-  const { data: claims } = await service
-    .from('consignataria_claims')
-    .select('*, consignatarias(display_name, canonical_slug)')
-    .eq('claimant_email', user.email!)
-    .order('created_at', { ascending: false })
+  const { data: claims } = vistaAdmin
+    ? { data: [] }
+    : await service
+        .from('consignataria_claims')
+        .select('*, consignatarias(display_name, canonical_slug)')
+        .eq('claimant_email', normalizarEmail(user.email))
+        .order('created_at', { ascending: false })
 
   // AUTO-HABILITACIÓN. Si el usuario que acaba de iniciar sesión tiene un claim
   // pendiente y su email prueba que es de la firma (coincide con el del registro, o
@@ -52,30 +76,53 @@ export default async function DashboardPage() {
   //
   // Corre ANTES de leer la consignataria: si aprueba, la lectura de abajo ya la
   // encuentra reclamada y el panel aparece completo en la misma carga.
-  if (user.email) {
+  if (user.email && !vistaAdmin) {
     await intentarAutoAprobar(service as unknown as Parameters<typeof intentarAutoAprobar>[0], user.email, user.id)
   }
 
-  // Get user's verified consignataria (if any)
-  const { data: consignataria } = await service
-    .from('consignatarias')
-    .select('display_name, canonical_slug, verified, phone, email, website, description, whatsapp, cuit, logo_url')
-    .eq('claimed_by_email', normalizarEmail(user.email))
-    .maybeSingle()
+  // Get user's verified consignataria (if any). En "ver como", la de la firma pedida.
+  const COLUMNAS_FIRMA = 'display_name, canonical_slug, verified, phone, email, website, description, whatsapp, cuit, logo_url'
+  let { data: consignataria } = vistaAdmin
+    ? await service.from('consignatarias').select(COLUMNAS_FIRMA).eq('canonical_slug', vistaAdmin.slug).maybeSingle()
+    : await service.from('consignatarias').select(COLUMNAS_FIRMA).eq('claimed_by_email', normalizarEmail(user.email)).maybeSingle()
+  let titularVista: string | null = null
+  if (vistaAdmin) {
+    const { data: t } = await service.from('consignatarias').select('claimed_by_email').eq('canonical_slug', vistaAdmin.slug).maybeSingle()
+    titularVista = (t as { claimed_by_email?: string | null } | null)?.claimed_by_email ?? null
+    // La firma puede no tener fila todavía (nunca editó su ficha): se arma desde el
+    // directorio. Y se muestra como verificada, porque así la vería su dueño.
+    const perfil = getProfile(vistaAdmin.slug)
+    consignataria = {
+      display_name: consignataria?.display_name ?? perfil?.displayName ?? vistaAdmin.slug,
+      canonical_slug: vistaAdmin.slug,
+      verified: true,
+      phone: consignataria?.phone ?? null,
+      email: consignataria?.email ?? null,
+      website: consignataria?.website ?? null,
+      description: consignataria?.description ?? null,
+      whatsapp: consignataria?.whatsapp ?? null,
+      cuit: consignataria?.cuit ?? null,
+      logo_url: consignataria?.logo_url ?? null,
+    }
+  }
 
   // Get user's verified frigorifico (if any)
-  const { data: frigorifico } = await service
-    .from('frigorifico_profiles')
-    .select('cuit, display_name, verified, phone, email, website, description, whatsapp, location, logo_url, habilitacion_nivel, habilitacion_verificada')
-    .eq('claimed_by_email', normalizarEmail(user.email))
-    .single()
+  const { data: frigorifico } = vistaAdmin
+    ? { data: null }
+    : await service
+        .from('frigorifico_profiles')
+        .select('cuit, display_name, verified, phone, email, website, description, whatsapp, location, logo_url, habilitacion_nivel, habilitacion_verificada')
+        .eq('claimed_by_email', normalizarEmail(user.email))
+        .maybeSingle()
 
   // Get user's frigorifico claims
-  const { data: frigoClaims } = await service
-    .from('frigorifico_claims')
-    .select('*')
-    .eq('claimant_email', normalizarEmail(user.email))
-    .order('created_at', { ascending: false })
+  const { data: frigoClaims } = vistaAdmin
+    ? { data: [] }
+    : await service
+        .from('frigorifico_claims')
+        .select('*')
+        .eq('claimant_email', normalizarEmail(user.email))
+        .order('created_at', { ascending: false })
 
   // PRODUCTOR (la mayoría de los registros): sin perfil B2B reclamado ni claims
   // pendientes → panel de productor (hacienda + consignatarias seguidas + marcas),
@@ -291,10 +338,15 @@ export default async function DashboardPage() {
   // Performance del mes vs el anterior (Epic E). Es lo único del panel que responde
   // "¿esto me sirvió?" con una serie y no con una foto — y lo hace sin declarar
   // mejoras que no se distinguen del ruido.
-  let performance: Performance | null = null
-  if (consignataria) {
+  // EN PARALELO (17-10-2026): performance, distribución, los bloques del MAG, el
+  // territorio y la agenda no dependen entre sí. Iban uno detrás del otro y el panel
+  // tardaba 10-20 s en abrir; los del MAG además comparten una sola lectura de lotes
+  // (lib/reports/mag-lotes.ts).
+  const db = service as unknown as Parameters<typeof getPerformance>[0]
+  const leerPerformance = async (): Promise<Performance | null> => {
+    if (!consignataria) return null
     try {
-      performance = await getPerformance(service as unknown as Parameters<typeof getPerformance>[0], consignataria.canonical_slug, {
+      return await getPerformance(db, consignataria.canonical_slug, {
         // Cuenta los remates de las DOS fuentes. Con sólo el scrape, una firma que
         // cargaba su remate desde el panel leía después "no tenés ningún remate
         // publicado este mes" en su propio reporte — la contradicción más directa
@@ -318,17 +370,15 @@ export default async function DashboardPage() {
     } catch (e) {
       // El panel no se cae por el bloque de performance.
       console.error('[dashboard] performance falló:', e)
+      return null
     }
   }
 
   // Distribución auditable (Epic D): a cuántos les llegaron sus remates.
-  let distribucion: ResumenDistribucion | null = null
-  if (consignataria) {
-    distribucion = await getDistribucion(
-      service as unknown as Parameters<typeof getDistribucion>[0],
-      consignataria.canonical_slug,
-    )
-  }
+  const leerDistribucion = async (): Promise<ResumenDistribucion | null> =>
+    consignataria
+      ? getDistribucion(service as unknown as Parameters<typeof getDistribucion>[0], consignataria.canonical_slug)
+      : null
 
   // Benchmark contra el mercado de Cañuelas. Es lo único del panel que su propio
   // CRM no puede reemplazar: su sistema tiene sus liquidaciones, no las de las otras
@@ -336,45 +386,49 @@ export default async function DashboardPage() {
   let benchmark: Benchmark | null = null
   let cartera: Cartera | null = null
   let participacion: Participacion | null = null
-  if (consignataria) {
-    // En paralelo: son tres lecturas del MAG y no dependen entre sí.
-    ;[benchmark, cartera, participacion] = await Promise.all([
-      getBenchmark(service as unknown as Parameters<typeof getBenchmark>[0], consignataria.canonical_slug),
-      getCartera(service as unknown as Parameters<typeof getCartera>[0], consignataria.canonical_slug),
-      getParticipacion(service as unknown as Parameters<typeof getParticipacion>[0], consignataria.canonical_slug),
-    ])
-  }
 
   // TERRITORIO — el mapa de dónde la firma NO tiene remitentes, sobre productores que ya
   // van a Cañuelas. Es lo que su propio sistema no puede contestar: el CRM tiene a los
   // que ya son clientes. Sólo Buenos Aires, que es donde el origen del lote se resuelve
   // a partido con precisión.
   let territorio: Territorio | null = null
-  if (consignataria) {
-    const magId = await magIdDeSlug(
-      service as unknown as Parameters<typeof magIdDeSlug>[0],
-      consignataria.canonical_slug,
-    )
-    if (magId != null) {
-      territorio = await construirTerritorio(
-        service as unknown as Parameters<typeof construirTerritorio>[0],
-        magId,
-      )
-    }
+  const leerTerritorio = async (): Promise<Territorio | null> => {
+    if (!consignataria) return null
+    const magId = await magIdDeSlug(service as unknown as Parameters<typeof magIdDeSlug>[0], consignataria.canonical_slug)
+    return magId != null
+      ? construirTerritorio(service as unknown as Parameters<typeof construirTerritorio>[0], magId)
+      : null
   }
 
   // AGENDA REGIONAL — el bloque de las 109 casas que NO rematan en Cañuelas y para
   // las que no hay dato transaccional. Sale del calendario, así que sirve para todas;
   // se calcula siempre porque la pregunta que responde (con quién comparto fecha) es
   // distinta de la del MAG.
-  let agenda: AgendaRegional | null = null
-  if (consignataria) {
-    agenda = await getAgendaRegional(
-      service as unknown as Parameters<typeof getAgendaRegional>[0],
-      consignataria.canonical_slug,
-      rematesData as Parameters<typeof getAgendaRegional>[2],
-    )
-  }
+  const leerAgenda = async (): Promise<AgendaRegional | null> =>
+    consignataria
+      ? getAgendaRegional(
+          service as unknown as Parameters<typeof getAgendaRegional>[0],
+          consignataria.canonical_slug,
+          rematesData as Parameters<typeof getAgendaRegional>[2],
+        )
+      : null
+
+  const slugFirma = consignataria?.canonical_slug
+  const [performance, distribucion, mag, territorioLeido, agenda] = await Promise.all([
+    leerPerformance(),
+    leerDistribucion(),
+    slugFirma
+      ? Promise.all([
+          getBenchmark(service as unknown as Parameters<typeof getBenchmark>[0], slugFirma),
+          getCartera(service as unknown as Parameters<typeof getCartera>[0], slugFirma),
+          getParticipacion(service as unknown as Parameters<typeof getParticipacion>[0], slugFirma),
+        ])
+      : Promise.resolve([null, null, null] as const),
+    leerTerritorio(),
+    leerAgenda(),
+  ])
+  ;[benchmark, cartera, participacion] = mag
+  territorio = territorioLeido
 
   // BANDEJA — junta todas las señales en una sola lista ordenada por lo que está en
   // juego. Va última en el cálculo porque consume lo que los demás bloques ya
@@ -538,6 +592,9 @@ export default async function DashboardPage() {
   let plan: ConsignatariaPlanStatus = { isPro: false, tier: 'free', source: null, periodEnd: null }
   if (consignataria) {
     plan = await getConsignatariaPlanStatus(consignataria.canonical_slug)
+    // Vista previa de admin: `pro` y `free` fuerzan el plan; `real` usa el de la firma.
+    if (vistaAdmin?.vista === 'pro') plan = { isPro: true, tier: 'pro', source: null, periodEnd: null }
+    if (vistaAdmin?.vista === 'free') plan = { isPro: false, tier: 'free', source: null, periodEnd: null }
     const { isPro } = plan
     hayDatosMag = !!(cartera || benchmark || participacion)
     if (!isPro) {
@@ -564,6 +621,14 @@ export default async function DashboardPage() {
       })
     }
   }
+
+  // PRE-OFERTAS de la firma (PRO): las que cargó y las ofertas que recibió.
+  const [preofertasFirma, ofertasFirma] = consignataria
+    ? await Promise.all([
+        getPreofertasDeFirma(service as unknown as Parameters<typeof getPreofertasDeFirma>[0], consignataria.canonical_slug),
+        getOfertasDeFirma(service as unknown as Parameters<typeof getOfertasDeFirma>[0], consignataria.canonical_slug),
+      ])
+    : [[], []]
 
   // Compute completed fields for onboarding checklist
   const completedFields = consignataria
@@ -627,7 +692,8 @@ export default async function DashboardPage() {
 
   return (
     <DashboardClient
-      email={user.email!}
+      // En "ver como" se muestra el mail del titular de la ficha, no el del admin.
+      email={vistaAdmin ? titularVista ?? 'sin titular (ficha sin reclamar)' : user.email!}
       consignataria={consignataria}
       claims={claims || []}
       scrapedAuctions={scrapedAuctions}
@@ -645,6 +711,9 @@ export default async function DashboardPage() {
       completedFields={completedFields}
       subscription={subscription}
       plan={plan}
+      vistaAdmin={vistaAdmin}
+      preofertasFirma={preofertasFirma}
+      ofertasFirma={ofertasFirma}
       origenVisitas={origenVisitas}
       frigorifico={frigorifico}
       frigoClaims={frigoClaims || []}

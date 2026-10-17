@@ -748,57 +748,70 @@ export async function sendFrigorificoRfqConfirmation(buyerEmail: string, frigori
 /*  MONTHLY METRICS                                                    */
 /* ------------------------------------------------------------------ */
 
+/** Lo que el reporte mensual le cuenta a la firma. Cada número sale de una tabla. */
+export interface ReporteMensualFirma {
+  vistas: number
+  visitasIA: number
+  consultas: number
+  /** Envíos del newsletter que llevaron sus remates (promotion_campaigns). */
+  envios: number
+  salidas: number
+  seguidores: number
+  esPro: boolean
+}
+
+/**
+ * Reporte mensual a la firma (reescrito el 17-10-2026). Antes decía sólo las vistas y
+ * las calificaba ("Excelente visibilidad"); ahora son los números del mes, sin
+ * adjetivos, con lo que PRO promete medir: vistas, visitas desde IAs, consultas y a
+ * cuántos les llegaron sus remates por el newsletter.
+ */
 export async function sendMonthlyMetrics(
   email: string,
   displayName: string,
   slug: string,
-  views: number,
+  datos: ReporteMensualFirma,
   monthName: string,
 ) {
   const resend = await getResend()
   if (!resend) return
   const safeName = escapeHtml(displayName)
-  const viewsFormatted = views.toLocaleString('es-AR')
-  resend.emails.send({
+  const n = (x: number) => x.toLocaleString('es-AR')
+  const fila = (label: string, valor: string, bajada: string) => `
+        <tr>
+          <td style="padding:10px 0;border-bottom:1px solid #27272a;color:#a1a1aa;font-size:13px">${label}<br><span style="color:#52525b;font-size:11px">${bajada}</span></td>
+          <td style="padding:10px 0;border-bottom:1px solid #27272a;color:#fafafa;font-size:20px;font-weight:700;text-align:right">${valor}</td>
+        </tr>`
+  return resend.emails.send({
     from: FROM,
     to: email,
-    subject: `Resumen ${monthName} — ${displayName}`,
+    subject: `Tu mes en consignatarias.com.ar — ${monthName}`,
     html: darkEmailShell(`
-        <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Resumen mensual</p>
-        <p style="color:#71717a;font-size:12px;margin:0 0 20px">${safeName} — ${escapeHtml(monthName)}</p>
-
-        <div style="background:#18181b;border:1px solid #27272a;border-radius:2px;padding:16px;text-align:center;margin-bottom:16px">
-          <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:.12em">Vistas del perfil</p>
-          <p style="color:#38bdf8;font-size:32px;font-weight:bold;margin:0">${viewsFormatted}</p>
-          <p style="color:#71717a;font-size:11px;margin:4px 0 0">visitas a tu perfil este mes</p>
-        </div>
-
-        ${views > 0 ? `
-        <p style="color:#a1a1aa;font-size:12px;line-height:1.5">
-          Tu perfil de <strong style="color:#fafafa">${safeName}</strong> recibio ${viewsFormatted} visitas en ${escapeHtml(monthName)}.
-          ${views >= 50 ? 'Excelente visibilidad.' : views >= 20 ? 'Buen alcance.' : 'Completa tu perfil para mejorar tu visibilidad.'}
+        <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Reporte mensual</p>
+        <p style="color:#71717a;font-size:12px;margin:0 0 18px">${safeName} — ${escapeHtml(monthName)}</p>
+        <table role="presentation" style="width:100%;border-collapse:collapse;margin:0 0 18px">
+          ${fila('Vistas de tu perfil', n(datos.vistas), 'sin contar robots ni buscadores que rastrean')}
+          ${fila('Visitas desde asistentes de IA', n(datos.visitasIA), 'ChatGPT, Copilot, Gemini… que llegaron a tu ficha')}
+          ${fila('Consultas recibidas', n(datos.consultas), 'productores que dejaron sus datos en tu perfil o tu página')}
+          ${fila('Envíos con tus remates', n(datos.envios), datos.salidas > 0 ? `newsletter semanal, en ${datos.salidas} ${datos.salidas === 1 ? 'salida' : 'salidas'}` : 'newsletter semanal')}
+          ${fila('Productores que siguen tu casa', n(datos.seguidores), 'total a fin de mes')}
+        </table>
+        <p style="color:#71717a;font-size:12px;line-height:1.6;margin:0 0 18px">
+          ${datos.esPro
+            ? 'En tu panel tenés el detalle: de dónde llegan las visitas, las consultas con su contacto y cada envío.'
+            : 'En tu panel tenés el detalle. Con PRO ves además el contacto de cada consulta y de dónde llegan las visitas.'}
         </p>
-        ` : `
-        <p style="color:#a1a1aa;font-size:12px;line-height:1.5">
-          Tu perfil aun no recibio visitas este mes. Completa tus datos de contacto y descripcion para mejorar tu posicionamiento.
-        </p>
-        `}
-
         <div style="margin:20px 0;text-align:center">
           <a href="${APP_URL}/dashboard" style="background:#38bdf8;color:#09090b;padding:11px 26px;text-decoration:none;border-radius:2px;display:inline-block;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Ver mi panel</a>
         </div>
-
         <div style="border-top:1px solid #27272a;padding-top:12px;margin-top:20px">
           <p style="color:#71717a;font-size:11px;margin:0">
-            <a href="${APP_URL}/consignatarias/${slug}" style="color:#71717a">Ver perfil publico</a>
-            &nbsp;&middot;&nbsp;
-            <a href="${APP_URL}/planes" style="color:#71717a">Mejorar mi plan</a>
+            <a href="${APP_URL}/consignatarias/${slug}" style="color:#71717a">Ver perfil público</a>
           </p>
         </div>
-
         <p style="color:#52525b;font-size:10px;margin:16px 0 0">consignatarias.com — el precio de referencia del ganado argentino</p>
     `),
-  }).catch(() => {})
+  })
 }
 
 /* ------------------------------------------------------------------ */
@@ -3857,5 +3870,71 @@ export async function sendExpoMercedesAviso(opts: ExpoMercedesAvisoOpts) {
     return { success: true }
   } catch (error) {
     return { success: false, error: error instanceof Error ? error.message : 'unknown' }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  PRE-OFERTA DE LA FIRMA — la oferta le llega a la consignataria      */
+/*  (17-10-2026)                                                       */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Aviso de oferta nueva sobre un lote que cargó la firma. Va al `claimed_by_email` de
+ * la firma con replyTo al interesado (si dejó mail), y en BCC a LEAD_ALERT_TO como
+ * cualquier lead. Si la firma no tiene dueño (no debería pasar: publicar exige panel),
+ * cae directo a LEAD_ALERT_TO para que el contacto no se pierda.
+ *
+ * Transaccional 1:1 disparado por una acción del interesado, igual que el RFQ de
+ * frigoríficos y la consulta a proveedores: sin List-Unsubscribe, como esos.
+ */
+export async function sendPreofertaFirmaOferta(opts: {
+  firmaEmail: string | null
+  firmaNombre: string
+  remate: string
+  fechaRemate: string
+  lote: string
+  nombre: string
+  telefono: string | null
+  email: string | null
+  monto: number | null
+  mensaje: string | null
+  fichaUrl: string
+}) {
+  const resend = await getResend()
+  if (!resend) return
+  const e = escapeHtml
+  const fmt = (n: number) => '$ ' + n.toLocaleString('es-AR')
+  const filas: [string, string | null][] = [
+    ['Interesado', opts.nombre],
+    ['Teléfono', opts.telefono],
+    ['Email', opts.email],
+    ['Ofrece', opts.monto != null ? fmt(opts.monto) : 'Sin monto — quiere que lo contacten'],
+    ['Mensaje', opts.mensaje],
+  ]
+  const tabla = filas
+    .filter(([, v]) => v)
+    .map(([k, v]) => `<tr><td style="color:#71717a;font-size:12px;padding:4px 14px 4px 0;vertical-align:top;white-space:nowrap">${e(k)}</td><td style="color:#fafafa;font-size:13px;padding:4px 0">${e(String(v))}</td></tr>`)
+    .join('')
+  const to = opts.firmaEmail ? [opts.firmaEmail] : LEAD_ALERT_TO
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to,
+      ...(opts.firmaEmail ? { bcc: LEAD_ALERT_TO } : {}),
+      ...(opts.email ? { replyTo: opts.email } : {}),
+      subject: `Pre-oferta — ${opts.lote} · ${opts.remate}`,
+      html: darkEmailShell(`
+      <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Nueva pre-oferta</p>
+      <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 4px">${e(opts.lote)}</h2>
+      <p style="color:#a1a1aa;font-size:13px;margin:0 0 16px">${e(opts.remate)} &middot; remate del ${e(opts.fechaRemate)} &middot; ${e(opts.firmaNombre)}</p>
+      <table style="border-collapse:collapse;margin:0 0 18px">${tabla}</table>
+      <p style="color:#a1a1aa;font-size:12px;line-height:1.7;margin:0 0 8px">La oferta no es vinculante: es un interesado que quiere hablar antes del remate. Contactalo directo${opts.email ? ' — si respondés este mail, le llega a él' : ''}.</p>
+      <p style="margin:16px 0 0"><a href="${APP_URL}/dashboard" style="color:#38bdf8">Ver todas las ofertas en tu panel &rarr;</a></p>
+      <p style="margin:6px 0 0"><a href="${e(opts.fichaUrl)}" style="color:#38bdf8">Ver la pre-oferta publicada &rarr;</a></p>
+      <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">consignatarias.com — el contacto del interesado no se publica: solo lo ves vos.</p>
+    `),
+    })
+  } catch {
+    /* el envío queda registrado como error en ops_events por conEnvioRegistrado */
   }
 }

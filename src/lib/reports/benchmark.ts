@@ -26,6 +26,7 @@
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { fetchLotesDesde } from './mag-lotes'
 
 /** Lotes mínimos para que el promedio de una firma en una categoría signifique algo. */
 export const MIN_LOTES = 15
@@ -141,23 +142,13 @@ export async function getBenchmark(
     // respuesta sin avisar, y `.limit(50000)` no lo cambia. En 60 días hay ~8.000
     // lotes, así que sin esto el benchmark salía calculado sobre el 12% del mercado
     // —con precios promedio equivocados y presentados como si fueran el dato—.
-    const lotes: LoteRow[] = []
-    const PAGINA = 1000
-    for (let desdeFila = 0; ; desdeFila += PAGINA) {
-      const { data, error } = await db
-        .from('mag_consignataria_sales_lots')
-        .select('category, price, head_count, date, remitente, mag_consignataria_id')
-        .gte('date', desde)
-        .order('id', { ascending: true })
-        .range(desdeFila, desdeFila + PAGINA - 1)
-
-      if (error) return null
-      const pagina = (data ?? []) as LoteRow[]
-      lotes.push(...pagina)
-      if (pagina.length < PAGINA) break
-      // Tope duro: 60 días son ~8.000 lotes; 60.000 es diez veces eso y evita un
-      // bucle infinito si algún día la consulta deja de achicar la página.
-      if (lotes.length >= 60_000) break
+    // La lectura es la compartida del request (mag-lotes): los cuatro bloques del MAG
+    // del panel leen la misma ventana una sola vez.
+    let lotes: LoteRow[]
+    try {
+      lotes = (await fetchLotesDesde(db, desde)) as LoteRow[]
+    } catch {
+      return null
     }
 
     if (lotes.length === 0) return null

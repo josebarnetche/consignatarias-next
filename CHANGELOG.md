@@ -35,6 +35,13 @@ Auditoría de lo que vende PRO (landing, /planes, /para-consignatarias, /activar
 - `getFeaturedSlugs` se memoriza un minuto sólo durante el build (~1.000 páginas lo leen).
 - `ai-citations` ya no cuenta `bing-organico` como IA.
 
+**Pre-oferta operada por la firma, propuesta por firma, alta y "ver como"**
+- Pre-oferta como función PRO real: la firma arma el remate, carga lotes con video (YouTube/Vimeo/Drive), publica y cierra desde la pestaña "Pre-ofertas" del panel; el interesado deja oferta y contacto en `/preofertas/f/[id]` y le llega a la firma por mail (y queda en el panel). Migración `20261017_preofertas_firma` (aplicada): `preofertas_firma`, `preofertas_firma_lotes`, columnas nuevas en `preoferta_bids`. El registro estático de El Tigre sigue igual.
+- Propuesta formal por firma: `/admin/propuesta` arma el link firmado (`/propuesta/<firma>?t=…`, noindex, con "Para" y nota opcionales) y la página se imprime como PDF A4 con los datos reales de la firma y del sitio.
+- `/admin/ver-como` (FIRMAS): abre el panel de cualquier firma como lo vería su dueño, con PRO, sin PRO o con su plan real (`/dashboard?como=…&vista=…`, sólo lectura), y da de alta una firma a un mail con método de verificación y mail de acceso (`/api/admin/firmas/alta`). El admin ya no se redirige desde el layout del panel sino desde la página.
+- Reporte mensual a la firma rehecho (vistas, visitas desde IA, consultas, envíos del newsletter, seguidores; `count` por firma en vez de leer sin paginar) y su workflow reactivado (1° de cada mes).
+- Panel: los cuatro bloques del MAG comparten una lectura de lotes por request con páginas en paralelo, y los bloques independientes corren a la vez (de ~20 s a ~6 s medido en local).
+
 **Copy**
 - Landing (`BeneficiosPro`): ocho beneficios verdaderos; fuera la pre-oferta (piloto cerrado, operado a mano), "perfil verificado" como beneficio pago, los 6 canales de difusión (sólo el newsletter envía) y "las IAs nombran a las firmas con ficha completa". Cañuelas se ofrece "si operás ahí".
 - /planes, /para-consignatarias, /para-empresas, /activar, `ActivarProForm`, JSON-LD de /planes, `/api/planes`, x402 PRO y mails (bienvenida PRO, outreach de visitas: "visitas", no "productores"): fuera "a toda la base", "No es una demo", "Pronto, tu CRM", "soporte prioritario", "hasta 50 remates/mes".
