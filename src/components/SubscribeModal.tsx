@@ -261,7 +261,7 @@ export default function SubscribeModal() {
                   alt={`El Corredor — ${EDITION}`}
                   width={92}
                   height={122}
-                  className="hidden h-auto w-[92px] shrink-0 rounded border border-zinc-800 shadow-lg shadow-black/50 sm:block"
+                  className="hidden aspect-[3/4] h-auto w-[92px] shrink-0 self-start rounded border border-zinc-800 object-cover shadow-lg shadow-black/50 sm:block"
                 />
                 <div className="min-w-0">
                   <h2 className="mb-1 font-mono text-2xl font-bold tracking-tight text-white">El Corredor</h2>
