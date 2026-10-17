@@ -1,0 +1,90 @@
+import 'server-only'
+import { cache } from 'react'
+import { createServiceClient } from '@/lib/supabase'
+import { getCronHealth, type CronHealthRow } from '@/lib/ops'
+
+/**
+ * Lo que el admin tiene que mirar HOY. Alimenta los contadores de la navegación
+ * lateral y la bandeja de /admin. Una sola pasada por request (React `cache`):
+ * el layout y la página la comparten sin duplicar queries.
+ *
+ * Soft-fail por ítem: `null` = "s/d" (la query falló), nunca un 0 inventado.
+ */
+
+/** Mismo criterio que SystemHealthCard: falló, o pasó 1,5× su intervalo esperado. */
+export const CRON_OVERDUE_FACTOR = 1.5
+
+export function cronEnRojo(c: CronHealthRow): boolean {
+  const failed = c.status === 'error' || c.status === 'timeout'
+  const overdue = c.age_hours === null || c.age_hours > c.expected_interval_hours * CRON_OVERDUE_FACTOR
+  return failed || overdue
+}
+
+export interface AdminPendientes {
+  claimsConsignatarias: number | null
+  claimsFrigorificos: number | null
+  reviews: number | null
+  campos: number | null
+  /** Leads `new` + `needs_review`: los que nadie trabajó todavía. */
+  leadsSinTrabajar: number | null
+  opsErrores24h: number | null
+  cronsEnRojo: CronHealthRow[] | null
+}
+
+type Client = NonNullable<ReturnType<typeof createServiceClient>>
+
+async function contar(
+  run: () => PromiseLike<{ count: number | null; error: unknown }>,
+): Promise<number | null> {
+  try {
+    const { count, error } = await run()
+    if (error || count == null) return null
+    return count
+  } catch {
+    return null
+  }
+}
+
+export const getAdminPendientes = cache(async (): Promise<AdminPendientes> => {
+  const db = createServiceClient() as Client | null
+  if (!db) {
+    return {
+      claimsConsignatarias: null, claimsFrigorificos: null, reviews: null, campos: null,
+      leadsSinTrabajar: null, opsErrores24h: null, cronsEnRojo: null,
+    }
+  }
+  const since24h = new Date(Date.now() - 24 * 3_600_000).toISOString()
+
+  const [claimsConsignatarias, claimsFrigorificos, reviews, campos, leadsSinTrabajar, opsErrores24h, crons] =
+    await Promise.all([
+      contar(() => db.from('consignataria_claims').select('id', { count: 'exact', head: true }).eq('status', 'pending')),
+      contar(() => db.from('frigorifico_claims').select('id', { count: 'exact', head: true }).eq('status', 'pending')),
+      contar(() => db.from('consignataria_reviews').select('id', { count: 'exact', head: true }).eq('status', 'pending')),
+      contar(() => db.from('campos').select('id', { count: 'exact', head: true }).eq('status', 'pendiente')),
+      contar(() =>
+        db.from('producer_leads').select('id', { count: 'exact', head: true }).in('status', ['new', 'needs_review']),
+      ),
+      contar(() =>
+        db.from('ops_events').select('*', { count: 'exact', head: true }).eq('status', 'error').gte('created_at', since24h),
+      ),
+      getCronHealth().catch(() => null),
+    ])
+
+  return {
+    claimsConsignatarias,
+    claimsFrigorificos,
+    reviews,
+    campos,
+    leadsSinTrabajar,
+    opsErrores24h,
+    cronsEnRojo: crons ? crons.filter(cronEnRojo) : null,
+  }
+})
+
+/** Suma de lo que requiere una decisión humana (no incluye salud del sistema). */
+export function totalPorDecidir(p: AdminPendientes): number {
+  return [p.claimsConsignatarias, p.claimsFrigorificos, p.reviews, p.campos, p.leadsSinTrabajar].reduce<number>(
+    (acc, n) => acc + (n ?? 0),
+    0,
+  )
+}

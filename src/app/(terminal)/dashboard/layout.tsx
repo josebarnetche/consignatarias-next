@@ -25,7 +25,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   // Admin users go to admin panel
   if (role?.role === 'admin') {
-    redirect('/admin/claims')
+    redirect('/admin')
   }
 
   return <>{children}</>
