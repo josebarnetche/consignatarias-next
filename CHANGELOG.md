@@ -7,6 +7,35 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.226.0] — 2026-10-17
+
+### Landing nueva: PRO Consignataria como producto principal, en un lienzo estilo Figma
+
+Decisión de Jose: la home vende PRO Consignataria primero y reparte hacia todo el sitio.
+Contexto: la home recibe ~4 % de las sesiones (297 entradas en 30 días, GA4); el tráfico
+entra por arrendamiento, frigoríficos y guías. La home es vidriera para las firmas y mapa.
+
+- **Lenguaje "lienzo"** (globals.css, sección LIENZO): grilla de puntos, frames con su
+  nombre y manijas de selección al pasar el mouse, cursores multijugador en el hero.
+  Todo con tokens, en los dos temas, con `prefers-reduced-motion`.
+- **Hero PRO** (`landing/lienzo/HeroPro`): la promesa + cómo se ve la firma en Google, en
+  el directorio y en la respuesta de una IA ("Tu Consignataria" es un marcador).
+- **Alcance** (`AlcanceGoogle`): 1.078.731 impresiones en Google (6-mar → 14-oct-2026,
+  Search Console) con la serie mensual; clics, visitas 30 días (GA4) y visitas desde IAs.
+  El dato vive en `src/lib/data/alcance-google.ts` (se actualiza a mano con gsc-historico).
+- **Beneficios PRO** (`BeneficiosPro`): ocho frames — directorio, remates destacados,
+  difusión auditada (canales de lib/promotion), IAs (firmas citadas reales, ai_referrals),
+  pre-oferta, analytics, landing + QR, precio sin permanencia.
+- **Todo el sitio** (`MapaDelSitio`): 31 secciones en 6 páginas tipo Figma, con su dato del
+  día. Todas las rutas verificadas; los paneles ocultos quedan en el HTML (enlazado interno).
+- Se conservan: cinta de mercado, valuador del productor (#valuar), buscador + mapa, guía
+  paga, calendario sanitario, muro de logos, FAQ (+ pregunta PRO) y newsletter.
+- Salen: hero del productor (LiveHero), "Cómo funciona", bloques MCP y El Corredor, "Qué hay
+  adentro" y el CTA a /overview (todos quedan como frames del mapa del sitio).
+- El `title`/`description` de la home no cambian (SEO de "precio de la hacienda").
+
+---
+
 ## [1.225.0] — 2026-10-17
 
 ### Landing: la Res. 201/2026 en el calendario sanitario y el tema claro legible
