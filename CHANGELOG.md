@@ -23,9 +23,11 @@ entra por arrendamiento, frigoríficos y guías. La home es vidriera para las fi
 - **Alcance** (`AlcanceGoogle`): 1.078.731 impresiones en Google (6-mar → 14-oct-2026,
   Search Console) con la serie mensual; clics, visitas 30 días (GA4) y visitas desde IAs.
   El dato vive en `src/lib/data/alcance-google.ts` (se actualiza a mano con gsc-historico).
-- **Beneficios PRO** (`BeneficiosPro`): ocho frames — directorio, remates destacados,
+- **Beneficios PRO** (`BeneficiosPro`): siete frames — directorio, remates destacados,
   difusión auditada (canales de lib/promotion), IAs (firmas citadas reales, ai_referrals),
-  pre-oferta, analytics, landing + QR, precio sin permanencia.
+  pre-oferta, analytics, landing + QR — y debajo **el CTA de PRO grande y centrado**
+  (precio, lo que incluye, Activar PRO / Reservar reunión), no un cuadrito al costado.
+- Hero: el primer botón es **Acceder al Terminal** (/overview); "Ver los beneficios" segundo.
 - **Todo el sitio** (`MapaDelSitio`): 31 secciones en 6 páginas tipo Figma, con su dato del
   día. Todas las rutas verificadas; los paneles ocultos quedan en el HTML (enlazado interno).
 - Se conservan: cinta de mercado, valuador del productor (#valuar), buscador + mapa, guía

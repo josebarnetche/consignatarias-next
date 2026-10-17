@@ -22,7 +22,7 @@ export default function BeneficiosPro({ citadas }: { citadas: string[] }) {
             Vos rematás. Que el mercado te encuentre lo hacemos nosotros.
           </h2>
           <p className="mt-4 text-lg text-zinc-400">
-            Ocho cosas que cambian el día que tu firma pasa a PRO.
+            Siete cosas que cambian el día que tu firma pasa a PRO.
           </p>
         </div>
 
@@ -122,7 +122,7 @@ export default function BeneficiosPro({ citadas }: { citadas: string[] }) {
           </Frame>
 
           {/* 6 — analytics */}
-          <Frame nombre="06 · Analytics de tu perfil" className="p-6 md:col-span-2">
+          <Frame nombre="06 · Analytics de tu perfil" className="p-6 md:col-span-3">
             <h3 className="text-lg font-semibold text-ink">Quién te mira, cuándo y desde dónde.</h3>
             <div className="mt-5 flex h-16 items-end gap-1" aria-hidden="true">
               {[30, 45, 38, 60, 52, 75, 68, 90, 82, 100].map((h, i) => (
@@ -132,7 +132,7 @@ export default function BeneficiosPro({ citadas }: { citadas: string[] }) {
           </Frame>
 
           {/* 7 — landing + QR */}
-          <Frame nombre="07 · Landing propia + QR" className="p-6 md:col-span-2">
+          <Frame nombre="07 · Landing propia + QR" className="p-6 md:col-span-3">
             <h3 className="text-lg font-semibold text-ink">Tu página para compartir, con QR para el catálogo y la feria.</h3>
             <div className="mt-4 grid w-16 grid-cols-5 gap-0.5" aria-hidden="true">
               {'1110110101011101010111011'.split('').map((b, i) => (
@@ -141,30 +141,63 @@ export default function BeneficiosPro({ citadas }: { citadas: string[] }) {
             </div>
           </Frame>
 
-          {/* 8 — precio */}
-          <Frame nombre="08 · Sin permanencia" activo className="p-6 md:col-span-2 border-accent/50">
-            <p className="text-xxs font-medium text-accent">PRO Consignataria</p>
-            <p className="mt-2 text-3xl font-semibold tabular-nums text-ink">
-              ARS 45.000<span className="text-base font-normal text-zinc-500">/mes</span>
-            </p>
-            <p className="mt-1 text-xs text-zinc-500">Facturación mensual en pesos. Se cancela cuando quieras.</p>
-            <div className="mt-5 flex flex-col gap-2">
-              <Link
-                href="/planes#consignataria"
-                className="rounded-lg bg-accent px-4 py-3 text-center text-sm font-semibold text-white oscuro:text-zinc-950 hover:bg-accent-bright transition-colors"
-              >
-                Activar PRO →
-              </Link>
-              <a
-                href={RESERVAR}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-lg border border-zinc-700 px-4 py-3 text-center text-sm text-zinc-200 hover:border-accent hover:text-accent transition-colors"
-              >
-                Reservar una reunión
-              </a>
-            </div>
-          </Frame>
+        </div>
+
+        {/* El CTA de PRO: grande y centrado, no un cuadrito al costado (pedido de Jose). */}
+        <div className="frame frame-activo relative mx-auto mt-24 max-w-4xl rounded-3xl border-2 border-accent bg-terminal-panel px-6 py-14 text-center sm:px-14 sm:py-16 shadow-2xl shadow-accent/10">
+          <span className="frame-nombre" aria-hidden="true"># PRO Consignataria</span>
+          <p className="text-sm font-semibold text-accent">PRO Consignataria</p>
+          <h3 className="mx-auto mt-4 max-w-2xl text-3xl sm:text-5xl font-semibold tracking-tight text-ink text-balance">
+            Que el próximo productor que busque, te encuentre a vos.
+          </h3>
+          <p className="mt-8 whitespace-nowrap text-5xl sm:text-7xl font-semibold tracking-tight tabular-nums text-ink">
+            ARS 45.000<span className="text-2xl font-normal text-zinc-500">/mes</span>
+          </p>
+          <p className="mt-3 text-sm text-zinc-500">Facturación mensual en pesos · sin permanencia · se cancela cuando quieras</p>
+
+          <ul className="mx-auto mt-10 grid max-w-2xl gap-x-8 gap-y-3 text-left text-sm text-zinc-300 sm:grid-cols-2">
+            {[
+              'Perfil verificado con el sello ★ PRO',
+              'Primera en el directorio y en el muro',
+              'Remates destacados en el calendario',
+              'Difusión por email, con registro de envíos',
+              'Pre-oferta de lotes con video y leads',
+              'Analytics de tu perfil',
+              'Landing propia con QR y widget',
+              'Tu ficha lista para las respuestas de IA',
+            ].map((b) => (
+              <li key={b} className="flex items-start gap-2.5">
+                <span className="mt-0.5 font-bold text-accent" aria-hidden="true">✓</span>
+                {b}
+              </li>
+            ))}
+          </ul>
+
+          <div className="mt-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+            <Link
+              href="/planes#consignataria"
+              className="w-full sm:w-auto rounded-xl bg-accent px-12 py-5 text-lg font-semibold text-white oscuro:text-zinc-950 hover:bg-accent-bright transition-colors shadow-lg shadow-accent/25"
+            >
+              Activar PRO →
+            </Link>
+            <a
+              href={RESERVAR}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto rounded-xl border border-zinc-700 px-8 py-5 text-base text-zinc-200 hover:border-accent hover:text-accent transition-colors"
+            >
+              Reservar una reunión
+            </a>
+          </div>
+          <p className="mt-6 text-xs text-zinc-500">
+            +1 millón de impresiones en Google desde marzo de 2026.
+          </p>
+          <span className="frame-sel" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+            <i />
+          </span>
         </div>
       </div>
     </section>
