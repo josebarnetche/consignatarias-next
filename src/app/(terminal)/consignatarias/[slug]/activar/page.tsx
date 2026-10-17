@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import { notFound, permanentRedirect } from 'next/navigation'
 import { getAllCanonicalSlugs, getCanonicalSlug, getProfile } from '@/lib/data/consignataria-slugs'
 import ActivarProForm from '@/components/consignataria/ActivarProForm'
+import PedirPropuesta from '@/components/consignataria/PedirPropuesta'
 
 /* ------------------------------------------------------------------ */
 /*  STATIC PARAMS                                                      */
@@ -29,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: `Activar PRO — ${profile.displayName}`,
-    description: `Activá el perfil PRO de ${profile.displayName} en Consignatarias.com.ar: prioridad, badge verificado y analítica de tu perfil.`,
+    description: `Activá el perfil PRO de ${profile.displayName} en Consignatarias.com.ar: primera en el directorio con el sello ★ PRO, consultas con nombre y contacto y el panel de quién te mira.`,
     robots: {
       index: false,
       follow: false,
@@ -59,6 +60,7 @@ export default async function ActivarPage({ params }: Props) {
   return (
     <div className="max-w-lg mx-auto px-2 sm:px-4 py-6">
       <ActivarProForm slug={canonical} displayName={profile.displayName} />
+      <PedirPropuesta slug={canonical} displayName={profile.displayName} />
     </div>
   )
 }

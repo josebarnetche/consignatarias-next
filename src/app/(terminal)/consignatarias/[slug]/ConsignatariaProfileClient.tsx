@@ -525,6 +525,9 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
       body: JSON.stringify({
         entityType: 'consignataria',
         entitySlug: profile.canonicalSlug,
+        // De dónde llegó la visita (Google, una IA, el directorio…). El header
+        // Referer del POST es esta misma página y no dice nada.
+        referrer: document.referrer || null,
       }),
     }).catch(() => {})
   }, [profile.canonicalSlug, profile.displayName, auctions.length])
@@ -1254,7 +1257,7 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
                       Para tu firma · tu remate va primero en el newsletter semanal
                     </p>
                     <p className="text-xxs text-zinc-500 font-terminal">
-                      Con PRO, tus remates llegan por email a toda nuestra base activa. Módulo de pre-oferta (lotes con video + captura de leads), badge dorado, analytics de perfil y landing personalizada.
+                      Con PRO, tu firma va primera en el directorio con el sello ★ PRO, tus remates se resaltan en el calendario y las consultas te llegan con nombre y contacto. En tu panel ves quién te mira.
                     </p>
                   </div>
                 </div>

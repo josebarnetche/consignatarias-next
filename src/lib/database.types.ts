@@ -2525,9 +2525,9 @@ export type Database = {
       }
       preoferta_bids: {
         Row: {
-          amount: number
+          amount: number | null
           bidder_cuit: string | null
-          bidder_email: string
+          bidder_email: string | null
           bidder_localidad: string | null
           bidder_name: string | null
           bidder_phone: string | null
@@ -2535,14 +2535,17 @@ export type Database = {
           id: string
           infoexperto: string | null
           is_test: boolean
+          lote_firma_id: string | null
           lote_rp: string
+          mensaje: string | null
+          preoferta_firma_id: string | null
           relayed_at: string | null
           remate_slug: string
         }
         Insert: {
-          amount: number
+          amount?: number | null
           bidder_cuit?: string | null
-          bidder_email: string
+          bidder_email?: string | null
           bidder_localidad?: string | null
           bidder_name?: string | null
           bidder_phone?: string | null
@@ -2550,14 +2553,17 @@ export type Database = {
           id?: string
           infoexperto?: string | null
           is_test?: boolean
+          lote_firma_id?: string | null
           lote_rp: string
+          mensaje?: string | null
+          preoferta_firma_id?: string | null
           relayed_at?: string | null
           remate_slug: string
         }
         Update: {
-          amount?: number
+          amount?: number | null
           bidder_cuit?: string | null
-          bidder_email?: string
+          bidder_email?: string | null
           bidder_localidad?: string | null
           bidder_name?: string | null
           bidder_phone?: string | null
@@ -2565,11 +2571,29 @@ export type Database = {
           id?: string
           infoexperto?: string | null
           is_test?: boolean
+          lote_firma_id?: string | null
           lote_rp?: string
+          mensaje?: string | null
+          preoferta_firma_id?: string | null
           relayed_at?: string | null
           remate_slug?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "preoferta_bids_lote_firma_id_fkey"
+            columns: ["lote_firma_id"]
+            isOneToOne: false
+            referencedRelation: "preofertas_firma_lotes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "preoferta_bids_preoferta_firma_id_fkey"
+            columns: ["preoferta_firma_id"]
+            isOneToOne: false
+            referencedRelation: "preofertas_firma"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       preoferta_mirror: {
         Row: {
@@ -2612,6 +2636,98 @@ export type Database = {
           visitor?: string | null
         }
         Relationships: []
+      }
+      preofertas_firma: {
+        Row: {
+          cierre: string
+          condiciones: string | null
+          consignataria_slug: string
+          created_at: string
+          estado: string
+          fecha_remate: string
+          id: string
+          lugar: string | null
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          cierre: string
+          condiciones?: string | null
+          consignataria_slug: string
+          created_at?: string
+          estado?: string
+          fecha_remate: string
+          id?: string
+          lugar?: string | null
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          cierre?: string
+          condiciones?: string | null
+          consignataria_slug?: string
+          created_at?: string
+          estado?: string
+          fecha_remate?: string
+          id?: string
+          lugar?: string | null
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      preofertas_firma_lotes: {
+        Row: {
+          cabezas: number | null
+          categoria: string | null
+          created_at: string
+          descripcion: string | null
+          id: string
+          orden: number
+          peso_kg: number | null
+          precio_base: number | null
+          preoferta_id: string
+          titulo: string
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          cabezas?: number | null
+          categoria?: string | null
+          created_at?: string
+          descripcion?: string | null
+          id?: string
+          orden?: number
+          peso_kg?: number | null
+          precio_base?: number | null
+          preoferta_id: string
+          titulo: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          cabezas?: number | null
+          categoria?: string | null
+          created_at?: string
+          descripcion?: string | null
+          id?: string
+          orden?: number
+          peso_kg?: number | null
+          precio_base?: number | null
+          preoferta_id?: string
+          titulo?: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "preofertas_firma_lotes_preoferta_id_fkey"
+            columns: ["preoferta_id"]
+            isOneToOne: false
+            referencedRelation: "preofertas_firma"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       price_alerts: {
         Row: {

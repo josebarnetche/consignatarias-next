@@ -5,6 +5,9 @@ import { consignatariaProfilePath } from '@/lib/data/consignataria-slugs'
 import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/JsonLd'
 import { Calendar, History } from 'lucide-react'
 import { rematePath } from '@/lib/remate-slug'
+import ProBadge from '@/components/badges/ProBadge'
+import { getFeaturedSlugs } from '@/lib/featured'
+import { esRematePro } from '@/lib/remates-pro'
 
 // Regenerate hourly for fresh TODAY
 export const revalidate = false // Cost optimization: static at build time
@@ -93,7 +96,9 @@ interface Remate {
 // Fila liviana en vez de tarjeta: con ~220 remates por mes, cada tarjeta (cinco íconos
 // SVG, descripción, dos enlaces) viajaba dos veces —HTML y payload RSC— y la página
 // llegaba a 1,6 MB. El enlace principal va a la ficha del remate; el perfil queda al lado.
-function RemateFila({ remate }: { remate: Remate }) {
+// `pro`: mismo resaltado que la RemateFila compartida y la fila PRO de RematesClient
+// (17-10-2026).
+function RemateFila({ remate, pro = false }: { remate: Remate; pro?: boolean }) {
   const detalle = [
     `${remate.location}, ${remate.province}`,
     remate.time ? `${remate.time} hs` : null,
@@ -101,11 +106,17 @@ function RemateFila({ remate }: { remate: Remate }) {
     remate.mainCategory || null,
   ].filter(Boolean).join(' · ')
   return (
-    <li className="py-2.5 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
+    <li
+      className={`py-2.5 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 ${
+        pro ? 'relative -mx-3 px-3 bg-accent/[0.04]' : ''
+      }`}
+    >
+      {pro && <span aria-hidden className="absolute inset-y-0 left-0 w-1 bg-accent" />}
       <div className="min-w-0">
         <Link href={rematePath(remate)} className="text-zinc-200 hover:text-accent transition-colors font-medium">
           {remate.consignatariaName} — remate {remate.type ? remate.type.toLowerCase() : 'general'}
         </Link>
+        {pro && <ProBadge size="sm" animated={false} className="ml-2 align-middle" />}
         <p className="text-xs text-zinc-500">{detalle}</p>
       </div>
       <Link
@@ -118,7 +129,8 @@ function RemateFila({ remate }: { remate: Remate }) {
   )
 }
 
-export default function RematesAnterioresPage() {
+export default async function RematesAnterioresPage() {
+  const proSlugs = await getFeaturedSlugs()
   const todayStr = getTodayStr()
   const thirtyDaysAgo = getLast30DaysStr()
 
@@ -246,7 +258,7 @@ export default function RematesAnterioresPage() {
                   </h2>
                   <ul className="divide-y divide-zinc-800">
                     {dateRemates.map(remate => (
-                      <RemateFila key={remate.id} remate={remate} />
+                      <RemateFila key={remate.id} remate={remate} pro={esRematePro(remate, proSlugs)} />
                     ))}
                   </ul>
                 </section>

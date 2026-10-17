@@ -7,6 +7,51 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.228.0] — 2026-10-17
+
+### PRO Consignataria: cada promesa, verificada contra el código
+
+Auditoría de lo que vende PRO (landing, /planes, /para-consignatarias, /activar, mails, MCP) contra lo que el código hace. Estado de la base al auditar: 0 suscripciones pagas, 4 firmas PRO por destaque manual (ninguna con la ficha reclamada) y 1 firma reclamada (FREE).
+
+**El panel de la firma**
+- El plan lo decide el server (`getConsignatariaPlanStatus`) y el cliente lo recibe: antes el panel armaba su propio "PRO" con la fila de suscripción y el canje de puntos. Una firma con destaque manual veía el panel FREE con muestras de ejemplo teniendo los datos reales, y un canje de puntos vencido decía PRO para siempre con los bloques vacíos.
+- "Mi plan" distingue PRO sin cargo (destaque), cancelada en gracia ("PRO hasta el X") y cobro rechazado. Fuera el contador de "lugares fundador": contaba suscripciones de otro producto contra un cupo que no existe (`/api/stats/pro-spots` borrado).
+- Bloque nuevo **Quién te mira** (`lib/reports/origen-visitas.ts` + test): vistas por día, desde dónde llegan (buscadores, IAs, redes, directo/QR, y qué sección del sitio) y las visitas que llegaron a la ficha desde ChatGPT/Copilot/Gemini (`ai_referrals`). Sólo PRO; FREE ve la forma con datos de ejemplo.
+- `profile_views.referrer` ahora guarda el `document.referrer` real: hasta hoy guardaba el header del POST, que era la propia ficha (los 1.800 registros previos no tienen origen y se muestran como "sin dato").
+- Remates, ranking provincial y reporte mensual cuentan por slug canónico (antes `includes` y comparación cruda: una firma con slug variante leía "ningún remate este mes").
+- Textos corregidos: el aviso de clics de WhatsApp ya no dice "activá la captura de leads"; los seguidores ya no "reciben avisos cuando publicás" (el workflow de recordatorios está apagado); lista de beneficios única en `lib/pro-consignataria-beneficios.ts` para la bienvenida, "Mi plan" y `/api/planes`.
+
+**Cobros**
+- Cobrar ya no prende `consignatarias.featured` (webhook Rebill y x402): `featured` es el destaque manual y significa PRO permanente, así que un solo pago dejaba a la firma PRO para siempre. Cancelar tampoco lo apaga (borraba un destaque manual previo).
+- Quien paga sin tener la ficha reclamada queda con un **reclamo pendiente** a su nombre (`lib/claims/reclamo-por-pago.ts`): antes pagaba y no podía abrir el panel. Pagar no da la ficha; se aprueba como cualquier reclamo.
+- La conciliación contra Rebill (`rebill-reconciliar`) cubre también las suscripciones PRO: si el webhook falla, la firma igual pasa a PRO.
+
+**Visibilidad que se vendía y no existía**
+- Directorio por provincia: PRO primero y con sello. Muro de la portada: una firma PRO entra aunque no tenga logo curado.
+- Fichas de remate: marca "Consignataria PRO". Calendario: resaltado PRO también en hoy, mañana, semana, fin de semana, mes, anteriores, en vivo y provincias (antes sólo `/remates`, y las provincias leían un flag viejo del JSON). `RematesClient` dejaba de mostrar un verificado inventado.
+- Newsletter semanal: usa `getFeaturedSlugs` y el slug canónico (antes su propia regla y slugs crudos: los PRO casi nunca coincidían) y registra la campaña con el slug que lee el panel.
+- MCP `find_livestock_broker`: PRO primero, marcadas `★ PRO`. `subscribe_broker_pro` describe sólo lo que existe.
+- Una firma PRO no queda en noindex ni fuera del sitemap por tener pocos remates. El webhook revalida directorio y portada al activar, cancelar o fallar un cobro.
+- `getFeaturedSlugs` se memoriza un minuto sólo durante el build (~1.000 páginas lo leen).
+- `ai-citations` ya no cuenta `bing-organico` como IA.
+
+**Pre-oferta operada por la firma, propuesta por firma, alta y "ver como"**
+- Pre-oferta como función PRO real: la firma arma el remate, carga lotes con video (YouTube/Vimeo/Drive), publica y cierra desde la pestaña "Pre-ofertas" del panel; el interesado deja oferta y contacto en `/preofertas/f/[id]` y le llega a la firma por mail (y queda en el panel). Migración `20261017_preofertas_firma` (aplicada): `preofertas_firma`, `preofertas_firma_lotes`, columnas nuevas en `preoferta_bids`. El registro estático de El Tigre sigue igual.
+- Propuesta formal por firma: `/admin/propuesta` arma el link firmado (`/propuesta/<firma>?t=…`, noindex, con "Para" y nota opcionales) y la página se imprime como PDF A4 con los datos reales de la firma y del sitio.
+- `/admin/ver-como` (FIRMAS): abre el panel de cualquier firma como lo vería su dueño, con PRO, sin PRO o con su plan real (`/dashboard?como=…&vista=…`, sólo lectura), y da de alta una firma a un mail con método de verificación y mail de acceso (`/api/admin/firmas/alta`). El admin ya no se redirige desde el layout del panel sino desde la página.
+- **Propuesta a pedido**: en `/consignatarias/<firma>/activar` la firma deja su mail y recibe la propuesta PRO con la marca, sus números y el link a la versión imprimible (`/api/propuesta/pedir`, `sendPropuestaPro`, copia oculta a LEAD_ALERT_TO). `PROPUESTA_SECRET` cargado en Vercel. El formulario de activación usa la lista verificada de beneficios.
+- Newsletter semanal de remates: los suscriptores de El Corredor también lo reciben (`TAMBIEN_SEMANAL`), y el envío sale en dos tandas (lunes y martes) para respetar los 100 mails/día de Resend, sin repetir destinatarios (`outreach_log` con la clave del lunes).
+- Datos: la ficha de Colombo y Magliano, reclamada por Jose como prueba el 10-03, quedó liberada.
+- Reporte mensual a la firma rehecho (vistas, visitas desde IA, consultas, envíos del newsletter, seguidores; `count` por firma en vez de leer sin paginar) y su workflow reactivado (1° de cada mes).
+- Panel: los cuatro bloques del MAG comparten una lectura de lotes por request con páginas en paralelo, y los bloques independientes corren a la vez (de ~20 s a ~6 s medido en local).
+
+**Copy**
+- Landing (`BeneficiosPro`): ocho beneficios verdaderos; fuera la pre-oferta (piloto cerrado, operado a mano), "perfil verificado" como beneficio pago, los 6 canales de difusión (sólo el newsletter envía) y "las IAs nombran a las firmas con ficha completa". Cañuelas se ofrece "si operás ahí".
+- /planes, /para-consignatarias, /para-empresas, /activar, `ActivarProForm`, JSON-LD de /planes, `/api/planes`, x402 PRO y mails (bienvenida PRO, outreach de visitas: "visitas", no "productores"): fuera "a toda la base", "No es una demo", "Pronto, tu CRM", "soporte prioritario", "hasta 50 remates/mes".
+- Pre-ofertas sale del menú (la página dice que no hay ninguna abierta).
+
+---
+
 ## [1.227.0] — 2026-10-17
 
 ### Seguridad de reclamos y datos, mails que no se pierden y un solo menú

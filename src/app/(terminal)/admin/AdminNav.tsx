@@ -12,6 +12,8 @@ const ADMIN_TABS = [
   { href: '/admin/campos', label: 'CAMPOS' },
   { href: '/admin/valor', label: 'VALOR' },
   { href: '/admin/preoferta', label: 'PRE-OFERTAS' },
+  { href: '/admin/propuesta', label: 'PROPUESTAS' },
+  { href: '/admin/ver-como', label: 'FIRMAS' },
   { href: '/admin/reviews', label: 'RESEÑAS' },
   { href: '/admin/suscriptores', label: 'SUSCRIPTORES' },
   { href: '/admin/ops', label: 'OPS' },

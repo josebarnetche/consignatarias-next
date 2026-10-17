@@ -193,7 +193,10 @@ function AuctionRow({ auction, today, index }: { auction: Auction; today: string
             >
               {nombrePropio(auction.consignatariaName)}
             </Link>
-            {isFeatured && <ProBadge verified={true} size="sm" className="relative flex-shrink-0" />}
+            {/* Sin tilde de verificada: este listado no tiene el dato de firma
+                reclamada/verificada, y un `verified` fijo afirmaba algo que no
+                sabemos (17-10-2026). */}
+            {isFeatured && <ProBadge size="sm" className="relative flex-shrink-0" />}
           </div>
           <StatusBadge date={auction.date} time={auction.time} today={today} />
         </div>
@@ -351,12 +354,13 @@ export default function RematesPage({ remates }: RematesClientProps) {
       .catch(() => {})
   }, [])
 
-  // Merge featured flag from DB into auctions
+  // Merge featured flag from DB into auctions. El set de la base PISA el
+  // `featured` estático de remates.json (17-10-2026): ese flag queda viejo cuando
+  // una firma da de baja el PRO, y no debe seguir resaltada.
   const auctions = useMemo(() =>
     remates.map(a => {
       const canonical = getCanonicalSlug(a.consignatariaSlug) || a.consignatariaSlug
-      const dbFeatured = featuredSlugs.has(canonical)
-      return dbFeatured ? { ...a, featured: true } : a
+      return { ...a, featured: featuredSlugs.has(canonical) }
     }),
     [featuredSlugs, remates]
   )

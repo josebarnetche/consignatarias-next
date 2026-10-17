@@ -60,7 +60,8 @@ export function buildNavGroups(totales: { plantas: number; firmas: number }): Na
         { label: '¿Vendo ahora?', href: '/mercado/vender-ahora', hint: 'Tu lote contra los últimos 365 días' },
         { label: 'Calculadora de neto', href: '/calculadora', hint: 'Lo que te queda en mano' },
         { label: 'Lotes en venta', href: '/lotes', hint: 'Hacienda publicada, con la banda observada' },
-        { label: 'Pre-ofertas', href: '/preofertas', hint: 'Lotes con video, antes del remate' },
+        // Pre-ofertas salió del menú el 17-10-2026: fue un piloto operado a mano que
+        // cerró el 16-07 y la página dice "No hay pre-ofertas abiertas". La URL sigue viva.
         { label: 'Quiero comprar', href: '/quiero-comprar', hint: 'Decinos qué buscás y te avisamos' },
         { label: 'Comparar firmas', href: '/comparar', hint: 'Quién remata más seguido' },
         { label: 'Sanidad / SENASA', href: '/sanidad', hint: 'Vacunación y requisitos para mover hacienda' },

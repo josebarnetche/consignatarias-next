@@ -8,6 +8,8 @@ import { authorizeCron } from '@/lib/cron-auth'
 import rematesData from '@/lib/data/remates.json'
 import { registrarCampanas } from '@/lib/promotion'
 import type { Auction } from '@/lib/db/schema'
+import { getFeaturedSlugs } from '@/lib/featured'
+import { armarRematesNewsletter } from '@/lib/newsletter/remates-semana'
 
 /**
  * Weekly newsletter — sends featured PRO remates to all newsletter subscribers.
@@ -39,34 +41,12 @@ export async function POST(req: NextRequest) {
       .filter(a => a.date >= todayStr && a.date <= nextWeekStr)
       .sort((a, b) => a.date.localeCompare(b.date))
 
-    const { data: proConsignatarias } = await supabase
-      .from('consignatarias')
-      .select('canonical_slug, display_name, featured')
-      .or('featured.eq.true')
-
-    const { data: proSubscriptions } = await supabase
-      .from('subscriptions')
-      .select('entity_slug')
-      .eq('entity_type', 'consignataria')
-      .in('status', ['active', 'past_due'])
-
-    const proSlugs = new Set<string>()
-    proConsignatarias?.forEach(c => { if (c.featured) proSlugs.add(c.canonical_slug) })
-    proSubscriptions?.forEach(s => proSlugs.add(s.entity_slug))
-
-    const proAuctions = upcomingAuctions.filter(a => proSlugs.has(a.consignatariaSlug))
-    const regularAuctions = upcomingAuctions.filter(a => !proSlugs.has(a.consignatariaSlug))
-
-    const featuredRemates = [
-      ...proAuctions.map(a => ({
-        title: a.title, date: a.date, time: a.time, location: a.location || '',
-        consignataria: a.consignatariaName, slug: a.consignatariaSlug, heads: a.estimatedHeads, isPro: true,
-      })),
-      ...regularAuctions.slice(0, Math.max(0, 10 - proAuctions.length)).map(a => ({
-        title: a.title, date: a.date, time: a.time, location: a.location || '',
-        consignataria: a.consignatariaName, slug: a.consignatariaSlug, heads: a.estimatedHeads, isPro: false,
-      })),
-    ].slice(0, 10)
+    // PRO = la fuente única (featured o suscripción vigente, con la gracia de
+    // la cancelada) y comparada contra el slug CANÓNICO del remate. Antes esta
+    // ruta tenía su propia regla (active/past_due) y comparaba el slug crudo.
+    // PRO primero, dentro del tope de 10 (17-10-2026).
+    const proSlugs = await getFeaturedSlugs()
+    const { remates: featuredRemates, proCount } = armarRematesNewsletter(upcomingAuctions, proSlugs)
 
     if (featuredRemates.length === 0) {
       return { message: 'No hay remates para la próxima semana', metadata: { message: 'No hay remates para la próxima semana', sent: 0 } }
@@ -84,14 +64,32 @@ export async function POST(req: NextRequest) {
       return { message: 'No hay suscriptores activos', metadata: { message: 'No hay suscriptores activos', sent: 0 } }
     }
 
-    const { toSend, skipped } = capForFreePlan(subscribers)
+    // ENVÍO EN DOS TANDAS (17-10-2026). Con El Corredor adentro la lista pasa de los
+    // 100 mails/día del plan de Resend: el lunes salen hasta el tope y el martes (misma
+    // ruta, segundo horario del workflow) los que faltan. Quién ya lo recibió esta
+    // semana queda en outreach_log con la clave del lunes, así nadie lo recibe dos veces.
+    const ar = new Date(Date.now() - 3 * 3600_000)
+    const lunes = new Date(ar.getTime() - ((ar.getUTCDay() + 6) % 7) * 86_400_000).toISOString().slice(0, 10)
+    const claveSemana = `weekly_newsletter:${lunes}`
+    const { data: yaEnviados } = await supabase
+      .from('outreach_log')
+      .select('email_sent_to')
+      .eq('type', claveSemana)
+      .limit(5000)
+    const recibieron = new Set((yaEnviados ?? []).map((r) => r.email_sent_to.toLowerCase()))
+    const pendientes = subscribers.filter((s) => !recibieron.has(s.email.toLowerCase()))
+
+    const { toSend, skipped } = capForFreePlan(pendientes)
     let sent = 0
     const errors: string[] = []
 
     for (const sub of toSend) {
       try {
         const res = await sendWeeklyNewsletter(sub.email, featuredRemates, upcomingAuctions.length, weekRange)
-        if (res.success) sent++
+        if (res.success) {
+          sent++
+          await supabase.from('outreach_log').insert({ type: claveSemana, consignataria_slug: '-', email_sent_to: sub.email })
+        }
         else errors.push(`${sub.email}: ${res.error ?? 'send failed'}`)
         await new Promise(r => setTimeout(r, 500)) // ≥500ms: Resend ~2 req/s, evita 429
       } catch (err) {
@@ -124,13 +122,13 @@ export async function POST(req: NextRequest) {
     }
 
     const body = {
-      message: `Newsletter enviado: ${sent}/${subscribers.length}`,
+      message: `Newsletter enviado: ${sent} (ya lo tenían ${recibieron.size}, quedan ${skipped}) de ${subscribers.length}`,
       sent,
       total: subscribers.length,
       skipped,
       weekRange,
       featuredCount: featuredRemates.length,
-      proCount: proAuctions.length,
+      proCount,
       totalRemates: upcomingAuctions.length,
       errors: errors.length > 0 ? errors : undefined,
     }

@@ -90,11 +90,20 @@ function isExcluded(s: string): boolean {
  * sources, and subscribers who opted into a specific segment (faena/cierre/corredor),
  * who get their own content rather than the weekly.
  */
+/**
+ * Segmentos que ADEMÁS de su contenido propio reciben el resumen semanal de remates.
+ * El Corredor entra el 17-10-2026 por decisión de Jose: es la base más grande (96 de
+ * 182 activos) y son productores que ya leen el mercado; sin ellos, el semanal —que es
+ * la difusión que se le vende a PRO— llegaba a ~15 personas. Cada mail lleva su baja.
+ */
+export const TAMBIEN_SEMANAL = ['el-corredor'] as const
+
 export function isWeeklyRecipient(source: string | null | undefined): boolean {
   const s = norm(source)
   if (!s) return true // empty source → general newsletter
   if (isExcluded(s)) return false
   if ((PRODUCT_UPDATE_ONLY as readonly string[]).includes(s)) return false
+  if ((TAMBIEN_SEMANAL as readonly string[]).includes(s)) return true
   if (inSpecificSegment(s)) return false
   return true // weekly explicit + everything unmapped
 }

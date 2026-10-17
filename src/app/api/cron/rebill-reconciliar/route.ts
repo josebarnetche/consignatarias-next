@@ -4,6 +4,9 @@ import { logEvent } from '@/lib/ops'
 import { sendInformePurchaseDelivery, sendGuiaPurchaseDelivery } from '@/lib/email'
 import { getProducto } from '@/lib/productos-datos'
 import { getGuiaPremium } from '@/lib/guias-premium'
+import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
+import { asegurarReclamoPorPago } from '@/lib/claims/reclamo-por-pago'
+import { revalidatePath } from 'next/cache'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -82,6 +85,63 @@ export async function POST(req: NextRequest) {
   }
 
   for (const p of pagos) {
+    // SUSCRIPCIÓN PRO de una firma (revisión del 17-10-2026). Antes esta red sólo
+    // cubría informes y guías: si el webhook fallaba con una suscripción, la firma
+    // pagaba y no pasaba a PRO. El link de suscripción lleva entityType/entitySlug en
+    // la metadata (lib/rebill.ts). Idempotente: sólo extiende si el período registrado
+    // no cubre ya este pago.
+    const entityType = p.metadata?.entityType
+    const entitySlug = p.metadata?.entitySlug
+    if ((entityType === 'consignataria' || entityType === 'frigorifico') && entitySlug && !p.metadata?.kind) {
+      try {
+        const slug = entityType === 'consignataria' ? getCanonicalSlug(entitySlug) || entitySlug : entitySlug
+        const cubreHasta = Date.parse(p.createdAt) + 30 * 86_400_000
+        const { data: sub } = await sb
+          .from('subscriptions')
+          .select('status, current_period_end')
+          .eq('entity_type', entityType)
+          .eq('entity_slug', slug)
+          .maybeSingle()
+        const finActual = sub?.current_period_end ? Date.parse(sub.current_period_end) : 0
+        // Un día de margen: el webhook calcula el período desde que lo recibe, no
+        // desde el pago.
+        if (sub && sub.status === 'active' && finActual >= cubreHasta - 86_400_000) {
+          yaEstaban.push(p.id)
+          continue
+        }
+        if (sub?.status === 'cancelled' && finActual >= cubreHasta - 86_400_000) {
+          // Cancelada después de este pago: la gracia ya está registrada, no se reactiva.
+          yaEstaban.push(p.id)
+          continue
+        }
+        const { error } = await sb.from('subscriptions').upsert(
+          {
+            entity_type: entityType,
+            entity_slug: slug,
+            plan_name: entityType === 'frigorifico' ? 'frigo_pro' : 'pro',
+            status: 'active',
+            current_period_end: new Date(cubreHasta).toISOString(),
+            rebill_customer_id: p.customer?.id || null,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: 'entity_type,entity_slug' },
+        )
+        if (error) throw new Error(error.message)
+        if (entityType === 'consignataria') {
+          await asegurarReclamoPorPago(sb as unknown as Parameters<typeof asegurarReclamoPorPago>[0], slug, p.customer?.email || p.metadata?.customerEmail)
+          try {
+            revalidatePath(`/consignatarias/${slug}`)
+            revalidatePath(`/go/${slug}`)
+            revalidatePath('/consignatarias')
+          } catch { /* fuera de un request de Next */ }
+        }
+        otorgados.push(`${p.id} · PRO ${entityType} ${slug} hasta ${new Date(cubreHasta).toISOString().slice(0, 10)}`)
+      } catch (e) {
+        errores.push(`${p.id}: ${e instanceof Error ? e.message : 'error'}`)
+      }
+      continue
+    }
+
     const kind = p.metadata?.kind
     const email = (p.customer?.email || p.metadata?.customerEmail || '').toLowerCase().trim()
     if (!kind || !email) continue

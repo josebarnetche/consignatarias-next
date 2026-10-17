@@ -32,10 +32,15 @@ import type { Bandeja } from '@/lib/reports/bandeja'
 import AgendaRegionalPanel from '@/components/dashboard/AgendaRegionalPanel'
 import type { AgendaRegional } from '@/lib/reports/agenda-regional'
 import MuestraPro from '@/components/dashboard/MuestraPro'
-import { CARTERA_MUESTRA, BENCHMARK_MUESTRA, PARTICIPACION_MUESTRA } from '@/lib/reports/muestras'
+import { CARTERA_MUESTRA, BENCHMARK_MUESTRA, PARTICIPACION_MUESTRA, ORIGEN_VISITAS_MUESTRA } from '@/lib/reports/muestras'
 import type { ResumenDistribucion } from '@/lib/promotion'
 import { whatsappLink } from '@/lib/leads/routing'
 import type { Performance } from '@/lib/reports/performance'
+import type { ConsignatariaPlanStatus } from '@/lib/features'
+import { BENEFICIOS_PRO_CONSIGNATARIA } from '@/lib/pro-consignataria-beneficios'
+import OrigenVisitas from '@/components/dashboard/OrigenVisitas'
+import PreofertasManager, { type PreofertaFirma, type OfertaRecibida } from '@/components/dashboard/PreofertasManager'
+import type { OrigenVisitas as OrigenVisitasDatos } from '@/lib/reports/origen-visitas'
 
 interface Consignataria {
   display_name: string
@@ -208,6 +213,12 @@ interface Props {
   provincialRank: { position: number; total: number; province: string }
   completedFields: CompletedFields | null
   subscription: Subscription | null
+  /** Estado de plan decidido en el server (getConsignatariaPlanStatus). Única fuente. */
+  plan?: ConsignatariaPlanStatus
+  origenVisitas?: OrigenVisitasDatos | null
+  vistaAdmin?: VistaAdmin | null
+  preofertasFirma?: PreofertaFirma[]
+  ofertasFirma?: OfertaRecibida[]
   frigorifico?: Frigorifico | null
   frigoClaims?: FrigoClaim[]
   frigoProducts?: FrigoProduct[]
@@ -217,21 +228,30 @@ interface Props {
   alreadyRedeemed?: boolean
 }
 
+/** "Ver como" de admin: el panel de una firma, con el plan forzado o el real. */
+export interface VistaAdmin {
+  slug: string
+  vista: 'pro' | 'free' | 'real'
+}
+
+const PLAN_FREE: ConsignatariaPlanStatus = { isPro: false, tier: 'free', source: null, periodEnd: null }
+
 function formatDate(d: string) {
   const parts = d.split('-')
   if (parts.length < 3) return d
   return `${parts[2]}/${parts[1]}`
 }
 
-type TabKey = 'resumen' | 'leads' | 'remates' | 'editar' | 'resultados' | 'plan' | 'frigorifico' | 'catalogo' | 'pedidos'
+type TabKey = 'resumen' | 'leads' | 'remates' | 'preofertas' | 'editar' | 'resultados' | 'plan' | 'frigorifico' | 'catalogo' | 'pedidos'
 
 export default function DashboardClient({
   email, consignataria, claims, scrapedAuctions, ownerAuctions: initialOwnerAuctions,
-  auctionResults, viewCount, whatsappClicks, leadsCount, followersCount = 0, marksCount = 0, leads = [], totalWatchers, viewPercentile, provincialRank, completedFields, subscription, frigorifico, frigoClaims = [],
+  auctionResults, viewCount, whatsappClicks, leadsCount, followersCount = 0, marksCount = 0, leads = [], totalWatchers, viewPercentile, provincialRank, completedFields, subscription, plan = PLAN_FREE, origenVisitas = null, vistaAdmin = null, preofertasFirma = [], ofertasFirma = [], frigorifico, frigoClaims = [],
   frigoProducts = [], frigoRfqs = [], frigoIsPro = false,
   dteCount = 0, alreadyRedeemed = false, performance = null, distribucion = null, benchmark = null, cartera = null, territorio = null, territorioTitular = '', participacion = null, bandeja = null, hayDatosMag = false, agenda = null,
 }: Props) {
   const searchParams = useSearchParams()
+  const router = useRouter()
   const justUpgraded = searchParams.get('upgraded') === 'true'
   const tabParam = searchParams.get('tab') as TabKey | null
   const [showUpgradeToast, setShowUpgradeToast] = useState(justUpgraded)
@@ -254,14 +274,14 @@ export default function DashboardClient({
   const [hasRedeemed, setHasRedeemed] = useState(alreadyRedeemed)
   const [redeemError, setRedeemError] = useState<string | null>(null)
 
-  const tierLabel = (upgradeConfirmed || subscription || hasRedeemed)
-    ? (subscription?.plan_name || '').toLowerCase().includes('enterprise')
-      ? 'ENTERPRISE'
-      : 'PRO'
-    : 'FREE'
+  // El plan lo decide el server (`plan`, la misma regla que gatea los datos). Acá no
+  // se recalcula: si el cliente dijera PRO y el server no, el panel mostraría los
+  // bloques pagos vacíos; al revés, mostraría muestras de ejemplo con los datos reales
+  // ya en mano.
+  const tierLabel = plan.isPro ? (plan.tier === 'enterprise' ? 'ENTERPRISE' : 'PRO') : 'FREE'
 
-  // PRO ya activo (suscripción confirmada) vs todavía procesando el pago.
-  const proActivated = !!subscription || upgradeConfirmed
+  // PRO ya activo vs todavía procesando el pago.
+  const proActivated = plan.isPro || upgradeConfirmed
   const proConfirming = justUpgraded && !proActivated
 
   // Próximos pasos de activación PRO — destinos reales del dashboard.
@@ -313,7 +333,7 @@ export default function DashboardClient({
 
   // Poll subscription status after upgrade redirect
   useEffect(() => {
-    if (!justUpgraded || subscription || upgradeConfirmed) return
+    if (!justUpgraded || plan.isPro || upgradeConfirmed) return
     if (upgradePollCount >= 12) return // Stop after 60s (12 x 5s)
 
     const timer = setTimeout(async () => {
@@ -322,6 +342,8 @@ export default function DashboardClient({
         const data = await res.json()
         if (data.status === 'active') {
           setUpgradeConfirmed(true)
+          // El server recalcula el plan y manda los bloques PRO con el dato real.
+          router.refresh()
         } else {
           setUpgradePollCount(prev => prev + 1)
         }
@@ -331,7 +353,7 @@ export default function DashboardClient({
     }, 5000)
 
     return () => clearTimeout(timer)
-  }, [justUpgraded, subscription, upgradeConfirmed, upgradePollCount])
+  }, [justUpgraded, plan.isPro, upgradeConfirmed, upgradePollCount, router])
 
   // Build tab list with icons
   const tabs: { key: TabKey; label: string; icon: React.ReactNode }[] = [
@@ -340,6 +362,7 @@ export default function DashboardClient({
   if (consignataria?.verified) {
     tabs.push({ key: 'leads', label: `Leads (${leadsCount})`, icon: <Inbox className="w-3.5 h-3.5" /> })
     tabs.push({ key: 'remates', label: `Remates (${scrapedAuctions.length + ownerAuctions.length})`, icon: <CalendarDays className="w-3.5 h-3.5" /> })
+    tabs.push({ key: 'preofertas', label: `Pre-ofertas${ofertasFirma.length ? ` (${ofertasFirma.length})` : ''}`, icon: <Package className="w-3.5 h-3.5" /> })
     tabs.push({ key: 'editar', label: 'Editar', icon: <Pencil className="w-3.5 h-3.5" /> })
     tabs.push({ key: 'resultados', label: 'Resultados', icon: <BarChart3 className="w-3.5 h-3.5" /> })
   }
@@ -357,6 +380,28 @@ export default function DashboardClient({
 
   return (
     <div className="max-w-3xl mx-auto px-2 sm:px-4 py-4 space-y-4">
+      {vistaAdmin && (
+        <div className="rounded-terminal border border-warning/40 bg-warning/10 px-4 py-3">
+          <p className="text-sm text-zinc-100">
+            Estás viendo el panel de <strong>{consignataria?.display_name ?? vistaAdmin.slug}</strong> como lo vería
+            su dueño{vistaAdmin.vista === 'pro' ? ' con PRO' : vistaAdmin.vista === 'free' ? ' sin PRO' : ', con su plan real'}.
+            Es de sólo lectura: los cambios no se guardan.
+          </p>
+          <div className="mt-2 flex flex-wrap gap-3 text-xs">
+            {(['pro', 'free', 'real'] as const).map((v) => (
+              <a
+                key={v}
+                href={`/dashboard?como=${vistaAdmin.slug}&vista=${v}`}
+                className={vistaAdmin.vista === v ? 'font-semibold text-ink underline' : 'text-accent hover:underline'}
+              >
+                {v === 'pro' ? 'Vista PRO' : v === 'free' ? 'Vista FREE' : 'Plan real'}
+              </a>
+            ))}
+            <a href="/admin/ver-como" className="text-zinc-400 hover:underline">Otra firma</a>
+            <a href="/dashboard" className="text-zinc-400 hover:underline">Salir</a>
+          </div>
+        </div>
+      )}
       {/* Fire the GA4 pro_upgrade conversion only once PRO is DB-confirmed
           (subscription prop or polled /api/subscription-status), never on the
           bare ?upgraded=true redirect param. */}
@@ -644,6 +689,17 @@ export default function DashboardClient({
 
                 {performance && <PerformanceMes perf={performance} />}
 
+                {/* Quién te mira, cuándo y desde dónde: lo que vende "Analytics de tu
+                    perfil". Para una FREE, la forma con datos de ejemplo. */}
+                <MuestraPro
+                  esPro={tierLabel !== 'FREE'}
+                  titulo="Quién te mira y desde dónde"
+                  beneficio="Tus vistas día por día, si llegan desde Google, desde el calendario o desde una IA como ChatGPT, y qué día te miran más."
+                  muestra={<OrigenVisitas d={ORIGEN_VISITAS_MUESTRA} />}
+                >
+                  {origenVisitas && <OrigenVisitas d={origenVisitas} />}
+                </MuestraPro>
+
                 {/* Distribución: sólo PRO, y sólo si hubo. Es literalmente lo que
                     se paga —"a cuántos les llegó mi remate"— así que no se regala.
                     Un cero tampoco se muestra: se leería como error del sistema. */}
@@ -726,7 +782,7 @@ export default function DashboardClient({
                           {whatsappClicks} personas hicieron clic en tu WhatsApp
                         </p>
                         <p className="text-xxs font-terminal text-zinc-400 mt-1">
-                          Pero no tenés forma de saber quiénes son. Activá la captura de leads para contactarlos después.
+                          Un clic en WhatsApp no deja nombre ni teléfono: sabemos que pasó, no quién fue. Las consultas con nombre llegan por el formulario de tu perfil.
                         </p>
                       </div>
                     </div>
@@ -743,7 +799,7 @@ export default function DashboardClient({
                           {totalWatchers + followersCount} {(totalWatchers + followersCount) === 1 ? 'productor está' : 'productores están'} pendientes de tus remates
                         </p>
                         <p className="text-xxs font-terminal text-zinc-400 mt-1">
-                          Entre seguidores de tu casa y remates en watchlist. Reciben avisos cuando publicás — tu audiencia cautiva.
+                          Entre los que siguen tu casa y los que marcaron uno de tus remates desde su cuenta.
                         </p>
                       </div>
                     </div>
@@ -754,7 +810,7 @@ export default function DashboardClient({
                 {tierLabel !== 'FREE' && viewPercentile > 0 && (
                   <div className="text-center pt-3 border-t border-terminal-border">
                     <span className="text-xs text-zinc-500 font-terminal">
-                      Estás en el <span className="text-amber-400 font-bold">Top {100 - viewPercentile}%</span> de consignatarias más vistas del país
+                      Estás en el <span className="text-amber-400 font-bold">Top {100 - viewPercentile}%</span> de las consignatarias con visitas este mes
                     </span>
                   </div>
                 )}
@@ -800,7 +856,7 @@ export default function DashboardClient({
                       🔒 Tu perfil es visible pero no destaca
                     </p>
                     <p className="text-xxs font-terminal text-zinc-500 mb-3">
-                      Con PRO: tus remates van primero en el newsletter semanal, ves quién te contactó con nombre y teléfono, y medís a cuántos les llegó cada uno.
+                      Con PRO: tus remates van primero en el newsletter semanal y medís a cuántos les llegó, ves quién te consultó con nombre y contacto, y de dónde llegan las visitas a tu perfil.
                     </p>
                     <Link
                       href="/planes?audience=consignataria&from=dashboard"
@@ -1214,7 +1270,10 @@ export default function DashboardClient({
       )}
 
       {/* ============ TAB: MI PLAN ============ */}
-      {activeTab === 'plan' && <SubscriptionPanel tier={tierLabel} subscription={subscription} />}
+      {activeTab === 'preofertas' && consignataria?.verified && (
+        <PreofertasManager slug={consignataria.canonical_slug} esPro={plan.isPro} inicial={preofertasFirma} ofertas={ofertasFirma} />
+      )}
+      {activeTab === 'plan' && <SubscriptionPanel tier={tierLabel} subscription={subscription} plan={plan} />}
 
       {/* ============ TAB: FRIGORIFICO ============ */}
       {activeTab === 'frigorifico' && frigorifico && (
@@ -2186,25 +2245,13 @@ function FrigoPedidos({ rfqs }: { rfqs: FrigoRfq[] }) {
 /*  SUBSCRIPTION PANEL                                                  */
 /* ------------------------------------------------------------------ */
 
-function SubscriptionPanel({ tier, subscription }: { tier: string; subscription: Subscription | null }) {
+function SubscriptionPanel({ tier, subscription, plan }: { tier: string; subscription: Subscription | null; plan: ConsignatariaPlanStatus }) {
   const [cancelling, setCancelling] = useState(false)
   const [cancelFeedback, setCancelFeedback] = useState<string | null>(null)
   const [cancelled, setCancelled] = useState(false)
-  const [spotsRemaining, setSpotsRemaining] = useState<number | null>(null)
-
-  // Fetch founder spots for scarcity messaging
-  useEffect(() => {
-    if (tier === 'FREE') {
-      fetch('/api/stats/pro-spots')
-        .then(r => r.json())
-        .then(d => {
-          if (d.success && d.data) {
-            setSpotsRemaining(d.data.remaining)
-          }
-        })
-        .catch(() => {})
-    }
-  }, [tier])
+  // (Se sacó el contador de "lugares fundador": contaba suscripciones de OTRO
+  // producto —PRO abierto, user_subscriptions— contra un cupo de 50 que no existe.
+  // Escasez inventada; revisión del 17-10-2026.)
 
   async function handleCancel() {
     if (!confirm('Cancelar suscripcion? Tu plan sigue activo hasta el fin del periodo.')) return
@@ -2227,14 +2274,35 @@ function SubscriptionPanel({ tier, subscription }: { tier: string; subscription:
         }`}>{tier}</span>
       </div>
       <div className="px-panel py-3 space-y-3">
-        {subscription && (tier === 'PRO' || tier === 'ENTERPRISE') ? (
+        {plan.isPro && !plan.source && !subscription ? (
+          <p className="text-xs text-zinc-300">
+            Vista previa de administrador: así ve la firma su panel con PRO activo. Lo que pagaría:
+            ARS 45.000/mes, sin permanencia.
+          </p>
+        ) : plan.source === 'featured' ? (
+          // Destaque manual: PRO sin cargo y sin vencimiento, otorgado por nosotros.
+          <div className="space-y-2">
+            <p className="text-xs text-zinc-200">Tu firma tiene PRO sin cargo, otorgado por consignatarias.com.ar.</p>
+            <ul className="text-xxs font-terminal text-zinc-400 space-y-1 list-none">
+              {BENEFICIOS_PRO_CONSIGNATARIA.map((b) => <li key={b}>→ {b}</li>)}
+            </ul>
+          </div>
+        ) : subscription && subscription.status === 'cancelled' && plan.isPro ? (
+          <p className="text-xs text-zinc-300">
+            Cancelaste la suscripción. Seguís con PRO hasta el{' '}
+            <span className="tabular-nums text-zinc-100">{subscription.current_period_end ? formatDate(subscription.current_period_end.slice(0, 10)) : 'fin del período'}</span>,
+            que es lo que ya pagaste.
+          </p>
+        ) : subscription && subscription.status === 'past_due' ? (
+          <p className="text-xs text-warning">
+            El último cobro no pasó. Mientras no se regularice, tu firma figura como FREE. Revisá el medio de pago en Rebill o escribinos a agro@memola.com.ar.
+          </p>
+        ) : subscription && (tier === 'PRO' || tier === 'ENTERPRISE') ? (
           <>
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <span className="text-xxs text-zinc-500 uppercase font-terminal">Estado:</span>
-                <span className={`text-xxs font-terminal ${subscription.status === 'active' ? 'text-positive' : 'text-warning'}`}>
-                  {subscription.status === 'active' ? 'ACTIVA' : 'PAGO PENDIENTE'}
-                </span>
+                <span className="text-xxs font-terminal text-positive">ACTIVA</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xxs text-zinc-500 uppercase font-terminal">Vencimiento:</span>
@@ -2250,31 +2318,9 @@ function SubscriptionPanel({ tier, subscription }: { tier: string; subscription:
           </>
         ) : (
           <div className="space-y-3">
-            {/* Founder spots scarcity indicator */}
-            {spotsRemaining !== null && spotsRemaining > 0 && spotsRemaining <= 25 && (
-              <div className={`px-2 py-1.5 rounded text-center ${
-                spotsRemaining <= 10 
-                  ? 'bg-red-500/15 border border-red-500/50' 
-                  : 'bg-amber-500/15 border border-amber-500/40'
-              }`}>
-                <span className={`text-xxs font-terminal uppercase tracking-wider ${
-                  spotsRemaining <= 10 ? 'text-red-400' : 'text-amber-400'
-                }`}>
-                  {spotsRemaining <= 10 ? '🔥' : '⚡'} {spotsRemaining} lugares disponibles a $45.000/mes
-                </span>
-              </div>
-            )}
-            
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-amber-400 text-base">📧</span>
-              <p className="text-xs font-terminal text-zinc-200 font-medium">Tu remate, primero en el newsletter</p>
-            </div>
-            <p className="text-xxs font-terminal text-zinc-500">Tu plan actual es gratuito. Con PRO:</p>
+            <p className="text-xxs font-terminal text-zinc-500">Tu plan actual es gratuito. Con PRO (ARS 45.000/mes, sin permanencia):</p>
             <ul className="text-xxs font-terminal text-zinc-400 space-y-1 list-none">
-              <li>→ Tus remates enviados por email a toda nuestra base</li>
-              <li>→ Perfil destacado con badge dorado</li>
-              <li>→ Analytics: vistas, ranking provincial</li>
-              <li>→ Landing personalizada con QR para catálogos</li>
+              {BENEFICIOS_PRO_CONSIGNATARIA.map((b) => <li key={b}>→ {b}</li>)}
             </ul>
             <Link href="/planes?audience=consignataria&from=dashboard-subscription" className="inline-flex items-center gap-2 px-4 py-2 bg-amber-400/15 border border-amber-500/40 text-amber-400 text-xxs font-terminal uppercase tracking-wider hover:bg-amber-400/25 transition-colors">
               <span>★</span> Activar PRO Consignataria — $45.000/mes

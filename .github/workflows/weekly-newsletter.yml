@@ -4,6 +4,8 @@ name: Weekly Newsletter
 on:
   schedule:
     - cron: '0 13 * * 1'
+    # Segunda tanda (martes): los que no entraron el lunes por el tope diario de Resend.
+    - cron: '0 13 * * 2'
   workflow_dispatch: # Manual trigger anytime
 
 jobs:

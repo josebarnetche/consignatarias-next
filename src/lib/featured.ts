@@ -13,7 +13,26 @@ import { createServiceClient } from '@/lib/supabase'
  * for PRO firms. Soft-fails to an empty Set if the service client is unavailable
  * or the query errors, so callers (server pages, /api/featured-slugs) never throw.
  */
-export async function getFeaturedSlugs(): Promise<Set<string>> {
+// Memo SÓLO durante el build (17-10-2026): desde que el calendario, las fichas de
+// remate y las provincias marcan a las firmas PRO, el build estático llama esto en
+// ~1.000 páginas, ~2.000 consultas para un dato que no cambia en esos minutos. En
+// runtime no se memoriza: cuando el webhook revalida una página tras un pago, la
+// regeneración tiene que leer el estado nuevo, no uno de hace un minuto.
+const EN_BUILD = process.env.NEXT_PHASE === 'phase-production-build'
+let memo: { hasta: number; valor: Promise<Set<string>> } | null = null
+
+export function getFeaturedSlugs(): Promise<Set<string>> {
+  if (!EN_BUILD) return leerFeaturedSlugs()
+  const ahora = Date.now()
+  if (memo && memo.hasta > ahora) return memo.valor.then((s) => new Set(s))
+  const valor = leerFeaturedSlugs()
+  memo = { hasta: ahora + 60_000, valor }
+  // Un fallo no se memoriza: devuelve vacío esta vez y reintenta en la próxima.
+  valor.then((s) => { if (s.size === 0 && memo?.valor === valor) memo = null })
+  return valor.then((s) => new Set(s))
+}
+
+async function leerFeaturedSlugs(): Promise<Set<string>> {
   try {
     const supabase = createServiceClient()
     if (!supabase) return new Set()

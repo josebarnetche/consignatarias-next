@@ -25,7 +25,9 @@ function lote(over: Partial<Lote> = {}): Lote {
     category: 'NOVILLO',
     price: 4000,
     head_count: 10,
-    date: '2026-08-01',
+    // Fecha relativa: el benchmark mira los últimos 60 días y la lectura compartida
+    // de mag-lotes filtra por fecha en memoria (una fecha fija se pudre con el tiempo).
+    date: new Date(Date.now() - 10 * 86_400_000).toISOString().slice(0, 10),
     remitente: 'ESTANCIA X',
     mag_consignataria_id: MI_ID,
     ...over,

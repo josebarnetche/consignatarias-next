@@ -9,12 +9,12 @@ export const dynamic = 'force-dynamic'
  * Endpoint pago x402: activar PRO Consignataria con USDC (Base) — el mismo
  * producto que Rebill vende en ARS 45.000/mes, cotizado al blue del día.
  * GET/POST ?slug=<consignataria>&meses=1..12 → 402 con el monto exacto → pago
- * → activación inmediata (badge PRO, perfil destacado) y extensión si ya tenía.
+ * → activación inmediata (sello PRO, primer lugar) y extensión si ya tenía.
  */
 const SPEC = {
   resource: 'https://www.consignatarias.com.ar/api/x402/pro',
   description:
-    'PRO Consignataria: perfil destacado, badge PRO, video del último remate y leads en consignatarias.com.ar. Precio ARS 45.000/mes cotizado en USDC al dólar blue del día. Params: slug (consignataria del directorio), meses (1-12, default 1).',
+    'PRO Consignataria en consignatarias.com.ar: sello ★ PRO y primer lugar en el directorio y el calendario, primera en el newsletter semanal y en el directorio MCP, leads con nombre y contacto, y panel de visitas. Precio ARS 45.000/mes cotizado en USDC al dólar blue del día. Params: slug (consignataria del directorio), meses (1-12, default 1).',
   usdCents: (args: Record<string, unknown>) => cotizarProUsdCents(proMeses(args.meses)),
   validate: (args: Record<string, unknown>) => {
     if (!validarSlugPro(args.slug)) {
