@@ -6,12 +6,11 @@ import { BENEFICIOS_PRO_CONSIGNATARIA } from '@/lib/pro-consignataria-beneficios
 import { ISO_RING } from '@/lib/og/brand'
 import { tokenPropuestaValido } from '@/lib/propuesta/token'
 import { getDatosFirma, getDatosSitio } from '@/lib/propuesta/datos'
-import { createClient } from '@/lib/supabase-server'
-import { createServiceClient } from '@/lib/supabase'
 import IdentityMark from '@/components/consignataria/IdentityMark'
 import BotonPdf from './BotonPdf'
 import Funciones from './Funciones'
 import { getDatosFunciones } from '@/lib/propuesta/funciones'
+import { esAdmin } from '@/lib/propuesta/admin'
 
 /**
  * Propuesta PRO Consignataria, personalizada por firma.
@@ -42,22 +41,6 @@ const CONTACTO_MAX = 80
 type Props = {
   params: Promise<{ slug: string }>
   searchParams: Promise<{ t?: string; contacto?: string; nota?: string }>
-}
-
-async function esAdmin(): Promise<boolean> {
-  try {
-    const supabase = await createClient()
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-    if (!user) return false
-    const service = createServiceClient()
-    if (!service) return false
-    const { data } = await service.from('user_roles').select('role').eq('user_id', user.id).maybeSingle()
-    return data?.role === 'admin'
-  } catch {
-    return false
-  }
 }
 
 const num = (n: number) => n.toLocaleString('es-AR')
@@ -178,6 +161,11 @@ export default async function PropuestaPage({ params, searchParams }: Props) {
   })
 
   const ficha = `${SITIO}/consignatarias/${profile.canonicalSlug}`
+  // El PDF real (generado en el servidor) con el mismo token y destinatario que esta página.
+  const qPdf = new URLSearchParams()
+  if (sp.t) qPdf.set('t', sp.t)
+  if (contacto) qPdf.set('contacto', contacto)
+  const linkPdf = `/api/propuesta/${profile.canonicalSlug}/pdf${qPdf.toString() ? `?${qPdf}` : ''}`
   const activar = `${ficha}/activar`
   const beneficios = [...BENEFICIOS_PRO_CONSIGNATARIA]
 
@@ -217,7 +205,7 @@ export default async function PropuestaPage({ params, searchParams }: Props) {
       <div className="print:hidden sticky top-0 z-10 border-b border-terminal-border bg-terminal-panel/95 backdrop-blur">
         <div className="mx-auto flex max-w-[210mm] items-center justify-between gap-3 px-4 py-2">
           <span className="truncate text-xs text-zinc-500">Propuesta PRO · {profile.displayName}</span>
-          <BotonPdf />
+          <BotonPdf href={linkPdf} />
         </div>
       </div>
 
@@ -481,7 +469,7 @@ export default async function PropuestaPage({ params, searchParams }: Props) {
       </main>
 
       <div className="print:hidden pb-10 text-center">
-        <BotonPdf />
+        <BotonPdf href={linkPdf} />
       </div>
     </div>
   )

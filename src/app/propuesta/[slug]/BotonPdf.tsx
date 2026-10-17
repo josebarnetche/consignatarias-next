@@ -1,19 +1,15 @@
-'use client'
-
 /**
- * "Descargar PDF" = el diálogo de impresión del navegador ("Guardar como PDF").
- * No generamos el PDF en el servidor: la hoja de estilos de impresión de la
- * propuesta ya lo deja como documento formal, y así el PDF siempre sale con los
- * datos del momento en que se abre el link.
+ * "Descargar PDF" = la presentación generada en el servidor (/api/propuesta/<firma>/pdf).
+ * Antes abría el diálogo de impresión del navegador y el resultado dependía de cada
+ * máquina (capturas cortadas, páginas a medias); ahora es el mismo archivo para todos.
  */
-export default function BotonPdf() {
+export default function BotonPdf({ href }: { href: string }) {
   return (
-    <button
-      type="button"
-      onClick={() => window.print()}
-      className="print:hidden inline-flex items-center gap-2 rounded-terminal border border-terminal-border bg-terminal-panel px-3 py-1.5 text-xs font-medium text-ink hover:border-accent hover:text-accent transition-colors"
+    <a
+      href={href}
+      className="print:hidden inline-flex items-center gap-2 rounded-terminal bg-accent px-3 py-1.5 text-xs font-semibold text-white oscuro:text-zinc-950 hover:bg-accent-bright transition-colors"
     >
       Descargar PDF
-    </button>
+    </a>
   )
 }

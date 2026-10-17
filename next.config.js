@@ -66,6 +66,8 @@ const nextConfig = {
     // ahí serían descargables sin comprar). Sin este include el Lambda no las
     // trae y la descarga responde 503 file_unavailable.
     '/api/guias-premium/**': ['./private/guias/**'],
+    // La presentación PRO en PDF (lib/pdf/propuesta): Inter y las capturas del panel.
+    '/api/propuesta/**': ['./src/fonts/Inter-*.woff', './src/lib/pdf/propuesta/capturas/*.png', './src/lib/pdf/propuesta/portada.jpg'],
   },
 
   // Security headers (redirects + cache headers handled by vercel.json)

@@ -9,7 +9,7 @@ import BenchmarkMercado from '@/components/dashboard/BenchmarkMercado'
 import PreofertasManager from '@/components/dashboard/PreofertasManager'
 import { buildWeeklyNewsletterHtml } from '@/lib/email'
 import { CARTERA_MUESTRA, BENCHMARK_MUESTRA, ORIGEN_VISITAS_MUESTRA } from '@/lib/reports/muestras'
-import type { PreofertaFirma, OfertaRecibida } from '@/lib/preofertas-firma'
+import { PREOFERTA_EJEMPLO, OFERTAS_EJEMPLO, LEADS_EJEMPLO } from '@/lib/propuesta/muestras'
 
 /**
  * "Lo que va a ver y usar" — cada función de PRO con la captura de cómo queda dentro
@@ -58,26 +58,6 @@ function Funcion({
     </article>
   )
 }
-
-const PREOFERTA_EJEMPLO: PreofertaFirma = {
-  id: 'ejemplo',
-  consignataria_slug: 'ejemplo',
-  titulo: 'Remate especial de invernada',
-  fecha_remate: '2026-11-12',
-  lugar: 'Sociedad Rural',
-  cierre: '2026-11-11T20:00:00-03:00',
-  condiciones: 'Plazo 30 días. Flete a cargo del comprador.',
-  estado: 'publicada',
-  created_at: '2026-11-01T10:00:00-03:00',
-  updated_at: '2026-11-01T10:00:00-03:00',
-  lotes: [
-    { id: 'l1', orden: 1, titulo: 'Lote 4 · Novillitos Angus', categoria: 'Novillitos', cabezas: 60, peso_kg: 280, video_url: 'https://youtu.be/ejemplo', descripcion: null, precio_base: null },
-    { id: 'l2', orden: 2, titulo: 'Lote 7 · Vaquillonas para entore', categoria: 'Vaquillonas', cabezas: 40, peso_kg: 310, video_url: 'https://youtu.be/ejemplo', descripcion: null, precio_base: null },
-  ],
-}
-const OFERTAS_EJEMPLO: OfertaRecibida[] = [
-  { id: 'o1', preoferta_id: 'ejemplo', lote_id: 'l1', lote_titulo: 'Lote 4 · Novillitos Angus', nombre: 'Productor de ejemplo', telefono: '11 5555-0000', email: null, monto: 3400, mensaje: 'Me interesa si viene con sanidad al día.', fecha: '2026-11-05T09:30:00-03:00' },
-]
 
 export default function Funciones({
   profile,
@@ -210,10 +190,7 @@ ${f.directorio.slice(1).map((d) => `${d.nombre} · Consignataria\n  https://www.
       >
         <Captura url="consignatarias.com.ar/dashboard · Leads" ejemplo>
           <ul className="divide-y divide-terminal-border rounded-terminal border border-terminal-border bg-terminal-panel text-sm">
-            {[
-              ['Productor de ejemplo', '11 5555-0000', 'Busco 80 terneros de invernada para fines de noviembre.', 'hace 2 h'],
-              ['Establecimiento de ejemplo', 'contacto@ejemplo.com', '¿El remate del jueves tiene vacas de descarte?', 'ayer'],
-            ].map(([nombre, contacto, msg, cuando]) => (
+            {LEADS_EJEMPLO.map(([nombre, contacto, msg, cuando]) => (
               <li key={nombre} className="px-4 py-3">
                 <div className="flex items-baseline justify-between gap-3">
                   <span className="font-medium text-ink">{nombre}</span>

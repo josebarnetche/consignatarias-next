@@ -11,6 +11,13 @@ interface Firma {
 const SITIO = 'https://www.consignatarias.com.ar'
 const NOTA_MAX = 600
 
+/** El link de la página → el del PDF generado en el servidor, con el mismo token. */
+function aPdf(link: string): string {
+  const u = new URL(link)
+  u.searchParams.delete('nota')
+  return `${u.pathname.replace(/^\/propuesta\//, '/api/propuesta/')}/pdf${u.search}`
+}
+
 /** Mismo armado que urlPropuesta() (src/lib/propuesta/token.ts), con el token ya firmado. */
 function armarLink(f: Firma, contacto: string, nota: string): string {
   const q = new URLSearchParams()
@@ -92,6 +99,9 @@ export default function ConstructorPropuesta({ firmas }: { firmas: Firma[] }) {
               <a href={linkElegida.replace(SITIO, '')} target="_blank" rel="noopener noreferrer" className="terminal-btn">
                 Abrir propuesta
               </a>
+              <a href={aPdf(linkElegida)} target="_blank" rel="noopener noreferrer" className="terminal-btn">
+                Descargar PDF
+              </a>
             </div>
           </div>
         </div>
@@ -130,6 +140,9 @@ export default function ConstructorPropuesta({ firmas }: { firmas: Firma[] }) {
                 </button>
                 <a href={link.replace(SITIO, '')} target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-bright">
                   Abrir
+                </a>
+                <a href={aPdf(link)} target="_blank" rel="noopener noreferrer" className="text-accent hover:text-accent-bright">
+                  PDF
                 </a>
               </div>
             </li>

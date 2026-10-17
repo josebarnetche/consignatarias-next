@@ -43,6 +43,7 @@ const TOKEN_HEXES = [
 // badges/widgets embebibles, y el archivo que define los pares hex↔token.
 const EXEMPT_PATHS = [
   'src/lib/email.ts', // Resend — un mail no tiene tema
+  'src/lib/pdf/', // PDF generados en el server — un PDF no tiene tema
   'src/lib/newsletter/', // idem, templates de newsletter
   'src/lib/og/brand.tsx', // imágenes OG, server-rendered sin CSS de la página
   'src/app/api/badge/', // badge embebible para sitios de terceros

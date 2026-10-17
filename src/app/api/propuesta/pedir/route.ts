@@ -8,8 +8,11 @@ import { ALCANCE_GOOGLE } from '@/lib/data/alcance-google'
 import { sendPropuestaPro } from '@/lib/email'
 import { checkRateLimit, getClientId } from '@/lib/rate-limit'
 import { logEvent } from '@/lib/ops'
+import { generarPresentacionPro } from '@/lib/pdf/propuesta/generar'
 
 export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const maxDuration = 60
 
 const schema = z.object({
   slug: z.string().min(1).max(120),
@@ -61,6 +64,12 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // La presentación en PDF va adjunta. Si falla el armado, el mail sale igual con el link.
+  const pdf = await generarPresentacionPro(profile, nombre).catch((e) => {
+    console.error('[propuesta/pedir] PDF:', e)
+    return undefined
+  })
+
   const desde = new Date(ALCANCE_GOOGLE.desde + 'T12:00:00').toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })
   const res = await sendPropuestaPro(email, {
     firma: profile.displayName,
@@ -69,6 +78,7 @@ export async function POST(req: NextRequest) {
     datosFirma,
     beneficios: BENEFICIOS_PRO_CONSIGNATARIA,
     sitio: { impresiones: n(ALCANCE_GOOGLE.impresiones), desde, ia90: sitio?.ia90 ?? null },
+    pdf,
   })
 
   const ok = !!res && !res.error

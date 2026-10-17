@@ -3951,6 +3951,8 @@ export interface PropuestaMail {
   datosFirma: { valor: string; texto: string }[]
   beneficios: readonly string[]
   sitio: { impresiones: string; desde: string; ia90: number | null }
+  /** La presentación en PDF (lib/pdf/propuesta), adjunta. */
+  pdf?: Buffer
 }
 
 /**
@@ -3984,7 +3986,7 @@ export async function sendPropuestaPro(to: string, p: PropuestaMail) {
       <h1 style="margin:0 0 6px;font-size:26px;line-height:1.2;color:${ink}">PRO Consignataria</h1>
       <p style="margin:0 0 24px;font-size:15px;color:${gris}">Para ${e(p.firma)}</p>
       ${datos ? `<p style="margin:0 0 8px;font-size:12px;font-weight:600;color:${ink};text-transform:uppercase;letter-spacing:.06em">Su firma hoy en el sitio</p>${datos}` : ''}
-      <p style="margin:0 0 14px;font-size:14px;color:${ink};line-height:1.6">En la <a href="${p.linkPropuesta}" style="color:${acento};font-weight:600">presentación completa</a> está cada función con la captura de cómo queda dentro del sitio: sus remates destacados en el calendario, el mail semanal con su remate primero, la pre-oferta con video, las consultas y el panel de visitas.</p>
+      <p style="margin:0 0 14px;font-size:14px;color:${ink};line-height:1.6">${p.pdf ? 'Le adjuntamos la presentación en PDF. Ahí' : `En la <a href="${p.linkPropuesta}" style="color:${acento};font-weight:600">presentación completa</a>`} está cada función con la captura de cómo queda dentro del sitio: sus remates destacados en el calendario, el mail semanal con su remate primero, la pre-oferta con video, las consultas y el panel de visitas.</p>
       <p style="margin:0 0 8px;font-size:12px;font-weight:600;color:${ink};text-transform:uppercase;letter-spacing:.06em">Qué incluye</p>
       <ul style="margin:0 0 24px;padding:0 0 0 18px;font-size:14px;line-height:1.7;color:${ink}">${p.beneficios.map((b) => `<li>${e(b)}</li>`).join('')}</ul>
       <p style="margin:0 0 6px;font-size:13px;color:${gris};line-height:1.6">El sitio tuvo ${e(p.sitio.impresiones)} impresiones en Google desde ${e(p.sitio.desde)}${p.sitio.ia90 ? `, y ${p.sitio.ia90.toLocaleString('es-AR')} visitas llegaron desde asistentes de IA en los últimos 90 días` : ''}.</p>
@@ -3992,7 +3994,7 @@ export async function sendPropuestaPro(to: string, p: PropuestaMail) {
       <p style="margin:0 0 24px;font-size:13px;color:${gris}">Facturación mensual en pesos · sin permanencia · se cancela desde el panel</p>
       <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 12px"><tr>
         <td style="background:${acento};border-radius:6px"><a href="${APP_URL}/consignatarias/${p.slug}/activar" style="display:inline-block;padding:13px 26px;font-family:${sans};font-size:14px;font-weight:600;color:#ffffff;text-decoration:none">Activar PRO</a></td>
-        <td style="padding-left:14px"><a href="${p.linkPropuesta}" style="font-family:${sans};font-size:14px;color:${acento}">Ver la presentación con capturas (PDF)</a></td>
+        <td style="padding-left:14px"><a href="${p.linkPropuesta}" style="font-family:${sans};font-size:14px;color:${acento}">Ver la propuesta en línea</a></td>
       </tr></table>
       <p style="margin:18px 0 26px;font-size:13px;color:${gris};line-height:1.6">¿Preferís hablarlo? <a href="https://calendar.app.google/gr2BXY1ooDMki8TK7" style="color:${acento}">Reservá una reunión</a> o respondé este mail.</p>
     </td></tr>
@@ -4009,5 +4011,8 @@ export async function sendPropuestaPro(to: string, p: PropuestaMail) {
     replyTo: 'agro@memola.com.ar',
     subject: `Propuesta PRO Consignataria — ${p.firma}`,
     html,
+    ...(p.pdf
+      ? { attachments: [{ filename: `Propuesta-PRO-${p.slug}.pdf`, content: p.pdf }] }
+      : {}),
   })
 }
