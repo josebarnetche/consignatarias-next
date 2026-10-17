@@ -3938,3 +3938,75 @@ export async function sendPreofertaFirmaOferta(opts: {
     /* el envío queda registrado como error en ops_events por conEnvioRegistrado */
   }
 }
+
+/* ------------------------------------------------------------------ */
+/*  PROPUESTA PRO A PEDIDO                                             */
+/* ------------------------------------------------------------------ */
+
+export interface PropuestaMail {
+  firma: string
+  slug: string
+  linkPropuesta: string
+  /** Líneas "dato · contexto" de la firma, ya redactadas y verificadas. */
+  datosFirma: { valor: string; texto: string }[]
+  beneficios: readonly string[]
+  sitio: { impresiones: string; desde: string; ia90: number | null }
+}
+
+/**
+ * La propuesta PRO que la firma pide desde el checkout (17-10-2026). Va en claro,
+ * institucional, con la marca: es el documento que la firma reenvía a su socio. El
+ * cuerpo resume; el detalle completo (imprimible a PDF) está en el link.
+ */
+export async function sendPropuestaPro(to: string, p: PropuestaMail) {
+  const resend = await getResend()
+  if (!resend) return null
+  const e = escapeHtml
+  const ink = '#18181b', gris = '#52525b', borde = '#e4e4e7', acento = '#1d4ed8'
+  const sans = "Inter,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif"
+  const datos = p.datosFirma.length
+    ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px">${p.datosFirma
+        .map(
+          (d) => `<tr><td style="padding:9px 0;border-bottom:1px solid ${borde};font-size:20px;font-weight:700;color:${ink};width:90px;vertical-align:top">${e(d.valor)}</td><td style="padding:11px 0 9px 12px;border-bottom:1px solid ${borde};font-size:13px;color:${gris};line-height:1.5">${e(d.texto)}</td></tr>`,
+        )
+        .join('')}</table>`
+    : ''
+  const html = `
+  <body style="margin:0;padding:0;background:#f4f4f5">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5"><tr><td align="center" style="padding:28px 12px">
+  <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border:1px solid ${borde};border-radius:10px">
+    <tr><td style="padding:26px 32px 18px;border-bottom:1px solid ${borde}">
+      <img src="${APP_URL}/marca/email/isotipo-cielo.png" width="24" height="24" alt="" style="vertical-align:middle;border:0">
+      <span style="font-family:${sans};font-size:14px;font-weight:600;color:${ink};vertical-align:middle;margin-left:8px">consignatarias.com.ar</span>
+    </td></tr>
+    <tr><td style="padding:28px 32px 8px;font-family:${sans}">
+      <p style="margin:0 0 6px;font-size:12px;font-weight:600;color:${acento}">Propuesta comercial</p>
+      <h1 style="margin:0 0 6px;font-size:26px;line-height:1.2;color:${ink}">PRO Consignataria</h1>
+      <p style="margin:0 0 24px;font-size:15px;color:${gris}">Para ${e(p.firma)}</p>
+      ${datos ? `<p style="margin:0 0 8px;font-size:12px;font-weight:600;color:${ink};text-transform:uppercase;letter-spacing:.06em">Su firma hoy en el sitio</p>${datos}` : ''}
+      <p style="margin:0 0 8px;font-size:12px;font-weight:600;color:${ink};text-transform:uppercase;letter-spacing:.06em">Qué incluye</p>
+      <ul style="margin:0 0 24px;padding:0 0 0 18px;font-size:14px;line-height:1.7;color:${ink}">${p.beneficios.map((b) => `<li>${e(b)}</li>`).join('')}</ul>
+      <p style="margin:0 0 6px;font-size:13px;color:${gris};line-height:1.6">El sitio tuvo ${e(p.sitio.impresiones)} impresiones en Google desde ${e(p.sitio.desde)}${p.sitio.ia90 ? `, y ${p.sitio.ia90.toLocaleString('es-AR')} visitas llegaron desde asistentes de IA en los últimos 90 días` : ''}.</p>
+      <p style="margin:18px 0 4px;font-size:30px;font-weight:700;color:${ink}">ARS 45.000<span style="font-size:15px;font-weight:400;color:${gris}">/mes</span></p>
+      <p style="margin:0 0 24px;font-size:13px;color:${gris}">Facturación mensual en pesos · sin permanencia · se cancela desde el panel</p>
+      <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 12px"><tr>
+        <td style="background:${acento};border-radius:6px"><a href="${APP_URL}/consignatarias/${p.slug}/activar" style="display:inline-block;padding:13px 26px;font-family:${sans};font-size:14px;font-weight:600;color:#ffffff;text-decoration:none">Activar PRO</a></td>
+        <td style="padding-left:14px"><a href="${p.linkPropuesta}" style="font-family:${sans};font-size:14px;color:${acento}">Ver la propuesta completa (PDF)</a></td>
+      </tr></table>
+      <p style="margin:18px 0 26px;font-size:13px;color:${gris};line-height:1.6">¿Preferís hablarlo? <a href="https://calendar.app.google/gr2BXY1ooDMki8TK7" style="color:${acento}">Reservá una reunión</a> o respondé este mail.</p>
+    </td></tr>
+    <tr><td style="padding:16px 32px;border-top:1px solid ${borde};font-family:${sans};font-size:11px;color:#71717a">
+      Memola Medios SAS · consignatarias.com.ar · agro@memola.com.ar<br>Recibís este mail porque lo pediste desde la página de activación de ${e(p.firma)}.
+    </td></tr>
+  </table>
+  </td></tr></table>
+  </body>`
+  return resend.emails.send({
+    from: FROM_PERSONAL,
+    to,
+    bcc: LEAD_ALERT_TO,
+    replyTo: 'agro@memola.com.ar',
+    subject: `Propuesta PRO Consignataria — ${p.firma}`,
+    html,
+  })
+}

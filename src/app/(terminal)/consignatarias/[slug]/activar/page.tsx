@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import { notFound, permanentRedirect } from 'next/navigation'
 import { getAllCanonicalSlugs, getCanonicalSlug, getProfile } from '@/lib/data/consignataria-slugs'
 import ActivarProForm from '@/components/consignataria/ActivarProForm'
+import PedirPropuesta from '@/components/consignataria/PedirPropuesta'
 
 /* ------------------------------------------------------------------ */
 /*  STATIC PARAMS                                                      */
@@ -59,6 +60,7 @@ export default async function ActivarPage({ params }: Props) {
   return (
     <div className="max-w-lg mx-auto px-2 sm:px-4 py-6">
       <ActivarProForm slug={canonical} displayName={profile.displayName} />
+      <PedirPropuesta slug={canonical} displayName={profile.displayName} />
     </div>
   )
 }

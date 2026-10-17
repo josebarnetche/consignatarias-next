@@ -64,14 +64,32 @@ export async function POST(req: NextRequest) {
       return { message: 'No hay suscriptores activos', metadata: { message: 'No hay suscriptores activos', sent: 0 } }
     }
 
-    const { toSend, skipped } = capForFreePlan(subscribers)
+    // ENVÍO EN DOS TANDAS (17-10-2026). Con El Corredor adentro la lista pasa de los
+    // 100 mails/día del plan de Resend: el lunes salen hasta el tope y el martes (misma
+    // ruta, segundo horario del workflow) los que faltan. Quién ya lo recibió esta
+    // semana queda en outreach_log con la clave del lunes, así nadie lo recibe dos veces.
+    const ar = new Date(Date.now() - 3 * 3600_000)
+    const lunes = new Date(ar.getTime() - ((ar.getUTCDay() + 6) % 7) * 86_400_000).toISOString().slice(0, 10)
+    const claveSemana = `weekly_newsletter:${lunes}`
+    const { data: yaEnviados } = await supabase
+      .from('outreach_log')
+      .select('email_sent_to')
+      .eq('type', claveSemana)
+      .limit(5000)
+    const recibieron = new Set((yaEnviados ?? []).map((r) => r.email_sent_to.toLowerCase()))
+    const pendientes = subscribers.filter((s) => !recibieron.has(s.email.toLowerCase()))
+
+    const { toSend, skipped } = capForFreePlan(pendientes)
     let sent = 0
     const errors: string[] = []
 
     for (const sub of toSend) {
       try {
         const res = await sendWeeklyNewsletter(sub.email, featuredRemates, upcomingAuctions.length, weekRange)
-        if (res.success) sent++
+        if (res.success) {
+          sent++
+          await supabase.from('outreach_log').insert({ type: claveSemana, consignataria_slug: '-', email_sent_to: sub.email })
+        }
         else errors.push(`${sub.email}: ${res.error ?? 'send failed'}`)
         await new Promise(r => setTimeout(r, 500)) // ≥500ms: Resend ~2 req/s, evita 429
       } catch (err) {
@@ -104,7 +122,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = {
-      message: `Newsletter enviado: ${sent}/${subscribers.length}`,
+      message: `Newsletter enviado: ${sent} (ya lo tenían ${recibieron.size}, quedan ${skipped}) de ${subscribers.length}`,
       sent,
       total: subscribers.length,
       skipped,
