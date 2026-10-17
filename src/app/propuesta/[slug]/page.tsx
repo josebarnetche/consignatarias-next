@@ -10,6 +10,8 @@ import { createClient } from '@/lib/supabase-server'
 import { createServiceClient } from '@/lib/supabase'
 import IdentityMark from '@/components/consignataria/IdentityMark'
 import BotonPdf from './BotonPdf'
+import Funciones from './Funciones'
+import { getDatosFunciones } from '@/lib/propuesta/funciones'
 
 /**
  * Propuesta PRO Consignataria, personalizada por firma.
@@ -158,7 +160,7 @@ export default async function PropuestaPage({ params, searchParams }: Props) {
   const contacto = textoPlano(sp.contacto, CONTACTO_MAX)
   const nota = textoPlano(sp.nota, NOTA_MAX)
 
-  const [firma, sitio] = await Promise.all([getDatosFirma(profile), getDatosSitio()])
+  const [firma, sitio, funciones] = await Promise.all([getDatosFirma(profile), getDatosSitio(), getDatosFunciones(profile)])
   const generado = new Date()
   const hoyTexto = generado.toLocaleDateString('es-AR', {
     day: 'numeric',
@@ -202,6 +204,7 @@ export default async function PropuestaPage({ params, searchParams }: Props) {
               .propuesta-hoja { box-shadow: none !important; border: 0 !important; padding: 0 !important; max-width: none !important; margin: 0 !important; }
               .propuesta-seccion { break-inside: auto; }
               .propuesta-seccion table, .propuesta-seccion li, .propuesta-bloque { break-inside: avoid; }
+              .propuesta-funcion figure { break-inside: avoid; }
               .propuesta-portada { min-height: 245mm !important; }
               a { text-decoration: none !important; }
               * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -336,8 +339,25 @@ export default async function PropuestaPage({ params, searchParams }: Props) {
           )}
         </Seccion>
 
-        {/* 3 · EL ALCANCE DEL SITIO */}
-        <Seccion numero="02" titulo="El alcance del sitio">
+        {/* 3 · LO QUE VA A VER Y USAR — una función por hoja, con su captura. */}
+        <Seccion numero="02" titulo="Lo que va a ver y usar">
+          <p className="text-sm leading-relaxed text-zinc-400">
+            Cada función de PRO, con la captura de cómo queda dentro del sitio. Donde dice «datos de ejemplo» la
+            información es inventada para mostrar el formato; el resto son datos reales de {profile.displayName}.
+          </p>
+          <ol className="mt-5 grid gap-x-6 gap-y-2 text-sm text-zinc-300 sm:grid-cols-2">
+            {beneficios.map((b, i) => (
+              <li key={b} className="flex gap-3">
+                <span className="w-5 shrink-0 text-xs font-semibold tabular-nums text-accent">{String(i + 1).padStart(2, '0')}</span>
+                <span>{b}</span>
+              </li>
+            ))}
+          </ol>
+          <Funciones profile={profile} f={funciones} firma={firma} />
+        </Seccion>
+
+        {/* 4 · EL ALCANCE DEL SITIO */}
+        <Seccion numero="03" titulo="El alcance del sitio">
           <p className="mb-4 text-sm leading-relaxed text-zinc-400">
             Dónde aparecen hoy las firmas del directorio. Son cifras del sitio entero, no de una firma en particular.
           </p>
@@ -375,18 +395,6 @@ export default async function PropuestaPage({ params, searchParams }: Props) {
               />
             </tbody>
           </table>
-        </Seccion>
-
-        {/* 4 · QUÉ INCLUYE PRO */}
-        <Seccion numero="03" titulo="Qué incluye PRO">
-          <ol className="space-y-3">
-            {beneficios.map((b, i) => (
-              <li key={b} className="flex gap-4 border-b border-terminal-border pb-3 text-sm leading-relaxed text-zinc-200">
-                <span className="w-6 shrink-0 text-xs font-semibold tabular-nums text-accent">{String(i + 1).padStart(2, '0')}</span>
-                <span>{b}</span>
-              </li>
-            ))}
-          </ol>
         </Seccion>
 
         {/* 5 · INVERSIÓN + 6 · CÓMO EMPEZAMOS (misma hoja al imprimir) */}
