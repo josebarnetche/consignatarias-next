@@ -115,7 +115,12 @@ export function KpiRow({ children, cols = 4 }: { children: ReactNode; cols?: 2 |
     5: 'sm:grid-cols-3 lg:grid-cols-5',
     6: 'sm:grid-cols-3 lg:grid-cols-6',
   }[cols]
-  return <div className={`grid grid-cols-2 ${grid} gap-px`}>{children}</div>
+  // En 2 columnas (móvil), una última celda impar ocupa la fila entera en vez de quedar sola a la izquierda.
+  return (
+    <div className={`grid grid-cols-2 ${grid} gap-px [&>*:last-child:nth-child(odd)]:col-span-2 sm:[&>*:last-child:nth-child(odd)]:col-span-1`}>
+      {children}
+    </div>
+  )
 }
 
 export function KpiCell({ children }: { children: ReactNode }) {

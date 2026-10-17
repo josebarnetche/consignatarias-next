@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import Stat from '@/components/ui/Stat'
 import Badge from '@/components/ui/Badge'
+import { AdminSection } from '@/components/admin/kit'
 import { createServiceClient } from '@/lib/supabase'
 
 const nf = (n: number) => n.toLocaleString('es-AR')
@@ -66,13 +67,12 @@ export default async function OutreachActivityCard() {
 
   let recent: { type: string; consignataria_slug: string | null; email_sent_to: string | null; sent_at: string }[] = []
   const resumen = { warm: 0, recordatorio: 0, postRemate: 0, otro: 0 }
-  let bajas7d: number | null = null
   let dbOk = false
 
   if (supabase) {
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
 
-    const [recentRes, weekRes, bajasRes] = await Promise.all([
+    const [recentRes, weekRes] = await Promise.all([
       supabase
         .from('outreach_log')
         .select('type, consignataria_slug, email_sent_to, sent_at')
@@ -81,12 +81,8 @@ export default async function OutreachActivityCard() {
       supabase
         .from('outreach_log')
         .select('type, sent_at')
-        .gte('sent_at', sevenDaysAgo),
-      supabase
-        .from('newsletter_subscribers')
-        .select('id', { count: 'exact', head: true })
-        .eq('status', 'unsubscribed')
-        .gte('unsubscribed_at', sevenDaysAgo),
+        .gte('sent_at', sevenDaysAgo)
+        .limit(10000),
     ])
 
     if (!recentRes.error && recentRes.data) {
@@ -99,96 +95,58 @@ export default async function OutreachActivityCard() {
       }
       dbOk = true
     }
-    if (!bajasRes.error) {
-      bajas7d = bajasRes.count ?? 0
-      dbOk = true
-    }
   }
 
   const enviados7d = resumen.warm + resumen.recordatorio + resumen.postRemate + resumen.otro
 
   return (
-    <div className="terminal-panel">
-      <div className="terminal-panel-header">
-        <span className="text-zinc-400 text-xxs tracking-widest">OUTREACH · EMAILS</span>
-      </div>
-
-      {/* Estado de los motores — siempre se muestra (lee filesystem) */}
-      <div className="px-cell py-2 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-b border-terminal-border">
-        <span className="text-zinc-500 text-xxs font-terminal uppercase tracking-wider">Motores</span>
-        <span className="flex items-center gap-1.5">
-          <span className="text-zinc-400 text-xxs">Warm PRO</span>
-          <Badge tone={warmState === 'ACTIVO' ? 'positive' : 'neutral'}>{warmState}</Badge>
+    <AdminSection
+      title="Outreach · últimos 7 días"
+      action={
+        <span className="flex flex-wrap items-center gap-2 text-xxs">
+          <span className="text-zinc-500">Warm PRO</span>
+          <Badge tone={warmState === 'ACTIVO' ? 'positive' : 'neutral'}>{warmState === 'ACTIVO' ? 'activo' : warmState}</Badge>
+          <span className="text-zinc-500">Recordatorios</span>
+          <Badge tone={reminderState === 'ACTIVO' ? 'positive' : 'neutral'}>
+            {reminderState === 'ACTIVO' ? 'activo' : reminderState}
+          </Badge>
         </span>
-        <span className="flex items-center gap-1.5">
-          <span className="text-zinc-400 text-xxs">Recordatorios</span>
-          <Badge tone={reminderState === 'ACTIVO' ? 'positive' : 'neutral'}>{reminderState}</Badge>
-        </span>
-      </div>
-
-      {/* Resumen 7d */}
-      <div className="terminal-panel-body grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-4 py-3">
-        <Stat
-          label="Enviados · 7d"
-          value={dbOk ? nf(enviados7d) : null}
-          tone="emphasis"
-          size="text-xl"
-        />
-        <Stat
-          label="Warm PRO · 7d"
-          value={dbOk ? nf(resumen.warm) : null}
-          tone="accent"
-          size="text-xl"
-        />
-        <Stat
-          label="Recordat. · 7d"
-          value={dbOk ? nf(resumen.recordatorio) : null}
-          tone="accent"
-          size="text-xl"
-        />
-        <Stat
-          label="Post-remate · 7d"
-          value={dbOk ? nf(resumen.postRemate) : null}
-          tone="accent"
-          size="text-xl"
-        />
-        <Stat
-          label="Bajas newsletter · 7d"
-          value={bajas7d == null ? null : nf(bajas7d)}
-          tone={bajas7d && bajas7d > 0 ? 'negative' : 'neutral'}
-          size="text-xl"
-          sub="status=unsubscribed"
-        />
-      </div>
-
-      {/* Actividad reciente */}
-      <div className="px-cell pt-2 pb-1">
-        <span className="text-zinc-500 text-xxs font-terminal uppercase tracking-wider">Últimos envíos</span>
-      </div>
-      {recent.length === 0 ? (
-        <div className="px-panel py-6 text-center">
-          <span className="text-zinc-500 text-data font-terminal">{dbOk ? 'Sin datos' : 's/d'}</span>
+      }
+      flush
+    >
+      <div className="grid gap-px lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
+        <div className="terminal-panel-body grid grid-cols-2 gap-x-4 gap-y-4 content-start">
+          <Stat label="Enviados" value={dbOk ? nf(enviados7d) : null} size="text-xl" />
+          <Stat label="Warm PRO" value={dbOk ? nf(resumen.warm) : null} size="text-xl" sub="pitch de upgrade" />
+          <Stat label="Recordatorios" value={dbOk ? nf(resumen.recordatorio) : null} size="text-xl" sub="de remate" />
+          <Stat label="Post-remate" value={dbOk ? nf(resumen.postRemate) : null} size="text-xl" sub="resultados" />
         </div>
-      ) : (
-        <div>
-          {recent.map((row, i) => (
-            <div
-              key={`${row.sent_at}-${i}`}
-              className="border-b border-terminal-border px-cell py-1.5 flex items-center gap-2 text-data"
-            >
-              <span className="text-zinc-300 font-terminal text-xxs uppercase tracking-wider w-24 shrink-0">
-                {labelType(row.type)}
-              </span>
-              <span className="text-zinc-400 font-terminal truncate flex-1">
-                {row.consignataria_slug || row.email_sent_to || '—'}
-              </span>
-              <span className="text-zinc-500 font-terminal tabular-nums text-xxs shrink-0">
-                {hace(row.sent_at)}
-              </span>
+        <div className="lg:border-l border-t lg:border-t-0 border-terminal-border">
+          <div className="px-panel pt-2 pb-1 text-xxs text-zinc-500 font-terminal uppercase tracking-wider">Últimos envíos</div>
+          {recent.length === 0 ? (
+            <div className="px-panel py-6 text-center text-data text-zinc-500 font-terminal">
+              {dbOk ? 'Todavía no salió ningún mail de outreach.' : 's/d: no se pudo leer outreach_log.'}
             </div>
-          ))}
+          ) : (
+            <ul>
+              {recent.map((row, i) => (
+                <li
+                  key={`${row.sent_at}-${i}`}
+                  className="border-t border-terminal-border px-panel py-1.5 flex items-center gap-2 text-data"
+                >
+                  <span className="w-24 shrink-0 text-xxs uppercase tracking-wider text-zinc-400 font-terminal">
+                    {labelType(row.type)}
+                  </span>
+                  <span className="flex-1 min-w-0 truncate text-zinc-300 font-terminal">
+                    {row.consignataria_slug || row.email_sent_to || '—'}
+                  </span>
+                  <span className="shrink-0 text-xxs tabular-nums text-zinc-500 font-terminal">{hace(row.sent_at)}</span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
-      )}
-    </div>
+      </div>
+    </AdminSection>
   )
 }

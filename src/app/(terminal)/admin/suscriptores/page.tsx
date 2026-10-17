@@ -1,293 +1,345 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { Mail, Calendar, Tag, Users, TrendingUp, RefreshCw } from 'lucide-react'
-import { EmptyState } from '@/components/ui'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import Stat from '@/components/ui/Stat'
+import Badge from '@/components/ui/Badge'
+import { AdminPageHeader, AdminSection, AdminEmpty, KpiRow, KpiCell } from '@/components/admin/kit'
+import { AdminSearch, AdminTabsClient } from '@/components/admin/kit-client'
+import { KpiSkeleton, SectionSkeleton } from '@/components/admin/metricas/SectionSkeleton'
+
+/**
+ * /admin/suscriptores — el newsletter en detalle: ritmo de captación, de dónde
+ * vienen y la lista completa (buscar, filtrar reales/tests, paginar, exportar).
+ * Lee GET /api/admin/suscriptores (contrato sin cambios). Todo lo derivado se
+ * calcula sobre suscriptores REALES (sin tests/healthchecks).
+ *
+ * El total de activos con su +7 d también figura en Hoy como resumen; las bajas
+ * 7 d viven sólo acá (antes estaban en el panel de outreach).
+ */
 
 interface Subscriber {
   id: string
   email: string
-  source: string
+  source: string | null
   status: string
-  subscribed_at: string
+  subscribed_at: string | null
   created_at: string
+  unsubscribed_at?: string | null
 }
 
-interface Stats {
-  total: number
-  active: number
-  sources: Record<string, number>
+type Filtro = 'reales' | 'tests' | 'todos'
+
+const PAGE = 50
+const DAY = 86_400_000
+const nf = (n: number) => n.toLocaleString('es-AR')
+
+const esTest = (s: Subscriber) => /test|healthcheck|jarvis/i.test(s.email)
+
+function fecha(iso: string | null | undefined): string {
+  if (!iso) return '—'
+  return new Date(iso).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
 }
 
-function formatDate(dateStr: string): string {
-  const date = new Date(dateStr)
-  return date.toLocaleDateString('es-AR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
+/** % de cambio; null si no hay base (no inventamos ∞). */
+function cambio(cur: number, prev: number): number | null {
+  return prev === 0 ? null : ((cur - prev) / prev) * 100
 }
 
-function getSourceBadgeColor(source: string): string {
-  const colors: Record<string, string> = {
-    'homepage': 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-    'remates': 'bg-green-500/20 text-green-400 border-green-500/30',
-    'reporte-semanal': 'bg-purple-500/20 text-purple-400 border-purple-500/30',
-    'frigorificos': 'bg-orange-500/20 text-orange-400 border-orange-500/30',
-    'el-corredor': 'bg-sky-500/20 text-sky-400 border-sky-500/30',
-    'arrendamiento-liquidacion': 'bg-teal-500/20 text-teal-400 border-teal-500/30',
-    'cierre-mensual': 'bg-sky-500/20 text-sky-400 border-sky-500/30',
-  }
-  return colors[source] || 'bg-zinc-500/20 text-zinc-400 border-zinc-500/30'
+function csvCell(v: string | null | undefined): string {
+  const s = v ?? ''
+  return /[",\n;]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
+}
+
+function exportCsv(rows: Subscriber[], filtro: Filtro) {
+  const head = ['email', 'origen', 'estado', 'suscripto', 'alta', 'baja']
+  const lines = rows.map((s) =>
+    [s.email, s.source, s.status, s.subscribed_at, s.created_at, s.unsubscribed_at ?? ''].map(csvCell).join(','),
+  )
+  // BOM para que Excel abra bien los acentos.
+  const blob = new Blob(['﻿' + [head.join(','), ...lines].join('\n')], { type: 'text/csv;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `suscriptores-${filtro}-${new Date().toISOString().slice(0, 10)}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
 }
 
 export default function SuscriptoresPage() {
-  const [subscribers, setSubscribers] = useState<Subscriber[]>([])
-  const [stats, setStats] = useState<Stats | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [subs, setSubs] = useState<Subscriber[] | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [filtro, setFiltro] = useState<Filtro>('reales')
+  const [q, setQ] = useState('')
+  const [page, setPage] = useState(0)
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await fetch('/api/admin/suscriptores')
-      if (!res.ok) {
-        const data = await res.json()
-        throw new Error(data.error || 'Error al cargar')
-      }
-      const data = await res.json()
-      setSubscribers(data.subscribers)
-      setStats(data.stats)
+      const res = await fetch('/api/admin/suscriptores', { cache: 'no-store' })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(data.error || 'No se pudieron cargar los suscriptores.')
+      setSubs((data.subscribers ?? []) as Subscriber[])
       setError(null)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido')
     } finally {
       setLoading(false)
     }
-  }
-
-  useEffect(() => {
-    fetchData()
   }, [])
 
-  if (loading) {
-    return (
-      <div className="terminal-panel p-8 text-center">
-        <div className="animate-pulse text-zinc-500">Cargando suscriptores...</div>
-      </div>
-    )
-  }
+  useEffect(() => {
+    void fetchData()
+  }, [fetchData])
 
-  if (error) {
-    return (
-      <div className="terminal-panel p-8 text-center">
-        <div className="text-red-400">{error}</div>
-      </div>
-    )
-  }
+  const reales = useMemo(() => (subs ?? []).filter((s) => !esTest(s)), [subs])
+  const tests = useMemo(() => (subs ?? []).filter(esTest), [subs])
 
-  // Filter out test emails for display
-  const realSubscribers = subscribers.filter(s => 
-    !s.email.includes('test') && 
-    !s.email.includes('healthcheck') &&
-    !s.email.includes('jarvis')
+  // Momentum + fuentes: sobre reales.
+  const m = useMemo(() => {
+    const now = Date.now()
+    const t = (s: Subscriber) => new Date(s.created_at).getTime()
+    const win = (from: number, to: number) =>
+      reales.filter((s) => t(s) >= now - from * DAY && t(s) < now - to * DAY).length
+    const daily = Array.from({ length: 30 }, (_, i) => {
+      const end = now - (29 - i) * DAY
+      return reales.filter((s) => t(s) >= end - DAY && t(s) < end).length
+    })
+    const bajas7 = reales.filter(
+      (s) => s.status === 'unsubscribed' && s.unsubscribed_at && new Date(s.unsubscribed_at).getTime() >= now - 7 * DAY,
+    ).length
+    const bySource = new Map<string, number>()
+    for (const s of reales) bySource.set(s.source || 'sin origen', (bySource.get(s.source || 'sin origen') ?? 0) + 1)
+    return {
+      activos: reales.filter((s) => s.status === 'active').length,
+      last7: win(7, 0),
+      prev7: win(14, 7),
+      last30: win(30, 0),
+      prev30: win(60, 30),
+      bajas7,
+      daily,
+      sources: Array.from(bySource.entries()).sort((a, b) => b[1] - a[1]),
+    }
+  }, [reales])
+
+  const filtrados = useMemo(() => {
+    const base = filtro === 'reales' ? reales : filtro === 'tests' ? tests : (subs ?? [])
+    const needle = q.trim().toLowerCase()
+    if (!needle) return base
+    return base.filter((s) => s.email.toLowerCase().includes(needle) || (s.source ?? '').toLowerCase().includes(needle))
+  }, [filtro, q, reales, tests, subs])
+
+  const pages = Math.max(1, Math.ceil(filtrados.length / PAGE))
+  const safePage = Math.min(page, pages - 1)
+  const visibles = filtrados.slice(safePage * PAGE, safePage * PAGE + PAGE)
+
+  const header = (
+    <AdminPageHeader
+      title="Suscriptores"
+      description="Newsletter: a qué ritmo entra gente, desde dónde y quiénes son."
+      actions={
+        <>
+          <button
+            type="button"
+            className="terminal-btn text-xxs disabled:opacity-40"
+            disabled={!subs || filtrados.length === 0}
+            onClick={() => exportCsv(filtrados, filtro)}
+          >
+            Exportar CSV{subs ? ` (${nf(filtrados.length)})` : ''}
+          </button>
+          <button type="button" className="terminal-btn text-xxs disabled:opacity-40" disabled={loading} onClick={fetchData}>
+            {loading ? 'Cargando…' : 'Actualizar'}
+          </button>
+        </>
+      }
+    />
   )
-  const testSubscribers = subscribers.filter(s =>
-    s.email.includes('test') ||
-    s.email.includes('healthcheck') ||
-    s.email.includes('jarvis')
-  )
 
-  // ── Momentum: mide el efecto de los nuevos CTAs (modal + strips). Todo se
-  // calcula sobre suscriptores REALES para no contaminar con tests/healthchecks.
-  const now = Date.now()
-  const DAY = 24 * 60 * 60 * 1000
-  const ts = (s: Subscriber) => new Date(s.created_at).getTime()
-  const inWindow = (from: number, to: number) =>
-    realSubscribers.filter(s => { const t = ts(s); return t >= now - from * DAY && t < now - to * DAY }).length
-  const last7 = inWindow(7, 0)
-  const prev7 = inWindow(14, 7)
-  const last30 = inWindow(30, 0)
-  const prev30 = inWindow(60, 30)
-  const pct = (cur: number, prev: number) =>
-    prev === 0 ? (cur > 0 ? null : 0) : Math.round(((cur - prev) / prev) * 100)
-  const wow = pct(last7, prev7) // week-over-week
-  const mom = pct(last30, prev30) // month-over-month
-
-  // Sparkline: nuevos suscriptores reales por día, últimos 30 días.
-  const daily: number[] = Array.from({ length: 30 }, (_, i) => {
-    const dayEnd = now - (29 - i) * DAY
-    const dayStart = dayEnd - DAY
-    return realSubscribers.filter(s => { const t = ts(s); return t >= dayStart && t < dayEnd }).length
-  })
-  const dailyMax = Math.max(1, ...daily)
-
-  function TrendBadge({ value }: { value: number | null }) {
-    if (value === null) return <span className="text-xxs text-sky-400">nuevo</span>
-    const up = value >= 0
+  if (error && !subs) {
     return (
-      <span className={`text-xxs tabular-nums ${up ? 'text-emerald-400' : 'text-red-400'}`}>
-        {up ? '▲' : '▼'} {Math.abs(value)}%
-      </span>
+      <>
+        {header}
+        <AdminSection>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <span className="text-data text-negative font-terminal">{error}</span>
+            <button type="button" onClick={fetchData} className="terminal-btn text-xxs">
+              Reintentar
+            </button>
+          </div>
+        </AdminSection>
+      </>
     )
   }
+
+  if (!subs) {
+    return (
+      <>
+        {header}
+        <KpiRow cols={4}>
+          {Array.from({ length: 4 }, (_, i) => (
+            <KpiCell key={i}>
+              <KpiSkeleton />
+            </KpiCell>
+          ))}
+        </KpiRow>
+        <SectionSkeleton title="Nuevos por día · 30 d" rows={3} />
+        <SectionSkeleton title="Suscriptores" rows={8} />
+      </>
+    )
+  }
+
+  const dailyMax = Math.max(1, ...m.daily)
+  const sourceMax = Math.max(1, ...m.sources.map(([, n]) => n))
 
   return (
-    <div className="space-y-4">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="terminal-panel p-4">
-          <div className="flex items-center gap-2 text-zinc-500 text-xxs uppercase tracking-wider mb-2">
-            <Users className="w-3 h-3" />
-            Total
-          </div>
-          <div className="text-2xl font-terminal text-zinc-100">{stats?.total || 0}</div>
-        </div>
-        <div className="terminal-panel p-4">
-          <div className="flex items-center gap-2 text-zinc-500 text-xxs uppercase tracking-wider mb-2">
-            <TrendingUp className="w-3 h-3" />
-            Activos
-          </div>
-          <div className="text-2xl font-terminal text-emerald-400">{stats?.active || 0}</div>
-        </div>
-        <div className="terminal-panel p-4">
-          <div className="flex items-center gap-2 text-zinc-500 text-xxs uppercase tracking-wider mb-2">
-            <Mail className="w-3 h-3" />
-            Reales
-          </div>
-          <div className="text-2xl font-terminal text-accent">{realSubscribers.length}</div>
-        </div>
-        <div className="terminal-panel p-4">
-          <div className="flex items-center gap-2 text-zinc-500 text-xxs uppercase tracking-wider mb-2">
-            <Tag className="w-3 h-3" />
-            Tests
-          </div>
-          <div className="text-2xl font-terminal text-zinc-500">{testSubscribers.length}</div>
-        </div>
-      </div>
+    <>
+      {header}
 
-      {/* Momentum — mide el efecto de los nuevos CTAs de captura */}
-      <div className="terminal-panel p-4">
-        <div className="flex items-center gap-2 text-xxs text-zinc-500 uppercase tracking-wider mb-3">
-          <TrendingUp className="w-3 h-3" />
-          Momentum de captación
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 items-end">
-          <div>
-            <div className="text-xxs text-zinc-500 uppercase tracking-wider mb-1">Últimos 7 días</div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-terminal text-zinc-100 tabular-nums">{last7}</span>
-              <TrendBadge value={wow} />
-            </div>
-            <div className="text-xxs text-zinc-600 mt-0.5">vs. {prev7} la semana previa</div>
-          </div>
-          <div>
-            <div className="text-xxs text-zinc-500 uppercase tracking-wider mb-1">Últimos 30 días</div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-terminal text-zinc-100 tabular-nums">{last30}</span>
-              <TrendBadge value={mom} />
-            </div>
-            <div className="text-xxs text-zinc-600 mt-0.5">vs. {prev30} el mes previo</div>
-          </div>
-          {/* Sparkline 30d */}
-          <div className="col-span-2">
-            <div className="text-xxs text-zinc-500 uppercase tracking-wider mb-1">Nuevos por día · 30d</div>
-            <div className="flex items-end gap-[2px] h-12">
-              {daily.map((v, i) => (
-                <div
-                  key={i}
-                  title={`${v} nuevo${v === 1 ? '' : 's'}`}
-                  className={`flex-1 rounded-sm ${v > 0 ? 'bg-sky-400/70' : 'bg-zinc-800'}`}
-                  style={{ height: `${Math.max(6, (v / dailyMax) * 100)}%` }}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+      <KpiRow cols={4}>
+        <KpiCell>
+          <Stat label="Activos" value={nf(m.activos)} sub={`de ${nf(reales.length)} reales en la base`} />
+        </KpiCell>
+        <KpiCell>
+          <Stat label="Nuevos · 7 d" value={nf(m.last7)} delta={cambio(m.last7, m.prev7)} sub={`vs ${nf(m.prev7)} la semana previa`} />
+        </KpiCell>
+        <KpiCell>
+          <Stat label="Nuevos · 30 d" value={nf(m.last30)} delta={cambio(m.last30, m.prev30)} sub={`vs ${nf(m.prev30)} el mes previo`} />
+        </KpiCell>
+        <KpiCell>
+          <Stat label="Bajas · 7 d" value={nf(m.bajas7)} tone={m.bajas7 > 0 ? 'negative' : 'emphasis'} sub="se dieron de baja" />
+        </KpiCell>
+      </KpiRow>
 
-      {/* Source breakdown */}
-      {stats?.sources && Object.keys(stats.sources).length > 0 && (
-        <div className="terminal-panel p-4">
-          <div className="text-xxs text-zinc-500 uppercase tracking-wider mb-3">Por Fuente</div>
-          <div className="flex flex-wrap gap-2">
-            {Object.entries(stats.sources).map(([source, count]) => (
-              <span 
-                key={source}
-                className={`px-2 py-1 text-xxs font-terminal rounded border ${getSourceBadgeColor(source)}`}
-              >
-                {source}: {count}
-              </span>
+      <div className="grid gap-px lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+        <AdminSection title="Nuevos por día · 30 d">
+          <div className="flex items-end gap-[2px] h-20" role="img" aria-label="Nuevos suscriptores por día, últimos 30 días">
+            {m.daily.map((v, i) => (
+              <div
+                key={i}
+                title={`hace ${29 - i} d: ${v} nuevo${v === 1 ? '' : 's'}`}
+                className={`flex-1 rounded-sm ${v > 0 ? 'bg-accent' : 'bg-zinc-800'}`}
+                style={{ height: `${v > 0 ? Math.max(8, (v / dailyMax) * 100) : 4}%` }}
+              />
             ))}
           </div>
-        </div>
-      )}
-
-      {/* Real Subscribers Table */}
-      <div className="terminal-panel">
-        <div className="px-4 py-3 border-b border-terminal-border flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Mail className="w-4 h-4 text-accent" />
-            <span className="text-sm font-terminal text-zinc-200">
-              Suscriptores Reales ({realSubscribers.length})
-            </span>
+          <div className="mt-1 flex justify-between text-xxs text-zinc-500 font-terminal">
+            <span>hace 30 d</span>
+            <span>hace 15 d</span>
+            <span>hoy</span>
           </div>
-          <button 
-            onClick={fetchData}
-            className="p-1.5 hover:bg-zinc-800 rounded transition-colors"
-            title="Refrescar"
-          >
-            <RefreshCw className="w-4 h-4 text-zinc-500" />
-          </button>
-        </div>
-        
-        {realSubscribers.length === 0 ? (
-          <EmptyState icon="campana" compact title="No hay suscriptores reales aún" />
-        ) : (
-          <div className="divide-y divide-terminal-border">
-            {realSubscribers.map((sub) => (
-              <div key={sub.id} className="px-4 py-3 flex items-center gap-4 hover:bg-zinc-800/50">
-                <div className="flex-1 min-w-0">
-                  <div className="font-terminal text-zinc-200 truncate">{sub.email}</div>
-                  <div className="text-xxs text-zinc-500 flex items-center gap-2 mt-1">
-                    <Calendar className="w-3 h-3" />
-                    {formatDate(sub.created_at)}
+        </AdminSection>
+
+        <AdminSection title="Origen" action={<span className="text-xxs text-zinc-500 font-terminal">reales</span>}>
+          {m.sources.length === 0 ? (
+            <p className="text-data text-zinc-500 font-terminal">Sin suscriptores reales todavía.</p>
+          ) : (
+            <ul className="space-y-1.5">
+              {m.sources.slice(0, 8).map(([src, n]) => (
+                <li key={src}>
+                  <div className="flex items-center justify-between gap-2 text-data font-terminal">
+                    <span className="truncate text-zinc-300">{src}</span>
+                    <span className="tabular-nums text-zinc-400">
+                      {nf(n)} <span className="text-zinc-500 text-xxs">{Math.round((n / reales.length) * 100)}%</span>
+                    </span>
                   </div>
-                </div>
-                <span className={`px-2 py-1 text-xxs font-terminal rounded border ${getSourceBadgeColor(sub.source)}`}>
-                  {sub.source}
-                </span>
-                <span className={`px-2 py-0.5 text-xxs font-terminal rounded ${
-                  sub.status === 'active' 
-                    ? 'bg-emerald-500/20 text-emerald-400' 
-                    : 'bg-red-500/20 text-red-400'
-                }`}>
-                  {sub.status}
-                </span>
-              </div>
-            ))}
+                  <div className="mt-0.5 h-1 rounded-full bg-zinc-800 overflow-hidden" aria-hidden>
+                    <div className="h-full bg-accent/60" style={{ width: `${(n / sourceMax) * 100}%` }} />
+                  </div>
+                </li>
+              ))}
+              {m.sources.length > 8 && (
+                <li className="text-xxs text-zinc-500 font-terminal">
+                  + {m.sources.length - 8} orígenes más con {nf(m.sources.slice(8).reduce((a, [, n]) => a + n, 0))} suscriptores
+                </li>
+              )}
+            </ul>
+          )}
+        </AdminSection>
+      </div>
+
+      <AdminTabsClient
+        tabs={[
+          { key: 'reales', label: 'Reales', count: reales.length },
+          { key: 'tests', label: 'Tests', count: tests.length },
+          { key: 'todos', label: 'Todos', count: subs.length },
+        ]}
+        active={filtro}
+        onSelect={(k) => {
+          setFiltro(k as Filtro)
+          setPage(0)
+        }}
+        trailing={
+          <AdminSearch
+            value={q}
+            onChange={(v) => {
+              setQ(v)
+              setPage(0)
+            }}
+            placeholder="Buscar email u origen"
+          />
+        }
+      />
+
+      <AdminSection flush>
+        {filtrados.length === 0 ? (
+          <AdminEmpty>{q ? `Nadie coincide con “${q}”.` : 'No hay suscriptores en este filtro.'}</AdminEmpty>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="terminal-table">
+              <thead>
+                <tr>
+                  <th>Email</th>
+                  <th className="hidden sm:table-cell">Origen</th>
+                  <th>Estado</th>
+                  <th className="text-right hidden md:table-cell">Alta</th>
+                </tr>
+              </thead>
+              <tbody>
+                {visibles.map((s) => (
+                  <tr key={s.id}>
+                    <td className="text-ink max-w-[16rem] truncate" title={s.email}>
+                      {s.email}
+                      <span className="block sm:hidden text-xxs text-zinc-500">{s.source || 'sin origen'}</span>
+                    </td>
+                    <td className="text-zinc-400 text-xxs hidden sm:table-cell">{s.source || 'sin origen'}</td>
+                    <td>
+                      <Badge tone={s.status === 'active' ? 'positive' : s.status === 'unsubscribed' ? 'negative' : 'neutral'}>
+                        {s.status === 'active' ? 'Activo' : s.status === 'unsubscribed' ? 'Baja' : s.status}
+                      </Badge>
+                    </td>
+                    <td className="text-right text-xxs tabular-nums text-zinc-500 hidden md:table-cell">{fecha(s.created_at)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
-      </div>
-
-      {/* Test Subscribers (collapsed) */}
-      {testSubscribers.length > 0 && (
-        <details className="terminal-panel">
-          <summary className="px-4 py-3 cursor-pointer text-sm font-terminal text-zinc-500 hover:text-zinc-300">
-            Tests & QA ({testSubscribers.length})
-          </summary>
-          <div className="divide-y divide-terminal-border border-t border-terminal-border">
-            {testSubscribers.map((sub) => (
-              <div key={sub.id} className="px-4 py-2 flex items-center gap-4 text-zinc-500">
-                <div className="flex-1 min-w-0 truncate text-sm">{sub.email}</div>
-                <span className="text-xxs">{sub.source}</span>
-              </div>
-            ))}
+        {pages > 1 && (
+          <div className="px-panel py-2 border-t border-terminal-border flex items-center justify-between gap-2 text-xxs font-terminal">
+            <span className="text-zinc-500 tabular-nums">
+              {nf(safePage * PAGE + 1)}–{nf(Math.min(filtrados.length, (safePage + 1) * PAGE))} de {nf(filtrados.length)}
+            </span>
+            <span className="flex gap-2">
+              <button
+                type="button"
+                className="terminal-btn text-xxs disabled:opacity-40"
+                disabled={safePage === 0}
+                onClick={() => setPage(safePage - 1)}
+              >
+                ← Anterior
+              </button>
+              <button
+                type="button"
+                className="terminal-btn text-xxs disabled:opacity-40"
+                disabled={safePage >= pages - 1}
+                onClick={() => setPage(safePage + 1)}
+              >
+                Siguiente →
+              </button>
+            </span>
           </div>
-        </details>
-      )}
-    </div>
+        )}
+      </AdminSection>
+    </>
   )
 }

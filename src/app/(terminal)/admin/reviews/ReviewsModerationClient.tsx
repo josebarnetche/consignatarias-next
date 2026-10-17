@@ -3,25 +3,34 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import type { ReviewRow } from '@/lib/dal/reviews'
+import { AdminPageHeader, AdminEmpty } from '@/components/admin/kit'
+import { ReasonDialog } from '@/components/admin/kit-client'
+
+/**
+ * Cola de reseñas pendientes.
+ * Contratos: POST /api/admin/reviews/[id]/approve
+ *            POST /api/admin/reviews/[id]/reject  { reason } (mínimo 5 caracteres, si no 400)
+ */
 
 interface Props {
   initialReviews: ReviewRow[]
   adminEmail: string
 }
 
+const nf = (n: number) => n.toLocaleString('es-AR')
+
 function StarRow({ rating }: { rating: number }) {
   return (
-    <span className="text-amber-400 font-terminal tracking-wider">
-      {'★'.repeat(rating)}
-      <span className="text-zinc-700">{'★'.repeat(5 - rating)}</span>
+    <span className="font-terminal tracking-wider" aria-label={`${rating} de 5 estrellas`}>
+      <span className="text-warning">{'★'.repeat(rating)}</span>
+      <span className="text-zinc-700">{'★'.repeat(Math.max(0, 5 - rating))}</span>
     </span>
   )
 }
 
 function ageLabel(iso: string): string {
-  const ageMs = Date.now() - new Date(iso).getTime()
-  const hours = ageMs / 3_600_000
-  if (hours < 1) return `hace ${Math.round(hours * 60)} min`
+  const hours = (Date.now() - new Date(iso).getTime()) / 3_600_000
+  if (hours < 1) return `hace ${Math.max(1, Math.round(hours * 60))} min`
   if (hours < 24) return `hace ${Math.round(hours)} h`
   return `hace ${Math.round(hours / 24)} d`
 }
@@ -29,184 +38,177 @@ function ageLabel(iso: string): string {
 export default function ReviewsModerationClient({ initialReviews }: Props) {
   const [reviews, setReviews] = useState<ReviewRow[]>(initialReviews)
   const [busy, setBusy] = useState<Set<string>>(new Set())
-  const [rejectingId, setRejectingId] = useState<string | null>(null)
-  const [rejectReason, setRejectReason] = useState('')
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [rejecting, setRejecting] = useState<ReviewRow | null>(null)
 
-  async function approve(id: string) {
-    setBusy(prev => new Set(prev).add(id))
-    const res = await fetch(`/api/admin/reviews/${id}/approve`, { method: 'POST' })
-    if (res.ok) {
-      setReviews(prev => prev.filter(r => r.id !== id))
-    }
-    setBusy(prev => {
+  const setBusyId = (id: string, on: boolean) =>
+    setBusy((prev) => {
       const next = new Set(prev)
-      next.delete(id)
+      if (on) next.add(id)
+      else next.delete(id)
       return next
     })
-  }
 
-  async function submitReject() {
-    if (!rejectingId) return
-    if (rejectReason.trim().length < 5) {
-      alert('El motivo de rechazo debe tener al menos 5 caracteres.')
-      return
-    }
-    setBusy(prev => new Set(prev).add(rejectingId))
-    const res = await fetch(`/api/admin/reviews/${rejectingId}/reject`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ reason: rejectReason.trim() }),
-    })
-    if (res.ok) {
-      setReviews(prev => prev.filter(r => r.id !== rejectingId))
-    }
-    setBusy(prev => {
-      const next = new Set(prev)
-      next.delete(rejectingId)
+  const setError = (id: string, msg: string | null) =>
+    setErrors((prev) => {
+      const next = { ...prev }
+      if (msg) next[id] = msg
+      else delete next[id]
       return next
     })
-    setRejectingId(null)
-    setRejectReason('')
+
+  /** Saca la reseña de la cola ya mismo; si el servidor falla, la devuelve a su lugar. */
+  async function act(review: ReviewRow, action: 'approve' | 'reject', reason?: string) {
+    const index = reviews.findIndex((r) => r.id === review.id)
+    setBusyId(review.id, true)
+    setError(review.id, null)
+    setReviews((prev) => prev.filter((r) => r.id !== review.id))
+    try {
+      const res = await fetch(`/api/admin/reviews/${review.id}/${action}`, {
+        method: 'POST',
+        ...(action === 'reject'
+          ? { headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ reason }) }
+          : {}),
+      })
+      if (!res.ok) {
+        const data = (await res.json().catch(() => ({}))) as { message?: string; error?: string }
+        throw new Error(data.message || data.error || `Error ${res.status}`)
+      }
+    } catch (e) {
+      setReviews((prev) => {
+        if (prev.some((r) => r.id === review.id)) return prev
+        const next = [...prev]
+        next.splice(Math.min(Math.max(index, 0), next.length), 0, review)
+        return next
+      })
+      setError(
+        review.id,
+        `No se pudo ${action === 'approve' ? 'aprobar' : 'rechazar'}: ${
+          e instanceof Error && e.message !== 'Failed to fetch' ? e.message : 'error de conexión'
+        }. Probá de nuevo.`,
+      )
+    } finally {
+      setBusyId(review.id, false)
+    }
   }
 
   return (
-    <div className="px-4 py-4 max-w-5xl mx-auto space-y-3">
-      <div className="terminal-panel">
-        <div className="terminal-panel-header flex items-center justify-between">
-          <span className="text-zinc-200 text-label tracking-widest">MODERACIÓN DE RESEÑAS</span>
-          <span className="text-xxs font-terminal text-zinc-500 tabular-nums">
-            {reviews.length} pendientes
-          </span>
-        </div>
-      </div>
+    <>
+      <AdminPageHeader
+        title="Reseñas"
+        meta={`${nf(reviews.length)} por moderar`}
+        description="Reseñas de productores sobre consignatarias. Lo que aprobás se publica en el perfil de la firma."
+      />
 
       {reviews.length === 0 ? (
-        <div className="terminal-panel">
-          <div className="px-panel py-8 text-center">
-            <p className="text-data font-terminal text-zinc-400">Cola vacía.</p>
-            <p className="text-xxs font-terminal text-zinc-600 mt-1">
-              Las reseñas aprobadas aparecen públicamente en el perfil del consignatario.
-            </p>
-          </div>
-        </div>
+        <section className="terminal-panel">
+          <AdminEmpty>
+            No hay reseñas por moderar. Cuando un productor deje una aparece acá; las aprobadas se ven en el perfil
+            de la consignataria.
+          </AdminEmpty>
+        </section>
       ) : (
-        reviews.map(r => {
-          const isBusy = busy.has(r.id)
-          return (
-            <div key={r.id} className="terminal-panel">
-              <div className="terminal-panel-header flex items-center justify-between gap-3 flex-wrap">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <Link
-                    href={`/consignatarias/${r.consignataria_slug}`}
-                    target="_blank"
-                    className="text-data text-accent hover:underline font-terminal"
+        <ul className="space-y-px" aria-live="polite">
+          {reviews.map((r) => {
+            const isBusy = busy.has(r.id)
+            const err = errors[r.id]
+            return (
+              <li key={r.id} className="terminal-panel">
+                <div className="px-panel pt-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                  <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                    <Link
+                      href={`/consignatarias/${r.consignataria_slug}`}
+                      target="_blank"
+                      rel="noopener"
+                      className="text-data font-terminal text-ink hover:text-accent hover:underline underline-offset-2"
+                    >
+                      {r.consignataria_slug}
+                      <span className="sr-only"> (abre el perfil en otra pestaña)</span>
+                      <span aria-hidden className="text-zinc-500"> ↗</span>
+                    </Link>
+                    <StarRow rating={r.rating} />
+                  </div>
+                  <time
+                    dateTime={r.created_at}
+                    title={new Date(r.created_at).toLocaleString('es-AR')}
+                    className="text-xxs font-terminal text-zinc-500 tabular-nums"
                   >
-                    {r.consignataria_slug}
-                  </Link>
-                  <span className="text-terminal-border text-xxs">·</span>
-                  <StarRow rating={r.rating} />
+                    {ageLabel(r.created_at)}
+                  </time>
                 </div>
-                <span className="text-xxs font-terminal text-zinc-500">{ageLabel(r.created_at)}</span>
-              </div>
 
-              <div className="px-panel py-3 space-y-2">
-                <div className="flex flex-wrap gap-x-3 gap-y-1 text-xxs font-terminal">
-                  <span className="text-zinc-400">
-                    <span className="text-zinc-500 uppercase tracking-wider">De: </span>
-                    <span className="text-zinc-200">{r.submitter_name}</span>{' '}
-                    <span className="text-zinc-500">&lt;{r.submitter_email}&gt;</span>
-                  </span>
-                  {r.submitter_role && (
-                    <span className="text-zinc-400">
-                      <span className="text-zinc-500 uppercase tracking-wider">Rol: </span>
-                      <span className="text-zinc-200">{r.submitter_role}</span>
-                    </span>
-                  )}
-                  {r.submitter_provincia && (
-                    <span className="text-zinc-400">
-                      <span className="text-zinc-500 uppercase tracking-wider">Prov: </span>
-                      <span className="text-zinc-200">{r.submitter_provincia}</span>
-                    </span>
+                <div className="px-panel py-3 space-y-2">
+                  <dl className="flex flex-wrap gap-x-5 gap-y-1 text-xxs font-terminal">
+                    <div className="min-w-0">
+                      <dt className="inline text-zinc-500">De: </dt>
+                      <dd className="inline text-zinc-300">
+                        {r.submitter_name}{' '}
+                        <a href={`mailto:${r.submitter_email}`} className="text-zinc-500 hover:text-accent break-all">
+                          &lt;{r.submitter_email}&gt;
+                        </a>
+                      </dd>
+                    </div>
+                    {r.submitter_role && (
+                      <div>
+                        <dt className="inline text-zinc-500">Rol: </dt>
+                        <dd className="inline text-zinc-300">{r.submitter_role}</dd>
+                      </div>
+                    )}
+                    {r.submitter_provincia && (
+                      <div>
+                        <dt className="inline text-zinc-500">Provincia: </dt>
+                        <dd className="inline text-zinc-300">{r.submitter_provincia}</dd>
+                      </div>
+                    )}
+                  </dl>
+                  <p className="text-data font-terminal text-ink whitespace-pre-wrap leading-relaxed">{r.body}</p>
+                  {err && (
+                    <p role="alert" className="text-xxs text-negative font-terminal">
+                      {err}
+                    </p>
                   )}
                 </div>
-                <p className="text-data font-terminal text-zinc-200 whitespace-pre-wrap leading-relaxed">
-                  {r.body}
-                </p>
-              </div>
 
-              <div className="px-panel py-2 border-t border-terminal-border flex items-center justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setRejectingId(r.id)}
-                  disabled={isBusy}
-                  className="text-xxs font-terminal uppercase tracking-wider text-zinc-500 hover:text-red-400 border border-zinc-700 hover:border-red-500/40 rounded-terminal px-3 py-1.5 transition-colors disabled:opacity-50"
-                >
-                  Rechazar
-                </button>
-                <button
-                  type="button"
-                  onClick={() => approve(r.id)}
-                  disabled={isBusy}
-                  className="text-xxs font-terminal uppercase tracking-wider text-positive border border-positive/30 rounded-terminal px-3 py-1.5 hover:bg-positive/10 transition-colors disabled:opacity-50"
-                >
-                  {isBusy ? 'Procesando…' : 'Aprobar'}
-                </button>
-              </div>
-            </div>
-          )
-        })
+                <div className="px-panel py-2 border-t border-terminal-border flex items-center justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setRejecting(r)}
+                    disabled={isBusy}
+                    aria-label={`Rechazar la reseña de ${r.submitter_name}`}
+                    className="terminal-btn hover:border-negative hover:text-negative hover:bg-negative/10 disabled:opacity-40"
+                  >
+                    Rechazar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => void act(r, 'approve')}
+                    disabled={isBusy}
+                    aria-label={`Aprobar y publicar la reseña de ${r.submitter_name}`}
+                    className="terminal-btn border-positive/40 text-positive hover:border-positive hover:text-positive hover:bg-positive/10 disabled:opacity-40"
+                  >
+                    {isBusy ? 'Guardando…' : 'Aprobar'}
+                  </button>
+                </div>
+              </li>
+            )
+          })}
+        </ul>
       )}
 
-      {/* Reject modal */}
-      {rejectingId && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
-          onClick={() => {
-            setRejectingId(null)
-            setRejectReason('')
-          }}
-        >
-          <div
-            className="terminal-panel max-w-md w-full mx-4"
-            onClick={e => e.stopPropagation()}
-          >
-            <div className="terminal-panel-header">
-              <span className="text-zinc-200 text-label tracking-widest">RECHAZAR RESEÑA</span>
-            </div>
-            <div className="px-panel py-3 space-y-3">
-              <p className="text-xxs font-terminal text-zinc-400 leading-relaxed">
-                El motivo se guarda para auditoría. No se envía al productor en v1.
-              </p>
-              <textarea
-                value={rejectReason}
-                onChange={e => setRejectReason(e.target.value)}
-                placeholder="Por ej.: spam · contenido inapropiado · no es reseña real · duplicado"
-                rows={3}
-                className="w-full text-data font-terminal text-zinc-200 bg-terminal-bg border border-terminal-border rounded-terminal px-3 py-2 focus:border-accent focus:outline-none"
-              />
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setRejectingId(null)
-                    setRejectReason('')
-                  }}
-                  className="text-xxs font-terminal uppercase tracking-wider text-zinc-500 hover:text-zinc-300 px-3 py-1.5 transition-colors"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="button"
-                  onClick={submitReject}
-                  className="text-xxs font-terminal uppercase tracking-wider text-red-400 border border-red-500/40 hover:bg-red-500/10 rounded-terminal px-3 py-1.5 transition-colors"
-                >
-                  Confirmar rechazo
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+      <ReasonDialog
+        open={rejecting != null}
+        title="Rechazar reseña"
+        description="El motivo queda guardado para auditoría. No se le manda al productor."
+        placeholder="Ej.: spam · contenido inapropiado · no es una reseña real · duplicada"
+        confirmLabel="Rechazar"
+        minLength={5}
+        onCancel={() => setRejecting(null)}
+        onConfirm={(reason) => {
+          const r = rejecting
+          setRejecting(null)
+          if (r) void act(r, 'reject', reason)
+        }}
+      />
+    </>
   )
 }

@@ -1,5 +1,4 @@
 {
-  "src/app/(terminal)/admin/overview/page.tsx": 2,
   "src/app/(terminal)/calculadora/CalculadoraClient.tsx": 7,
   "src/app/(terminal)/calendario-exportar/CalendarExportClient.tsx": 2,
   "src/app/(terminal)/comparar/CompararClient.tsx": 2,

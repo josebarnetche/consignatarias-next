@@ -5,9 +5,13 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { requireAdmin } from '@/lib/admin-auth'
 import { requireServiceClient } from '@/lib/supabase'
 import { getAllPreofertas } from '@/lib/data/preofertas'
+import { AdminPageHeader, AdminSection, AdminEmpty } from '@/components/admin/kit'
+import Badge from '@/components/ui/Badge'
 
 export const metadata: Metadata = { title: 'Pre-ofertas · Admin', robots: { index: false } }
 export const dynamic = 'force-dynamic'
+
+const nf = (n: number) => n.toLocaleString('es-AR')
 
 export default async function AdminPreofertasIndex() {
   const auth = await requireAdmin()
@@ -25,28 +29,54 @@ export default async function AdminPreofertasIndex() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-6">
-      <h1 className="text-2xl font-heading text-zinc-100">Pre-ofertas — ofertas recibidas</h1>
-      <p className="text-zinc-400 text-data mt-1">Elegí un remate para ver los leads (ofertante, CUIT, monto) y cargarlos en elrural.</p>
-      <div className="mt-5 space-y-2">
-        {preofertas.map((p) => {
-          const c = count[p.slug]
-          const abierta = Date.now() < new Date(p.cierre_preoferta).getTime()
-          return (
-            <Link key={p.slug} href={`/admin/preoferta/${p.slug}`}
-              className="flex items-center justify-between gap-3 rounded-terminal border border-terminal-border bg-black/20 hover:border-accent/50 p-3.5 transition-colors">
-              <div>
-                <div className="text-zinc-100 font-medium">{p.remate}</div>
-                <div className="text-zinc-500 text-xs">{p.consignataria} · {p.cabana}</div>
-              </div>
-              <div className="text-right shrink-0">
-                <div className="font-mono text-zinc-100 tabular-nums">{c?.ofertas ?? 0} <span className="text-zinc-500 text-xs">ofertas</span></div>
-                <div className="text-xxs font-terminal uppercase tracking-wider">{abierta ? <span className="text-positive">abierta</span> : <span className="text-zinc-600">cerrada</span>}</div>
-              </div>
-            </Link>
-          )
-        })}
-      </div>
-    </div>
+    <>
+      <AdminPageHeader
+        title="Pre-ofertas"
+        meta={`${nf(rows.length)} ofertas recibidas`}
+        description="Elegí un remate para ver los leads (ofertante, CUIT, monto) y cargarlos en elrural."
+      />
+
+      <AdminSection title="Remates" flush>
+        {preofertas.length === 0 ? (
+          <AdminEmpty>No hay remates con pre-oferta cargados.</AdminEmpty>
+        ) : (
+          <ul>
+            {preofertas.map((p) => {
+              const c = count[p.slug]
+              const abierta = Date.now() < new Date(p.cierre_preoferta).getTime()
+              return (
+                <li key={p.slug} className="border-b border-terminal-border last:border-b-0">
+                  <Link
+                    href={`/admin/preoferta/${p.slug}`}
+                    className="group flex items-center justify-between gap-3 px-panel py-3 transition-colors hover:bg-accent/5"
+                  >
+                    <div className="min-w-0">
+                      <div className="truncate text-data font-terminal text-ink group-hover:text-accent">{p.remate}</div>
+                      <div className="truncate text-xxs font-terminal text-zinc-500">
+                        {p.consignataria} · {p.cabana}
+                      </div>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-3">
+                      <div className="text-right font-terminal">
+                        <div className="text-data tabular-nums text-ink">
+                          {nf(c?.ofertas ?? 0)} <span className="text-xxs text-zinc-500">ofertas</span>
+                        </div>
+                        <div className="text-xxs tabular-nums text-zinc-500">
+                          {nf(c?.lotes.size ?? 0)} lotes con interés
+                        </div>
+                      </div>
+                      <Badge tone={abierta ? 'positive' : 'neutral'}>{abierta ? 'Abierta' : 'Cerrada'}</Badge>
+                      <span className="text-zinc-500 group-hover:text-accent font-terminal" aria-hidden>
+                        →
+                      </span>
+                    </div>
+                  </Link>
+                </li>
+              )
+            })}
+          </ul>
+        )}
+      </AdminSection>
+    </>
   )
 }

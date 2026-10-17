@@ -1,3 +1,5 @@
+import Stat from '@/components/ui/Stat'
+import { AdminSection } from '@/components/admin/kit'
 import { createServiceClient } from '@/lib/supabase'
 
 /**
@@ -46,59 +48,39 @@ export default async function EmailHealthCard() {
   const hasData = rows.length > 0
 
   return (
-    <div className="terminal-panel">
-      <div className="terminal-panel-header flex items-center justify-between">
-        <span className="text-zinc-400 text-xxs tracking-widest">SALUD DE EMAIL · 30D</span>
-        <span className="text-xxs text-zinc-500 font-terminal tabular-nums">Resend</span>
-      </div>
-
+    <AdminSection
+      title="Salud de email · 30 d"
+      action={<span className="text-xxs text-zinc-500 font-terminal">Resend</span>}
+    >
       {!hasData ? (
-        <div className="px-panel py-6 text-center space-y-2">
-          <span className="block text-zinc-500 text-data font-terminal">Sin eventos todavía</span>
-          <span className="block text-xxs text-zinc-600 font-terminal leading-relaxed">
-            Configurá el webhook en Resend → endpoint
-            <br />
-            <span className="text-zinc-400">/api/webhooks/resend</span>
-            <br />
-            + activá open/click tracking del dominio.
-          </span>
-        </div>
+        <p className="text-xxs text-zinc-500 font-terminal">
+          {res?.errored ? 'No se pudo leer email_events. ' : 'Sin eventos de email todavía. '}
+          Para medir apertura y rebotes, configurá el webhook de Resend apuntando a <code>/api/webhooks/resend</code> y
+          activá el seguimiento de aperturas y clics del dominio.
+        </p>
       ) : (
-        <>
-          <div className="terminal-panel-body grid grid-cols-2 gap-x-4 gap-y-4">
-            <div>
-              <div className="text-2xl font-terminal tabular-nums text-emerald-400">{pct(opened, delivered)}</div>
-              <div className="text-xxs text-zinc-500 font-terminal uppercase tracking-wider">Apertura</div>
-              <div className="text-xxs text-zinc-600 font-terminal tabular-nums">{nf(opened)} / {nf(delivered)}</div>
-            </div>
-            <div>
-              <div className="text-2xl font-terminal tabular-nums text-sky-400">{pct(clicked, delivered)}</div>
-              <div className="text-xxs text-zinc-500 font-terminal uppercase tracking-wider">Click</div>
-              <div className="text-xxs text-zinc-600 font-terminal tabular-nums">{nf(clicked)} / {nf(delivered)}</div>
-            </div>
-            <div>
-              <div className={`text-2xl font-terminal tabular-nums ${bounced > 0 ? 'text-amber-400' : 'text-zinc-300'}`}>
-                {pct(bounced, delivered + bounced)}
-              </div>
-              <div className="text-xxs text-zinc-500 font-terminal uppercase tracking-wider">Bounce</div>
-              <div className="text-xxs text-zinc-600 font-terminal tabular-nums">{nf(bounced)}</div>
-            </div>
-            <div>
-              <div className={`text-2xl font-terminal tabular-nums ${complained > 0 ? 'text-red-400' : 'text-zinc-300'}`}>
-                {nf(complained)}
-              </div>
-              <div className="text-xxs text-zinc-500 font-terminal uppercase tracking-wider">Quejas (spam)</div>
-              <div className="text-xxs text-zinc-600 font-terminal tabular-nums">de {nf(delivered)} entregados</div>
-            </div>
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+            <Stat label="Apertura" value={pct(opened, delivered)} sub={`${nf(opened)} de ${nf(delivered)} entregados`} />
+            <Stat label="Clics" value={pct(clicked, delivered)} sub={`${nf(clicked)} de ${nf(delivered)} entregados`} />
+            <Stat
+              label="Rebotes"
+              value={pct(bounced, delivered + bounced)}
+              tone={bounced > 0 ? 'warning' : 'emphasis'}
+              sub={`${nf(bounced)} mails`}
+            />
+            <Stat
+              label="Quejas (spam)"
+              value={nf(complained)}
+              tone={complained > 0 ? 'negative' : 'emphasis'}
+              sub={`de ${nf(delivered)} entregados`}
+            />
           </div>
-          <div className="terminal-panel-body border-t border-terminal-border flex flex-wrap items-center gap-x-3 gap-y-1">
-            <span className="text-xxs text-zinc-600 font-terminal uppercase tracking-wider">Volumen 30d</span>
-            <span className="text-xxs font-terminal text-zinc-400 tabular-nums">enviados <span className="text-zinc-200">{nf(sent || delivered)}</span></span>
-            <span className="text-xxs font-terminal text-zinc-400 tabular-nums">entregados <span className="text-zinc-200">{nf(delivered)}</span></span>
-            <span className="text-xxs font-terminal text-zinc-400 tabular-nums">eventos <span className="text-zinc-200">{nf(rows.length)}</span></span>
-          </div>
-        </>
+          <p className="text-xxs text-zinc-500 font-terminal tabular-nums">
+            Volumen: {nf(sent || delivered)} enviados · {nf(delivered)} entregados · {nf(rows.length)} eventos
+          </p>
+        </div>
       )}
-    </div>
+    </AdminSection>
   )
 }

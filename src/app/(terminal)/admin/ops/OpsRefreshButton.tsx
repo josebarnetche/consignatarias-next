@@ -25,7 +25,7 @@ export function OpsRefreshButton() {
   return (
     <div className="flex items-center gap-2">
       {lastRefresh && (
-        <span className="text-xxs text-zinc-600 font-terminal tabular-nums">
+        <span className="text-xxs text-zinc-500 font-terminal tabular-nums" aria-live="polite">
           ↻ {lastRefresh}
         </span>
       )}
@@ -33,10 +33,10 @@ export function OpsRefreshButton() {
         type="button"
         onClick={refresh}
         disabled={isPending}
-        className="flex items-center gap-1.5 rounded border border-terminal-border px-2 py-1 text-xxs font-terminal uppercase tracking-wider text-zinc-300 transition-colors hover:border-zinc-500 hover:text-zinc-100 disabled:opacity-50"
+        className="terminal-btn gap-1.5 disabled:opacity-50"
         title="Traer eventos y crons nuevos"
       >
-        <RefreshCw className={`h-3 w-3 ${isPending ? 'animate-spin' : ''}`} />
+        <RefreshCw className={`h-3.5 w-3.5 ${isPending ? 'animate-spin' : ''}`} aria-hidden />
         {isPending ? 'Actualizando…' : 'Actualizar'}
       </button>
     </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Phone, MessageCircle, Mail, Users, StickyNote, ArrowRight, Send, Loader2 } from 'lucide-react'
 import {
   HUMAN_KINDS,
@@ -32,12 +32,12 @@ const KIND_ICON: Record<string, typeof Phone> = {
 }
 
 const OUTCOME_CLS: Record<string, string> = {
-  interesado: 'bg-emerald-500/20 text-emerald-300',
-  contesto: 'bg-sky-500/20 text-sky-300',
-  cerrado: 'bg-emerald-500/20 text-emerald-300',
-  pendiente: 'bg-amber-500/20 text-amber-300',
-  sin_respuesta: 'bg-zinc-600/20 text-zinc-400',
-  no_interesa: 'bg-red-500/20 text-red-300',
+  interesado: 'bg-positive/10 text-positive',
+  contesto: 'bg-accent/10 text-accent',
+  cerrado: 'bg-positive/10 text-positive',
+  pendiente: 'bg-warning/10 text-warning',
+  sin_respuesta: 'bg-zinc-800 text-zinc-400',
+  no_interesa: 'bg-negative/10 text-negative',
 }
 
 function fmt(s: string) {
@@ -50,14 +50,23 @@ export default function LeadActivity({
   leadId,
   initial,
   onLogged,
+  defaultOpen = false,
 }: {
   leadId: number
   initial: ActivityRow[]
   /** Para que la lista de arriba pueda refrescar contadores sin recargar todo. */
   onLogged?: (rows: ActivityRow[]) => void
+  /** Abierto de entrada (en el panel de detalle de la bandeja). */
+  defaultOpen?: boolean
 }) {
   const [rows, setRows] = useState<ActivityRow[]>(initial)
-  const [abierto, setAbierto] = useState(false)
+  const [abierto, setAbierto] = useState(defaultOpen)
+
+  // Si el padre recarga la bitácora (ej. después de un cambio de estado, que la
+  // API registra sola), el historial se actualiza sin remontar el componente.
+  useEffect(() => {
+    setRows(initial)
+  }, [initial])
   const [kind, setKind] = useState<ActivityKind>('llamada')
   const [outcome, setOutcome] = useState<ActivityOutcome | ''>('')
   const [texto, setTexto] = useState('')
@@ -98,7 +107,7 @@ export default function LeadActivity({
   }
 
   return (
-    <div className="mt-3 border-t border-zinc-800 pt-3">
+    <div className="mt-3 border-t border-terminal-border pt-3">
       <button
         onClick={() => setAbierto((v) => !v)}
         className="flex items-center gap-2 text-xs font-medium text-zinc-400 hover:text-zinc-200"
@@ -110,7 +119,7 @@ export default function LeadActivity({
           </span>
         )}
         {humanas === 0 && (
-          <span className="rounded bg-amber-500/15 px-1.5 py-0.5 text-[10px] text-amber-300">
+          <span className="rounded bg-warning/10 px-1.5 py-0.5 text-[10px] text-warning">
             sin trabajo registrado
           </span>
         )}
@@ -123,7 +132,7 @@ export default function LeadActivity({
             <select
               value={kind}
               onChange={(e) => setKind(e.target.value as ActivityKind)}
-              className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-1.5 text-sm text-ink outline-none focus:border-sky-500/60"
+              className="terminal-input py-1.5 text-sm"
             >
               {HUMAN_KINDS.map((k) => (
                 <option key={k} value={k}>{KIND_LABEL[k]}</option>
@@ -132,7 +141,7 @@ export default function LeadActivity({
             <select
               value={outcome}
               onChange={(e) => setOutcome(e.target.value as ActivityOutcome | '')}
-              className="rounded-lg border border-zinc-700 bg-zinc-900 px-2 py-1.5 text-sm text-ink outline-none focus:border-sky-500/60"
+              className="terminal-input py-1.5 text-sm"
             >
               <option value="">— resultado —</option>
               {ACTIVITY_OUTCOMES.map((o) => (
@@ -143,19 +152,19 @@ export default function LeadActivity({
               value={texto}
               onChange={(e) => setTexto(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter' && !enviando) registrar() }}
-              placeholder="qué pasó — ej: lo llamé, sigue con los 40 novillitos, quiere vender en septiembre"
-              className="min-w-0 flex-1 rounded-lg border border-zinc-800 bg-zinc-900 px-2 py-1.5 text-sm text-zinc-200 outline-none focus:border-sky-500/60"
+              placeholder="Qué pasó — ej: lo llamé, sigue con los 40 novillitos"
+              className="terminal-input min-w-0 flex-1 py-1.5 text-sm"
             />
             <button
               onClick={registrar}
               disabled={enviando}
-              className="flex items-center gap-1.5 rounded-lg bg-sky-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-sky-500 disabled:opacity-50"
+              className="terminal-btn-primary gap-1.5 disabled:opacity-50"
             >
               {enviando ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
               Registrar
             </button>
           </div>
-          {error && <p className="text-xs text-red-400">{error}</p>}
+          {error && <p className="text-xs text-negative">{error}</p>}
 
           {/* Timeline */}
           {rows.length === 0 ? (
@@ -173,11 +182,11 @@ export default function LeadActivity({
                     key={r.id}
                     className={`flex gap-2.5 rounded-lg border px-2.5 py-2 ${
                       delSistema
-                        ? 'border-zinc-800/60 bg-zinc-900/40'
-                        : 'border-zinc-800 bg-zinc-900/80'
+                        ? 'border-terminal-border/60 bg-zinc-900/40'
+                        : 'border-terminal-border bg-zinc-900/80'
                     }`}
                   >
-                    <Icon className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${delSistema ? 'text-zinc-600' : 'text-sky-400'}`} />
+                    <Icon className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${delSistema ? 'text-zinc-600' : 'text-accent'}`} />
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className={`text-xs font-medium ${delSistema ? 'text-zinc-500' : 'text-zinc-200'}`}>

@@ -62,14 +62,14 @@ function Slider({ label, value, set, min, max, step = 1, suffix }: {
 }) {
   return (
     <label className="block">
-      <div className="mb-1 flex items-baseline justify-between">
-        <span className="text-xs uppercase tracking-wider text-zinc-500">{label}</span>
-        <span className="font-mono text-lg font-semibold text-sky-300">{value.toLocaleString('es-AR')}{suffix}</span>
+      <div className="mb-1 flex items-baseline justify-between gap-2">
+        <span className="text-xxs font-terminal text-zinc-500">{label}</span>
+        <span className="font-terminal text-lg tabular-nums text-accent">{value.toLocaleString('es-AR')}{suffix}</span>
       </div>
       <input
         type="range" min={min} max={max} step={step} value={value}
         onChange={(e) => set(Number(e.target.value))}
-        className="w-full accent-sky-500 cursor-pointer"
+        className="w-full accent-accent cursor-pointer"
       />
     </label>
   )
@@ -101,48 +101,45 @@ export default function ValorCalculator() {
   const metaOk = anualUsd >= metaUsd
 
   return (
-    <div className="py-4">
-      <div className="mb-4">
-        <h1 className="text-xl font-semibold text-ink">Calculadora de valor</h1>
-        <p className="text-sm text-zinc-500">Venta de hacienda · originás → conectás al colega → cobrás el punto. Jugá con las palancas.</p>
-      </div>
-
+    <>
       {/* HERO */}
-      <div className="mb-5 overflow-hidden rounded-2xl border border-sky-500/30 bg-gradient-to-br from-sky-500/12 via-zinc-900/60 to-zinc-900/40 p-6">
-        <p className="text-xs uppercase tracking-widest text-zinc-500">Comisión anual proyectada</p>
+      <section className="terminal-panel px-panel py-4">
+        <p className="text-xxs font-terminal text-zinc-500">Comisión anual proyectada</p>
         <div className="mt-1 flex flex-wrap items-baseline gap-x-4 gap-y-1">
-          <span className="font-mono text-4xl font-bold text-sky-300 sm:text-5xl tabular-nums">{ars(heroAnim)}</span>
-          <span className="font-mono text-xl text-zinc-400">≈ {usd(anualUsd)}</span>
+          <span className="font-terminal text-4xl tabular-nums text-accent sm:text-5xl">{ars(heroAnim)}</span>
+          <span className="font-terminal text-xl tabular-nums text-zinc-400">≈ {usd(anualUsd)}</span>
         </div>
-        <p className="mt-1 text-sm text-zinc-500">{ars(calc.comisionMes)}/mes · {calc.opsCerradas.toFixed(1)} operaciones cerradas/mes</p>
+        <p className="mt-1 text-xxs font-terminal text-zinc-500">{ars(calc.comisionMes)}/mes · {calc.opsCerradas.toFixed(1)} operaciones cerradas/mes</p>
 
         {/* Meta / progreso */}
         <div className="mt-4">
-          <div className="mb-1 flex items-center justify-between text-xs">
-            <span className="text-zinc-500">Meta anual:
+          <div className="mb-1 flex flex-wrap items-center justify-between gap-2 text-xxs font-terminal">
+            <label className="text-zinc-500">Meta anual:
               <input
                 type="number" value={metaUsd} onChange={(e) => setMetaUsd(Math.max(1000, Number(e.target.value) || 0))}
-                className="ml-1 w-24 rounded border border-zinc-700 bg-zinc-900 px-1.5 py-0.5 font-mono text-sky-300 outline-none focus:border-sky-500/60"
+                className="terminal-input ml-1.5 inline-block w-28 py-0.5 text-data tabular-nums"
               /> USD
-            </span>
-            <span className={metaOk ? 'font-semibold text-emerald-400' : 'text-zinc-400'}>{pctMeta.toFixed(0)}%{metaOk ? ' · ¡meta!' : ''}</span>
+            </label>
+            <span className={metaOk ? 'text-positive' : 'text-zinc-400'}>{pctMeta.toFixed(0)}%{metaOk ? ' · ¡meta!' : ''}</span>
           </div>
           <div className="h-2.5 overflow-hidden rounded-full bg-zinc-800">
-            <div className={`h-full rounded-full transition-all duration-500 ${metaOk ? 'bg-emerald-500' : 'bg-sky-500'}`} style={{ width: `${pctMeta}%` }} />
+            <div className={`h-full rounded-full transition-all duration-500 ${metaOk ? 'bg-positive' : 'bg-accent'}`} style={{ width: `${pctMeta}%` }} />
           </div>
         </div>
-      </div>
+      </section>
 
       {/* ESCENARIOS */}
-      <div className="mb-5 flex flex-wrap gap-2">
-        <span className="self-center text-xs uppercase tracking-wider text-zinc-500">Escenario:</span>
+      <div className="terminal-panel px-panel py-2.5 flex flex-wrap items-center gap-2">
+        <span className="text-xxs font-terminal text-zinc-500">Escenario:</span>
         {ESCENARIOS.map((e) => {
           const activo = ops === e.ops && cierre === e.cierre && cab === e.cab
           return (
             <button
               key={e.nombre}
+              type="button"
+              aria-pressed={activo}
               onClick={() => { setOps(e.ops); setCierre(e.cierre); setCab(e.cab) }}
-              className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors ${activo ? 'border-sky-500 bg-sky-500/20 text-sky-200' : 'border-zinc-700 text-zinc-400 hover:bg-zinc-800'}`}
+              className={activo ? 'terminal-btn-primary bg-accent/10' : 'terminal-btn'}
             >
               {e.nombre}
             </button>
@@ -151,46 +148,48 @@ export default function ValorCalculator() {
       </div>
 
       {/* PALANCAS */}
-      <div className="mb-5 grid gap-5 rounded-xl border border-zinc-800 bg-zinc-900/40 p-5 sm:grid-cols-2">
+      <section className="terminal-panel px-panel py-4 grid gap-5 sm:grid-cols-2">
         <Slider label="Operaciones captadas / mes" value={ops} set={setOps} min={1} max={40} />
         <Slider label="Tasa de cierre" value={cierre} set={setCierre} min={5} max={60} suffix="%" />
         <Slider label="Cabezas por operación" value={cab} set={setCab} min={20} max={500} step={5} />
         <Slider label="Comisión" value={comision} set={setComision} min={0.5} max={3} step={0.25} suffix="%" />
-        <label className="block sm:col-span-2">
-          <span className="mb-1 block text-xs uppercase tracking-wider text-zinc-500">Categoría (precio en vivo)</span>
+        <div className="sm:col-span-2">
+          <span className="mb-1 block text-xxs font-terminal text-zinc-500">Categoría (precio en vivo)</span>
           <div className="flex flex-wrap gap-2">
             {CATS.map((c) => (
               <button
                 key={c.key}
+                type="button"
+                aria-pressed={catKey === c.key}
                 onClick={() => setCatKey(c.key)}
-                className={`rounded-lg border px-3 py-1.5 text-sm transition-colors ${catKey === c.key ? 'border-sky-500 bg-sky-500/20 text-sky-200' : 'border-zinc-700 text-zinc-400 hover:bg-zinc-800'}`}
+                className={catKey === c.key ? 'terminal-btn-primary bg-accent/10' : 'terminal-btn'}
               >
-                {c.label} <span className="text-zinc-500">{ars(cats[c.key]?.current || 0)}/kg</span>
+                {c.label} <span className="ml-1 text-zinc-500 tabular-nums">{ars(cats[c.key]?.current || 0)}/kg</span>
               </button>
             ))}
           </div>
-        </label>
-      </div>
+        </div>
+      </section>
 
       {/* DESGLOSE */}
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-px sm:grid-cols-2 lg:grid-cols-4">
         {[
           { l: 'Valor por operación', v: ars(calc.valorOp), s: `${cab} cab × ${cat.peso} kg × ${ars(precio)}` },
           { l: 'Comisión por cierre', v: ars(calc.comisionOp), s: `${comision}% del valor`, hot: true },
           { l: 'Cierres / mes', v: calc.opsCerradas.toFixed(1), s: `${ops} captadas × ${cierre}%` },
           { l: 'Comisión / mes', v: ars(calc.comisionMes), s: `≈ ${usd(calc.comisionMes / BLUE)}`, hot: true },
         ].map((c) => (
-          <div key={c.l} className={`rounded-lg border p-4 ${c.hot ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-zinc-800 bg-zinc-900/40'}`}>
-            <p className="text-xs text-zinc-500">{c.l}</p>
-            <p className={`mt-1 font-mono text-xl font-semibold ${c.hot ? 'text-emerald-300' : 'text-zinc-200'}`}>{c.v}</p>
-            <p className="mt-1 text-xs text-zinc-600">{c.s}</p>
+          <div key={c.l} className="terminal-panel px-panel py-3">
+            <p className="text-xxs font-terminal text-zinc-500">{c.l}</p>
+            <p className={`mt-1 font-terminal text-xl tabular-nums ${c.hot ? 'text-positive' : 'text-ink'}`}>{c.v}</p>
+            <p className="mt-1 text-xxs font-terminal text-zinc-500">{c.s}</p>
           </div>
         ))}
       </div>
 
-      <p className="mt-5 text-xs text-zinc-600">
+      <p className="terminal-panel px-panel py-2 text-xxs font-terminal text-zinc-500">
         Precios reales INMAG ({ars(precio)}/kg {cat.label.toLowerCase()}) · blue {ars(BLUE)}. Proyección para jugar con el modelo — no es compromiso ni forecast. Con 1 sola operación cerrada por mes ya estás facturando.
       </p>
-    </div>
+    </>
   )
 }

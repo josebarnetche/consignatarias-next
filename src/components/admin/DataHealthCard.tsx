@@ -1,4 +1,5 @@
 import Stat from '@/components/ui/Stat'
+import { AdminSection } from '@/components/admin/kit'
 import { createServiceClient } from '@/lib/supabase'
 import marketPrices from '@/lib/data/market-prices.json'
 import rematesData from '@/lib/data/remates.json'
@@ -19,8 +20,6 @@ import frigoSummary from '@/lib/data/frigorificos-summary.json'
  */
 
 const nf = (n: number) => n.toLocaleString('es-AR')
-
-const DAY_MS = 86_400_000
 
 /** "hace 3h" · "hace 2d" · "hoy" — desde un timestamp en ms. */
 function ago(ms: number | null): string {
@@ -152,17 +151,16 @@ export default async function DataHealthCard() {
   const scraperStale = scraper.ms !== null && Date.now() - scraper.ms > 36 * 3_600_000
 
   return (
-    <div className="terminal-panel">
-      <div className="terminal-panel-header">
-        <span className="text-zinc-400 text-xxs tracking-widest">FRESCURA DE DATOS</span>
-      </div>
-
-      <div className="terminal-panel-body grid grid-cols-2 gap-x-4 gap-y-5">
+    <AdminSection
+      title="Frescura de datos"
+      action={<span className="text-xxs text-zinc-500 font-terminal">lo que ve el sitio público</span>}
+    >
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-5">
         <Stat
           label="Precios · actualizado"
           value={pricesAgo}
           tone={pricesAgo === null ? 'neutral' : pricesStale ? 'negative' : 'positive'}
-          sub={pricesStale ? 'viejo (>36h)' : 'market-prices.json'}
+          sub={pricesStale ? 'viejo: más de 36 h' : 'market-prices.json'}
         />
         <Stat label="INMAG último" value={inmagValue} sub={inmagSub ?? undefined} />
         <Stat
@@ -174,7 +172,7 @@ export default async function DataHealthCard() {
           label="Hoy / en vivo"
           value={proximos === null ? null : `${nf(hoy)} / ${nf(enVivo)}`}
           tone={enVivo > 0 ? 'live' : 'emphasis'}
-          sub={enVivo > 0 ? 'transmitiendo' : 'remates hoy'}
+          sub={enVivo > 0 ? 'transmitiendo ahora' : 'remates de hoy'}
         />
         <Stat
           label="Frigoríficos"
@@ -182,7 +180,7 @@ export default async function DataHealthCard() {
           sub={frigosProvincias === null ? undefined : `${nf(frigosProvincias)} provincias`}
         />
         <Stat
-          label="Scraper · última"
+          label="Scraper · última corrida"
           value={scraper.ms === null ? null : ago(scraper.ms)}
           tone={scraper.ms === null ? 'neutral' : scraperStale ? 'negative' : scraperOk ? 'positive' : 'warning'}
           sub={
@@ -196,6 +194,6 @@ export default async function DataHealthCard() {
           }
         />
       </div>
-    </div>
+    </AdminSection>
   )
 }

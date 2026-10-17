@@ -1,27 +1,26 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef, Suspense } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { AdminPageHeader, AdminSection, AdminEmpty } from '@/components/admin/kit'
+import { AdminTabsClient, AdminSearch } from '@/components/admin/kit-client'
+import Badge from '@/components/ui/Badge'
+import ConsignatariaEditor, {
+  formFrom,
+  type ConsignatariaAdmin,
+  type EditForm,
+} from '@/components/admin/directorio/ConsignatariaEditor'
 
-interface Consignataria {
-  id: string
-  canonical_slug: string
-  display_name: string
-  name: string | null
-  cuit: string | null
-  matricula: string | null
-  province: string | null
-  location: string | null
-  category: string | null
-  website: string | null
-  phone: string | null
-  email: string | null
-  verified: boolean
-  featured: boolean
-  claimed_at: string | null
-  claimed_by_email: string | null
-  updated_at: string
-}
+/**
+ * Editor del directorio de consignatarias.
+ *
+ * - Trae la tabla entera una vez (GET /api/admin/consignatarias, sin filtros) y
+ *   filtra acá: así cada pestaña muestra su contador.
+ * - El editor es un panel lateral (lg) / pantalla completa (mobile), no un
+ *   formulario debajo de la tabla.
+ * - Deep link `?slug=<canonical_slug>` (lo usa LiveActivityFeed): abre el editor
+ *   de esa firma apenas carga la lista.
+ */
 
 type Tab = 'all' | 'verified' | 'unverified' | 'featured'
 
@@ -32,115 +31,134 @@ const TABS: { key: Tab; label: string }[] = [
   { key: 'featured', label: 'Destacadas' },
 ]
 
-const EDITABLE_FIELDS: { key: keyof Consignataria; label: string; type?: string }[] = [
-  { key: 'display_name', label: 'Nombre' },
-  { key: 'name', label: 'Razón social' },
-  { key: 'province', label: 'Provincia' },
-  { key: 'location', label: 'Localidad' },
-  { key: 'cuit', label: 'CUIT' },
-  { key: 'matricula', label: 'Matrícula' },
-  { key: 'category', label: 'Categoría' },
-  { key: 'phone', label: 'Teléfono' },
-  { key: 'email', label: 'Email', type: 'email' },
-  { key: 'website', label: 'Sitio web', type: 'url' },
-]
+const PAGE_SIZE = 50
+const nf = (n: number) => n.toLocaleString('es-AR')
+
+function enTab(c: ConsignatariaAdmin, t: Tab): boolean {
+  if (t === 'verified') return c.verified
+  if (t === 'unverified') return !c.verified
+  if (t === 'featured') return c.featured
+  return true
+}
 
 function AdminConsignatariasInner() {
   const searchParams = useSearchParams()
   const deepLinkSlug = searchParams.get('slug')
-  const [consignatarias, setConsignatarias] = useState<Consignataria[]>([])
-  const [loading, setLoading] = useState(false)
+  const [consignatarias, setConsignatarias] = useState<ConsignatariaAdmin[]>([])
+  const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState('')
   const [search, setSearch] = useState('')
   const [activeTab, setActiveTab] = useState<Tab>('all')
+  const [page, setPage] = useState(0)
   const [selected, setSelected] = useState<string | null>(null)
-  const [editForm, setEditForm] = useState<Record<string, string | boolean | null>>({})
+  const [editForm, setEditForm] = useState<EditForm>({})
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState('')
   const [saveSuccess, setSaveSuccess] = useState(false)
   const [deepLinkMiss, setDeepLinkMiss] = useState<string | null>(null)
-  const editRef = useRef<HTMLDivElement>(null)
   const handledDeepLink = useRef<string | null>(null)
 
   const fetchConsignatarias = useCallback(async () => {
-    setLoading(true)
+    setLoadError('')
     try {
-      const params = new URLSearchParams()
-      if (activeTab === 'verified') params.set('verified', 'true')
-      if (activeTab === 'unverified') params.set('verified', 'false')
-      const res = await fetch(`/api/admin/consignatarias?${params}`)
+      const res = await fetch('/api/admin/consignatarias')
       if (res.status === 401 || res.status === 403) {
         window.location.href = '/login'
         return
       }
       const data = await res.json()
+      if (!res.ok) {
+        setLoadError(data.error || 'No se pudo traer el directorio')
+        return
+      }
       setConsignatarias(data.consignatarias || [])
     } catch {
-      setSaveError('Error de conexión')
+      setLoadError('Error de conexión')
     } finally {
       setLoading(false)
     }
-  }, [activeTab])
+  }, [])
 
   useEffect(() => {
     fetchConsignatarias()
   }, [fetchConsignatarias])
 
-  // Deep-link: ?slug=<canonical_slug> → auto-selecciona y abre el editor.
-  // Se ejecuta una vez por slug, recién cuando la lista ya cargó.
-  useEffect(() => {
-    if (!deepLinkSlug) return
-    if (consignatarias.length === 0) return
-    if (handledDeepLink.current === deepLinkSlug) return
-    handledDeepLink.current = deepLinkSlug
-    const match = consignatarias.find(c => c.canonical_slug === deepLinkSlug)
-    if (match) {
-      setDeepLinkMiss(null)
-      if (selected !== deepLinkSlug) handleSelect(deepLinkSlug)
-    } else {
-      setDeepLinkMiss(deepLinkSlug)
+  const counts = useMemo(() => {
+    const c: Record<Tab, number> = { all: consignatarias.length, verified: 0, unverified: 0, featured: 0 }
+    for (const x of consignatarias) {
+      if (x.verified) c.verified++
+      else c.unverified++
+      if (x.featured) c.featured++
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deepLinkSlug, consignatarias])
+    return c
+  }, [consignatarias])
 
-  // Client-side filter for featured tab + search
-  const filtered = consignatarias.filter(c => {
-    if (activeTab === 'featured' && !c.featured) return false
-    if (!search) return true
-    const q = search.toLowerCase()
-    return (
-      c.display_name.toLowerCase().includes(q) ||
-      c.canonical_slug.toLowerCase().includes(q) ||
-      (c.province || '').toLowerCase().includes(q) ||
-      (c.location || '').toLowerCase().includes(q)
-    )
-  })
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    return consignatarias.filter((c) => {
+      if (!enTab(c, activeTab)) return false
+      if (!q) return true
+      return (
+        c.display_name.toLowerCase().includes(q) ||
+        c.canonical_slug.toLowerCase().includes(q) ||
+        (c.province || '').toLowerCase().includes(q) ||
+        (c.location || '').toLowerCase().includes(q) ||
+        (c.cuit || '').toLowerCase().includes(q)
+      )
+    })
+  }, [consignatarias, activeTab, search])
+
+  const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const safePage = Math.min(page, pages - 1)
+  const pageRows = filtered.slice(safePage * PAGE_SIZE, safePage * PAGE_SIZE + PAGE_SIZE)
+
+  const selectedData = selected ? consignatarias.find((c) => c.canonical_slug === selected) ?? null : null
+
+  const dirty = useMemo(() => {
+    if (!selectedData) return false
+    const base = formFrom(selectedData)
+    return Object.keys(base).some((k) => (base[k] ?? '') !== (editForm[k] ?? ''))
+  }, [selectedData, editForm])
+
+  const openEditor = useCallback(
+    (slug: string) => {
+      const c = consignatarias.find((x) => x.canonical_slug === slug)
+      if (!c) return
+      setSelected(slug)
+      setSaveError('')
+      setSaveSuccess(false)
+      setEditForm(formFrom(c))
+    },
+    [consignatarias],
+  )
+
+  const closeEditor = useCallback(() => setSelected(null), [])
 
   function handleSelect(slug: string) {
     if (selected === slug) {
       setSelected(null)
       return
     }
-    const c = consignatarias.find(x => x.canonical_slug === slug)
-    if (!c) return
-    setSelected(slug)
-    setSaveError('')
-    setSaveSuccess(false)
-    setEditForm({
-      display_name: c.display_name,
-      name: c.name ?? '',
-      province: c.province ?? '',
-      location: c.location ?? '',
-      cuit: c.cuit ?? '',
-      matricula: c.matricula ?? '',
-      category: c.category ?? '',
-      phone: c.phone ?? '',
-      email: c.email ?? '',
-      website: c.website ?? '',
-      verified: c.verified,
-      featured: c.featured,
-    })
-    setTimeout(() => editRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100)
+    openEditor(slug)
   }
+
+  // Deep link: ?slug=<canonical_slug> → abre el editor de esa firma. Una vez por
+  // slug, recién cuando la lista ya cargó; salta a la página donde está la fila.
+  useEffect(() => {
+    if (!deepLinkSlug || loading) return
+    if (handledDeepLink.current === deepLinkSlug) return
+    handledDeepLink.current = deepLinkSlug
+    const idx = consignatarias.findIndex((c) => c.canonical_slug === deepLinkSlug)
+    if (idx >= 0) {
+      setDeepLinkMiss(null)
+      setActiveTab('all')
+      setSearch('')
+      setPage(Math.floor(idx / PAGE_SIZE))
+      openEditor(deepLinkSlug)
+    } else {
+      setDeepLinkMiss(deepLinkSlug)
+    }
+  }, [deepLinkSlug, loading, consignatarias, openEditor])
 
   async function handleSave() {
     if (!selected) return
@@ -154,14 +172,13 @@ function AdminConsignatariasInner() {
         body: JSON.stringify(editForm),
       })
       if (!res.ok) {
-        const data = await res.json()
+        const data = await res.json().catch(() => ({}))
         setSaveError(data.error || 'Error al guardar')
         return
       }
-      const { consignataria } = await res.json()
-      setConsignatarias(prev =>
-        prev.map(c => c.canonical_slug === selected ? consignataria : c)
-      )
+      const { consignataria } = (await res.json()) as { consignataria: ConsignatariaAdmin }
+      setConsignatarias((prev) => prev.map((c) => (c.canonical_slug === selected ? consignataria : c)))
+      setEditForm(formFrom(consignataria))
       setSaveSuccess(true)
       setTimeout(() => setSaveSuccess(false), 2000)
     } catch {
@@ -171,212 +188,156 @@ function AdminConsignatariasInner() {
     }
   }
 
-  const selectedData = selected ? consignatarias.find(c => c.canonical_slug === selected) : null
-
   return (
-    <div className="space-y-0">
+    <>
+      <AdminPageHeader
+        title="Directorio de consignatarias"
+        meta={loading ? undefined : `${nf(filtered.length)} de ${nf(consignatarias.length)}`}
+        description="Datos de contacto, verificación y destaque de cada firma. Tocá una fila para editarla."
+      />
+
       {deepLinkMiss && (
-        <div className="terminal-panel mb-px">
-          <div className="border-b border-terminal-border px-panel py-2 flex items-center gap-2">
-            <span className="text-warning text-xxs font-terminal">⚠</span>
-            <span className="text-xxs font-terminal text-zinc-400">
-              No se encontró la consignataria{' '}
-              <span className="text-zinc-200">{deepLinkMiss}</span> en la lista.
-            </span>
-          </div>
+        <div role="alert" className="terminal-panel px-panel py-2 text-xxs font-terminal text-zinc-400">
+          <span className="text-warning">⚠</span> No se encontró la consignataria{' '}
+          <span className="text-ink">{deepLinkMiss}</span> en el directorio.
         </div>
       )}
-      <div className="terminal-panel">
-        <div className="terminal-panel-header flex items-center justify-between">
-          <span className="text-zinc-200 text-label tracking-widest">CONSIGNATARIAS</span>
-          <span className="text-xxs text-zinc-500 font-terminal">{filtered.length} de {consignatarias.length}</span>
+      {loadError && (
+        <div role="alert" className="terminal-panel px-panel py-2 text-xxs font-terminal text-negative">
+          {loadError}
         </div>
+      )}
 
-        {/* Search + Tabs */}
-        <div className="border-b border-terminal-border px-panel py-1.5 flex items-center gap-4 flex-wrap">
-          {TABS.map(tab => (
-            <button
-              key={tab.key}
-              onClick={() => { setActiveTab(tab.key); setSelected(null) }}
-              className={`text-xxs font-terminal uppercase tracking-wider transition-colors ${
-                activeTab === tab.key ? 'text-accent' : 'text-zinc-500 hover:text-zinc-300'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-          <div className="flex-1" />
-          <input
-            type="text"
+      <AdminTabsClient
+        tabs={TABS.map((t) => ({ ...t, count: loading ? null : counts[t.key] }))}
+        active={activeTab}
+        onSelect={(k) => {
+          setActiveTab(k as Tab)
+          setPage(0)
+        }}
+        trailing={
+          <AdminSearch
             value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Buscar..."
-            className="terminal-input text-xxs w-40 sm:w-52 py-1"
+            onChange={(v) => {
+              setSearch(v)
+              setPage(0)
+            }}
+            placeholder="Nombre, slug, provincia, CUIT"
           />
-        </div>
+        }
+      />
 
-        {/* Table */}
-        {loading ? (
-          <div className="px-panel py-8 text-center">
-            <span className="text-zinc-500 text-data font-terminal">Cargando...</span>
-          </div>
-        ) : filtered.length === 0 ? (
-          <div className="px-panel py-8 text-center">
-            <span className="text-zinc-500 text-data font-terminal">Sin resultados</span>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="terminal-table">
-              <thead>
-                <tr>
-                  <th className="w-10">#</th>
-                  <th>Nombre</th>
-                  <th className="hidden sm:table-cell">Provincia</th>
-                  <th className="hidden md:table-cell">CUIT</th>
-                  <th className="w-16 text-center">Verif.</th>
-                  <th className="w-16 text-center">Dest.</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((c, i) => (
-                  <tr
-                    key={c.canonical_slug}
-                    onClick={() => handleSelect(c.canonical_slug)}
-                    className={`cursor-pointer transition-colors hover:bg-accent/5 ${
-                      selected === c.canonical_slug
-                        ? 'border-l-2 border-l-accent bg-accent/5'
-                        : ''
-                    }`}
-                  >
-                    <td className="text-zinc-500">{i + 1}</td>
-                    <td className="text-zinc-200 max-w-[200px] truncate">{c.display_name}</td>
-                    <td className="hidden sm:table-cell text-zinc-500">{c.province || '—'}</td>
-                    <td className="hidden md:table-cell text-zinc-500 tabular-nums">{c.cuit || '—'}</td>
-                    <td className="text-center">
-                      <span className={`inline-block w-2 h-2 rounded-full ${c.verified ? 'bg-positive' : 'bg-zinc-700'}`} />
-                    </td>
-                    <td className="text-center">
-                      <span className={`inline-block w-2 h-2 rounded-full ${c.featured ? 'bg-warning' : 'bg-zinc-700'}`} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+      <div className={`gap-px lg:grid ${selectedData ? 'lg:grid-cols-[minmax(0,1fr)_24rem]' : ''}`}>
+        <AdminSection flush>
+          {loading ? (
+            <AdminEmpty>Cargando…</AdminEmpty>
+          ) : filtered.length === 0 ? (
+            <AdminEmpty>{search ? `Nada coincide con "${search}".` : 'No hay firmas en esta pestaña.'}</AdminEmpty>
+          ) : (
+            <>
+              <div className="overflow-x-auto">
+                <table className="terminal-table">
+                  <thead>
+                    <tr>
+                      <th>Firma</th>
+                      <th className="hidden sm:table-cell">Provincia</th>
+                      <th className="hidden xl:table-cell">CUIT</th>
+                      <th>Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pageRows.map((c) => {
+                      const activa = selected === c.canonical_slug
+                      return (
+                        <tr
+                          key={c.canonical_slug}
+                          onClick={() => handleSelect(c.canonical_slug)}
+                          className={`cursor-pointer ${activa ? 'bg-accent/5 shadow-[inset_2px_0_0_0_rgb(var(--accent))]' : ''}`}
+                          aria-selected={activa}
+                        >
+                          <td className="max-w-[16rem]">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handleSelect(c.canonical_slug)
+                              }}
+                              className="block w-full truncate text-left text-ink hover:text-accent"
+                              aria-expanded={activa}
+                            >
+                              {c.display_name}
+                            </button>
+                            <span className="block truncate text-xxs text-zinc-500">
+                              {c.canonical_slug}
+                              <span className="sm:hidden">{c.province ? ` · ${c.province}` : ''}</span>
+                            </span>
+                          </td>
+                          <td className="hidden sm:table-cell text-zinc-500">
+                            {[c.location, c.province].filter(Boolean).join(', ') || '—'}
+                          </td>
+                          <td className="hidden xl:table-cell text-zinc-500 tabular-nums">{c.cuit || '—'}</td>
+                          <td>
+                            <span className="flex flex-wrap gap-1">
+                              {c.verified ? <Badge tone="positive">Verificada</Badge> : <Badge>Sin verificar</Badge>}
+                              {c.featured && <Badge tone="warning">Destacada</Badge>}
+                              {c.claimed_by_email && <Badge tone="accent">Reclamada</Badge>}
+                            </span>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              {pages > 1 && (
+                <nav
+                  aria-label="Paginación"
+                  className="px-panel py-2 border-t border-terminal-border flex items-center justify-between gap-2 text-xxs font-terminal text-zinc-500"
+                >
+                  <span className="tabular-nums">
+                    {nf(safePage * PAGE_SIZE + 1)}–{nf(Math.min(filtered.length, (safePage + 1) * PAGE_SIZE))} de{' '}
+                    {nf(filtered.length)}
+                  </span>
+                  <span className="flex gap-2">
+                    <button
+                      type="button"
+                      className="terminal-btn disabled:opacity-40"
+                      disabled={safePage === 0}
+                      onClick={() => setPage(safePage - 1)}
+                    >
+                      ← Anterior
+                    </button>
+                    <button
+                      type="button"
+                      className="terminal-btn disabled:opacity-40"
+                      disabled={safePage >= pages - 1}
+                      onClick={() => setPage(safePage + 1)}
+                    >
+                      Siguiente →
+                    </button>
+                  </span>
+                </nav>
+              )}
+            </>
+          )}
+        </AdminSection>
+
+        {selectedData && (
+          <ConsignatariaEditor
+            data={selectedData}
+            form={editForm}
+            setForm={setEditForm}
+            dirty={dirty}
+            saving={saving}
+            error={saveError}
+            success={saveSuccess}
+            onSave={handleSave}
+            onClose={closeEditor}
+          />
         )}
       </div>
-
-      {/* Edit Panel */}
-      {selected && selectedData && (
-        <div ref={editRef} className="terminal-panel mt-px">
-          <div className="terminal-panel-header flex items-center justify-between">
-            <span className="text-zinc-200 text-label tracking-widest">EDITAR — {selectedData.display_name}</span>
-            <button
-              onClick={() => setSelected(null)}
-              className="text-xxs font-terminal text-zinc-500 hover:text-zinc-300 transition-colors"
-            >
-              CERRAR
-            </button>
-          </div>
-
-          {/* Read-only info */}
-          <div className="border-b border-terminal-border px-panel py-2 flex items-center gap-6 flex-wrap">
-            <span className="text-xxs font-terminal text-zinc-500">
-              slug: <span className="text-zinc-400">{selectedData.canonical_slug}</span>
-            </span>
-            {selectedData.claimed_by_email && (
-              <span className="text-xxs font-terminal text-zinc-500">
-                reclamada: <span className="text-zinc-400">{selectedData.claimed_by_email}</span>
-              </span>
-            )}
-            <span className="text-xxs font-terminal text-zinc-500">
-              actualizado: <span className="text-zinc-400">{new Date(selectedData.updated_at).toLocaleDateString('es-AR')}</span>
-            </span>
-          </div>
-
-          {/* Form */}
-          <div className="px-panel py-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {EDITABLE_FIELDS.map(field => (
-                <div key={field.key}>
-                  <label className="text-xxs text-zinc-500 uppercase font-terminal tracking-wider block mb-1">
-                    {field.label}
-                  </label>
-                  <input
-                    type={field.type || 'text'}
-                    value={(editForm[field.key] as string) ?? ''}
-                    onChange={e => setEditForm(f => ({ ...f, [field.key]: e.target.value }))}
-                    className="terminal-input w-full text-data"
-                  />
-                </div>
-              ))}
-            </div>
-
-            {/* Toggles */}
-            <div className="flex items-center gap-6 mt-4">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={editForm.verified as boolean ?? false}
-                  onChange={e => setEditForm(f => ({ ...f, verified: e.target.checked }))}
-                  className="sr-only peer"
-                />
-                <span className="w-4 h-4 border border-terminal-border peer-checked:bg-positive/20 peer-checked:border-positive flex items-center justify-center transition-colors"
-                  style={{ borderRadius: '2px' }}
-                >
-                  {editForm.verified && <span className="text-positive text-xxs">&#10003;</span>}
-                </span>
-                <span className="text-data font-terminal text-zinc-400">Verificada</span>
-              </label>
-
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={editForm.featured as boolean ?? false}
-                  onChange={e => setEditForm(f => ({ ...f, featured: e.target.checked }))}
-                  className="sr-only peer"
-                />
-                <span className="w-4 h-4 border border-terminal-border peer-checked:bg-warning/20 peer-checked:border-warning flex items-center justify-center transition-colors"
-                  style={{ borderRadius: '2px' }}
-                >
-                  {editForm.featured && <span className="text-warning text-xxs">&#10003;</span>}
-                </span>
-                <span className="text-data font-terminal text-zinc-400">Destacada</span>
-              </label>
-            </div>
-
-            {/* Error / Success */}
-            {saveError && (
-              <div className="mt-3">
-                <span className="text-negative text-xxs font-terminal">{saveError}</span>
-              </div>
-            )}
-            {saveSuccess && (
-              <div className="mt-3">
-                <span className="text-positive text-xxs font-terminal">Guardado correctamente</span>
-              </div>
-            )}
-
-            {/* Buttons */}
-            <div className="flex items-center gap-3 mt-4">
-              <button
-                onClick={handleSave}
-                disabled={saving}
-                className="px-4 py-1.5 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors disabled:opacity-50"
-              >
-                {saving ? 'Guardando...' : 'Guardar'}
-              </button>
-              <button
-                onClick={() => setSelected(null)}
-                className="px-4 py-1.5 border border-terminal-border text-zinc-500 text-xxs font-terminal uppercase tracking-wider hover:text-zinc-300 hover:border-zinc-500 transition-colors"
-              >
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    </>
   )
 }
 
