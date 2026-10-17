@@ -100,9 +100,9 @@ function relatedFrigAnchor(r: { nombre: string; matricula: string; localidad: st
 }
 
 function stageName(stage: number): string {
-  if (stage === 1) return 'Etapa 1 — Faena + Desposte'
-  if (stage === 2) return 'Etapa 2 — Desposte'
-  return 'Etapa 3 — Deposito'
+  if (stage === 1) return 'Ciclo I — Faena + Desposte'
+  if (stage === 2) return 'Ciclo II — Desposte'
+  return 'Ciclo III — Depósito'
 }
 
 function stageDescription(stage: number): string {
@@ -424,7 +424,7 @@ export default async function FrigorificoDetailPage({
         <div className="terminal-panel-header flex items-center justify-between">
           <span className="text-zinc-200 text-label tracking-widest">FICHA DEL ESTABLECIMIENTO</span>
           <span className={`text-xxs font-terminal px-1.5 py-0.5 border rounded-terminal ${stageBorderColor(basicF.stage)} ${stageColor(basicF.stage)}`}>
-            ETAPA {basicF.stage}
+            CICLO {['', 'I', 'II', 'III'][basicF.stage] ?? basicF.stage}
           </span>
         </div>
         <div className="px-panel pt-4 pb-4 flex items-start gap-3 sm:gap-4">
@@ -632,7 +632,7 @@ export default async function FrigorificoDetailPage({
             </dd>
           </div>
           <div className={rowClass}>
-            <dt className={labelClass}>Etapa</dt>
+            <dt className={labelClass}>Ciclo</dt>
             <dd className={`${valueClass} ${stageColor(basicF.stage)}`}>{stageName(basicF.stage)}</dd>
           </div>
           {ficha.categoria && (

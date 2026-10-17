@@ -38,6 +38,11 @@ const rematesUpcomingSnapshot = rematesData
   .map((r) => ({ date: r.date }))
 const senasaActiveCount = frigorificosData.filter(f => (f as { senasaActive?: boolean }).senasaActive === true).length
 const senasaInactiveCount = frigorificosData.filter(f => (f as { senasaActive?: boolean }).senasaActive === false).length
+// El encabezado cuenta lo MISMO que muestra la tabla: el total listado sale de
+// frigorificos.json (lo que recibe FrigorificosClient) y los habilitados, de su
+// `senasaActive`. Antes el título decía "866 habilitados" sobre una lista de 1.119.
+const totalListadoStr = totalFrigorificos.toLocaleString('es-AR')
+const habilitadosListadoStr = senasaActiveCount.toLocaleString('es-AR')
 
 // ── Grilla de listados provinciales (completa el cluster /frigorificos/{provincia}) ──
 // Solo se enlazan provincias con ruta real (slug en frigoricoProvinceSlugs); el resto
@@ -71,7 +76,7 @@ const provinceGrid = Object.entries(provinceCounts)
 const FRIGORIFICOS_FAQ = [
   {
     question: '¿Cuántos frigoríficos habilitados por SENASA hay en Argentina?',
-    answer: `${habilitadosCount} establecimientos con CUIT distinto figuran en el registro oficial de SENASA/MAGYP (Ciclo I - Matadero Frigorífico, Ciclo II - Elaborador, Ciclo III - Dador de Frío), según el relevamiento al ${senasaScrapedDate}. El listado completo es filtrable por provincia, matrícula y ciclo, con CUIT.`,
+    answer: `${habilitadosCount} establecimientos con CUIT distinto figuran en el registro oficial de SENASA/MAGYP (Ciclo I - Matadero Frigorífico, Ciclo II - Elaborador, Ciclo III - Dador de Frío), según el relevamiento al ${senasaScrapedDate}. El listado de esta página reúne ${totalListadoStr} frigoríficos, ${habilitadosListadoStr} de ellos con habilitación vigente, filtrable por provincia, matrícula y ciclo, con CUIT.`,
   },
   {
     question: '¿Cómo verifico si un frigorífico está habilitado por SENASA?',
@@ -88,8 +93,8 @@ export const metadata: Metadata = {
   // ~9.6% CTR at pos 5.5). Moved the count INTO the lead (it was truncating off the end as
   // "(364)") and dropped the redundant "· Argentina". Description adds the live
   // "X verificados activos hoy" freshness hook. v1.40 CTR pass.
-  title: `Listado de Frigoríficos Habilitados por SENASA: ${habilitadosCount} por Provincia`,
-  description: `Argentina tiene ${habilitadosCount} frigoríficos habilitados por SENASA/MAGYP (Ciclo I/II/III). Listado oficial completo, filtrable por provincia, con CUIT y matrícula. Verificación al ${senasaScrapedDate}.`,
+  title: `Listado de Frigoríficos Habilitados por SENASA: ${habilitadosListadoStr} de ${totalListadoStr}`,
+  description: `${totalListadoStr} frigoríficos de Argentina, ${habilitadosListadoStr} con habilitación SENASA/MAGYP vigente (Ciclo I/II/III). Filtrable por provincia y ciclo, con CUIT y matrícula. Verificación al ${senasaScrapedDate}.`,
   keywords: [
     'frigorificos argentina',
     'frigorificos habilitados',
@@ -103,8 +108,8 @@ export const metadata: Metadata = {
     'establecimientos faena bovina',
   ],
   openGraph: {
-    title: `Listado de Frigoríficos Habilitados por SENASA | ${habilitadosCount} por Provincia`,
-    description: `Listado oficial de ${habilitadosCount} frigoríficos habilitados por SENASA/MAGYP en Argentina, filtrable por provincia y ciclo (I/II/III), con CUIT y matrícula. Verificado al ${senasaScrapedDate}.`,
+    title: `Listado de Frigoríficos Habilitados por SENASA | ${habilitadosListadoStr} de ${totalListadoStr}`,
+    description: `${totalListadoStr} frigoríficos de Argentina, ${habilitadosListadoStr} con habilitación SENASA/MAGYP vigente, filtrables por provincia y ciclo (I/II/III), con CUIT y matrícula. Verificado al ${senasaScrapedDate}.`,
     url: 'https://www.consignatarias.com.ar/frigorificos',
     type: 'website',
     images: [{ url: '/og-frigorificos.png', width: 1200, height: 630 }],
@@ -125,7 +130,7 @@ function FrigorificosItemListSchema() {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: 'Frigoríficos habilitados por SENASA en Argentina',
-    description: `Listado de ${habilitadosCount} frigoríficos y mataderos con habilitación vigente SENASA/MAGYP (Ciclo I/II/III) en Argentina`,
+    description: `Listado de ${habilitadosListadoStr} frigoríficos y mataderos con habilitación vigente SENASA/MAGYP (Ciclo I/II/III) en Argentina`,
     // Lista "resumen": ListItem con url + name. Antes eran 50 LocalBusiness con solo
     // name/url/identifier — sin address, que Google exige para LocalBusiness. La
     // entidad completa (dirección, CUIT, habilitación) vive en cada ficha.
@@ -161,7 +166,7 @@ export default function FrigorificosPage() {
       <SectionBreadcrumbSchema section="frigorificos" sectionName="Frigoríficos" />
       <DatasetSchema
         name="Directorio de Frigoríficos MAGYP Argentina"
-        description="1.102 plantas frigoríficas habilitadas por MAGYP con datos de provincia, etapa y matrícula"
+        description={`${totalListadoStr} plantas frigoríficas de Argentina, ${habilitadosListadoStr} con habilitación SENASA/MAGYP vigente, con datos de provincia, ciclo y matrícula`}
         url="https://www.consignatarias.com.ar/frigorificos"
         keywords={['frigorificos argentina', 'plantas faena', 'MAGYP']}
         dateModified="2026-07-01"
@@ -171,7 +176,7 @@ export default function FrigorificosPage() {
       <FAQPageSchema items={FRIGORIFICOS_FAQ} />
       <SpeakableSchema
         url="https://www.consignatarias.com.ar/frigorificos"
-        headline={`Listado de ${habilitadosCount} frigoríficos habilitados por SENASA en Argentina`}
+        headline={`Listado de ${totalListadoStr} frigoríficos de Argentina: ${habilitadosListadoStr} habilitados por SENASA`}
       />
 
       {/* SEO-optimized intro section — answer-first */}
@@ -186,17 +191,14 @@ export default function FrigorificosPage() {
           Listado de frigoríficos habilitados por SENASA en Argentina
         </h1>
         <p className="mb-3 speakable-content">
-          Argentina tiene <strong className="text-zinc-200">{habilitadosCount} frigoríficos habilitados por SENASA</strong> (registro
-          oficial SENASA/MAGYP, Ciclo I/II/III, relevado el {senasaScrapedDate}); este es el listado oficial
-          completo, filtrable por provincia y ciclo (I/II/III), con CUIT y matrícula.
-        </p>
-        <p className="mb-3">
-          El directorio indexa <strong className="text-zinc-200">{totalFrigorificos.toLocaleString('es-AR')} establecimientos</strong> en
-          total —{senasaActiveCount.toLocaleString('es-AR')} con habilitación vigente y {senasaInactiveCount.toLocaleString('es-AR')} sin
-          verificación hoy en el registro oficial— entre plantas de faena bovina, porcina, ovina y aviar.
+          El listado reúne <strong className="text-zinc-200">{totalListadoStr} frigoríficos</strong> de Argentina;{' '}
+          <strong className="text-zinc-200">{habilitadosListadoStr} tienen habilitación SENASA vigente</strong> (su CUIT
+          figura en el registro oficial SENASA/MAGYP, Ciclo I/II/III, relevado el {senasaScrapedDate}) y{' '}
+          {senasaInactiveCount.toLocaleString('es-AR')} no aparecen hoy en ese registro. Incluye plantas de faena
+          bovina, porcina, ovina y aviar, filtrables por provincia y ciclo, con CUIT y matrícula.
         </p>
         <p className="text-zinc-500 text-xs">
-          Datos oficiales actualizados: razón social, CUIT, matrícula, ubicación y clasificación por etapa
+          Datos oficiales actualizados: razón social, CUIT, matrícula, ubicación y clasificación por ciclo
           (Tránsito Federal, Ciclo I, Ciclo II, Ciclo III). Fuente: Registro Nacional de Establecimientos SENASA/MAGYP.
         </p>
 
