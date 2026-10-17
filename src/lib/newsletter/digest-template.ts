@@ -14,6 +14,7 @@
 
 import type { DigestModel } from './digest-content'
 import { DIGEST_CAMPAIGN } from './digest-content'
+import { urlBaja, urlBajaOneClick } from '@/lib/newsletter/baja'
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
 
@@ -68,8 +69,8 @@ export function buildDigestEmail(model: DigestModel, recipient: string): DigestE
   // El POST one-click apunta al MISMO path; queda PENDIENTE crear el handler POST
   // /api/newsletter/unsubscribe (ver reporte). Hasta entonces el cliente de correo
   // cae al link GET, que sí funciona.
-  const unsubscribeLink = `${APP_URL}/unsubscribe?email=${safeEmail}`
-  const oneClickUrl = `${APP_URL}/api/newsletter/unsubscribe?email=${safeEmail}&campaign=${DIGEST_CAMPAIGN}`
+  const unsubscribeLink = urlBaja(recipient)
+  const oneClickUrl = urlBajaOneClick(recipient, DIGEST_CAMPAIGN)
 
   // --- Pixel de apertura (digest_open) --------------------------------------
   // Endpoint preparado (no creado en WAVE 3): un 1x1 transparente que registra

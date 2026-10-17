@@ -3,6 +3,7 @@ import { requireServiceClient } from '@/lib/supabase'
 import { requireAuth } from '@/lib/admin-auth'
 import { frigorificoProfileUpdateSchema } from '@/lib/validators/frigorifico-profile'
 import { revalidatePath } from 'next/cache'
+import { mismoEmail } from '@/lib/claims/aprobar'
 
 type Props = { params: Promise<{ cuit: string }> }
 
@@ -24,7 +25,7 @@ export async function PATCH(req: NextRequest, { params }: Props) {
     return NextResponse.json({ error: 'Frigorifico no encontrado' }, { status: 404 })
   }
 
-  if (profile.claimed_by_email !== auth.email) {
+  if (!mismoEmail(profile.claimed_by_email, auth.email)) {
     return NextResponse.json({ error: 'No sos el propietario de este perfil' }, { status: 403 })
   }
 
@@ -48,7 +49,9 @@ export async function PATCH(req: NextRequest, { params }: Props) {
     .from('frigorifico_profiles')
     .update({ ...parsed.data, updated_at: new Date().toISOString() })
     .eq('cuit', cuit)
-    .select()
+    // Solo lo que el dueño puede ver y editar: el registro completo incluye
+    // notas_internas, email_ruteo y la fuente del contacto (revisión 17-10-2026).
+    .select('cuit, display_name, phone, email, website, description, whatsapp, location, logo_url, verified, featured')
     .single()
 
   if (error) {

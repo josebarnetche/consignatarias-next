@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { METODOS_VERIFICACION, type MetodoVerificacion } from '@/lib/claims/aprobar'
 import { EmptyState } from '@/components/ui'
 
 interface Claim {
@@ -24,6 +25,8 @@ export default function AdminClaimsPage() {
   const [loading, setLoading] = useState(false)
   const [activeTab, setActiveTab] = useState<Tab>('pending')
   const [actionError, setActionError] = useState('')
+  // Aprobar a mano exige decir cómo se verificó la identidad (lo exige también la API).
+  const [verif, setVerif] = useState<Record<string, MetodoVerificacion | ''>>({})
 
   const fetchClaims = useCallback(async (tab: Tab) => {
     setLoading(true)
@@ -54,12 +57,15 @@ export default function AdminClaimsPage() {
       const res = await fetch(`/api/admin/claims/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status, admin_notes: notes || '' }),
+        body: JSON.stringify({ status, admin_notes: notes || '', ...(status === 'approved' ? { verificacion: verif[id] } : {}) }),
       })
       if (!res.ok) {
         const data = await res.json()
         setActionError(data.error || 'Error')
       } else {
+        const data = await res.json().catch(() => ({}))
+        if (data.advertencia) setActionError(data.advertencia)
+        else if (data.aviso_enviado === false) setActionError('Aprobado, pero el mail de aviso no salió: avisale a mano.')
         fetchClaims(activeTab)
       }
     } catch {
@@ -149,10 +155,24 @@ export default function AdminClaimsPage() {
                   </div>
 
                   {claim.status === 'pending' && (
-                    <div className="flex items-center gap-2 flex-shrink-0">
+                    <div className="flex flex-wrap items-center gap-2 flex-shrink-0">
+                      <label className="sr-only" htmlFor={`verif-${claim.id}`}>Cómo se verificó la identidad</label>
+                      <select
+                        id={`verif-${claim.id}`}
+                        value={verif[claim.id] ?? ''}
+                        onChange={(e) => setVerif((v) => ({ ...v, [claim.id]: e.target.value as MetodoVerificacion | '' }))}
+                        className="max-w-[220px] bg-terminal-panel border border-terminal-border text-xxs font-terminal text-zinc-300 px-2 py-1.5 rounded-terminal"
+                      >
+                        <option value="">¿Cómo verificaste la identidad?</option>
+                        {(Object.keys(METODOS_VERIFICACION) as MetodoVerificacion[]).map((m) => (
+                          <option key={m} value={m}>{METODOS_VERIFICACION[m]}</option>
+                        ))}
+                      </select>
                       <button
                         onClick={() => handleReview(claim.id, 'approved')}
-                        className="px-3 py-1.5 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors"
+                        disabled={!verif[claim.id]}
+                        title={verif[claim.id] ? undefined : 'Elegí primero cómo verificaste la identidad'}
+                        className="px-3 py-1.5 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                       >
                         Aprobar
                       </button>

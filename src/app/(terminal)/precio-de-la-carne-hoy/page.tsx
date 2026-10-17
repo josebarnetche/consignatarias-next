@@ -18,12 +18,10 @@ const BASE_URL = 'https://www.consignatarias.com.ar'
 const PAGE_URL = `${BASE_URL}/precio-de-la-carne-hoy`
 
 // Números vivos — el ANCLA es el precio del animal en pie (INMAG, novillo Mercado Agroganadero).
-const cats = marketPrices.categories as Record<string, { current: number }>
 const lastUpdate = marketPrices.lastUpdate
 const fmt = (n: number) => n.toLocaleString('es-AR')
 
 const enPie = Math.round(marketPrices.inmag.current) // $/kg vivo — ancla del precio de la carne
-const novillo = Math.round(cats.novillos.current)
 
 // Derivación de los tres eslabones: animal en pie → gancho/media res → mostrador.
 const RINDE = 0.57 // rinde al gancho de un novillo gordo terminado (peso res / peso vivo)

@@ -79,6 +79,7 @@ const LAST_EDIT: Record<string, string> = {
   '/informes/parte-semanal': '2026-10-03',
   '/informes/valuacion-de-campo': '2026-10-03',
   '/para-consignatarias': '2026-10-03',
+  '/para-empresas': '2026-10-17',
   '/para-consignatarias/pro-territorio': '2026-10-03',
   '/para-consignatarias/informe-provincial': '2026-10-03',
   '/proveedores': '2026-10-03',
@@ -633,6 +634,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: editado('/para-consignatarias'),
       changeFrequency: 'weekly' as const,
       priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/para-empresas`,
+      lastModified: editado('/para-empresas'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
     },
     {
       url: `${baseUrl}/el-novillo-en-dolares`,

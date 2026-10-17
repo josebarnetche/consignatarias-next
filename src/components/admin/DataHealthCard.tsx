@@ -20,7 +20,6 @@ import frigoSummary from '@/lib/data/frigorificos-summary.json'
 
 const nf = (n: number) => n.toLocaleString('es-AR')
 
-const DAY_MS = 86_400_000
 
 /** "hace 3h" · "hace 2d" · "hoy" — desde un timestamp en ms. */
 function ago(ms: number | null): string {

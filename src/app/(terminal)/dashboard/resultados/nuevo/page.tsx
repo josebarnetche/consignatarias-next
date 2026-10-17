@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase-server'
 import { createServiceClient } from '@/lib/supabase'
 import { redirect } from 'next/navigation'
 import ResultadoForm from './ResultadoForm'
+import { normalizarEmail } from '@/lib/claims/aprobar'
 
 export const metadata = {
   title: 'Cargar Resultado',
@@ -20,8 +21,8 @@ export default async function NuevoResultadoPage() {
   const { data: consignataria } = await service
     .from('consignatarias')
     .select('display_name, canonical_slug')
-    .eq('claimed_by_email', user.email!)
-    .single()
+    .eq('claimed_by_email', normalizarEmail(user.email))
+    .maybeSingle()
 
   if (!consignataria) redirect('/dashboard')
 

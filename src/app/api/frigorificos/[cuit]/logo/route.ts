@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { requireAuth } from '@/lib/admin-auth'
 import { revalidatePath } from 'next/cache'
+import { mismoEmail } from '@/lib/claims/aprobar'
 
 type Props = { params: Promise<{ cuit: string }> }
 
@@ -25,7 +26,7 @@ export async function POST(req: NextRequest, { params }: Props) {
     .eq('cuit', cuit)
     .single()
 
-  if (!profile || profile.claimed_by_email !== auth.email) {
+  if (!profile || !mismoEmail(profile.claimed_by_email, auth.email)) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { requireAuth } from '@/lib/admin-auth'
 import { requireServiceClient } from '@/lib/supabase'
 import { cancelSubscription } from '@/lib/rebill'
+import { normalizarEmail } from '@/lib/claims/aprobar'
 
 export async function POST() {
   const auth = await requireAuth()
@@ -13,7 +14,7 @@ export async function POST() {
   const { data: consignataria } = await service
     .from('consignatarias')
     .select('canonical_slug')
-    .eq('claimed_by_email', auth.email!)
+    .eq('claimed_by_email', normalizarEmail(auth.email))
     .single()
 
   if (!consignataria) {

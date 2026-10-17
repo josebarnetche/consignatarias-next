@@ -1,5 +1,8 @@
 import { PromoGuiaBanner } from '@/components/PromoGuiaBanner'
 import ThemeToggle from "@/components/ThemeToggle";
+import NavDropdown from "@/components/nav/NavDropdown";
+import MobileMenu from "@/components/nav/MobileMenu";
+import { buildNavGroups } from "@/lib/nav";
 import Link from "next/link";
 import Image from "next/image";
 import { Metadata } from "next";
@@ -63,6 +66,7 @@ const provinciasConFrigo = new Set(
   (frigorificosData as { province?: string | null }[]).map((f) => f.province).filter(Boolean),
 ).size;
 const totalConsignatarias = getAllProfiles().length;
+const NAV_GROUPS = buildNavGroups({ plantas: frigorificosHabilitados, firmas: totalConsignatarias });
 
 /* --- Regional grid: top consignatarios by upcoming-remate count, bucketed by region.
    Region is inferred from the most-frequent province for that consignataria's
@@ -405,31 +409,25 @@ export default async function LandingPage() {
             </span>
           </div>
 
-          <div className="hidden md:flex items-center gap-8 text-sm font-normal text-zinc-400">
-            <Link href="/vr" className="hover:text-zinc-100 transition-colors">Valor de Referencia</Link>
-            <Link href="/mi-ganado" className="hover:text-zinc-100 transition-colors">Mi Ganado</Link>
-            <Link href="/remates" className="hover:text-zinc-100 transition-colors">Remates</Link>
-            <Link
-              href="/remates/en-vivo"
-              className={`flex items-center gap-1.5 transition-colors ${enVivoCount > 0 ? 'text-red-400 hover:text-red-300' : 'hover:text-zinc-100'}`}
-            >
-              <span className={`w-2 h-2 rounded-full ${enVivoCount > 0 ? 'bg-red-500 animate-pulse' : 'bg-zinc-600'}`} />
-              En Vivo
-              {enVivoCount > 0 && <span className="text-xs text-red-500">({enVivoCount})</span>}
-            </Link>
-            <Link href="/consignatarias" className="hover:text-zinc-100 transition-colors">Consignatarias</Link>
-            <Link href="/mercado" className="hover:text-zinc-100 transition-colors">Mercado</Link>
-            <Link href="/planes" className="hover:text-zinc-100 transition-colors">Planes</Link>
+          {/* El mismo menú que el resto del sitio (lib/nav): seis grupos. */}
+          <div className="hidden lg:flex items-center gap-0.5">
+            {NAV_GROUPS.map((g) => (
+              <NavDropdown key={g.label} group={g} active={false} />
+            ))}
           </div>
 
           <div className="flex items-center gap-3">
+            <div className="lg:hidden">
+              <MobileMenu groups={NAV_GROUPS} />
+            </div>
             <ThemeToggle />
             <Link
               href="#pro"
               className="text-xs font-medium text-zinc-950 bg-accent hover:bg-sky-300 claro:text-white claro:hover:bg-accent-bright transition-colors rounded py-2 px-4"
             >
               <span className="sm:hidden">PRO</span>
-              <span className="hidden sm:inline">PRO para consignatarias</span>
+              <span className="hidden sm:inline lg:hidden xl:inline">PRO para consignatarias</span>
+              <span className="hidden lg:inline xl:hidden">PRO</span>
             </Link>
           </div>
         </div>

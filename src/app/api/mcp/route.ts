@@ -76,7 +76,6 @@ const SERVER_INFO = {
 const SUPPORTED_PROTOCOL_VERSIONS = ['2026-07-28', '2025-06-18', '2025-03-26'] as const
 const LATEST_PROTOCOL_VERSION = SUPPORTED_PROTOCOL_VERSIONS[0]
 const OLDEST_PROTOCOL_VERSION = SUPPORTED_PROTOCOL_VERSIONS[SUPPORTED_PROTOCOL_VERSIONS.length - 1]
-const PROTOCOL_VERSION = LATEST_PROTOCOL_VERSION
 
 // Las versiones son fechas ISO: comparan lexicográficamente. SUPPORTED va de más
 // nueva a más vieja, así que find() da la más nueva compatible con lo pedido.

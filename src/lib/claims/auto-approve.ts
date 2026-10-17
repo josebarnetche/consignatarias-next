@@ -33,6 +33,7 @@
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { mismoEmail, normalizarEmail, otorgarRolDueno } from './aprobar'
 
 /**
  * Dominios de correo masivo. Compartir uno de estos no dice nada sobre pertenecer a
@@ -157,7 +158,7 @@ export async function intentarAutoAprobar(
     const { data: claim } = await db
       .from('consignataria_claims')
       .select('id, consignataria_slug, claimant_email')
-      .eq('claimant_email', emailUsuario)
+      .eq('claimant_email', normalizarEmail(emailUsuario))
       .eq('status', 'pending')
       .order('created_at', { ascending: true })
       .limit(1)
@@ -175,7 +176,7 @@ export async function intentarAutoAprobar(
     const f = firma as { email: string | null; claimed_by_email: string | null; display_name: string } | null
 
     if (!f) return nada
-    if (f.claimed_by_email && f.claimed_by_email !== emailUsuario) {
+    if (f.claimed_by_email && !mismoEmail(f.claimed_by_email, emailUsuario)) {
       return { ...nada, detalle: 'La firma ya fue reclamada por otra persona.' }
     }
 
@@ -190,20 +191,27 @@ export async function intentarAutoAprobar(
       return { ...nada, slug: c.consignataria_slug, detalle: veredicto.detalle }
     }
 
-    // --- Aprobación (mismos pasos que la ruta de admin) ---
-    await db
-      .from('consignataria_claims')
-      .update({ status: 'approved', admin_notes: `Auto-aprobado: ${veredicto.detalle}` })
-      .eq('id', c.id)
-
-    await db
+    // --- Aprobación (mismos pasos y mismo orden que la ruta de admin) ---
+    // Primero la ficha, verificando que se escribió; si no, el pedido queda pendiente.
+    const { data: fichas, error: fichaError } = await db
       .from('consignatarias')
       .update({
         verified: true,
         claimed_at: new Date().toISOString(),
-        claimed_by_email: emailUsuario,
+        claimed_by_email: normalizarEmail(emailUsuario),
       })
       .eq('canonical_slug', c.consignataria_slug)
+      .select('canonical_slug')
+    if (fichaError || !fichas?.length) {
+      console.error('[auto-approve] no se pudo asignar la ficha:', fichaError ?? 'ninguna fila')
+      return { ...nada, slug: c.consignataria_slug, detalle: 'No se pudo asignar la ficha; queda para revisión.' }
+    }
+
+    const { error: claimError } = await db
+      .from('consignataria_claims')
+      .update({ status: 'approved', admin_notes: `Auto-aprobado: ${veredicto.detalle}` })
+      .eq('id', c.id)
+    if (claimError) console.error('[auto-approve] ficha asignada pero el claim no se marcó:', claimError)
 
     await db
       .from('consignataria_claims')
@@ -212,9 +220,9 @@ export async function intentarAutoAprobar(
       .eq('status', 'pending')
       .neq('id', c.id)
 
-    await db
-      .from('user_roles')
-      .upsert({ user_id: userId, email: emailUsuario, role: 'owner' }, { onConflict: 'user_id' })
+    // Nunca baja a un admin (lib/claims/aprobar).
+    const rol = await otorgarRolDueno(db, emailUsuario, userId)
+    if (!rol.ok) console.error('[auto-approve] rol de dueño:', rol.error)
 
     return {
       aprobado: true,

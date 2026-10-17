@@ -1,6 +1,8 @@
 import type { Resend } from 'resend'
+import { logEvent, enviarEnSegundoPlano } from './ops'
 import { SEGMENT_SOURCES, PRODUCT_UPDATE_ONLY } from './newsletter-segments'
 import { computeSpread, spreadReading } from './leads/spread'
+import { urlBaja, urlBajaOneClick } from '@/lib/newsletter/baja'
 
 let resendInstance: Resend | null = null
 
@@ -9,8 +11,42 @@ async function getResend(): Promise<Resend | null> {
   if (!key) return null
   if (resendInstance) return resendInstance
   const { Resend: R } = await import('resend')
-  resendInstance = new R(key)
+  resendInstance = conEnvioRegistrado(new R(key))
   return resendInstance
+}
+
+/**
+ * Todo `emails.send` de este archivo pasa por acá (revisión del 17-10-2026: de 62
+ * envíos, 19 se disparaban sin `await` y la mayoría no miraba el `error`).
+ *  · El envío queda registrado con `waitUntil` (enviarEnSegundoPlano): Vercel ya no
+ *    lo corta cuando la ruta devuelve la respuesta antes de que Resend conteste.
+ *  · Si Resend rechaza (`{ error }`, que NO lanza) o la llamada tira, queda un
+ *    evento `error` en ops_events con el asunto y el destinatario: se ve en /admin/ops.
+ * La promesa que se devuelve es la misma de siempre: quien hace `await` sigue
+ * recibiendo `{ data, error }` y `enviarOFallar` sigue fallando como antes.
+ */
+function conEnvioRegistrado(resend: Resend): Resend {
+  const enviar = resend.emails.send.bind(resend.emails)
+  resend.emails.send = ((payload: Parameters<Resend['emails']['send']>[0], opciones?: Parameters<Resend['emails']['send']>[1]) => {
+    const promesa = enviar(payload, opciones)
+    const registrar = (detalle: string) =>
+      logEvent({
+        eventType: 'error',
+        status: 'error',
+        route: 'email',
+        metadata: { tipo: 'email_rechazado', asunto: payload.subject, para: payload.to, detalle },
+      })
+    enviarEnSegundoPlano(
+      promesa.then(
+        (r) => {
+          if (r.error) registrar(`${r.error.name ?? ''} ${r.error.message ?? ''}`.trim())
+        },
+        (e: unknown) => registrar(e instanceof Error ? e.message : String(e)),
+      ),
+    )
+    return promesa
+  }) as Resend['emails']['send']
+  return resend
 }
 
 /**
@@ -140,10 +176,8 @@ ${inner}
  * Es prerrequisito de deliverability del motor warm.
  */
 function listUnsubHeaders(email: string, campaign?: string): Record<string, string> {
-  const safeEmail = encodeURIComponent(email)
-  const camp = campaign ? `&campaign=${encodeURIComponent(campaign)}` : ''
-  const oneClickUrl = `${APP_URL}/api/newsletter/unsubscribe?email=${safeEmail}${camp}`
-  const unsubscribeLink = `${APP_URL}/unsubscribe?email=${safeEmail}`
+  const oneClickUrl = urlBajaOneClick(email, campaign)
+  const unsubscribeLink = urlBaja(email)
   return {
     'List-Unsubscribe': `<${oneClickUrl}>, <${unsubscribeLink}>`,
     'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
@@ -159,7 +193,7 @@ function listUnsubHeaders(email: string, campaign?: string): Record<string, stri
  * para concatenar en el footer del cuerpo.
  */
 function legalIdentificationHtml(email: string): string {
-  const unsubscribeLink = `${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}`
+  const unsubscribeLink = `${urlBaja(email)}`
   return `
     <p style="color:#52525b;font-size:10px;line-height:1.6;margin:16px 0 0">
       Memola Medios SAS — consignatarias.com.ar. Obtuvimos su email del registro
@@ -569,7 +603,7 @@ export async function sendClaimApproved(email: string, displayName: string, prof
   const resend = await getResend()
   if (!resend) return
   const safeName = escapeHtml(displayName)
-  resend.emails.send({
+  return resend.emails.send({
     from: FROM,
     to: email,
     subject: `Perfil aprobado — ${displayName}`,
@@ -859,7 +893,7 @@ export async function sendMonthlyClose(
           <p style="color:#52525b;font-size:10px;margin:12px 0 0">
             Consignatarias.com.ar
             &nbsp;&middot;&nbsp;
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#52525b">Desuscribirme</a>
+            <a href="${urlBaja(email)}" style="color:#52525b">Desuscribirme</a>
           </p>
       `),
     })
@@ -915,7 +949,7 @@ export async function sendSellZoneAlertConfirm(
           </p>
           <p style="color:#52525b;font-size:10px;margin:12px 0 0">
             Consignatarias.com.ar &nbsp;&middot;&nbsp;
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#52525b">Desuscribirme</a>
+            <a href="${urlBaja(email)}" style="color:#52525b">Desuscribirme</a>
           </p>
       `),
     })
@@ -978,7 +1012,7 @@ export async function sendSellZoneAlert(
           </p>
           <p style="color:#52525b;font-size:10px;margin:12px 0 0">
             Consignatarias.com.ar &nbsp;&middot;&nbsp;
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#52525b">Desuscribirme</a>
+            <a href="${urlBaja(email)}" style="color:#52525b">Desuscribirme</a>
           </p>
       `),
     })
@@ -1027,7 +1061,7 @@ export async function sendPriceAlertConfirm(
           </div>
           <p style="color:#52525b;font-size:10px;margin:12px 0 0">
             Consignatarias.com.ar &nbsp;&middot;&nbsp;
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#52525b">Desuscribirme</a>
+            <a href="${urlBaja(email)}" style="color:#52525b">Desuscribirme</a>
           </p>
       `),
     })
@@ -1071,7 +1105,7 @@ export async function sendPriceThresholdAlert(
           </p>
           <p style="color:#52525b;font-size:10px;margin:12px 0 0">
             Consignatarias.com.ar &nbsp;&middot;&nbsp;
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#52525b">Desuscribirme</a>
+            <a href="${urlBaja(email)}" style="color:#52525b">Desuscribirme</a>
           </p>
       `),
     })
@@ -1191,7 +1225,7 @@ export function buildWeeklyNewsletterHtml(
       <p style="font-family:${MONO};color:#52525b;font-size:10px;margin:14px 0 0;line-height:1.6">
         consignatarias<span style="color:#38bdf8">.</span>com &mdash; el precio de referencia del ganado argentino.<br>
         Recib&iacute;s este email porque te suscribiste.
-        <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#52525b">Desuscribirme</a>
+        <a href="${urlBaja(email)}" style="color:#52525b">Desuscribirme</a>
       </p>
     </td></tr>
 
@@ -1239,7 +1273,7 @@ export async function sendClaimRejected(email: string, displayName: string, reas
   const resend = await getResend()
   if (!resend) return
   const safeName = escapeHtml(displayName)
-  resend.emails.send({
+  return resend.emails.send({
     from: FROM,
     to: email,
     subject: `Verificación rechazada — ${displayName}`,
@@ -1412,7 +1446,7 @@ export async function sendRemateConfirmRequest({
       replyTo: 'agro@memola.com.ar',
       // List-Unsubscribe en cold outreach: mitigación AUP. /unsubscribe ya existe.
       headers: {
-        'List-Unsubscribe': `<${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}>`,
+        'List-Unsubscribe': `<${urlBaja(to)}>`,
         'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
       },
       subject: `¿Me confirmás el horario del remate del ${fechaLegible}?`,
@@ -1535,7 +1569,7 @@ export async function sendFaenaNewsletter({
           <p style="color:#52525b;font-size:10px;margin:16px 0 0">
             Recibís este email porque te suscribiste al reporte de faena.
             <br>
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#52525b">Desuscribirme</a>
+            <a href="${urlBaja(to)}" style="color:#52525b">Desuscribirme</a>
           </p>
       `),
     })
@@ -1672,7 +1706,7 @@ export async function sendDteUploadReminder({ to, userName, daysSinceSignup }: D
           <p style="color:#52525b;font-size:10px;margin:24px 0 0">
             consignatarias.com — el precio de referencia del ganado argentino
             <br>
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#52525b">Desuscribirme</a>
+            <a href="${urlBaja(to)}" style="color:#52525b">Desuscribirme</a>
           </p>
       `),
     })
@@ -1834,7 +1868,7 @@ export async function sendDteRetentionReminder({
           <p style="color:#52525b;font-size:10px;margin:24px 0 0">
             consignatarias.com — el precio de referencia del ganado argentino
             <br>
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#52525b">Desuscribirme</a>
+            <a href="${urlBaja(to)}" style="color:#52525b">Desuscribirme</a>
           </p>
       `),
     })
@@ -2051,7 +2085,7 @@ export async function sendRemateResultsToProducer({
       from: FROM,
       to,
       headers: {
-        'List-Unsubscribe': `<${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}>`,
+        'List-Unsubscribe': `<${urlBaja(to)}>`,
         'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
       },
       subject: `Así cerró el remate de ${consignataria}`,
@@ -2078,7 +2112,7 @@ export async function sendRemateResultsToProducer({
           <p style="color:#52525b;font-size:10px;margin:24px 0 0">
             Recibís este email porque seguís a ${safeConsig} en consignatarias.com.ar
             <br>
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#52525b">Desuscribirme</a>
+            <a href="${urlBaja(to)}" style="color:#52525b">Desuscribirme</a>
           </p>
       `),
     })
@@ -2201,7 +2235,7 @@ export async function sendNewsletterWelcome({ to, source }: NewsletterWelcomePar
           <p style="color:#52525b;font-size:10px;margin:24px 0 0">
             consignatarias.com — el precio de referencia del ganado argentino
             <br>
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#52525b">Desuscribirme</a>
+            <a href="${urlBaja(to)}" style="color:#52525b">Desuscribirme</a>
           </p>
       `),
     })
@@ -2295,7 +2329,7 @@ export async function sendElCorredorDelivery(email: string, edition: string, pdf
 
           <p style="font-size: 12px; line-height: 1.6; color: #a1a1aa; margin: 0 0 12px 0;">
             La próxima edición sale el primer día hábil del mes que viene. Si no la querés recibir,
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color: #71717a;">desuscribite acá</a>.
+            <a href="${urlBaja(email)}" style="color: #71717a;">desuscribite acá</a>.
           </p>
           <p style="font-size: 11px; color: #71717a; margin: 16px 0 0 0;">
             Mesa de mercado &middot; consignatarias.com
@@ -2366,7 +2400,7 @@ export async function sendElCorredorCorreccion(email: string, edition: string, p
 
           <p style="font-size: 12px; line-height: 1.6; color: #a1a1aa; margin: 0 0 12px 0;">
             La próxima edición sale el primer día hábil del mes que viene. Si no la querés recibir,
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color: #71717a;">desuscribite acá</a>.
+            <a href="${urlBaja(email)}" style="color: #71717a;">desuscribite acá</a>.
           </p>
           <p style="font-size: 11px; color: #71717a; margin: 16px 0 0 0;">
             Mesa de mercado &middot; consignatarias.com
@@ -2422,7 +2456,7 @@ export async function sendElCorredorInvitacion(email: string, source: string | n
       to: email,
       replyTo: 'agro@memola.com.ar',
       headers: {
-        'List-Unsubscribe': `<${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}>`,
+        'List-Unsubscribe': `<${urlBaja(email)}>`,
         'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
       },
       subject: '¿Te sirve un resumen del mercado, una vez por mes?',
@@ -2515,7 +2549,7 @@ export async function sendConsultaLeadAConsignataria(opts: {
       to: opts.to,
       replyTo: 'agro@memola.com.ar',
       headers: {
-        'List-Unsubscribe': `<${APP_URL}/unsubscribe?email=${encodeURIComponent(opts.to)}>`,
+        'List-Unsubscribe': `<${urlBaja(opts.to)}>`,
         'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
       },
       subject: `Un productor de ${opts.zona} — ¿lo pueden atender?`,
@@ -3018,7 +3052,7 @@ export async function sendArrendamientoCierre(opts: {
         <p style="margin:24px 0 8px"><a href="${APP_URL}/mercado/arrendamiento" style="display:inline-block;background:#38bdf8;color:#09090b;padding:12px 22px;text-decoration:none;font-weight:600;font-size:13px;border-radius:2px">Ver el detalle y la serie &rarr;</a></p>
         <p style="font-size:13px;color:#a1a1aa;margin:0 0 8px;line-height:1.6">¿Querés que te ayudemos con el contrato o tenés alguna consulta? <a href="mailto:agro@memola.com.ar?subject=Consulta%20arrendamiento%20${encodeURIComponent(opts.mesLabel)}" style="color:#38bdf8;text-decoration:none;white-space:nowrap">Escribinos a agro@memola.com.ar &rarr;</a></p>
         <p style="font-size:12px;color:#a1a1aa;margin:0">Es el mismo número que publica el MAG. Un mail por mes, al cierre.</p>
-        <p style="font-family:${EMAIL_MONO};color:#52525b;font-size:10px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px;line-height:1.6">consignatarias<span style="color:#38bdf8">.</span>com &mdash; el precio de referencia del ganado argentino &middot; <a href="${APP_URL}" style="color:#71717a">consignatarias.com.ar</a> &middot; <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(opts.to)}" style="color:#52525b">Desuscribirme</a></p>
+        <p style="font-family:${EMAIL_MONO};color:#52525b;font-size:10px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px;line-height:1.6">consignatarias<span style="color:#38bdf8">.</span>com &mdash; el precio de referencia del ganado argentino &middot; <a href="${APP_URL}" style="color:#71717a">consignatarias.com.ar</a> &middot; <a href="${urlBaja(opts.to)}" style="color:#52525b">Desuscribirme</a></p>
       `),
     })
     if (error) return { success: false, error: error.message }
@@ -3797,7 +3831,7 @@ export function buildExpoMercedesAvisoHtml(opts: ExpoMercedesAvisoOpts): string 
               padding-top:16px;border-top:1px solid #27272a">
       Te llega porque estás suscripto a El Corredor o al resumen de remates. Es un aviso
       puntual por la Expo; el boletín mensual sigue saliendo el día 1 como siempre.
-      <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}"
+      <a href="${urlBaja(to)}"
          style="color:#71717a;text-decoration:underline">Darte de baja</a>.
     </p>
   `

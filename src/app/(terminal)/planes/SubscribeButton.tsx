@@ -22,10 +22,8 @@ export default function SubscribeButton() {
         setUserEmail(data.user.email)
         // Find their consignataria slug
         const { data: consig } = await supabase
-          .from('consignatarias')
-          .select('canonical_slug')
-          .eq('claimed_by_email', data.user.email)
-          .single()
+          .rpc('mi_consignataria')
+          .maybeSingle()
         if (consig) setEntitySlug(consig.canonical_slug)
       }
       setChecking(false)

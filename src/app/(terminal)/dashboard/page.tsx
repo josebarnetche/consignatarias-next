@@ -11,13 +11,13 @@ import { getBenchmark, type Benchmark } from '@/lib/reports/benchmark'
 import { getCartera, type Cartera } from '@/lib/reports/cartera'
 import { construirTerritorio, titularTerritorio, type Territorio } from '@/lib/reports/territorio'
 import { magIdDeSlug } from '@/lib/reports/mag-lotes'
-import { TerritorioPanel } from '@/components/dashboard/TerritorioPanel'
 import { PrimerosPasos } from '@/components/onboarding/PrimerosPasos'
 import { getParticipacion, type Participacion } from '@/lib/reports/participacion'
 import { construirBandeja, type Bandeja } from '@/lib/reports/bandeja'
 import { getAgendaRegional, type AgendaRegional } from '@/lib/reports/agenda-regional'
 import { intentarAutoAprobar } from '@/lib/claims/auto-approve'
 import marketPrices from '@/lib/data/market-prices.json'
+import { normalizarEmail } from '@/lib/claims/aprobar'
 
 export const dynamic = 'force-dynamic'
 
@@ -58,21 +58,21 @@ export default async function DashboardPage() {
   const { data: consignataria } = await service
     .from('consignatarias')
     .select('display_name, canonical_slug, verified, phone, email, website, description, whatsapp, cuit, logo_url')
-    .eq('claimed_by_email', user.email!)
-    .single()
+    .eq('claimed_by_email', normalizarEmail(user.email))
+    .maybeSingle()
 
   // Get user's verified frigorifico (if any)
   const { data: frigorifico } = await service
     .from('frigorifico_profiles')
     .select('cuit, display_name, verified, phone, email, website, description, whatsapp, location, logo_url, habilitacion_nivel, habilitacion_verificada')
-    .eq('claimed_by_email', user.email!)
+    .eq('claimed_by_email', normalizarEmail(user.email))
     .single()
 
   // Get user's frigorifico claims
   const { data: frigoClaims } = await service
     .from('frigorifico_claims')
     .select('*')
-    .eq('claimant_email', user.email!)
+    .eq('claimant_email', normalizarEmail(user.email))
     .order('created_at', { ascending: false })
 
   // PRODUCTOR (la mayoría de los registros): sin perfil B2B reclamado ni claims

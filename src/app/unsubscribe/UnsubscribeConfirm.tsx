@@ -9,14 +9,14 @@ import { useState } from 'react'
  * con ?ok=1 (redirigido desde el one-click del cliente de correo), muestra el
  * estado final directo.
  */
-export default function UnsubscribeConfirm({ email, alreadyDone }: { email: string; alreadyDone: boolean }) {
+export default function UnsubscribeConfirm({ email, token, alreadyDone }: { email: string; token: string; alreadyDone: boolean }) {
   const [state, setState] = useState<'idle' | 'loading' | 'done' | 'error'>(alreadyDone ? 'done' : 'idle')
 
   async function confirm() {
     if (state === 'loading') return
     setState('loading')
     try {
-      const res = await fetch(`/api/newsletter/unsubscribe?email=${encodeURIComponent(email)}`, { method: 'POST' })
+      const res = await fetch(`/api/newsletter/unsubscribe?email=${encodeURIComponent(email)}${token ? `&t=${encodeURIComponent(token)}` : ''}`, { method: 'POST' })
       setState(res.ok ? 'done' : 'error')
     } catch {
       setState('error')

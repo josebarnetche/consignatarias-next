@@ -133,7 +133,6 @@ describe('naming de las tools', () => {
    * RENSPA, DT-e— no se traducen. Son identificadores, y traducirlos los vuelve
    * imposibles de rastrear contra la fuente oficial.
    */
-  const NOMBRES_PROPIOS = ['inmag', 'renspa', 'dte', 'fmd', 'consignatarias']
 
   it('están en inglés, salvo los nombres propios de registros argentinos', () => {
     // `consignatarias_band` queda afuera a propósito: "Consignatarias" es el

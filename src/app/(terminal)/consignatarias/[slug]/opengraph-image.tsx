@@ -94,14 +94,19 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
                   display: 'flex',
                   alignItems: 'center',
                   gap: '10px',
-                  background: 'rgba(245,158,11,0.10)',
-                  border: `1px solid rgba(245,158,11,0.45)`,
+                  background: 'rgba(56,189,248,0.10)',
+                  border: `1px solid rgba(56,189,248,0.45)`,
                   borderRadius: '2px',
                   padding: '8px 18px',
                 }}
               >
-                <span style={{ color: C.AMBAR, fontSize: 20, display: 'flex' }}>★</span>
-                <span style={{ color: C.AMBAR, fontSize: 20, fontWeight: 700, letterSpacing: '0.1em' }}>
+                {/* La estrella en SVG: JetBrains Mono no trae el glifo ★ y Satori salía a
+                    buscarlo a Google Fonts en cada build ("Failed to load dynamic font").
+                    El ★ PRO va en cielo desde jul-2026 (doctrina de marca), no en ámbar. */}
+                <svg width="20" height="20" viewBox="0 0 24 24" style={{ display: 'flex' }}>
+                  <path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 20.9l1.6-7L2 9.2l7.1-.6z" fill={C.CIELO} />
+                </svg>
+                <span style={{ color: C.CIELO, fontSize: 20, fontWeight: 700, letterSpacing: '0.1em' }}>
                   PRO
                 </span>
               </div>

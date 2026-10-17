@@ -3947,6 +3947,21 @@ export type Database = {
         }[]
       }
       get_dashboard_counts: { Args: never; Returns: Json }
+      mi_consignataria: {
+        Args: never
+        Returns: {
+          canonical_slug: string
+          cuit: string
+          description: string
+          display_name: string
+          email: string
+          logo_url: string
+          phone: string
+          verified: boolean
+          website: string
+          whatsapp: string
+        }[]
+      }
       get_recent_user_infos: {
         Args: { p_from: string; p_to: string }
         Returns: {

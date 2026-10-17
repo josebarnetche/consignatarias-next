@@ -354,6 +354,11 @@ export default async function FrigorificoDetailPage({
   // SENASA habilitación check: cross-reference with current registry snapshot.
   const senasaRecord = getSenasaRecord(cuit)
   const senasaVigente = senasaRecord !== null
+  // Sello público: reclamada Y habilitada en SENASA. Una ficha reclamada que no figura
+  // en el registro mostraba "VERIFICADO" al lado de "habilitación no encontrada" (caso
+  // Riestra, oct-2026): leía como que la planta estaba habilitada. `verified` sigue
+  // decidiendo lo que es de la ficha reclamada (no ofrecer "reclamar" de nuevo).
+  const selloVerificado = verified && senasaVigente
   const senasaScrapedDate = getSenasaScrapedDate()
 
   // Vitrina de carne: el gate es el plan del DUEÑO del frigorífico (no el del
@@ -449,7 +454,7 @@ export default async function FrigorificoDetailPage({
               <h1 className="text-xl sm:text-2xl font-bold text-zinc-50 tracking-tight leading-tight">
                 {name}
               </h1>
-              {verified && (
+              {selloVerificado && (
                 <span className="text-xxs font-terminal px-1.5 py-0.5 border border-positive/30 text-positive rounded-terminal">
                   VERIFICADO
                 </span>
@@ -462,7 +467,7 @@ export default async function FrigorificoDetailPage({
               <BadgeConfianza
                 senasaActive={senasaVigente}
                 senasaScrapedDate={senasaScrapedDate}
-                verified={verified}
+                verified={selloVerificado}
                 habilitacionNivel={habilitacionNivel}
                 habilitacionVerificada={habilitacionVerificada}
                 province={province}
@@ -893,7 +898,7 @@ export default async function FrigorificoDetailPage({
       )}
 
       {/* PRO upsell for verified frigoríficos */}
-      {verified && (
+      {selloVerificado && (
         <div className="terminal-panel border-positive/30">
           <div className="terminal-panel-header" style={{ borderBottomColor: 'rgba(34, 197, 94, 0.3)' }}>
             <span className="text-positive text-label tracking-widest">✓ PERFIL VERIFICADO</span>

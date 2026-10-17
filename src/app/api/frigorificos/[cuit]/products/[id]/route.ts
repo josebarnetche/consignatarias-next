@@ -3,6 +3,7 @@ import { requireServiceClient } from '@/lib/supabase'
 import { requireAuth } from '@/lib/admin-auth'
 import { frigorificoPuedeInterprovincial } from '@/lib/features'
 import { revalidatePath } from 'next/cache'
+import { mismoEmail } from '@/lib/claims/aprobar'
 
 type Props = { params: Promise<{ cuit: string; id: string }> }
 
@@ -21,7 +22,7 @@ async function assertOwner(cuit: string, authEmail: string | undefined) {
     .select('claimed_by_email')
     .eq('cuit', cuit)
     .single()
-  return !!profile && !!authEmail && profile.claimed_by_email === authEmail
+  return !!profile && mismoEmail(profile.claimed_by_email, authEmail)
 }
 
 export async function PATCH(req: NextRequest, { params }: Props) {

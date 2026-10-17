@@ -1,7 +1,9 @@
+import { randomUUID } from 'node:crypto'
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { requireAuth } from '@/lib/admin-auth'
 import { logEvent } from '@/lib/ops'
+import { mismoEmail } from '@/lib/claims/aprobar'
 
 type Props = { params: Promise<{ cuit: string }> }
 
@@ -28,7 +30,7 @@ export async function POST(req: NextRequest, { params }: Props) {
     .eq('cuit', cuit)
     .single()
 
-  if (!profile || profile.claimed_by_email !== auth.email) {
+  if (!profile || !mismoEmail(profile.claimed_by_email, auth.email)) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 
@@ -59,17 +61,19 @@ export async function POST(req: NextRequest, { params }: Props) {
       return NextResponse.json({ error: 'El archivo supera 5 MB' }, { status: 400 })
     }
     const ext = file.type === 'application/pdf' ? 'pdf' : file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg'
-    const filePath = `hab-${cuit}.${ext}`
+    // Bucket PRIVADO y nombre no adivinable: antes era `hab-<cuit>` en el bucket
+    // público, y con el CUIT cualquiera bajaba la constancia (revisión 17-10-2026).
+    // Se guarda la ruta del objeto, no una URL: el admin la abre con una URL firmada.
+    const filePath = `habilitaciones/${cuit}/${randomUUID()}.${ext}`
     const buffer = Buffer.from(await file.arrayBuffer())
     const { error: upErr } = await supabase.storage
-      .from('consignataria-assets')
-      .upload(filePath, buffer, { contentType: file.type, upsert: true })
+      .from('documentos-privados')
+      .upload(filePath, buffer, { contentType: file.type, upsert: false })
     if (upErr) {
       console.error('Habilitacion upload error:', upErr)
       return NextResponse.json({ error: 'Error al subir la constancia' }, { status: 500 })
     }
-    const { data: urlData } = supabase.storage.from('consignataria-assets').getPublicUrl(filePath)
-    update.habilitacion_doc_url = urlData.publicUrl
+    update.habilitacion_doc_url = `documentos-privados/${filePath}`
   }
 
   const { error } = await supabase
