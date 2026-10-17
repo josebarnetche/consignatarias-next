@@ -46,10 +46,10 @@ export default function HeroPro({
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link
-              href="/planes#consignataria"
+              href="/overview"
               className="inline-flex items-center gap-2 rounded-lg bg-accent px-6 py-3.5 text-sm font-semibold text-white oscuro:text-zinc-950 hover:bg-accent-bright transition-colors"
             >
-              Activar PRO
+              Acceder al Terminal
               <span aria-hidden="true">→</span>
             </Link>
             <a
@@ -59,7 +59,7 @@ export default function HeroPro({
               Ver los beneficios
             </a>
           </div>
-          <p className="mt-3 text-xs text-zinc-500">ARS 45.000/mes · sin permanencia · se cancela cuando quieras</p>
+          <p className="mt-3 text-xs text-zinc-500">PRO: ARS 45.000/mes · sin permanencia · se cancela cuando quieras</p>
 
           <dl className="mt-10 grid max-w-lg grid-cols-3 gap-6 border-t border-terminal-border pt-6">
             <div>
