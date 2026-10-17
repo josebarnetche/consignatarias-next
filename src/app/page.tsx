@@ -207,7 +207,7 @@ const FAQ_ITEMS = [
   },
   {
     question: "¿Qué es un frigorífico?",
-    answer: `Un frigorífico es una planta habilitada por SENASA y MAGYP para la faena y procesamiento de carne vacuna. En nuestra base de datos tenemos ${fmt(frigorificosHabilitados)} plantas habilitadas en ${provinciasConFrigo} provincias, con datos de CUIT, matrícula y clasificación por ciclo (Tránsito, Ciclo II, Ciclo III).`,
+    answer: `Un frigorífico es una planta habilitada por SENASA y MAGYP para la faena y procesamiento de carne vacuna. En nuestra base de datos tenemos ${fmt(frigorificosHabilitados)} plantas habilitadas en ${provinciasConFrigo} provincias, con datos de CUIT, matrícula y clasificación por ciclo (Ciclo I matadero, Ciclo II elaborador, Ciclo III dador de frío).`,
   },
   {
     question: "¿Consignatarias.com.ar es gratis?",
@@ -404,7 +404,7 @@ export default async function LandingPage() {
             {/* El isotipo es blanco sobre transparente: sobre el nav claro desaparecía.
                 Va sobre un chip negro fijo (bg-black no invierte) en los dos temas. */}
             <Image src="/icon-32.png" alt="Consignatarias.com.ar" width={32} height={32} className="rounded bg-black" />
-            <span className="text-sm font-medium text-zinc-100 tracking-tight">
+            <span className="hidden min-[430px]:inline text-sm font-medium text-zinc-100 tracking-tight">
               consignatarias.com.ar
             </span>
           </div>

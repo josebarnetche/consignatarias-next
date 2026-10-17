@@ -7,6 +7,54 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.227.0] — 2026-10-17
+
+### Seguridad de reclamos y datos, mails que no se pierden y un solo menú
+
+Revisión del 17-10-2026 (código, prolijidad del repo y navegabilidad). El repo sigue
+público por decisión de Jose; la guía paga no se toca.
+
+**Reclamos de ficha** (admin de consignatarias, admin de frigoríficos y auto-aprobación,
+todo en `src/lib/claims/aprobar.ts`):
+- El rol de dueño **nunca baja a un admin**; la búsqueda del usuario existente pagina
+  (antes, más allá de los primeros 50, no lo encontraba).
+- Mails normalizados al guardar (validador) y comparados con `mismoEmail` en las 8 rutas
+  del dueño: un reclamo con mayúsculas dejaba al dueño afuera de su ficha.
+- Orden: primero la ficha (revisando el error), después el reclamo aprobado. Una ficha
+  con otro titular no se pisa (409).
+- Aprobar a mano **exige indicar cómo se verificó la identidad** (selector en /admin y la API).
+- El sello público "VERIFICADO" de un frigorífico exige además **SENASA vigente**: Riestra
+  ya no muestra el sello al lado de "habilitación no encontrada", sin tocar su acceso.
+
+**Datos:**
+- La edición de ficha devuelve solo los campos públicos (no `notas_internas`, `email_ruteo`).
+- `mi_consignataria()` (RPC) para el panel en el navegador; `claimed_by_email` deja de ser
+  legible con la clave pública (migraciones 20261017_*).
+- Constancias de habilitación a un bucket **privado** con nombre no adivinable.
+- Baja del newsletter firmada con HMAC (`lib/newsletter/baja.ts`); sin token se acepta y
+  se marca `sin_token` hasta que los mails viejos dejen de circular.
+- `docs/strategy/` sale del índice (el `.gitignore` ya lo pedía); se redacta el mail de un
+  cliente de la API en docs.
+
+**Mails:** todo `emails.send` pasa por `waitUntil` y registra el rechazo en `ops_events`
+(de 62 envíos, 19 no esperaban respuesta y Vercel podía cortarlos).
+
+**Navegación:** `src/lib/nav.ts` es el único menú — Precios · Vender y comprar · Remates ·
+Directorio · Campos · Para empresas — para la portada, el terminal y el teléfono (antes eran
+tres menús distintos). Nueva `/para-empresas` (firma · datos/API · institucional). Guías,
+glosario y El Corredor en el footer. El desplegable abre con clic (el `onFocus` lo cerraba).
+
+**Build:** sin avisos — estrella del OG en SVG (la fuente no tenía el glifo), config de
+`twitter-image` escrita en el archivo, variables sin uso fuera. `/api/consignatarias/[slug]/videos`
+pedía una columna que no existía.
+
+**Limpieza (rama limpieza-y-producto):** fuera las carpetas `debug-*`, `geo-audit-*`,
+`traffic-audit-*`, `skills/` y 15 componentes sin uso; 12 workflows pasan a pnpm; los e2e
+vuelven a correr (`@playwright/test`); `/vender-ahora` redirige a `/mercado/vender-ahora`;
+`/frigorificos` dice "866 de 1.119" y "Ciclo" en todos lados; `/lotes` sin contradicción.
+
+---
+
 ## [1.226.0] — 2026-10-17
 
 ### Landing nueva: PRO Consignataria como producto principal, en un lienzo estilo Figma

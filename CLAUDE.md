@@ -3,7 +3,7 @@
 > **For AI agents and new contributors.** This file is the *single one-screen briefing*. For depth, read in order:
 > [`README.md`](./README.md) → [`CHANGELOG.md`](./CHANGELOG.md) → [`ROADMAP.md`](./ROADMAP.md).
 
-**Current version:** v1.226.0 (2026-10-17). See [CHANGELOG.md](CHANGELOG.md) for the full history. Brand system v2.0 (desde v1.88): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
+**Current version:** v1.227.0 (2026-10-17). See [CHANGELOG.md](CHANGELOG.md) for the full history. Brand system v2.0 (desde v1.88): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
 
 > **Tema claro (desde v1.217.0, Fases 1-2 de [docs/PLAN-TEMA-WHITE.md](docs/PLAN-TEMA-WHITE.md)):**
 > el sitio abre en **claro** (blanco puro, acento `blue-700`), con un botón en el header
@@ -17,7 +17,7 @@
 > un hex literal no responde al toggle y rompe en uno de los dos temas. **Guardarraíl (Fase 4,
 > desde v1.218.0):** `scripts/check-no-hardcoded-hex.mjs` (parte de `pnpm check`) falla si aparece
 > un hex NUEVO que ya tiene token, o si sube el conteo en un archivo de la baseline
-> (`scripts/hardcoded-hex-baseline.json`, 63 archivos) — es un *ratchet*, no bloquea lo heredado
+> (`scripts/hardcoded-hex-baseline.json`, 57 archivos) — es un *ratchet*, no bloquea lo heredado
 > (esa deuda se limpia con el tiempo, bajar el conteo siempre pasa). Mails, imágenes OG/favicons
 > y badges/widgets para terceros están exentos (no tienen `<html data-theme>`) — ver
 > `EXEMPT_PATHS` en el script. **Fase 3 (barrido visual) parcial desde v1.218.0:** el patrón

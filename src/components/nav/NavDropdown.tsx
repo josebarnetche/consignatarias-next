@@ -6,8 +6,9 @@ import type { NavGroup, NavLeaf } from "@/lib/nav";
 
 /**
  * Desplegable de un grupo del menú (lib/nav). Lo usan el terminal y la portada, así
- * los dos muestran el mismo menú. Hover con intención + clic/foco, Escape y clic
- * afuera cierran.
+ * los dos muestran el mismo menú. Abre con hover (con intención) o con clic/Enter;
+ * Escape y clic afuera cierran. Sin `onFocus`: el clic primero enfoca (abría) y
+ * después alternaba (cerraba), así que con el mouse o el dedo no abría nunca.
  */
 const TAG_STYLE: Record<NonNullable<NavLeaf["tag"]>, string> = {
   live: "border-positive text-positive",
@@ -95,7 +96,6 @@ export default function NavDropdown({
           clearTimers();
           setOpen((v) => !v);
         }}
-        onFocus={() => setOpen(true)}
         className={`relative flex items-center px-2 py-1.5 text-xxs font-terminal uppercase tracking-widest motion-hover claro:text-sm claro:font-medium claro:px-3 claro:rounded-terminal ${
           active || open
             ? "text-accent claro:bg-accent/[0.07]"
