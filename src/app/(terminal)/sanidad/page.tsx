@@ -5,17 +5,18 @@ import { FAQPageSchema } from '@/components/seo/JsonLd'
 import CalendarioMensual from '@/components/sanidad/CalendarioMensual'
 import {
   SANIDAD_DISCLAIMER, PLANES, CALENDARIO_AFTOSA_2026, REQUISITOS_MOVIMIENTO,
-  ZONAS_AFTOSA, FUENTES, fuentesDe, COMO_FUNCIONA, TRAMITES, FAQ_SANIDAD,
+  ZONAS_AFTOSA, FUENTES, fuentesDe, COMO_FUNCIONA, TRAMITES, FAQ_SANIDAD, VACUNADOR_2027,
 } from '@/lib/data/senasa-sanidad'
 
 export const metadata: Metadata = {
   title: 'Sanidad ganadera SENASA: vacunación y movimientos',
   description:
-    'Régimen sanitario del ganado argentino, codificado desde resoluciones SENASA públicas y citado: calendario de vacunación antiaftosa 2026, brucelosis, tuberculosis y garrapata, zonas con/sin vacunación, y requisitos sanitarios para mover hacienda (RENSPA, DT-e, serología).',
+    'Régimen sanitario del ganado argentino, codificado desde resoluciones SENASA públicas y citado: calendario de vacunación antiaftosa 2026, elección de veterinario vacunador desde 2027 (Res. 201/2026), brucelosis, tuberculosis y garrapata, zonas con/sin vacunación, y requisitos para mover hacienda.',
   keywords: [
     'SENASA', 'vacunación aftosa 2026', 'calendario aftosa', 'brucelosis bovina', 'tuberculosis bovina',
     'garrapata bovino', 'RENSPA', 'DT-e', 'requisitos movimiento hacienda', 'sanidad ganadera Argentina',
     'zona con vacunación', 'zona sin vacunación', 'Patagonia', 'Res. SENASA 711/2025',
+    'Res. SENASA 201/2026', 'veterinario privado acreditado', 'elección de vacunador aftosa 2027',
   ],
   alternates: { canonical: 'https://www.consignatarias.com.ar/sanidad' },
 }
@@ -73,6 +74,7 @@ export default function SanidadPage() {
         {[
           ['#planes', 'Planes sanitarios'],
           ['#aftosa', 'Vacunación aftosa'],
+          ['#vacunador-2027', 'Vacunador 2027'],
           ['#movimiento', 'Mover hacienda'],
           ['#renspa', 'Validar RENSPA'],
           ['#tramites', 'Trámites'],
@@ -176,6 +178,31 @@ export default function SanidadPage() {
           </p>
           <FuenteLinks keys={['aftosa_calendario_2026', 'aftosa_plan']} />
         </div>
+      </section>
+
+      {/* Vacunador elegido desde 2027 — Res. 201/2026 + Disp. DNSA 27/2026 */}
+      <section id="vacunador-2027" className="mt-10 scroll-mt-24">
+        <h2 className="text-lg font-semibold text-ink mb-1">Elegir el veterinario que vacuna: cambio 2027</h2>
+        <p className="text-data text-zinc-500 mb-4">
+          Res. SENASA 201/2026, reglamentada por la Disp. DNSA 27/2026. {VACUNADOR_2027.vigencia}.
+        </p>
+        <div className="rounded-terminal border border-accent/40 bg-terminal-panel p-4">
+          <div className="flex items-baseline justify-between gap-2 flex-wrap">
+            <h3 className="text-base font-semibold text-ink">Plazo para informar la elección</h3>
+            <span className="text-data font-semibold text-accent">{VACUNADOR_2027.plazo}</span>
+          </div>
+          <p className="mt-1 text-xxs text-zinc-500">{VACUNADOR_2027.plazo_detalle}</p>
+          <p className="mt-3 text-data text-zinc-300">{VACUNADOR_2027.resumen}</p>
+        </div>
+        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          {VACUNADOR_2027.puntos.map((p) => (
+            <div key={p.titulo} className="rounded-terminal border border-terminal-border bg-terminal-panel p-4 sm:last:col-span-2">
+              <h3 className="text-data font-semibold text-ink">{p.titulo}</h3>
+              <p className="mt-2 text-data text-zinc-400">{p.texto}</p>
+            </div>
+          ))}
+        </div>
+        <FuenteLinks keys={VACUNADOR_2027.fuentes} />
       </section>
 
       {/* Requisitos de movimiento */}

@@ -7,6 +7,26 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.224.0] — 2026-10-17
+
+### /sanidad: la Res. SENASA 201/2026 y su reglamentación (Disp. DNSA 27/2026)
+
+La 201/2026 figuraba como "anunciada para 2027, verificar vigencia" con un link genérico al
+digesto. Ahora está citada con su texto oficial (B.O. 13/03/2026, rige desde el 1/1/2027,
+deroga la Res. 368/2011) y con la Disp. DNSA 27/2026 (B.O. 15/10/2026), que fija el plazo.
+
+- Bloque nuevo `#vacunador-2027` (`VACUNADOR_2027` en `src/lib/data/senasa-sanidad.ts`):
+  el plazo para elegir veterinario de la 1ra campaña 2027 (15/10–15/12/2026, ambos
+  inclusive), qué pasa si no se elige (sigue el Ente Sanitario), cómo se elige
+  (SIGTrámites, el VPA acepta), qué exige al veterinario (acreditación aftosa +
+  brucelosis, cadena de frío, carga en SIGSA a 7 días), cómo se cambia, y los
+  depósitos de frío (inscripción, reserva del 10 %, retiro 24 h antes).
+- Fichas de aftosa y brucelosis actualizadas; fuente nueva `aftosa_2027_reglamento`.
+- Dos preguntas frecuentes nuevas (van al FAQ visible y al JSON-LD).
+- El MCP (`animal_health_plan`) toma el texto nuevo de la ficha sin cambios de tool.
+
+---
+
 ## [1.223.0] — 2026-10-03
 
 ### De-gateo: el MCP deja de cobrar la consulta y pasa a cobrar la descarga
