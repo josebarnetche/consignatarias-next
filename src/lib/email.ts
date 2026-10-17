@@ -563,7 +563,9 @@ export async function sendArrepentimientoRequest(data: {
   }).catch(() => {})
 }
 
-export async function sendClaimApproved(email: string, displayName: string, slug: string) {
+/** `profilePath` es la ruta completa de la ficha, sin barra inicial:
+ *  `consignatarias/<slug>` o `frigorificos/<cuit>`. */
+export async function sendClaimApproved(email: string, displayName: string, profilePath: string) {
   const resend = await getResend()
   if (!resend) return
   const safeName = escapeHtml(displayName)
@@ -575,8 +577,8 @@ export async function sendClaimApproved(email: string, displayName: string, slug
       <p style="color:#34d399;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Verificaci&oacute;n aprobada</p>
       <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 12px">Tu perfil fue aprobado</h2>
       <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Tu solicitud de verificación del perfil de <strong style="color:#fafafa">${safeName}</strong> fue aprobada.</p>
-      <p style="margin:0 0 12px"><a href="${APP_URL}/consignatarias/${slug}" style="color:#38bdf8">Ver tu perfil</a></p>
-      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 14px">Ya podés acceder a tu panel de consignataria:</p>
+      <p style="margin:0 0 12px"><a href="${APP_URL}/${profilePath}" style="color:#38bdf8">Ver tu perfil</a></p>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 14px">Ya podés acceder a tu panel:</p>
       <p style="margin:0 0 20px"><a href="${APP_URL}/login" style="background:#38bdf8;color:#09090b;padding:11px 26px;text-decoration:none;border-radius:2px;display:inline-block;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Acceder a mi panel</a></p>
       <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">consignatarias.com — el precio de referencia del ganado argentino</p>
     `),

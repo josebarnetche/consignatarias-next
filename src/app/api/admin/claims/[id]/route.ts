@@ -108,7 +108,7 @@ export async function PATCH(req: NextRequest, { params }: Props) {
       // Non-blocking — claim is already approved
     }
 
-    sendClaimApproved(claim.claimant_email, displayName, claim.consignataria_slug)
+    sendClaimApproved(claim.claimant_email, displayName, `consignatarias/${claim.consignataria_slug}`)
   } else {
     sendClaimRejected(claim.claimant_email, displayName, admin_notes || undefined)
   }
