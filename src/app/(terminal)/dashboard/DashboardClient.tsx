@@ -42,6 +42,7 @@ import OrigenVisitas from '@/components/dashboard/OrigenVisitas'
 import PreofertasManager, { type PreofertaFirma, type OfertaRecibida } from '@/components/dashboard/PreofertasManager'
 import ResultadoVsMercado from '@/components/dashboard/ResultadoVsMercado'
 import BusquedasGoogle from '@/components/dashboard/BusquedasGoogle'
+import CambiarContrasena from '@/components/dashboard/CambiarContrasena'
 import type { BusquedasFicha } from '@/lib/gsc/fichas'
 import type { ResultadoVsMercado as ResultadoVsMercadoDatos } from '@/lib/reports/resultado-vs-mercado'
 import type { OrigenVisitas as OrigenVisitasDatos } from '@/lib/reports/origen-visitas'
@@ -1302,6 +1303,7 @@ export default function DashboardClient({
         <PreofertasManager slug={consignataria.canonical_slug} esPro={plan.isPro} inicial={preofertasFirma} ofertas={ofertasFirma} />
       )}
       {activeTab === 'plan' && <SubscriptionPanel tier={tierLabel} subscription={subscription} plan={plan} />}
+      {activeTab === 'plan' && !vistaAdmin && <CambiarContrasena />}
 
       {/* ============ TAB: FRIGORIFICO ============ */}
       {activeTab === 'frigorifico' && frigorifico && (

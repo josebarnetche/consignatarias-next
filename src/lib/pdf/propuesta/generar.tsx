@@ -5,7 +5,7 @@ import type { ConsignatariaProfile } from '@/lib/data/consignataria-slugs'
 import { getDatosFirma, getDatosSitio } from '@/lib/propuesta/datos'
 import { getDatosFunciones } from '@/lib/propuesta/funciones'
 import { ALCANCE_GOOGLE } from '@/lib/data/alcance-google'
-import { Presentacion } from './Presentacion'
+import { Presentacion, type FormatoPresentacion } from './Presentacion'
 import { getBusquedasFicha } from '@/lib/gsc/fichas'
 import { createServiceClient } from '@/lib/supabase'
 
@@ -15,7 +15,11 @@ const mesAnio = (iso: string) =>
   new Date(`${iso}T12:00:00`).toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })
 
 /** El PDF de la propuesta PRO de una firma, con sus datos de hoy. */
-export async function generarPresentacionPro(profile: ConsignatariaProfile, contacto?: string): Promise<Buffer> {
+export async function generarPresentacionPro(
+  profile: ConsignatariaProfile,
+  contacto?: string,
+  formato: FormatoPresentacion = 'a4',
+): Promise<Buffer> {
   const slug = profile.canonicalSlug
   const db = createServiceClient()
   const [datos, sitio, f, qrDataUrl, busquedas] = await Promise.all([
@@ -45,6 +49,7 @@ export async function generarPresentacionPro(profile: ConsignatariaProfile, cont
       linkActivar={`${SITIO}/consignatarias/${slug}/activar`}
       porMes={[...ALCANCE_GOOGLE.porMes]}
       busquedas={busquedas}
+      formato={formato}
     />,
   )
 }

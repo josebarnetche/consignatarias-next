@@ -26,11 +26,13 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
   }
 
   const contacto = (req.nextUrl.searchParams.get('contacto') ?? '').trim().slice(0, 80) || undefined
-  const pdf = await generarPresentacionPro(profile, contacto)
+  // ?formato=169 → 16:9 para pantalla y WhatsApp; por defecto A4 apaisado para imprimir.
+  const formato = req.nextUrl.searchParams.get('formato') === '169' ? '169' : 'a4'
+  const pdf = await generarPresentacionPro(profile, contacto, formato)
   return new NextResponse(new Uint8Array(pdf), {
     headers: {
       'Content-Type': 'application/pdf',
-      'Content-Disposition': `inline; filename="Propuesta-PRO-${profile.canonicalSlug}.pdf"`,
+      'Content-Disposition': `inline; filename="Propuesta-PRO-${profile.canonicalSlug}${formato === '169' ? '-16x9' : ''}.pdf"`,
       'Cache-Control': 'private, no-store',
       'X-Robots-Tag': 'noindex, nofollow',
     },

@@ -65,10 +65,14 @@ export async function POST(req: NextRequest) {
   }
 
   // La presentación en PDF va adjunta. Si falla el armado, el mail sale igual con el link.
-  const pdf = await generarPresentacionPro(profile, nombre).catch((e) => {
-    console.error('[propuesta/pedir] PDF:', e)
-    return undefined
-  })
+  const [pdf, pdf169] = await Promise.all(
+    (['a4', '169'] as const).map((formato) =>
+      generarPresentacionPro(profile, nombre, formato).catch((e) => {
+        console.error(`[propuesta/pedir] PDF ${formato}:`, e)
+        return undefined
+      }),
+    ),
+  )
 
   const desde = new Date(ALCANCE_GOOGLE.desde + 'T12:00:00').toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })
   const res = await sendPropuestaPro(email, {
@@ -79,6 +83,7 @@ export async function POST(req: NextRequest) {
     beneficios: BENEFICIOS_PRO_CONSIGNATARIA,
     sitio: { impresiones: n(ALCANCE_GOOGLE.impresiones), desde, ia90: sitio?.ia90 ?? null },
     pdf,
+    pdf169,
   })
 
   const ok = !!res && !res.error

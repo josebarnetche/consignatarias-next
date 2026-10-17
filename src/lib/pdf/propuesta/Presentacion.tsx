@@ -66,6 +66,20 @@ const s = StyleSheet.create({
 
 const n = (x: number) => x.toLocaleString('es-AR')
 
+/**
+ * Dos formatos (17-10-2026): A4 apaisado para imprimir y 16:9 para pantalla —el que se
+ * manda por WhatsApp y se proyecta—. Mismo contenido; cambia el tamaño de la hoja y el
+ * alto máximo de las capturas para que entren en la hoja más baja del 16:9.
+ */
+export type FormatoPresentacion = 'a4' | '169'
+const TAM_169 = { width: 960, height: 540 }
+type Pag = ReturnType<typeof pagina>
+function pagina(f: FormatoPresentacion) {
+  return f === '169'
+    ? { size: TAM_169, orientation: undefined, altoCaptura: 300 }
+    : { size: 'A4' as const, orientation: 'landscape' as const, altoCaptura: 400 }
+}
+
 function Isotipo({ size = 20 }: { size?: number }) {
   return (
     <Svg viewBox="0 0 512 512" style={{ width: size, height: size }}>
@@ -103,9 +117,9 @@ function Marca() {
   )
 }
 
-function Diapo({ firma, children }: { firma: string; children: React.ReactNode }) {
+function Diapo({ firma, pag, children }: { firma: string; pag: Pag; children: React.ReactNode }) {
   return (
-    <Page size="A4" orientation="landscape" style={s.page}>
+    <Page size={pag.size} orientation={pag.orientation} style={s.page}>
       {children}
       <View style={s.pie} fixed>
         <Text>consignatarias.com.ar · Propuesta PRO Consignataria · {firma}</Text>
@@ -131,9 +145,16 @@ function Ventana({ url, ejemplo, children }: { url: string; ejemplo?: boolean; c
   )
 }
 
+/** Captura del panel, con el alto máximo del formato. */
+function Captura({ id, pag }: { id: string; pag: Pag }) {
+  const { altoCaptura } = pag
+  return <Image src={path.join(CAPTURAS, `${id}.png`)} style={{ width: '100%', maxHeight: altoCaptura, objectFit: 'contain', objectPosition: 'top' }} />
+}
+
 /** Diapositiva de una función: texto a la izquierda, lo que se ve a la derecha. */
 function Funcion({
   firma,
+  pag,
   numero,
   titulo,
   texto,
@@ -141,6 +162,7 @@ function Funcion({
   children,
 }: {
   firma: string
+  pag: Pag
   numero: number
   titulo: string
   texto: string
@@ -148,7 +170,7 @@ function Funcion({
   children: React.ReactNode
 }) {
   return (
-    <Diapo firma={firma}>
+    <Diapo firma={firma} pag={pag}>
       <View style={{ flexDirection: 'row', gap: 28, flex: 1 }}>
         <View style={{ width: 230 }}>
           <Text style={s.kicker}>Función {String(numero).padStart(2, '0')}</Text>
@@ -195,17 +217,18 @@ export interface PresentacionProps {
   linkActivar: string
   porMes: { mes: string; impresiones: number; parcial?: boolean }[]
   busquedas: BusquedasFicha | null
+  formato?: FormatoPresentacion
 }
 
 export function Presentacion(p: PresentacionProps) {
+  const pag = pagina(p.formato ?? 'a4')
   const { firma, datos, sitio, f } = p
   let num = 0
-  const capt = (id: string) => path.join(CAPTURAS, `${id}.png`)
 
   return (
     <Document title={`Propuesta PRO Consignataria — ${firma}`} author="Memola Medios SAS · consignatarias.com.ar" language="es-AR">
       {/* PORTADA */}
-      <Page size="A4" orientation="landscape" style={[s.page, { justifyContent: 'space-between', paddingRight: 340 }]}>
+      <Page size={pag.size} orientation={pag.orientation} style={[s.page, { justifyContent: 'space-between', paddingRight: 340 }]}>
         <Image src={path.join(process.cwd(), 'src/lib/pdf/propuesta/portada.jpg')} style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: 300, objectFit: 'cover' }} fixed />
         <Marca />
         <View>
@@ -225,7 +248,7 @@ export function Presentacion(p: PresentacionProps) {
       </Page>
 
       {/* EL ALCANCE */}
-      <Diapo firma={firma}>
+      <Diapo firma={firma} pag={pag}>
         <Text style={s.kicker}>El sitio</Text>
         <Text style={[s.h1, { maxWidth: 620 }]}>Donde el productor busca precio, remate y consignataria</Text>
         <View style={{ flexDirection: 'row', gap: 22, marginTop: 34 }}>
@@ -253,7 +276,7 @@ export function Presentacion(p: PresentacionProps) {
       </Diapo>
 
       {/* LA FIRMA HOY */}
-      <Diapo firma={firma}>
+      <Diapo firma={firma} pag={pag}>
         <Text style={s.kicker}>Su firma hoy</Text>
         <Text style={[s.h1, { maxWidth: 620 }]}>{firma} ya está en el sitio</Text>
         <Text style={[s.p, { marginTop: 10, maxWidth: 560 }]}>
@@ -291,7 +314,7 @@ export function Presentacion(p: PresentacionProps) {
         const enVivo = consultasDeRemate(b.consultas)
         const fmtD = (iso: string) => new Date(`${iso}T12:00:00`).toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })
         return (
-          <Diapo firma={firma}>
+          <Diapo firma={firma} pag={pag}>
             <Text style={s.kicker}>Lo que buscan en Google sobre su firma</Text>
             <Text style={[s.h1, { maxWidth: 640 }]}>
               Su ficha apareció {n(b.impresiones)} veces en Google en 90 días
@@ -330,6 +353,7 @@ export function Presentacion(p: PresentacionProps) {
       {/* 1 · CALENDARIO */}
       <Funcion
         firma={firma}
+        pag={pag}
         numero={++num}
         titulo="Sus remates, resaltados en el calendario"
         texto="El productor que busca remate recorre el calendario por fecha. Los de una firma PRO salen marcados, con el sello, en todos los listados y en la ficha de cada remate."
@@ -369,6 +393,7 @@ export function Presentacion(p: PresentacionProps) {
       {/* 2 · MAIL SEMANAL */}
       <Funcion
         firma={firma}
+        pag={pag}
         numero={++num}
         titulo="Una campaña de email por semana, con su remate primero"
         texto={`Cada lunes sale el resumen de remates de la semana${f.destinatariosSemanal ? ` a ${n(f.destinatariosSemanal)} suscriptores` : ''}. Los remates de las firmas PRO van arriba y destacados.`}
@@ -409,6 +434,7 @@ export function Presentacion(p: PresentacionProps) {
       {/* 3 · DIRECTORIO + IA */}
       <Funcion
         firma={firma}
+        pag={pag}
         numero={++num}
         titulo="Primera cuando buscan consignataria"
         texto={`En el directorio de ${f.provincia ?? 'su provincia'} y en el general, las firmas PRO van primero y con el sello. Cuando un asistente de IA consulta nuestro directorio, la respuesta también las pone adelante.`}
@@ -452,39 +478,42 @@ export function Presentacion(p: PresentacionProps) {
       {/* 4 · PRE-OFERTA */}
       <Funcion
         firma={firma}
+        pag={pag}
         numero={++num}
         titulo="Pre-oferta: compradores identificados antes del martillo"
         texto="Desde su panel arma el remate, sube cada lote con su video y lo publica. El interesado mira el video y deja su oferta y su contacto; le llega por mail y queda en el panel."
         puntos={['Llega al remate sabiendo quién está interesado y en qué lote', 'El video trabaja por usted antes del día del remate', 'El contacto del interesado nunca se publica']}
       >
         <Ventana url="consignatarias.com.ar/dashboard · Pre-ofertas" ejemplo>
-          <Image src={capt('preoferta')} style={{ width: '100%' }} />
+          <Captura pag={pag} id='preoferta' />
         </Ventana>
       </Funcion>
 
       {/* 5 · CONSULTAS */}
       <Funcion
         firma={firma}
+        pag={pag}
         numero={++num}
         titulo="Cada consulta, con nombre y contacto"
         texto="Los productores que le escriben desde su ficha o desde su página propia le llegan por mail y quedan en la bandeja del panel, con el teléfono o el email que dejaron."
         puntos={['Sin PRO se ve que hubo una consulta, pero no el contacto', 'Responde el mismo día, desde su teléfono']}
       >
         <Ventana url="consignatarias.com.ar/dashboard · Leads" ejemplo>
-          <Image src={capt('consultas')} style={{ width: '100%' }} />
+          <Captura pag={pag} id='consultas' />
         </Ventana>
       </Funcion>
 
       {/* 6 · QUIÉN TE MIRA */}
       <Funcion
         firma={firma}
+        pag={pag}
         numero={++num}
         titulo="Quién lo mira, qué día y desde dónde"
         texto="Las vistas de su ficha día por día, de dónde llegan (Google, el calendario, el directorio, una IA, directo o QR) y qué día lo miran más."
         puntos={['Sabe si un remate movió visitas a su ficha', 'Ve cuántas llegan desde ChatGPT, Copilot o Gemini', 'Elige el día para publicar y difundir']}
       >
         <Ventana url="consignatarias.com.ar/dashboard · Quién te mira" ejemplo>
-          <Image src={capt('visitas')} style={{ width: '100%' }} />
+          <Captura pag={pag} id='visitas' />
         </Ventana>
       </Funcion>
 
@@ -492,13 +521,14 @@ export function Presentacion(p: PresentacionProps) {
       {datos.mag && (
         <Funcion
           firma={firma}
+          pag={pag}
           numero={++num}
           titulo="Su negocio contra el Mercado de Cañuelas"
           texto="Cruzamos las operaciones que el Mercado Agroganadero publica lote por lote —las 22 casas, cada día de remate— contra las suyas."
           puntos={['Qué remitentes dejaron de consignarle', 'A qué precio vendió contra el promedio, categoría por categoría', 'Su cuota y su puesto entre las 22 casas']}
         >
           <Ventana url="consignatarias.com.ar/dashboard · Mercado" ejemplo>
-            <Image src={capt('mercado')} style={{ width: '100%', maxHeight: 400, objectFit: 'contain', objectPosition: 'top' }} />
+            <Captura pag={pag} id='mercado' />
           </Ventana>
         </Funcion>
       )}
@@ -507,13 +537,14 @@ export function Presentacion(p: PresentacionProps) {
       {!datos.mag && (
         <Funcion
           firma={firma}
+          pag={pag}
           numero={++num}
           titulo="Su precio contra el mercado"
           texto="Carga los promedios de su remate por categoría y se los comparamos con el Valor de Referencia de esa semana: la banda de lo que se pagó de verdad por esa categoría y peso."
           puntos={['Sabe si vendió arriba o abajo de la mediana, categoría por categoría', 'Un número para mostrarle al remitente', 'La referencia está publicada y su método es abierto']}
         >
           <Ventana url="consignatarias.com.ar/dashboard · Tu precio contra el mercado" ejemplo>
-            <Image src={capt('precio')} style={{ width: '100%' }} />
+            <Captura pag={pag} id='precio' />
           </Ventana>
         </Funcion>
       )}
@@ -521,6 +552,7 @@ export function Presentacion(p: PresentacionProps) {
       {/* 8 · WIDGET + QR */}
       <Funcion
         firma={firma}
+        pag={pag}
         numero={++num}
         titulo="Sus remates en su web y en sus catálogos"
         texto="Un widget que muestra sus próximos remates en su página web, actualizado solo, y un QR para el catálogo y la feria que lleva a su página en el sitio, con su logo, el sello y el formulario de consulta."
@@ -549,6 +581,7 @@ export function Presentacion(p: PresentacionProps) {
       {/* 9 · REPORTE MENSUAL */}
       <Funcion
         firma={firma}
+        pag={pag}
         numero={++num}
         titulo="Un reporte cada mes, sin entrar al sitio"
         texto="El primer día de cada mes le llega por mail el resumen del mes anterior."
@@ -574,7 +607,7 @@ export function Presentacion(p: PresentacionProps) {
       </Funcion>
 
       {/* INVERSIÓN */}
-      <Diapo firma={firma}>
+      <Diapo firma={firma} pag={pag}>
         <View style={{ flexDirection: 'row', gap: 36, flex: 1 }}>
           <View style={{ flex: 1 }}>
             <Text style={s.kicker}>Inversión</Text>

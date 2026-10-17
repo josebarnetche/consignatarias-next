@@ -3954,8 +3954,9 @@ export interface PropuestaMail {
   datosFirma: { valor: string; texto: string }[]
   beneficios: readonly string[]
   sitio: { impresiones: string; desde: string; ia90: number | null }
-  /** La presentación en PDF (lib/pdf/propuesta), adjunta. */
+  /** La presentación en PDF (lib/pdf/propuesta), adjunta: A4 para imprimir y 16:9 para pantalla. */
   pdf?: Buffer
+  pdf169?: Buffer
 }
 
 /**
@@ -3989,7 +3990,7 @@ export async function sendPropuestaPro(to: string, p: PropuestaMail) {
       <h1 style="margin:0 0 6px;font-size:26px;line-height:1.2;color:${ink}">PRO Consignataria</h1>
       <p style="margin:0 0 24px;font-size:15px;color:${gris}">Para ${e(p.firma)}</p>
       ${datos ? `<p style="margin:0 0 8px;font-size:12px;font-weight:600;color:${ink};text-transform:uppercase;letter-spacing:.06em">Su firma hoy en el sitio</p>${datos}` : ''}
-      <p style="margin:0 0 14px;font-size:14px;color:${ink};line-height:1.6">${p.pdf ? 'Le adjuntamos la presentación en PDF. Ahí' : `En la <a href="${p.linkPropuesta}" style="color:${acento};font-weight:600">presentación completa</a>`} está cada función con la captura de cómo queda dentro del sitio: sus remates destacados en el calendario, el mail semanal con su remate primero, la pre-oferta con video, las consultas y el panel de visitas.</p>
+      <p style="margin:0 0 14px;font-size:14px;color:${ink};line-height:1.6">${p.pdf || p.pdf169 ? 'Le adjuntamos la presentación en PDF, en versión para pantalla y para imprimir. Ahí' : `En la <a href="${p.linkPropuesta}" style="color:${acento};font-weight:600">presentación completa</a>`} está cada función con la captura de cómo queda dentro del sitio: sus remates destacados en el calendario, el mail semanal con su remate primero, la pre-oferta con video, las consultas y el panel de visitas.</p>
       <p style="margin:0 0 8px;font-size:12px;font-weight:600;color:${ink};text-transform:uppercase;letter-spacing:.06em">Qué incluye</p>
       <ul style="margin:0 0 24px;padding:0 0 0 18px;font-size:14px;line-height:1.7;color:${ink}">${p.beneficios.map((b) => `<li>${e(b)}</li>`).join('')}</ul>
       <p style="margin:0 0 6px;font-size:13px;color:${gris};line-height:1.6">El sitio tuvo ${e(p.sitio.impresiones)} impresiones en Google desde ${e(p.sitio.desde)}${p.sitio.ia90 ? `, y ${p.sitio.ia90.toLocaleString('es-AR')} visitas llegaron desde asistentes de IA en los últimos 90 días` : ''}.</p>
@@ -4014,8 +4015,13 @@ export async function sendPropuestaPro(to: string, p: PropuestaMail) {
     replyTo: 'agro@memola.com.ar',
     subject: `Propuesta PRO Consignataria — ${p.firma}`,
     html,
-    ...(p.pdf
-      ? { attachments: [{ filename: `Propuesta-PRO-${p.slug}.pdf`, content: p.pdf }] }
+    ...(p.pdf || p.pdf169
+      ? {
+          attachments: [
+            ...(p.pdf169 ? [{ filename: `Propuesta-PRO-${p.slug}-pantalla.pdf`, content: p.pdf169 }] : []),
+            ...(p.pdf ? [{ filename: `Propuesta-PRO-${p.slug}-A4.pdf`, content: p.pdf }] : []),
+          ],
+        }
       : {}),
   })
 }
