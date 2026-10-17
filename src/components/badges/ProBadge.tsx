@@ -36,7 +36,7 @@ export default function ProBadge({
       className={`
         inline-flex items-center font-terminal font-bold tracking-wider
         border border-sky-500/50 bg-gradient-to-r from-sky-500/20 to-sky-600/10
-        text-sky-400 rounded-sm
+        text-sky-400 claro:text-accent claro:border-accent/40 claro:from-accent/10 claro:to-accent/5 rounded-sm
         ${animated ? 'pro-badge-glow' : ''}
         ${sizeClasses[size]}
         ${className}
@@ -46,7 +46,7 @@ export default function ProBadge({
     >
       {/* Star icon */}
       <svg 
-        className={`${size === 'sm' ? 'w-2.5 h-2.5' : size === 'md' ? 'w-3 h-3' : 'w-4 h-4'} text-sky-400`} 
+        className={`${size === 'sm' ? 'w-2.5 h-2.5' : size === 'md' ? 'w-3 h-3' : 'w-4 h-4'} text-sky-400 claro:text-accent`} 
         fill="currentColor" 
         viewBox="0 0 20 20"
       >

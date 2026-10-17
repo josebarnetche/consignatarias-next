@@ -7,6 +7,32 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.225.0] — 2026-10-17
+
+### Landing: la Res. 201/2026 en el calendario sanitario y el tema claro legible
+
+**Sanidad en la home.** La banda `CalendarioSanitario` suma, arriba del calendario, el
+cambio 2027: desde el 1/1/2027 el productor elige el veterinario que vacuna (Res. SENASA
+201/2026), con el plazo de la Disp. DNSA 27/2026 (15/10–15/12/2026) y enlace a
+`/sanidad#vacunador-2027`.
+
+**Tema claro.** Barrido visual de la landing (captura de página completa en los dos temas):
+- Muro de consignatarias: los logos se forzaban a blanco con `filter` sobre tiles que en
+  claro son blancos — eran invisibles. En claro van en tinta (`brightness(0)`), los que
+  traen fondo propio con `mix-blend-multiply`, tiles en panel blanco y grilla visible.
+- Mapa de cobertura: las provincias sin remates eran negras macizas; ahora gris claro, y
+  el contorno de la activa en el azul de acento (no el ámbar del oscuro).
+- "¿Querés estar acá?", bloque MCP, El Corredor, botón del nav: celestes del oscuro
+  (`sky-300/400`, texto blanco sobre celeste) pasan al acento azul con contraste.
+- Semáforo de venta: el color de zona va inline; en claro baja a emerald/amber-700.
+- Calendario mensual (también en `/sanidad`): verdes `-200/-300` ilegibles → `-700/-800`.
+- Chips de ícono `bg-zinc-100` (hueso en oscuro, negro en claro) → panel con borde.
+- `ProBadge`: celeste pálido → acento en claro.
+
+Todo con la variante `claro:` — el tema oscuro queda igual, sin hex nuevos.
+
+---
+
 ## [1.224.0] — 2026-10-17
 
 ### /sanidad: la Res. SENASA 201/2026 y su reglamentación (Disp. DNSA 27/2026)

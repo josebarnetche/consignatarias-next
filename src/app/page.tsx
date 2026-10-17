@@ -388,7 +388,7 @@ export default async function LandingPage() {
             <ThemeToggle />
             <Link
               href="/mi-ganado"
-              className="text-xs font-medium text-zinc-950 bg-accent hover:bg-sky-300 transition-colors rounded py-2 px-4"
+              className="text-xs font-medium text-zinc-950 bg-accent hover:bg-sky-300 claro:text-white claro:hover:bg-accent-bright transition-colors rounded py-2 px-4"
             >
               Valuar mi rodeo
             </Link>
@@ -466,7 +466,7 @@ export default async function LandingPage() {
           {/* Par productor: ya sabe cuánto vale su hacienda (widget) → ahora, ¿conviene
               venderla hoy? El semáforo gratis + el camino a la decisión completa. Primera
               vez que el valor PRO Usuario aparece en la puerta de entrada. */}
-          <div className="mt-6 rounded-lg border border-sky-500/20 bg-sky-950/10 p-5 space-y-4">
+          <div className="mt-6 rounded-lg border border-sky-500/20 bg-sky-950/10 claro:border-zinc-800 claro:bg-terminal-panel claro:shadow-panel p-5 space-y-4">
             <SellZoneBadge categoriaLabel="novillo" />
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <p className="flex-1 min-w-0 text-sm text-zinc-300 leading-relaxed">
@@ -475,7 +475,7 @@ export default async function LandingPage() {
               </p>
               <Link
                 href="/mercado/vender-ahora"
-                className="shrink-0 inline-flex items-center justify-center gap-2 text-sm font-medium text-zinc-100 border border-sky-500/40 hover:border-sky-400 hover:text-ink transition-colors rounded py-2.5 px-5 whitespace-nowrap"
+                className="shrink-0 inline-flex items-center justify-center gap-2 text-sm font-medium text-zinc-100 border border-sky-500/40 hover:border-sky-400 claro:border-accent/40 claro:text-accent claro:hover:border-accent hover:text-ink transition-colors rounded py-2.5 px-5 whitespace-nowrap"
               >
                 ¿Vendo ahora?
                 <IconArrowRight />
@@ -559,7 +559,7 @@ export default async function LandingPage() {
             cualquier cosa para el productor: la home le hablaba primero a quien no la usa. */}
         <section className="max-w-7xl mx-auto px-6">
           {/* Conversion block — shown after value proofs */}
-          <div className="relative z-10 mt-8 rounded-lg border border-sky-500/20 bg-gradient-to-br from-sky-950/30 via-zinc-900/60 to-zinc-900/60 p-8 md:p-10 backdrop-blur-sm">
+          <div className="relative z-10 mt-8 rounded-lg border border-sky-500/20 bg-gradient-to-br from-sky-950/30 via-zinc-900/60 to-zinc-900/60 claro:from-accent/[0.06] claro:via-terminal-panel claro:to-terminal-panel claro:border-accent/20 claro:shadow-panel p-8 md:p-10 backdrop-blur-sm">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
               <div className="max-w-2xl">
                 <div className="inline-flex items-center gap-2 text-[0.65rem] text-accent/80 uppercase tracking-widest mb-3">
@@ -577,9 +577,9 @@ export default async function LandingPage() {
                 href="https://calendar.app.google/gr2BXY1ooDMki8TK7"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative flex items-center justify-center gap-3 text-base md:text-lg font-medium text-zinc-950 bg-gradient-to-br from-sky-300 via-sky-400 to-sky-500 hover:from-sky-200 hover:via-sky-300 hover:to-sky-400 transition-all rounded-md py-5 px-10 shadow-[0_0_40px_rgba(56,189,248,0.35)] hover:shadow-[0_0_60px_rgba(56,189,248,0.55)] whitespace-nowrap shrink-0"
+                className="group relative flex items-center justify-center gap-3 text-base md:text-lg font-medium text-zinc-950 bg-gradient-to-br from-sky-300 via-sky-400 to-sky-500 hover:from-sky-200 hover:via-sky-300 hover:to-sky-400 transition-all rounded-md py-5 px-10 shadow-[0_0_40px_rgba(56,189,248,0.35)] hover:shadow-[0_0_60px_rgba(56,189,248,0.55)] claro:bg-none claro:bg-accent claro:hover:bg-accent-bright claro:text-white claro:shadow-none claro:hover:shadow-none whitespace-nowrap shrink-0"
               >
-                <span className="w-2 h-2 rounded-full bg-black/70 animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-black/70 claro:bg-white/80 animate-pulse" />
                 Reservar reunión
                 <IconArrowRight />
               </a>
@@ -612,7 +612,7 @@ export default async function LandingPage() {
           <div className="rounded-2xl border border-sky-500/25 bg-gradient-to-br from-sky-500/[0.06] to-transparent p-8 sm:p-12">
             <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-10 items-center">
               <div>
-                <span className="inline-flex items-center gap-2 rounded-full border border-sky-500/40 bg-sky-500/[0.08] px-3 py-1 text-xs font-mono uppercase tracking-widest text-sky-300">
+                <span className="inline-flex items-center gap-2 rounded-full border border-sky-500/40 bg-sky-500/[0.08] px-3 py-1 text-xs font-mono uppercase tracking-widest text-sky-300 claro:text-accent claro:border-accent/30 claro:bg-accent/[0.06]">
                   <span className="h-1.5 w-1.5 rounded-full bg-accent" /> Para empresas · API y MCP
                 </span>
                 <h2 className="mt-5 text-3xl sm:text-4xl font-bold text-ink leading-tight">
@@ -627,7 +627,7 @@ export default async function LandingPage() {
                 <div className="mt-7 flex flex-wrap gap-3">
                   <Link
                     href="/mcp"
-                    className="rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-zinc-950 hover:bg-sky-300 transition-colors"
+                    className="rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-zinc-950 hover:bg-sky-300 claro:text-white claro:hover:bg-accent-bright transition-colors"
                   >
                     Ver el MCP y sus tools
                   </Link>
@@ -639,20 +639,20 @@ export default async function LandingPage() {
                   </Link>
                 </div>
               </div>
-              <div className="rounded-xl border border-zinc-800 bg-black/40 p-5 font-mono text-xs text-zinc-400 overflow-x-auto">
-                <p className="text-zinc-600 mb-2"># conectá cualquier agente MCP</p>
+              <div className="rounded-xl border border-zinc-800 bg-black/40 claro:bg-terminal-panel claro:shadow-panel p-5 font-mono text-xs text-zinc-400 overflow-x-auto">
+                <p className="text-zinc-600 claro:text-zinc-500 mb-2"># conectá cualquier agente MCP</p>
                 <pre className="text-zinc-300">{`{
   "consignatarias": {
     "url": "https://www.consignatarias.com.ar/api/mcp"
   }
 }`}</pre>
                 {BANDAS_HOME[0] && (
-                  <p className="text-sky-300 mt-4">
+                  <p className="text-sky-300 claro:text-accent mt-4">
                     value_cattle_lot(&quot;{BANDAS_HOME[0].categoria.toLowerCase()}&quot;) → mediana ${fmt(BANDAS_HOME[0].mediana)}/kg · P10–P90 {fmt(BANDAS_HOME[0].p10)}–{fmt(BANDAS_HOME[0].p90)} · {fmt(BANDAS_HOME[0].lotes)} lotes
                   </p>
                 )}
-                <p className="text-sky-300">livestock_prices(&quot;vacas&quot;)</p>
-                <p className="text-sky-300">inmag_history(desde, hasta)</p>
+                <p className="text-sky-300 claro:text-accent">livestock_prices(&quot;vacas&quot;)</p>
+                <p className="text-sky-300 claro:text-accent">inmag_history(desde, hasta)</p>
               </div>
             </div>
           </div>
@@ -666,10 +666,10 @@ export default async function LandingPage() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <span className="relative flex h-2 w-2">
-                  <span className="absolute inset-0 rounded-full bg-sky-400/40 animate-ping" />
-                  <span className="relative rounded-full h-2 w-2 bg-sky-400" />
+                  <span className="absolute inset-0 rounded-full bg-sky-400/40 claro:bg-accent/40 animate-ping" />
+                  <span className="relative rounded-full h-2 w-2 bg-sky-400 claro:bg-accent" />
                 </span>
-                <span className="text-xs font-mono uppercase tracking-[0.18em] text-sky-400 font-semibold">
+                <span className="text-xs font-mono uppercase tracking-[0.18em] text-sky-400 claro:text-accent font-semibold">
                   Mesa de hacienda · cierre mensual
                 </span>
               </div>
@@ -681,24 +681,24 @@ export default async function LandingPage() {
               <p className="text-base md:text-lg text-zinc-300 leading-relaxed mb-6 font-mono max-w-2xl">
                 El cierre mensual del mercado bovino argentino. <span className="text-ink">12 páginas</span> con
                 INMAG en USD reales, comparable interanual, 18 categorías de hacienda del MAG, lectura del ciclo y tesis del
-                mes próximo. <span className="text-sky-400">PDF gratuito con email.</span>
+                mes próximo. <span className="text-sky-400 claro:text-accent">PDF gratuito con email.</span>
               </p>
 
               <ul className="reveal-stagger space-y-2.5 text-sm font-mono text-zinc-400 mb-8">
                 <li className="flex items-start gap-3">
-                  <span className="text-sky-400 font-mono">→</span>
+                  <span className="text-sky-400 claro:text-accent font-mono">→</span>
                   INMAG diario + comparable interanual real en USD oficial y blue
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="text-sky-400 font-mono">→</span>
+                  <span className="text-sky-400 claro:text-accent font-mono">→</span>
                   Las 18 subcategorías del MAG con min / máx / promedio / mediana
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="text-sky-400 font-mono">→</span>
+                  <span className="text-sky-400 claro:text-accent font-mono">→</span>
                   Tesis del mes próximo con escenarios y reglas operativas por perfil
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="text-sky-400 font-mono">→</span>
+                  <span className="text-sky-400 claro:text-accent font-mono">→</span>
                   Bibliografía citada (FAUBA, CACG, UNS) y metodología abierta
                 </li>
               </ul>
@@ -706,7 +706,7 @@ export default async function LandingPage() {
               <div className="flex flex-wrap items-center gap-4">
                 <a
                   href="/el-corredor?ref=homepage"
-                  className="inline-flex items-center gap-2 bg-sky-400 hover:bg-sky-300 active:bg-sky-500 text-zinc-950 font-mono font-bold uppercase tracking-widest text-sm px-6 py-3 rounded transition-colors"
+                  className="inline-flex items-center gap-2 bg-sky-400 hover:bg-sky-300 active:bg-sky-500 claro:bg-accent claro:hover:bg-accent-bright claro:text-white text-zinc-950 font-mono font-bold uppercase tracking-widest text-sm px-6 py-3 rounded transition-colors"
                 >
                   Recibir Edición {CORREDOR.edition_short} →
                 </a>
