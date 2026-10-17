@@ -1,5 +1,5 @@
 {
-  "generado": "2026-10-17T21:21:52.580Z",
+  "generado": "2026-10-17T22:59:53.737Z",
   "leads_de_compra": 7,
   "matches": [
     {
@@ -209,6 +209,16 @@
           "url": "https://www.decampoacampo.com/__dcac/75-Vaquillonas-para-madre-290kg-invernada-34212"
         },
         {
+          "sku": "34190",
+          "titulo": "60 Terneras Aberdeen Angus Negro y Colorado de 240kg",
+          "score": 50,
+          "motivos": [
+            "el lead no declaró categoría",
+            "misma provincia"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/60-Terneras-240kg-invernada-34190"
+        },
+        {
           "sku": "34178",
           "titulo": "55 Terneros y Terneras Aberdeen Angus Negro de 230kg",
           "score": 50,
@@ -237,16 +247,6 @@
             "misma provincia"
           ],
           "url": "https://www.decampoacampo.com/__dcac/35-Vacas-CUT-con-cria-470kg-invernada-34159"
-        },
-        {
-          "sku": "34153",
-          "titulo": "70 Vaquillonas para madre Aberdeen Angus Negro y Colorado 320kg",
-          "score": 50,
-          "motivos": [
-            "el lead no declaró categoría",
-            "misma provincia"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/70-Vaquillonas-para-madre-320kg-invernada-34153"
         }
       ]
     },
