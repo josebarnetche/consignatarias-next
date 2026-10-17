@@ -166,7 +166,7 @@ export default function LotesPage() {
         <section className="max-w-5xl mx-auto px-4 pb-2">
           <div className="flex items-baseline justify-between gap-3 mb-3">
             <h2 className="text-label tracking-widest text-zinc-400">OFRECIDOS DIRECTO POR EL PRODUCTOR</h2>
-            <p className="text-xxs text-zinc-600">{PROPIOS.length} ofertas · la operación la hacemos nosotros</p>
+            <p className="text-xxs text-zinc-600">{PROPIOS.length} ofertas · le acercamos tu oferta al productor; la venta la cierra él</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {PROPIOS.map((o) => {
