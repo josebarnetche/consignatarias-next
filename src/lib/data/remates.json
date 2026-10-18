@@ -23010,5 +23010,26 @@
     "source": "manual",
     "sourceUrl": null,
     "status": "completed"
+  },
+  {
+    "id": 100008,
+    "title": "5° Remate de Primavera · Cabaña El Tigre",
+    "consignatariaName": "Reggi y Cia. SRL",
+    "consignatariaSlug": "reggi",
+    "date": "2026-10-23",
+    "time": "17:30",
+    "location": "Sociedad Rural de Mercedes, Mercedes",
+    "province": "CORRIENTES",
+    "type": "reproductores",
+    "mainCategory": "toros",
+    "estimatedHeads": 105,
+    "description": "50 toros, 5 vaquillas Elite, 50 vaquillas de El Altillo, 15 carneros y 30 yeguas bayas y alazanas. Cabañas invitadas: Doña Julia, La Correntina y El Quebracho. Físico y por streaming.",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "flyerUrl": null,
+    "firmaAuctionId": 8,
+    "source": "manual",
+    "sourceUrl": null,
+    "status": "scheduled"
   }
 ]
