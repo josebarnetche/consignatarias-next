@@ -22799,5 +22799,26 @@
     "sourceUrl": "www.ferialvarez.com.ar",
     "id": 1200,
     "status": "scheduled"
+  },
+  {
+    "id": 100001,
+    "title": "Remate Anual La Perdiz Mirungá",
+    "consignatariaName": "Kofman y Lissarrague SRL",
+    "consignatariaSlug": "kofman-y-lissarrague",
+    "date": "2026-08-11",
+    "time": null,
+    "location": "Estancia Mirungá, Paso de los Libres",
+    "province": "CORRIENTES",
+    "type": "reproductores",
+    "mainCategory": "vaquillonas",
+    "estimatedHeads": 310,
+    "description": "Remate anual de la cabaña La Perdiz Mirungá (Eduardo Jaureguiberry): 10 vaquillas y terneras elite, 300 vaquillonas preñadas y para servicio.",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "flyerUrl": null,
+    "firmaAuctionId": 1,
+    "source": "manual",
+    "sourceUrl": null,
+    "status": "completed"
   }
 ]
