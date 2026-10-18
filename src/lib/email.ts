@@ -3,6 +3,7 @@ import { logEvent, enviarEnSegundoPlano } from './ops'
 import { SEGMENT_SOURCES, PRODUCT_UPDATE_ONLY } from './newsletter-segments'
 import { computeSpread, spreadReading } from './leads/spread'
 import { urlBaja, urlBajaOneClick } from '@/lib/newsletter/baja'
+import { elegirDestacado } from '@/lib/newsletter/remates-semana'
 
 let resendInstance: Resend | null = null
 
@@ -1147,6 +1148,9 @@ interface FeaturedRemate {
   slug: string
   heads: number | null
   isPro: boolean
+  description?: string | null
+  /** Ruta de la ficha del remate (/remates/…). */
+  path?: string
 }
 
 export async function sendWeeklyNewsletter(
@@ -1194,7 +1198,31 @@ export function buildWeeklyNewsletterHtml(
     return `${d}/${m}`
   }
 
-  const rematesHtml = featuredRemates.map(r => `
+  // Cada remate lleva a su ficha, con UTM: así la firma ve en su panel las visitas que
+  // le mandó el mail (antes el mail no tenía un solo enlace por remate).
+  const utm = 'utm_source=newsletter&utm_medium=email&utm_campaign=remates-semana'
+  const enlace = (path?: string) => `${APP_URL}${path ?? '/remates'}?${utm}`
+
+  // DESTACADO DE LA SEMANA (19-10-2026): el remate PRO que más dice de sí mismo va
+  // arriba, grande, con lo que remata y un botón a la ficha y otro a la firma.
+  const destacado = elegirDestacado(featuredRemates.map((r) => ({ ...r, path: r.path ?? '/remates' })))
+  const resto = destacado ? featuredRemates.filter((r) => !(r.title === destacado.title && r.date === destacado.date && r.slug === destacado.slug)) : featuredRemates
+  const fechaLarga = (d: string) =>
+    new Date(d + 'T12:00:00').toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' })
+  const destacadoHtml = destacado ? `
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#18181b;border:1px solid rgba(251,191,36,.55);border-radius:2px;margin-bottom:18px">
+      <tr><td style="padding:18px 18px 20px">
+        <p style="font-family:${MONO};color:#fbbf24;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 10px;font-weight:700">&#9733; Destacado de la semana</p>
+        <p style="font-family:${MONO};color:#fafafa;font-size:17px;font-weight:700;margin:0 0 6px;line-height:1.3">${escapeHtml(destacado.title)}</p>
+        <p style="font-family:${MONO};color:#a1a1aa;font-size:12px;margin:0 0 12px">${escapeHtml(destacado.consignataria)} &middot; ${escapeHtml(fechaLarga(destacado.date))}${destacado.time ? ` &middot; ${destacado.time} hs` : ''}<br>${escapeHtml(destacado.location)}</p>
+        ${destacado.description ? `<p style="font-family:${MONO};color:#d4d4d8;font-size:12px;margin:0 0 16px;line-height:1.55">${escapeHtml(destacado.description)}</p>` : ''}
+        <a href="${enlace(destacado.path)}" style="font-family:${MONO};background:#fbbf24;color:#09090b;padding:10px 18px;text-decoration:none;border-radius:2px;display:inline-block;font-size:12px;font-weight:700;margin:0 6px 6px 0">Ver el remate &rarr;</a>
+        <a href="${APP_URL}/go/${encodeURIComponent(destacado.slug)}?${utm}" style="font-family:${MONO};border:1px solid #3f3f46;color:#fafafa;padding:9px 16px;text-decoration:none;border-radius:2px;display:inline-block;font-size:12px;margin:0 0 6px">Consultar a ${escapeHtml(destacado.consignataria)}</a>
+      </td></tr>
+    </table>` : ''
+
+  const rematesHtml = resto.map(r => `
+    <a href="${enlace(r.path)}" style="text-decoration:none;display:block">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#18181b;border:1px solid ${r.isPro ? 'rgba(251,191,36,.5)' : '#27272a'};${r.isPro ? 'border-left:3px solid #fbbf24;' : ''}border-radius:2px;margin-bottom:8px">
       <tr><td style="padding:12px 14px">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
@@ -1205,6 +1233,7 @@ export function buildWeeklyNewsletterHtml(
         <p style="font-family:${MONO};color:#71717a;font-size:11px;margin:0">${escapeHtml(r.location)}${r.heads ? ` &middot; ${r.heads.toLocaleString('es-AR')} cab` : ''}</p>
       </td></tr>
     </table>
+    </a>
   `).join('')
 
   return `
@@ -1223,10 +1252,10 @@ export function buildWeeklyNewsletterHtml(
       <p style="font-family:${MONO};color:#71717a;font-size:12px;margin:0 0 18px">${escapeHtml(weekRange)} &middot; ${totalRemates} remates programados en el pa&iacute;s</p>
     </td></tr>
 
-    <tr><td>${rematesHtml}</td></tr>
+    <tr><td>${destacadoHtml}${rematesHtml}</td></tr>
 
     <tr><td align="center" style="padding:20px 0">
-      <a href="${APP_URL}/remates" style="font-family:${MONO};background:#38bdf8;color:#09090b;padding:11px 26px;text-decoration:none;border-radius:2px;display:inline-block;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Ver todos los remates &rarr;</a>
+      <a href="${APP_URL}/remates?${utm}" style="font-family:${MONO};background:#38bdf8;color:#09090b;padding:11px 26px;text-decoration:none;border-radius:2px;display:inline-block;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Ver todos los remates &rarr;</a>
     </td></tr>
 
     <tr><td style="background:#18181b;border:1px solid rgba(251,191,36,.4);border-radius:2px;padding:12px 14px;text-align:center">

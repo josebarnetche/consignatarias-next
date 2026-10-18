@@ -1,5 +1,6 @@
 import type { Auction } from '@/lib/db/schema'
 import { canonicoDeRemate } from '@/lib/remates-pro'
+import { rematePath } from '@/lib/remate-slug'
 
 /** Tope de remates del newsletter semanal (el mail no crece con la semana). */
 export const NEWSLETTER_CAP = 10
@@ -14,6 +15,10 @@ export interface RemateNewsletter {
   slug: string
   heads: number | null
   isPro: boolean
+  /** Qué se remata, si la firma lo cargó. Lo usa el destacado. */
+  description?: string | null
+  /** Ficha del remate en el sitio (ruta relativa). */
+  path: string
 }
 
 /**
@@ -42,6 +47,8 @@ export function armarRematesNewsletter(
     slug: canonicoDeRemate(a.consignatariaSlug) ?? a.consignatariaSlug,
     heads: a.estimatedHeads,
     isPro,
+    description: a.description || null,
+    path: rematePath(a),
   })
   const pro: RemateNewsletter[] = []
   const regulares: RemateNewsletter[] = []
@@ -52,4 +59,20 @@ export function armarRematesNewsletter(
   }
   const remates = [...pro, ...regulares].slice(0, Math.max(0, cap))
   return { remates, proCount: remates.filter((r) => r.isPro).length }
+}
+
+/**
+ * El remate que encabeza el mail (19-10-2026): uno PRO, el que más dice de sí mismo.
+ * Primero el que tiene descripción cargada (la firma contó qué remata), después el de
+ * más cabezas, después el más próximo. Sin PRO en la semana, no hay destacado.
+ */
+export function elegirDestacado(remates: RemateNewsletter[]): RemateNewsletter | null {
+  const pro = remates.filter((r) => r.isPro)
+  if (!pro.length) return null
+  return [...pro].sort(
+    (a, b) =>
+      Number(!!b.description) - Number(!!a.description) ||
+      (b.heads ?? 0) - (a.heads ?? 0) ||
+      a.date.localeCompare(b.date),
+  )[0]
 }
