@@ -50,6 +50,15 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
 
+      # Los remates que las firmas cargan o corrigen desde su panel pisan los del
+      # scrape (misma fecha y localidad). Va justo después del scraper, que reescribe
+      # el JSON entero. scripts/remates-de-firmas.ts
+      - name: Remates cargados por las firmas
+        run: npx tsx scripts/remates-de-firmas.ts
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+
       - name: Match YouTube videos
         run: npx tsx scripts/match-youtube-videos.ts
         env:

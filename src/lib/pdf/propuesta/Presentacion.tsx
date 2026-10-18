@@ -73,7 +73,13 @@ const n = (x: number) => x.toLocaleString('es-AR')
  */
 export type FormatoPresentacion = 'a4' | '169'
 const TAM_169 = { width: 960, height: 540 }
-type Pag = ReturnType<typeof pagina>
+/**
+ * `reales`: capturas del panel de ESTA firma (id → archivo), cuando se sacaron
+ * (scripts/propuesta-capturas-firma.mjs). Reemplazan a la muestra y la ventana deja de
+ * decir "datos de ejemplo". Viven fuera del repo —llevan sus visitas y sus búsquedas—,
+ * así que sólo existen en la máquina que arma la propuesta a mano.
+ */
+type Pag = ReturnType<typeof pagina> & { reales: Record<string, string> }
 function pagina(f: FormatoPresentacion) {
   return f === '169'
     ? { size: TAM_169, orientation: undefined, altoCaptura: 300 }
@@ -148,7 +154,7 @@ function Ventana({ url, ejemplo, children }: { url: string; ejemplo?: boolean; c
 /** Captura del panel, con el alto máximo del formato. */
 function Captura({ id, pag }: { id: string; pag: Pag }) {
   const { altoCaptura } = pag
-  return <Image src={path.join(CAPTURAS, `${id}.png`)} style={{ width: '100%', maxHeight: altoCaptura, objectFit: 'contain', objectPosition: 'top' }} />
+  return <Image src={pag.reales[id] ?? path.join(CAPTURAS, `${id}.png`)} style={{ width: '100%', maxHeight: altoCaptura, objectFit: 'contain', objectPosition: 'top' }} />
 }
 
 /** Diapositiva de una función: texto a la izquierda, lo que se ve a la derecha. */
@@ -218,10 +224,11 @@ export interface PresentacionProps {
   porMes: { mes: string; impresiones: number; parcial?: boolean }[]
   busquedas: BusquedasFicha | null
   formato?: FormatoPresentacion
+  capturasReales?: Record<string, string>
 }
 
 export function Presentacion(p: PresentacionProps) {
-  const pag = pagina(p.formato ?? 'a4')
+  const pag: Pag = { ...pagina(p.formato ?? 'a4'), reales: p.capturasReales ?? {} }
   const { firma, datos, sitio, f } = p
   let num = 0
 
@@ -350,6 +357,22 @@ export function Presentacion(p: PresentacionProps) {
         )
       })()}
 
+      {/* SU PANEL HOY (sólo con capturas reales de la firma) */}
+      {pag.reales.panel && (
+        <Funcion
+          firma={firma}
+          pag={pag}
+          numero={++num}
+          titulo="Su panel, hoy"
+          texto={`Así se ve hoy el panel de ${firma}, con sus datos: las visitas de su ficha, de dónde llegan y lo que se mueve en su zona. Entra con su usuario y su contraseña.`}
+          puntos={['Es lo que va a ver al entrar, sin configurar nada', 'Las cifras son las de su ficha, no un ejemplo']}
+        >
+          <Ventana url="consignatarias.com.ar/dashboard">
+            <Captura pag={pag} id='panel' />
+          </Ventana>
+        </Funcion>
+      )}
+
       {/* 1 · CALENDARIO */}
       <Funcion
         firma={firma}
@@ -475,6 +498,20 @@ export function Presentacion(p: PresentacionProps) {
         </View>
       </Funcion>
 
+      {/* SUS REMATES, DESDE SU PANEL */}
+      <Funcion
+        firma={firma}
+        pag={pag}
+        numero={++num}
+        titulo="Sus remates, cargados y corregidos por usted"
+        texto="Los remates que el sitio encuentra solo ya figuran en su panel. Desde ahí corrige la hora o el lugar, suma catálogo, video y flyer, carga remates nuevos y, después del martillo, los promedios por categoría."
+        puntos={['Lo que guarda se ve en su ficha al instante y en el calendario y el mail semanal en menos de una hora', 'El flyer sale en la ficha del remate', 'Los promedios se comparan con el Valor de Referencia de esa semana']}
+      >
+        <Ventana url="consignatarias.com.ar/dashboard · Remates" ejemplo={!pag.reales.remates}>
+          <Captura pag={pag} id='remates' />
+        </Ventana>
+      </Funcion>
+
       {/* 4 · PRE-OFERTA */}
       <Funcion
         firma={firma}
@@ -484,7 +521,7 @@ export function Presentacion(p: PresentacionProps) {
         texto="Desde su panel arma el remate, sube cada lote con su video y lo publica. El interesado mira el video y deja su oferta y su contacto; le llega por mail y queda en el panel."
         puntos={['Llega al remate sabiendo quién está interesado y en qué lote', 'El video trabaja por usted antes del día del remate', 'El contacto del interesado nunca se publica']}
       >
-        <Ventana url="consignatarias.com.ar/dashboard · Pre-ofertas" ejemplo>
+        <Ventana url="consignatarias.com.ar/dashboard · Pre-ofertas" ejemplo={!pag.reales.preoferta}>
           <Captura pag={pag} id='preoferta' />
         </Ventana>
       </Funcion>
@@ -498,7 +535,7 @@ export function Presentacion(p: PresentacionProps) {
         texto="Los productores que le escriben desde su ficha o desde su página propia le llegan por mail y quedan en la bandeja del panel, con el teléfono o el email que dejaron."
         puntos={['Sin PRO se ve que hubo una consulta, pero no el contacto', 'Responde el mismo día, desde su teléfono']}
       >
-        <Ventana url="consignatarias.com.ar/dashboard · Leads" ejemplo>
+        <Ventana url="consignatarias.com.ar/dashboard · Leads" ejemplo={!pag.reales.consultas}>
           <Captura pag={pag} id='consultas' />
         </Ventana>
       </Funcion>
@@ -512,7 +549,7 @@ export function Presentacion(p: PresentacionProps) {
         texto="Las vistas de su ficha día por día, de dónde llegan (Google, el calendario, el directorio, una IA, directo o QR) y qué día lo miran más."
         puntos={['Sabe si un remate movió visitas a su ficha', 'Ve cuántas llegan desde ChatGPT, Copilot o Gemini', 'Elige el día para publicar y difundir']}
       >
-        <Ventana url="consignatarias.com.ar/dashboard · Quién te mira" ejemplo>
+        <Ventana url="consignatarias.com.ar/dashboard · Quién te mira" ejemplo={!pag.reales.visitas}>
           <Captura pag={pag} id='visitas' />
         </Ventana>
       </Funcion>
@@ -527,7 +564,7 @@ export function Presentacion(p: PresentacionProps) {
           texto="Cruzamos las operaciones que el Mercado Agroganadero publica lote por lote —las 22 casas, cada día de remate— contra las suyas."
           puntos={['Qué remitentes dejaron de consignarle', 'A qué precio vendió contra el promedio, categoría por categoría', 'Su cuota y su puesto entre las 22 casas']}
         >
-          <Ventana url="consignatarias.com.ar/dashboard · Mercado" ejemplo>
+          <Ventana url="consignatarias.com.ar/dashboard · Mercado" ejemplo={!pag.reales.mercado}>
             <Captura pag={pag} id='mercado' />
           </Ventana>
         </Funcion>
@@ -543,7 +580,7 @@ export function Presentacion(p: PresentacionProps) {
           texto="Carga los promedios de su remate por categoría y se los comparamos con el Valor de Referencia de esa semana: la banda de lo que se pagó de verdad por esa categoría y peso."
           puntos={['Sabe si vendió arriba o abajo de la mediana, categoría por categoría', 'Un número para mostrarle al remitente', 'La referencia está publicada y su método es abierto']}
         >
-          <Ventana url="consignatarias.com.ar/dashboard · Tu precio contra el mercado" ejemplo>
+          <Ventana url="consignatarias.com.ar/dashboard · Tu precio contra el mercado" ejemplo={!pag.reales.precio}>
             <Captura pag={pag} id='precio' />
           </Ventana>
         </Funcion>
@@ -618,7 +655,7 @@ export function Presentacion(p: PresentacionProps) {
             <Text style={[s.kicker, { marginTop: 26 }]}>Cómo empezamos</Text>
             {[
               'Reclamar la ficha de la firma en el sitio (verificamos que la pide la firma).',
-              'Entrar con su email en consignatarias.com.ar/login: llega un enlace, sin contraseña.',
+              'Entrar en consignatarias.com.ar/login con su usuario y contraseña, o con el enlace que le llega al mail.',
               'Activar PRO desde el enlace de abajo.',
               'Cargar remates y lotes desde el panel.',
             ].map((t, i) => (

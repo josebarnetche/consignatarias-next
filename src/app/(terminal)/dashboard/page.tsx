@@ -23,6 +23,9 @@ import { construirOrigenVisitas, type OrigenVisitas } from '@/lib/reports/origen
 import { getPreofertasDeFirma, getOfertasDeFirma } from '@/lib/preofertas-firma'
 import { getResultadosVsMercado, type ResultadoVsMercado } from '@/lib/reports/resultado-vs-mercado'
 import { getBusquedasFicha, type BusquedasFicha } from '@/lib/gsc/fichas'
+import { claveRemate } from '@/lib/dal/auctions'
+import { provinciaNombre } from '@/lib/ui/tokens'
+import type { Auction } from '@/lib/db/schema'
 
 export const dynamic = 'force-dynamic'
 
@@ -186,15 +189,6 @@ export default async function DashboardPage({
     )
   }
 
-  // Get upcoming scraped auctions for this consignataria
-  const today = new Date().toISOString().slice(0, 10)
-  const scrapedAuctions = consignataria
-    ? (rematesData as { consignatariaSlug: string; date: string; title: string; location: string; time: string | null }[])
-        .filter(r => (getCanonicalSlug(r.consignatariaSlug) || r.consignatariaSlug) === consignataria.canonical_slug && r.date >= today)
-        .sort((a, b) => a.date.localeCompare(b.date))
-        .slice(0, 10)
-    : []
-
   // Get owner-managed auctions from Supabase
   let ownerAuctions: {
     id: number
@@ -209,6 +203,8 @@ export default async function DashboardPage({
     description: string | null
     catalog_url: string | null
     youtube_url: string | null
+    flyer_url: string | null
+    reemplaza_clave: string | null
     status: string
   }[] = []
   if (consignataria) {
@@ -231,9 +227,34 @@ export default async function DashboardPage({
       description: a.description,
       catalog_url: a.catalog_url,
       youtube_url: a.youtube_url,
+      flyer_url: a.flyer_url,
+      reemplaza_clave: a.reemplaza_clave,
       status: a.status ?? 'scheduled',
     }))
   }
+
+  // Remates del calendario de esta firma, sin los que ella ya cargó o corrigió: esos
+  // aparecen en su lista (y el calendario los toma de ahí, scripts/remates-de-firmas.ts).
+  // Va el remate completo para poder precargar el formulario cuando lo quiera corregir.
+  const today = new Date().toISOString().slice(0, 10)
+  const corregidos = new Set([
+    ...ownerAuctions.map((a) => claveRemate({ date: a.date, location: a.location ?? '' })),
+    ...ownerAuctions.map((a) => a.reemplaza_clave).filter((c): c is string => !!c),
+  ])
+  const scrapedAuctions = consignataria
+    ? (rematesData as unknown as Auction[])
+        .filter(r => r.firmaAuctionId == null
+          && (getCanonicalSlug(r.consignatariaSlug) || r.consignatariaSlug) === consignataria.canonical_slug
+          && r.date >= today
+          && !corregidos.has(claveRemate(r)))
+        .sort((a, b) => a.date.localeCompare(b.date))
+        .slice(0, 10)
+        .map((r) => ({
+          clave: claveRemate(r), title: r.title, date: r.date, time: r.time, location: r.location,
+          province: r.province, type: r.type, main_category: r.mainCategory, estimated_heads: r.estimatedHeads,
+          description: r.description, catalog_url: r.catalogUrl, youtube_url: r.youtubeUrl,
+        }))
+    : []
 
   // Get submitted auction results
   const { data: auctionResults } = await service
@@ -548,7 +569,11 @@ export default async function DashboardPage({
     // cualquier slug que lo contuviera y el ranking se armaba con firmas mezcladas.
     const canon = (s: string | undefined) => (s ? getCanonicalSlug(s) || s : '')
     const myAuctions = allAuctions.filter(a => canon(a.consignatariaSlug) === consignataria.canonical_slug)
-    const myProvince = myAuctions[0]?.province || ''
+    // La provincia donde más rematan, no la del primer remate del archivo: Reggi (Corrientes)
+    // salía "#47 en BUENOS AIRES" porque su primer remate listado era un televisado en Mercedes.
+    const porProvincia = new Map<string, number>()
+    for (const a of myAuctions) if (a.province) porProvincia.set(a.province, (porProvincia.get(a.province) ?? 0) + 1)
+    const myProvince = [...porProvincia.entries()].sort((x, y) => y[1] - x[1])[0]?.[0] || ''
     
     if (myProvince) {
       // Count remates per consignataria in this province
@@ -571,7 +596,7 @@ export default async function DashboardPage({
       provincialRank = {
         position: myPosition >= 0 ? myPosition + 1 : 0,
         total: sorted.length,
-        province: myProvince,
+        province: provinciaNombre(myProvince),
       }
     }
   }

@@ -499,6 +499,8 @@ export type Database = {
           date: string
           description: string | null
           estimated_heads: number | null
+          flyer_url: string | null
+          reemplaza_clave: string | null
           id: number
           location: string | null
           main_category: string | null
@@ -518,6 +520,8 @@ export type Database = {
           date: string
           description?: string | null
           estimated_heads?: number | null
+          flyer_url?: string | null
+          reemplaza_clave?: string | null
           id?: never
           location?: string | null
           main_category?: string | null
@@ -537,6 +541,8 @@ export type Database = {
           date?: string
           description?: string | null
           estimated_heads?: number | null
+          flyer_url?: string | null
+          reemplaza_clave?: string | null
           id?: never
           location?: string | null
           main_category?: string | null

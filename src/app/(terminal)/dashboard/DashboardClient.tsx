@@ -46,6 +46,8 @@ import CambiarContrasena from '@/components/dashboard/CambiarContrasena'
 import type { BusquedasFicha } from '@/lib/gsc/fichas'
 import type { ResultadoVsMercado as ResultadoVsMercadoDatos } from '@/lib/reports/resultado-vs-mercado'
 import type { OrigenVisitas as OrigenVisitasDatos } from '@/lib/reports/origen-visitas'
+import { provinciaNombre } from '@/lib/ui/tokens'
+import { mensajeError } from '@/lib/ui/mensaje-error'
 
 interface Consignataria {
   display_name: string
@@ -73,6 +75,15 @@ interface ScrapedAuction {
   date: string
   location: string
   time: string | null
+  /** "fecha|LOCALIDAD": con esto la corrección de la firma reemplaza a este remate. */
+  clave?: string
+  province?: string
+  type?: string
+  main_category?: string
+  estimated_heads?: number | null
+  description?: string
+  catalog_url?: string | null
+  youtube_url?: string | null
 }
 
 interface OwnerAuction {
@@ -88,6 +99,8 @@ interface OwnerAuction {
   description: string | null
   catalog_url: string | null
   youtube_url: string | null
+  flyer_url?: string | null
+  reemplaza_clave?: string | null
   status: string
 }
 
@@ -329,7 +342,7 @@ export default function DashboardClient({
         // Show success and refresh to get updated subscription
         window.location.reload()
       } else {
-        setRedeemError(data.error || 'Error al canjear puntos')
+        setRedeemError(mensajeError(data, 'Error al canjear puntos'))
       }
     } catch {
       setRedeemError('Error de conexión')
@@ -1261,6 +1274,7 @@ export default function DashboardClient({
                   <span className="text-data font-terminal text-zinc-300 flex-1 truncate">{r.auction_title}</span>
                   {r.total_heads_sold != null && <span className="text-xxs font-terminal text-zinc-500 hidden sm:inline">{r.total_heads_sold} cab.</span>}
                   {r.average_price != null && <span className="text-xxs font-terminal text-positive tabular-nums">${Number(r.average_price).toLocaleString('es-AR')}</span>}
+                  <Link href={`/dashboard/resultados/${r.id}`} className="text-xxs font-terminal text-accent hover:underline flex-shrink-0">Editar</Link>
                 </div>
               ))}
             </div>
@@ -1366,19 +1380,67 @@ const EMPTY_AUCTION = {
   description: '',
   catalog_url: '',
   youtube_url: '',
+  flyer_url: '',
 }
 
-function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onAuctionsChange }: AuctionManagerProps) {
+const PROVINCIAS_REMATE = ['BUENOS AIRES', 'CORRIENTES', 'ENTRE RIOS', 'SANTA FE', 'CORDOBA', 'LA PAMPA', 'CHACO', 'FORMOSA', 'MISIONES', 'SANTIAGO DEL ESTERO', 'SAN LUIS', 'SALTA', 'TUCUMAN', 'JUJUY', 'RIO NEGRO', 'NEUQUEN', 'CHUBUT', 'MENDOZA', 'CATAMARCA', 'LA RIOJA', 'SAN JUAN', 'SANTA CRUZ', 'TIERRA DEL FUEGO']
+
+export function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onAuctionsChange }: AuctionManagerProps) {
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<number | null>(null)
   const [form, setForm] = useState(EMPTY_AUCTION)
   const [saving, setSaving] = useState(false)
   const [feedback, setFeedback] = useState<{ type: 'ok' | 'err'; msg: string } | null>(null)
   const [deleting, setDeleting] = useState<number | null>(null)
+  // Si el formulario corrige un remate del calendario: la clave de ese remate.
+  const [reemplaza, setReemplaza] = useState<string | null>(null)
+  const [subiendoFlyer, setSubiendoFlyer] = useState(false)
   const router = useRouter()
+
+  async function subirFlyer(file: File) {
+    setSubiendoFlyer(true)
+    setFeedback(null)
+    try {
+      const fd = new FormData()
+      fd.append('flyer', file)
+      const res = await fetch(`/api/consignatarias/${slug}/flyer`, { method: 'POST', body: fd })
+      const data = await res.json()
+      if (!res.ok) {
+        setFeedback({ type: 'err', msg: mensajeError(data, 'No se pudo subir el flyer') })
+        return
+      }
+      setForm(f => ({ ...f, flyer_url: data.url }))
+    } catch {
+      setFeedback({ type: 'err', msg: 'Error de conexion al subir el flyer' })
+    } finally {
+      setSubiendoFlyer(false)
+    }
+  }
+
+  function startCompletar(a: ScrapedAuction) {
+    setEditingId(null)
+    setReemplaza(a.clave ?? null)
+    setForm({
+      title: a.title,
+      date: a.date,
+      time: a.time || '',
+      location: a.location || '',
+      province: a.province || '',
+      type: a.type || 'general',
+      main_category: a.main_category || 'mixto',
+      estimated_heads: a.estimated_heads?.toString() || '',
+      description: a.description || '',
+      catalog_url: a.catalog_url || '',
+      youtube_url: a.youtube_url || '',
+      flyer_url: '',
+    })
+    setShowForm(true)
+    setFeedback(null)
+  }
 
   function startCreate() {
     setEditingId(null)
+    setReemplaza(null)
     setForm(EMPTY_AUCTION)
     setShowForm(true)
     setFeedback(null)
@@ -1386,6 +1448,7 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
 
   function startEdit(auction: OwnerAuction) {
     setEditingId(auction.id)
+    setReemplaza(null)
     setForm({
       title: auction.title,
       date: auction.date,
@@ -1398,6 +1461,7 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
       description: auction.description || '',
       catalog_url: auction.catalog_url || '',
       youtube_url: auction.youtube_url || '',
+      flyer_url: auction.flyer_url || '',
     })
     setShowForm(true)
     setFeedback(null)
@@ -1417,6 +1481,8 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
       description: form.description || null,
       catalog_url: form.catalog_url || null,
       youtube_url: form.youtube_url || null,
+      flyer_url: form.flyer_url || null,
+      ...(!editingId && reemplaza ? { reemplaza_clave: reemplaza } : {}),
     }
 
     try {
@@ -1432,7 +1498,7 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
 
       if (!res.ok) {
         const data = await res.json()
-        setFeedback({ type: 'err', msg: data.error || 'Error al guardar' })
+        setFeedback({ type: 'err', msg: mensajeError(data, 'Error al guardar') })
         return
       }
 
@@ -1447,7 +1513,8 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
       setShowForm(false)
       setForm(EMPTY_AUCTION)
       setEditingId(null)
-      setFeedback({ type: 'ok', msg: editingId ? 'Remate actualizado' : 'Remate creado' })
+      setReemplaza(null)
+      setFeedback({ type: 'ok', msg: `${editingId ? 'Remate actualizado' : reemplaza ? 'Remate corregido' : 'Remate creado'}. Ya se ve en tu perfil; el calendario general y el mail semanal lo toman en menos de una hora.` })
       router.refresh()
     } catch {
       setFeedback({ type: 'err', msg: 'Error de conexion' })
@@ -1475,6 +1542,11 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
 
   const inputClass = 'w-full bg-terminal-bg border border-terminal-border text-zinc-200 text-xxs font-terminal px-2 py-1.5 rounded-terminal focus:outline-none focus:border-accent transition-colors'
 
+  // Un remate del calendario recién corregido deja de listarse al instante, sin esperar
+  // a que el servidor vuelva a armar la página (en el server se filtra igual, page.tsx).
+  const corregidos = new Set(ownerAuctions.map(a => a.reemplaza_clave).filter(Boolean))
+  scrapedAuctions = scrapedAuctions.filter(a => !a.clave || !corregidos.has(a.clave))
+
   return (
     <div className="space-y-4">
       {/* Create button + feedback */}
@@ -1499,10 +1571,15 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
       {showForm && (
         <div className="terminal-panel border-accent/30">
           <div className="terminal-panel-header flex items-center justify-between">
-            <span className="text-zinc-200 text-label tracking-widest">{editingId ? 'EDITAR REMATE' : 'NUEVO REMATE'}</span>
-            <button onClick={() => { setShowForm(false); setEditingId(null) }} className="text-xxs font-terminal text-zinc-500 hover:text-zinc-400">Cancelar</button>
+            <span className="text-zinc-200 text-label tracking-widest">{editingId ? 'EDITAR REMATE' : reemplaza ? 'CORREGIR REMATE DEL CALENDARIO' : 'NUEVO REMATE'}</span>
+            <button onClick={() => { setShowForm(false); setEditingId(null); setReemplaza(null) }} className="text-xxs font-terminal text-zinc-500 hover:text-zinc-400">Cancelar</button>
           </div>
           <form onSubmit={handleSave} className="px-panel py-3 space-y-3">
+            {reemplaza && (
+              <p className="text-xxs font-terminal text-zinc-400">
+                Precargamos lo que figura en el calendario. Lo que guardes reemplaza a ese remate en tu perfil, en el calendario y en el mail semanal.
+              </p>
+            )}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="sm:col-span-2">
                 <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Titulo *</label>
@@ -1522,7 +1599,12 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
               </div>
               <div>
                 <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Provincia</label>
-                <input type="text" value={form.province} onChange={e => setForm(f => ({ ...f, province: e.target.value }))} className={inputClass} placeholder="BUENOS AIRES" />
+                <select value={form.province} onChange={e => setForm(f => ({ ...f, province: e.target.value }))} className={inputClass}>
+                  <option value="">Elegí la provincia</option>
+                  {[...new Set([...PROVINCIAS_REMATE, ...(form.province ? [form.province] : [])])].map(p => (
+                    <option key={p} value={p}>{provinciaNombre(p)}</option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Tipo</label>
@@ -1559,12 +1641,32 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
               </div>
             </div>
             <div>
+              <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Flyer del remate</label>
+              <div className="flex items-start gap-3">
+                {form.flyer_url && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={form.flyer_url} alt="Flyer del remate" className="w-24 h-auto rounded-terminal border border-terminal-border" />
+                )}
+                <div className="space-y-1">
+                  <label className="inline-block px-3 py-1 border border-terminal-border text-xxs font-terminal text-zinc-300 hover:border-accent cursor-pointer rounded-terminal">
+                    {subiendoFlyer ? 'Subiendo...' : form.flyer_url ? 'Cambiar flyer' : 'Subir flyer'}
+                    <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" disabled={subiendoFlyer}
+                      onChange={e => { const f = e.target.files?.[0]; if (f) subirFlyer(f); e.target.value = '' }} />
+                  </label>
+                  {form.flyer_url && (
+                    <button type="button" onClick={() => setForm(f => ({ ...f, flyer_url: '' }))} className="block text-xxs font-terminal text-zinc-500 hover:text-negative">Quitar flyer</button>
+                  )}
+                  <p className="text-[10px] font-terminal text-zinc-600">JPG, PNG o WebP, hasta 5 MB. Se muestra en la ficha del remate.</p>
+                </div>
+              </div>
+            </div>
+            <div>
               <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Descripcion</label>
               <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} className={`${inputClass} resize-none`} rows={2} maxLength={500} placeholder="Detalles del remate..." />
             </div>
             <div className="flex items-center gap-3">
-              <button type="submit" disabled={saving} className="px-4 py-1.5 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors disabled:opacity-50">
-                {saving ? 'Guardando...' : editingId ? 'Guardar cambios' : 'Crear remate'}
+              <button type="submit" disabled={saving || subiendoFlyer} className="px-4 py-1.5 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors disabled:opacity-50">
+                {saving ? 'Guardando...' : editingId || reemplaza ? 'Guardar cambios' : 'Crear remate'}
               </button>
               {feedback && <span className={`text-xxs font-terminal ${feedback.type === 'ok' ? 'text-positive' : 'text-negative'}`}>{feedback.msg}</span>}
             </div>
@@ -1576,7 +1678,7 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
       {ownerAuctions.length > 0 && (
         <div className="terminal-panel">
           <div className="terminal-panel-header">
-            <span className="text-zinc-400 text-xxs tracking-widest">REMATES CARGADOS POR VOS</span>
+            <span className="text-zinc-400 text-xxs tracking-widest">TUS REMATES (CARGADOS O CORREGIDOS POR VOS)</span>
           </div>
           <div className="divide-y divide-terminal-border">
             {ownerAuctions.map(a => {
@@ -1586,6 +1688,7 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
                   <span className="text-xxs font-terminal text-zinc-500 tabular-nums w-12 flex-shrink-0">{formatDate(a.date)}</span>
                   {a.time && <span className="text-xxs font-terminal text-zinc-500 w-12 flex-shrink-0">{a.time}</span>}
                   <span className="text-data font-terminal text-zinc-300 flex-1 truncate">{a.title}</span>
+                  {a.flyer_url && <span className="text-[10px] font-terminal text-positive flex-shrink-0">Flyer</span>}
                   <span className="text-xxs font-terminal text-zinc-500 hidden sm:inline">{a.location}</span>
                   <WhatsAppIconButton message={shareMsg} size="sm" className="flex-shrink-0" />
                   <button onClick={() => startEdit(a)} className="text-xxs font-terminal text-accent hover:underline flex-shrink-0">Editar</button>
@@ -1614,14 +1717,15 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
                   <span className="text-xxs font-terminal text-zinc-500 tabular-nums w-12 flex-shrink-0">{formatDate(a.date)}</span>
                   {a.time && <span className="text-xxs font-terminal text-zinc-500 w-12 flex-shrink-0">{a.time}</span>}
                   <span className="text-data font-terminal text-zinc-400 flex-1 truncate">{a.title}</span>
-                  <span className="text-xxs font-terminal text-zinc-700 hidden sm:inline">{a.location}</span>
+                  <span className="text-xxs font-terminal text-zinc-500 hidden sm:inline">{a.location}</span>
                   <WhatsAppIconButton message={shareMsg} size="sm" className="flex-shrink-0" />
+                  <button onClick={() => startCompletar(a)} className="text-xxs font-terminal text-accent hover:underline flex-shrink-0">Editar</button>
                 </div>
               )
             })}
           </div>
           <div className="px-panel py-2">
-            <span className="text-[10px] font-terminal text-zinc-700">Estos remates se actualizan automaticamente por nuestro scraper diario.</span>
+            <span className="text-[10px] font-terminal text-zinc-700">Los encontramos solos en tu web o en la de tus remates. Con Editar los corregís, sumás catálogo, video o flyer: tu versión reemplaza a la nuestra.</span>
           </div>
         </div>
       )}
@@ -1674,7 +1778,7 @@ function ProfileEditForm({ slug, initial, logoUrl: initialLogoUrl }: ProfileEdit
       })
       if (!res.ok) {
         const data = await res.json()
-        setFeedback({ type: 'err', msg: data.error || 'Error al guardar' })
+        setFeedback({ type: 'err', msg: mensajeError(data, 'Error al guardar') })
         return
       }
       setFeedback({ type: 'ok', msg: 'Perfil actualizado. Los cambios se reflejan en tu perfil publico.' })
@@ -1696,7 +1800,7 @@ function ProfileEditForm({ slug, initial, logoUrl: initialLogoUrl }: ProfileEdit
       const res = await fetch(`/api/consignatarias/${slug}/logo`, { method: 'POST', body: fd })
       const data = await res.json()
       if (!res.ok) {
-        setLogoFeedback({ type: 'err', msg: data.error || 'Error al subir logo' })
+        setLogoFeedback({ type: 'err', msg: mensajeError(data, 'Error al subir logo') })
         return
       }
       setLogoUrl(data.logo_url)
@@ -1793,7 +1897,7 @@ function FrigorificoEditForm({ cuit, initial }: { cuit: string; initial: { phone
     setFeedback(null)
     try {
       const res = await fetch(`/api/frigorificos/${cuit}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) })
-      if (!res.ok) { const data = await res.json(); setFeedback({ type: 'err', msg: data.error || 'Error al guardar' }); return }
+      if (!res.ok) { const data = await res.json(); setFeedback({ type: 'err', msg: mensajeError(data, 'Error al guardar') }); return }
       setFeedback({ type: 'ok', msg: 'Perfil actualizado' })
     } catch { setFeedback({ type: 'err', msg: 'Error de conexion' }) }
     finally { setSaving(false) }
@@ -1809,7 +1913,7 @@ function FrigorificoEditForm({ cuit, initial }: { cuit: string; initial: { phone
       fd.append('logo', file)
       const res = await fetch(`/api/frigorificos/${cuit}/logo`, { method: 'POST', body: fd })
       const data = await res.json()
-      if (!res.ok) { setFeedback({ type: 'err', msg: data.error || 'Error al subir el logo' }); return }
+      if (!res.ok) { setFeedback({ type: 'err', msg: mensajeError(data, 'Error al subir el logo') }); return }
       setLogoUrl(data.logo_url)
       setFeedback({ type: 'ok', msg: 'Logo actualizado' })
     } catch { setFeedback({ type: 'err', msg: 'Error de conexion' }) }
@@ -2034,7 +2138,7 @@ function FrigoProCTA({ cuit, email, isPro }: { cuit: string; email: string; isPr
         body: JSON.stringify({ cuit, email }),
       })
       const data = await res.json()
-      if (!res.ok || !data.checkoutUrl) { setErr(data.error || 'No se pudo iniciar el pago'); return }
+      if (!res.ok || !data.checkoutUrl) { setErr(mensajeError(data, 'No se pudo iniciar el pago')); return }
       window.location.href = data.checkoutUrl
     } catch { setErr('Error de conexión') }
     finally { setLoading(false) }
@@ -2080,7 +2184,7 @@ function HabilitacionForm({ cuit, nivel: initialNivel, verificada }: { cuit: str
       if (file) fd.append('doc', file)
       const res = await fetch(`/api/frigorificos/${cuit}/habilitacion`, { method: 'POST', body: fd })
       const data = await res.json()
-      if (!res.ok) { setFeedback({ type: 'err', msg: data.error || 'Error al enviar' }); return }
+      if (!res.ok) { setFeedback({ type: 'err', msg: mensajeError(data, 'Error al enviar') }); return }
       setFeedback({ type: 'ok', msg: 'Declaración enviada. La verificamos y activamos tu badge de alcance.' })
     } catch { setFeedback({ type: 'err', msg: 'Error de conexión' }) }
     finally { setSaving(false) }
@@ -2158,7 +2262,7 @@ function FrigoProductManager({ cuit, initial }: { cuit: string; initial: FrigoPr
         }),
       })
       const data = await res.json()
-      if (!res.ok) { setFeedback({ type: 'err', msg: data.error || 'Error al agregar' }); return }
+      if (!res.ok) { setFeedback({ type: 'err', msg: mensajeError(data, 'Error al agregar') }); return }
       setItems(prev => [data as FrigoProduct, ...prev])
       setForm(EMPTY_PRODUCT); setShowForm(false)
       setFeedback({ type: 'ok', msg: 'Producto agregado' })
@@ -2288,7 +2392,7 @@ function SubscriptionPanel({ tier, subscription, plan }: { tier: string; subscri
     setCancelling(true)
     try {
       const res = await fetch('/api/subscriptions/cancel', { method: 'POST' })
-      if (!res.ok) { const d = await res.json(); setCancelFeedback(d.error || 'Error'); return }
+      if (!res.ok) { const d = await res.json(); setCancelFeedback(mensajeError(d, 'Error')); return }
       setCancelled(true)
       setCancelFeedback('Suscripcion cancelada.')
     } catch { setCancelFeedback('Error de conexion') }

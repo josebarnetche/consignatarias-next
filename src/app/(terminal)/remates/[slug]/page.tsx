@@ -329,6 +329,7 @@ export default async function RemateDetailPage({ params }: Props) {
   const dateFormatted = formatDate(remate.date)
   const today = new Date().toISOString().slice(0, 10)
   const isPast = remate.date < today
+  const flyer = (remate as { flyerUrl?: string | null }).flyerUrl ?? null
   const isToday = remate.date === today
   
   // Get consignataria profile if exists
@@ -662,6 +663,17 @@ export default async function RemateDetailPage({ params }: Props) {
               </div>
             )}
             
+            {/* Flyer que subió la firma desde su panel (scripts/remates-de-firmas.ts lo trae
+                al JSON). Va a la vista: es la pieza con la que la firma promociona el remate. */}
+            {flyer && (
+              <div className="px-6 pb-6">
+                <a href={flyer} target="_blank" rel="noopener noreferrer" className="block max-w-md">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={flyer} alt={`Flyer: ${remate.title}`} loading="lazy" className="w-full h-auto rounded-lg border border-terminal-border" />
+                </a>
+              </div>
+            )}
+
             {/* Action buttons — catálogo / calendario / fuente: bajo login */}
             <div className="px-6 pb-6">
             <LoginGate feature="El catálogo, el calendario y la fuente" minHeight={88}>

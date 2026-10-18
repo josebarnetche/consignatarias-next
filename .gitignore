@@ -139,3 +139,6 @@ private/bases/
 
 # Notas institucionales generadas: llevan la firma de José, no van al repo.
 scripts/notas/salida/
+
+# Capturas del panel de una firma para su propuesta PRO: llevan sus datos.
+private/capturas-firmas/

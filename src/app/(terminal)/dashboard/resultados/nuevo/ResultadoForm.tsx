@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { mensajeError } from '@/lib/ui/mensaje-error'
 import { CATEGORIAS_RESULTADO, etiquetaCategoria } from '@/lib/reports/resultado-categorias'
 
 /**
@@ -26,10 +27,36 @@ interface CategoryRow {
 
 const OTRA = 'otra'
 
+/** Un resultado ya cargado, para editarlo (18-10-2026). */
+export interface ResultadoInicial {
+  id: string
+  auction_date: string
+  auction_title: string
+  location: string | null
+  total_heads_offered: number | null
+  total_heads_sold: number | null
+  min_price: number | null
+  average_price: number | null
+  max_price: number | null
+  category_results: { category: string; categoria_vr?: string; heads?: number; peso_kg?: number; avg_price?: number; max_price?: number }[] | null
+  notes: string | null
+}
+
+/** Remates recientes de la firma sin resultado: elegir uno completa fecha, título y lugar. */
+export interface RemateSugerido {
+  date: string
+  title: string
+  location: string
+}
+
 interface Props {
   consignatariaSlug: string
   consignatariaName: string
+  inicial?: ResultadoInicial
+  sugeridos?: RemateSugerido[]
 }
+
+const txt = (n: number | null | undefined) => (n == null ? '' : String(n))
 
 const EMPTY_CATEGORY: CategoryRow = { categoria_vr: '', category: '', heads: '', peso_kg: '', avg_price: '', max_price: '' }
 
@@ -39,21 +66,59 @@ function nombreCategoria(c: CategoryRow): string {
   return etiquetaCategoria(c.categoria_vr) ?? ''
 }
 
-export default function ResultadoForm({ consignatariaSlug, consignatariaName }: Props) {
+export default function ResultadoForm({ consignatariaSlug, consignatariaName, inicial, sugeridos = [] }: Props) {
   const router = useRouter()
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const [auctionDate, setAuctionDate] = useState('')
-  const [auctionTitle, setAuctionTitle] = useState('')
-  const [location, setLocation] = useState('')
-  const [headsOffered, setHeadsOffered] = useState('')
-  const [headsSold, setHeadsSold] = useState('')
-  const [minPrice, setMinPrice] = useState('')
-  const [avgPrice, setAvgPrice] = useState('')
-  const [maxPrice, setMaxPrice] = useState('')
-  const [notes, setNotes] = useState('')
-  const [categories, setCategories] = useState<CategoryRow[]>([])
+  const [auctionDate, setAuctionDate] = useState(inicial?.auction_date ?? '')
+  const [auctionTitle, setAuctionTitle] = useState(inicial?.auction_title ?? '')
+  const [location, setLocation] = useState(inicial?.location ?? '')
+  const [headsOffered, setHeadsOffered] = useState(txt(inicial?.total_heads_offered))
+  const [headsSold, setHeadsSold] = useState(txt(inicial?.total_heads_sold))
+  const [minPrice, setMinPrice] = useState(txt(inicial?.min_price))
+  const [avgPrice, setAvgPrice] = useState(txt(inicial?.average_price))
+  const [maxPrice, setMaxPrice] = useState(txt(inicial?.max_price))
+  const [notes, setNotes] = useState(inicial?.notes ?? '')
+  const [categories, setCategories] = useState<CategoryRow[]>(
+    (inicial?.category_results ?? []).map((c) => ({
+      categoria_vr: c.categoria_vr || OTRA,
+      category: c.categoria_vr ? '' : c.category,
+      heads: txt(c.heads),
+      peso_kg: txt(c.peso_kg),
+      avg_price: txt(c.avg_price),
+      max_price: txt(c.max_price),
+    })),
+  )
+  const [borrando, setBorrando] = useState(false)
+
+  function elegirRemate(i: string) {
+    const r = sugeridos[Number(i)]
+    if (!r) return
+    setAuctionDate(r.date)
+    setAuctionTitle(r.title)
+    setLocation(r.location)
+  }
+
+  async function borrar() {
+    if (!inicial || !confirm('¿Borrar este resultado?')) return
+    setBorrando(true)
+    setError(null)
+    try {
+      const res = await fetch(`/api/auction-results/${inicial.id}`, { method: 'DELETE' })
+      if (!res.ok) {
+        const data = await res.json()
+        setError(mensajeError(data, 'No se pudo borrar'))
+        setBorrando(false)
+        return
+      }
+      router.push('/dashboard?tab=resultados')
+      router.refresh()
+    } catch {
+      setError('Error de conexión')
+      setBorrando(false)
+    }
+  }
 
   function addCategory() {
     setCategories(prev => [...prev, { ...EMPTY_CATEGORY }])
@@ -98,20 +163,20 @@ export default function ResultadoForm({ consignatariaSlug, consignatariaName }: 
     }
 
     try {
-      const res = await fetch('/api/auction-results', {
-        method: 'POST',
+      const res = await fetch(inicial ? `/api/auction-results/${inicial.id}` : '/api/auction-results', {
+        method: inicial ? 'PATCH' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       })
 
       if (!res.ok) {
         const data = await res.json()
-        setError(data.error || 'Error al enviar')
+        setError(mensajeError(data, 'Error al enviar'))
         setSubmitting(false)
         return
       }
 
-      router.push('/dashboard')
+      router.push('/dashboard?tab=resultados')
       router.refresh()
     } catch {
       setError('Error de conexión')
@@ -128,7 +193,7 @@ export default function ResultadoForm({ consignatariaSlug, consignatariaName }: 
         {/* Header */}
         <div className="terminal-panel">
           <div className="terminal-panel-header">
-            <span className="text-zinc-200 text-label tracking-widest">CARGAR RESULTADO</span>
+            <span className="text-zinc-200 text-label tracking-widest">{inicial ? 'EDITAR RESULTADO' : 'CARGAR RESULTADO'}</span>
           </div>
           <div className="px-panel py-3">
             <span className="text-data font-terminal text-zinc-300">{consignatariaName}</span>
@@ -141,6 +206,17 @@ export default function ResultadoForm({ consignatariaSlug, consignatariaName }: 
             <span className="text-zinc-200 text-label tracking-widest">DATOS DEL REMATE</span>
           </div>
           <div className="px-panel py-3 space-y-3">
+            {!inicial && sugeridos.length > 0 && (
+              <div>
+                <label className={labelClass}>¿De qué remate?</label>
+                <select defaultValue="" onChange={e => elegirRemate(e.target.value)} className={inputClass}>
+                  <option value="">Elegí uno de tus remates o completá a mano</option>
+                  {sugeridos.map((r, i) => (
+                    <option key={`${r.date}-${i}`} value={i}>{r.date.split('-').reverse().join('/')} · {r.title}</option>
+                  ))}
+                </select>
+              </div>
+            )}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className={labelClass}>Fecha *</label>
@@ -390,15 +466,25 @@ export default function ResultadoForm({ consignatariaSlug, consignatariaName }: 
             disabled={submitting}
             className="px-4 py-2 bg-accent text-black text-data font-terminal rounded-terminal hover:bg-accent/90 disabled:opacity-50"
           >
-            {submitting ? 'Enviando...' : 'Cargar resultado'}
+            {submitting ? 'Guardando...' : inicial ? 'Guardar cambios' : 'Cargar resultado'}
           </button>
           <button
             type="button"
-            onClick={() => router.push('/dashboard')}
+            onClick={() => router.push('/dashboard?tab=resultados')}
             className="px-4 py-2 border border-terminal-border text-zinc-400 text-data font-terminal rounded-terminal hover:border-zinc-500"
           >
             Cancelar
           </button>
+          {inicial && (
+            <button
+              type="button"
+              onClick={borrar}
+              disabled={borrando}
+              className="ml-auto px-4 py-2 text-negative text-data font-terminal hover:underline disabled:opacity-50"
+            >
+              {borrando ? 'Borrando...' : 'Borrar resultado'}
+            </button>
+          )}
         </div>
       </form>
     </div>

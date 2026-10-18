@@ -94,8 +94,15 @@ export async function middleware(request: NextRequest) {
     // (Starter 30/min, Growth 300/min, Scale 5000/min) and monthly cap.
     const auth = request.headers.get('authorization') ?? ''
     const hasBearer = auth.toLowerCase().startsWith('bearer cnsg_')
+    // 18-10-2026: las escrituras del panel de la firma (cargar o editar un remate, subir
+    // flyer o logo, pre-ofertas) viven bajo /api/consignatarias/<slug>/… y heredaban el
+    // límite ANÓNIMO de 1 req/min: subir el flyer y guardar el remate ya daba 429, y el
+    // panel se caía. Esas rutas exigen sesión y dueño en el handler; el límite está para
+    // la lectura masiva anónima, que es GET. Con sesión y método de escritura no se aplica.
+    const escrituraConSesion = request.method !== 'GET' && request.method !== 'HEAD'
+      && request.cookies.getAll().some((c) => c.name.startsWith('sb-') && c.name.includes('auth-token'))
 
-    if (!hasBearer) {
+    if (!hasBearer && !escrituraConSesion) {
       const clientId = getClientId(request)
       const result = checkRateLimit(clientId, 'free')
 

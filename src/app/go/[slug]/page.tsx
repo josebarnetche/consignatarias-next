@@ -120,6 +120,7 @@ export default async function GoLandingPage({ params }: Props) {
   const profileAuctions = mergeAuctions(
     getAuctionsForProfile(auctions, canonical),
     (ownerBySlug.get(canonical) ?? []).map((r) => normalizeOwnerAuction(r, profile.displayName, canonical)),
+    (ownerBySlug.get(canonical) ?? []).map((r) => r.reemplaza_clave),
   )
   const today = new Date().toISOString().slice(0, 10)
   const upcoming = profileAuctions.filter(a => a.date >= today)
