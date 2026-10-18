@@ -1,5 +1,5 @@
 {
-  "generado": "2026-10-18T21:21:27.044Z",
+  "generado": "2026-10-18T22:57:07.698Z",
   "leads_de_compra": 7,
   "matches": [
     {
@@ -76,6 +76,17 @@
           "url": "https://www.decampoacampo.com/__dcac/175-Novillitos-y-Vaquillonas-260kg-invernada-34220"
         },
         {
+          "sku": "34205",
+          "titulo": "110 Terneros Braford de 205kg",
+          "score": 50,
+          "motivos": [
+            "el lead no declaró categoría",
+            "misma provincia",
+            "el lote es grande (110 contra 11 pedidas)"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/110-Terneros-205kg-invernada-34205"
+        },
+        {
           "sku": "34198",
           "titulo": "70 Novillitos Braford de 235kg",
           "score": 50,
@@ -96,17 +107,6 @@
             "el lote es grande (60 contra 11 pedidas)"
           ],
           "url": "https://www.decampoacampo.com/__dcac/60-Novillitos-280kg-invernada-34193"
-        },
-        {
-          "sku": "34205",
-          "titulo": "110 Terneros Braford de 205kg",
-          "score": 50,
-          "motivos": [
-            "el lead no declaró categoría",
-            "misma provincia",
-            "el lote es grande (110 contra 11 pedidas)"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/110-Terneros-205kg-invernada-34205"
         },
         {
           "sku": "34187",
@@ -199,6 +199,16 @@
       },
       "lotes": [
         {
+          "sku": "34212",
+          "titulo": "75 Vaquillonas para madre Aberdeen Angus Negro y Colorado 290kg",
+          "score": 50,
+          "motivos": [
+            "el lead no declaró categoría",
+            "misma provincia"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/75-Vaquillonas-para-madre-290kg-invernada-34212"
+        },
+        {
           "sku": "34190",
           "titulo": "60 Terneras Aberdeen Angus Negro y Colorado de 240kg",
           "score": 50,
@@ -237,16 +247,6 @@
             "misma provincia"
           ],
           "url": "https://www.decampoacampo.com/__dcac/50-Vaquillonas-para-madre-260kg-invernada-34149"
-        },
-        {
-          "sku": "34142",
-          "titulo": "40 Vaquillonas para madre Aberdeen Angus Negro y Colorado 300kg",
-          "score": 50,
-          "motivos": [
-            "el lead no declaró categoría",
-            "misma provincia"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/40-Vaquillonas-para-madre-300kg-invernada-34142"
         }
       ]
     },
