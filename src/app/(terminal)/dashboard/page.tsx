@@ -26,6 +26,7 @@ import { getBusquedasFicha, type BusquedasFicha } from '@/lib/gsc/fichas'
 import { claveRemate } from '@/lib/dal/auctions'
 import { provinciaNombre } from '@/lib/ui/tokens'
 import type { Auction } from '@/lib/db/schema'
+import { getLogoUrl, getBrandWhiteLogo, getBrandColor } from '@/lib/data/logo-map'
 
 export const dynamic = 'force-dynamic'
 
@@ -744,7 +745,16 @@ export default async function DashboardPage({
     <DashboardClient
       // En "ver como" se muestra el mail del titular de la ficha, no el del admin.
       email={vistaAdmin ? titularVista ?? 'sin titular (ficha sin reclamar)' : user.email!}
-      consignataria={consignataria}
+      // El logo puede estar sólo en el directorio (public/logos) y no subido desde el
+      // panel: Reggi lo tenía y el panel igual le pedía "Subí tu logo". Si es un logo
+      // blanco, va sobre el color de la marca, como en el perfil público.
+      consignataria={consignataria && {
+        ...consignataria,
+        logo_url: consignataria.logo_url ?? getLogoUrl(consignataria.canonical_slug),
+        logo_fondo: !consignataria.logo_url && getBrandWhiteLogo(consignataria.canonical_slug)
+          ? getBrandColor(consignataria.canonical_slug)
+          : null,
+      }}
       claims={claims || []}
       scrapedAuctions={scrapedAuctions}
       ownerAuctions={ownerAuctions}

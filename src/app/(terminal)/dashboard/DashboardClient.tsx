@@ -60,6 +60,8 @@ interface Consignataria {
   whatsapp?: string | null
   cuit?: string | null
   logo_url?: string | null
+  /** Fondo para un logo blanco del directorio (color de la marca). */
+  logo_fondo?: string | null
 }
 
 interface Claim {
@@ -463,7 +465,9 @@ export default function DashboardClient({
         <div className="px-panel py-4">
           {consignataria ? (
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-              <span className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-terminal border border-terminal-border bg-zinc-100">
+              <span className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-terminal border border-terminal-border bg-zinc-100"
+                style={consignataria.logo_fondo ? { backgroundColor: consignataria.logo_fondo } : undefined}
+              >
                 {consignataria.logo_url ? (
                   /* eslint-disable-next-line @next/next/no-img-element */
                   <img
