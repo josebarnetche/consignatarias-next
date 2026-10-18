@@ -619,6 +619,9 @@ export type Database = {
           remate_id: number | null
           source: string | null
           status: string | null
+          notes: string | null
+          updated_at: string | null
+          contacted_at: string | null
         }
         Insert: {
           consignataria_slug: string
@@ -632,6 +635,9 @@ export type Database = {
           remate_id?: number | null
           source?: string | null
           status?: string | null
+          notes?: string | null
+          updated_at?: string | null
+          contacted_at?: string | null
         }
         Update: {
           consignataria_slug?: string
@@ -645,6 +651,9 @@ export type Database = {
           remate_id?: number | null
           source?: string | null
           status?: string | null
+          notes?: string | null
+          updated_at?: string | null
+          contacted_at?: string | null
         }
         Relationships: []
       }

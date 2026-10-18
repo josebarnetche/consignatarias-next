@@ -7,6 +7,22 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.230.0] — 2026-10-19
+
+### El panel de la firma, rediseñado como CRM
+
+Mismo lenguaje que la landing (lienzo con grilla de puntos, frames con su nombre y manijas de selección) y estructura de CRM: barra lateral con las secciones y sus contadores (Inicio, Consultas, Remates, Resultados, Pre-ofertas, Audiencia, Mercado, Perfil, Mi plan). Probado en local contra la base real con Reggi y Cía. y con una firma sin datos (Casa Lago, "ver como" FREE y PRO), en escritorio y celular.
+
+**Todo es dato real.** Se sacaron las muestras de ejemplo que veía una firma FREE (`MuestraPro` con cartera, benchmark, origen de visitas, etc. inventados): ahora ve el número real que le corresponde y, donde el dato es PRO, qué trae PRO, sin cifras de ejemplo. Una cuenta nueva ve todo en cero con estados vacíos que dicen qué va a aparecer y cómo llega.
+
+**Inicio**: los cinco indicadores de 30 días (vistas, consultas, clics en WhatsApp, seguidores, marcas en remates) con el cambio contra el mes anterior, el pipeline de consultas, los próximos remates (propios y del calendario), vistas por día (PRO), lo pendiente (la bandeja), el avance de la ficha campo por campo y los últimos resultados.
+
+**Consultas = pipeline.** Cada consulta pasa por Nueva → Contactada → Ganada / Descartada y lleva notas de la firma. Se guarda en `consignataria_leads` (columnas nuevas `notes`, `updated_at`, `contacted_at`; migración `20261019_leads_seguimiento`) con `PATCH /api/consignatarias/<slug>/leads/<id>` (sólo el dueño). Muestra tiempo de respuesta (mediana) y consultas ganadas sobre cerradas. Hasta hoy el estado de una consulta no se podía cambiar desde ningún lado. En FREE el contacto sigue sin llegar al navegador.
+
+**Audiencia** (mes contra mes, origen de las visitas, búsquedas de Google, distribución) y **Mercado** (agenda regional, bloques de Cañuelas, pulso del MAG, seguir a otras casas) pasan a secciones propias. El QR, el link y el widget van a Perfil; el reporte PDF y el canje de puntos, a Mi plan.
+
+**Arreglo de contenido**: `/remates/expo-rural-mercedes` decía "primera del interior" fijo; con el scrape del 18-10 Río Cuarto empata a 6 firmas. El título ahora sale del dato ("a la par de Río Cuarto en el interior" si hay empate) y el test fija que ninguna plaza del interior la supere.
+
 ## [1.229.0] — 2026-10-18
 
 ### Panel de la firma: sus remates, su flyer y sus resultados, de punta a punta

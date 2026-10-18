@@ -149,6 +149,11 @@ export default function Page() {
     (p) => p.firmas <= pos.firmas && !esMercedesCorrientes(p.sede),
   )
   const firmas = firmasConLogo()
+  // "Primera del interior" sólo si ninguna otra plaza del interior la iguala. El
+  // 18-10-2026 Río Cuarto llegó a 6 firmas, las mismas que Mercedes: la página
+  // lo dice en vez de seguir afirmando el primer puesto.
+  const empate = siguiente && siguiente.firmas === pos.firmas ? siguiente.sede.split(',')[0] : null
+  const ordinal = ['Primera', 'Segunda', 'Tercera', 'Cuarta', 'Quinta'][pos.puesto - 1] ?? `${pos.puesto}ª`
 
   return (
     <>
@@ -258,7 +263,7 @@ export default function Page() {
         {/* ── La comparación. El número se recalcula en cada build. ───────────── */}
         <section className="rounded-lg border border-sky-500/20 bg-gradient-to-br from-sky-950/25 via-zinc-900/60 to-zinc-900/60 p-6 md:p-8">
           <h2 className="text-2xl font-normal tracking-tight text-zinc-100 md:text-3xl">
-            Tercera del país, y primera del interior
+            {ordinal} del país, {empate ? `a la par de ${empate} en el interior` : 'y primera del interior'}
           </h2>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-zinc-400">
             Tomamos nuestro calendario completo, agrupamos por plaza y buscamos, para cada una, la

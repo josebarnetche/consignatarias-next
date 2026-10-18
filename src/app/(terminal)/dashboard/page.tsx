@@ -344,7 +344,7 @@ export default async function DashboardPage({
 
   // Get leads count (last 30 days)
   let leadsCount = 0
-  let leads: Array<{ id: number; name: string; phone: string | null; email: string | null; message: string | null; source: string | null; status: string | null; created_at: string }> = []
+  let leads: Array<{ id: number; name: string; phone: string | null; email: string | null; message: string | null; source: string | null; status: string | null; notes: string | null; contacted_at: string | null; updated_at: string | null; created_at: string }> = []
   if (consignataria) {
     try {
       const { count: leadCount } = await service
@@ -358,7 +358,7 @@ export default async function DashboardPage({
       // Bandeja de leads (últimos 50) — la captura ya existía, faltaba la gestión.
       const { data: leadRows } = await service
         .from('consignataria_leads')
-        .select('id, name, phone, email, message, source, status, created_at')
+        .select('id, name, phone, email, message, source, status, notes, contacted_at, updated_at, created_at')
         .eq('consignataria_slug', consignataria.canonical_slug)
         .order('created_at', { ascending: false })
         .limit(50)
