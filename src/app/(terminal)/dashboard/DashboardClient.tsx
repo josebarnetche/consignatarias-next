@@ -5,11 +5,10 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useSearchParams, useRouter } from 'next/navigation'
-import WelcomeChecklist from '@/components/onboarding/WelcomeChecklist'
 import ProfileProgressTracker from '@/components/onboarding/ProfileProgressTracker'
-import { WelcomeHero, ProActivatedModule, type NextStep } from '@/components/welcome'
+import { ProActivatedModule, type NextStep } from '@/components/welcome'
 import { WhatsAppIconButton } from '@/components/share/WhatsAppShare'
-import { LayoutDashboard, CalendarDays, Pencil, BarChart3, CreditCard, Building2, Inbox, Package } from 'lucide-react'
+import { LayoutDashboard, CalendarDays, Pencil, BarChart3, CreditCard, Building2, Inbox, Package, Eye, TrendingUp } from 'lucide-react'
 import QRCode from '@/components/QRCode'
 import { UpgradeConfirmTracker } from '@/components/UpgradeConfirmTracker'
 import MarketIntelPanel from '@/components/MarketIntelPanel'
@@ -24,17 +23,12 @@ import CarteraPanel from '@/components/dashboard/CarteraPanel'
 import type { Cartera } from '@/lib/reports/cartera'
 import type { Territorio } from '@/lib/reports/territorio'
 import { TerritorioPanel } from '@/components/dashboard/TerritorioPanel'
-import { TERRITORIO_MUESTRA } from '@/lib/reports/muestras'
 import ParticipacionMercado from '@/components/dashboard/ParticipacionMercado'
 import type { Participacion } from '@/lib/reports/participacion'
-import BandejaEntrada from '@/components/dashboard/BandejaEntrada'
 import type { Bandeja } from '@/lib/reports/bandeja'
 import AgendaRegionalPanel from '@/components/dashboard/AgendaRegionalPanel'
 import type { AgendaRegional } from '@/lib/reports/agenda-regional'
-import MuestraPro from '@/components/dashboard/MuestraPro'
-import { CARTERA_MUESTRA, BENCHMARK_MUESTRA, PARTICIPACION_MUESTRA, ORIGEN_VISITAS_MUESTRA, RESULTADO_VS_MERCADO_MUESTRA, BUSQUEDAS_GOOGLE_MUESTRA } from '@/lib/reports/muestras'
 import type { ResumenDistribucion } from '@/lib/promotion'
-import { whatsappLink } from '@/lib/leads/routing'
 import type { Performance } from '@/lib/reports/performance'
 import type { ConsignatariaPlanStatus } from '@/lib/features'
 import { BENEFICIOS_PRO_CONSIGNATARIA } from '@/lib/pro-consignataria-beneficios'
@@ -48,6 +42,9 @@ import type { ResultadoVsMercado as ResultadoVsMercadoDatos } from '@/lib/report
 import type { OrigenVisitas as OrigenVisitasDatos } from '@/lib/reports/origen-visitas'
 import { provinciaNombre } from '@/lib/ui/tokens'
 import { mensajeError } from '@/lib/ui/mensaje-error'
+import { Marco, Kpi, Vacio, SoloPro, BotonPrimario, BotonSecundario, fmt } from '@/components/panel/PanelUi'
+import ConsultasCRM from '@/components/panel/ConsultasCRM'
+import { ETAPAS, ETAPA_LABEL, etapaDe, origenConsulta, type Etapa } from '@/lib/leads/pipeline'
 
 interface Consignataria {
   display_name: string
@@ -192,6 +189,9 @@ interface Lead {
   message: string | null
   source: string | null
   status: string | null
+  notes?: string | null
+  contacted_at?: string | null
+  updated_at?: string | null
   created_at: string
 }
 
@@ -264,11 +264,11 @@ function formatDate(d: string) {
   return `${parts[2]}/${parts[1]}`
 }
 
-type TabKey = 'resumen' | 'leads' | 'remates' | 'preofertas' | 'editar' | 'resultados' | 'plan' | 'frigorifico' | 'catalogo' | 'pedidos'
+type TabKey = 'resumen' | 'leads' | 'remates' | 'preofertas' | 'editar' | 'resultados' | 'audiencia' | 'mercado' | 'plan' | 'frigorifico' | 'catalogo' | 'pedidos'
 
 export default function DashboardClient({
   email, consignataria, claims, scrapedAuctions, ownerAuctions: initialOwnerAuctions,
-  auctionResults, viewCount, whatsappClicks, leadsCount, followersCount = 0, marksCount = 0, leads = [], totalWatchers, viewPercentile, provincialRank, completedFields, subscription, plan = PLAN_FREE, origenVisitas = null, vistaAdmin = null, preofertasFirma = [], ofertasFirma = [], resultadosVR = null, busquedasGoogle = null, frigorifico, frigoClaims = [],
+  auctionResults, viewCount, whatsappClicks, leadsCount, followersCount = 0, marksCount = 0, leads = [], totalWatchers, provincialRank, completedFields, subscription, plan = PLAN_FREE, origenVisitas = null, vistaAdmin = null, preofertasFirma = [], ofertasFirma = [], resultadosVR = null, busquedasGoogle = null, frigorifico, frigoClaims = [],
   frigoProducts = [], frigoRfqs = [], frigoIsPro = false,
   dteCount = 0, alreadyRedeemed = false, performance = null, distribucion = null, benchmark = null, cartera = null, territorio = null, territorioTitular = '', participacion = null, bandeja = null, hayDatosMag = false, agenda = null,
 }: Props) {
@@ -282,13 +282,6 @@ export default function DashboardClient({
   const [activeTab, setActiveTab] = useState<TabKey>(tabParam || 'resumen')
   const [ownerAuctions, setOwnerAuctions] = useState(initialOwnerAuctions)
 
-  // Se muestra mientras falte algo esencial (WhatsApp, un remate, teléfono). Antes
-  // exigía los 5 campos del perfil, y como la descripción no la tiene NINGUNA firma
-  // (0 de 130), el bloque quedaba pegado en el panel para siempre.
-  const showChecklist = !!consignataria && !!completedFields && (
-    !completedFields.whatsapp || !completedFields.phone ||
-    (ownerAuctions.length === 0 && scrapedAuctions.length === 0)
-  )
 
 
   // Points redemption state
@@ -377,33 +370,77 @@ export default function DashboardClient({
     return () => clearTimeout(timer)
   }, [justUpgraded, plan.isPro, upgradeConfirmed, upgradePollCount, router])
 
-  // Build tab list with icons
-  const tabs: { key: TabKey; label: string; icon: React.ReactNode }[] = [
-    { key: 'resumen', label: 'Resumen', icon: <LayoutDashboard className="w-3.5 h-3.5" /> },
+  // NAVEGACIÓN DEL CRM (19-10-2026). Las claves viejas se mantienen (`leads`,
+  // `editar`) porque hay enlaces y redirecciones que las usan (?tab=resultados).
+  const hoy = new Date().toISOString().slice(0, 10)
+  const proximos = [
+    ...ownerAuctions.map((a) => ({ date: a.date, time: a.time, title: a.title, location: a.location, propio: true })),
+    ...scrapedAuctions.map((a) => ({ date: a.date, time: a.time, title: a.title, location: a.location, propio: false })),
+  ]
+    .filter((a) => a.date >= hoy)
+    .sort((a, b) => a.date.localeCompare(b.date) || (a.time ?? '').localeCompare(b.time ?? ''))
+  const consultasNuevas = leads.filter((l) => (l.status ?? 'new') === 'new').length
+  const esPro = tierLabel !== 'FREE'
+
+  const tabs: { key: TabKey; label: string; count?: number; icon: React.ReactNode }[] = [
+    { key: 'resumen', label: 'Inicio', icon: <LayoutDashboard className="h-4 w-4" /> },
   ]
   if (consignataria?.verified) {
-    tabs.push({ key: 'leads', label: `Leads (${leadsCount})`, icon: <Inbox className="w-3.5 h-3.5" /> })
-    tabs.push({ key: 'remates', label: `Remates (${scrapedAuctions.length + ownerAuctions.length})`, icon: <CalendarDays className="w-3.5 h-3.5" /> })
-    tabs.push({ key: 'preofertas', label: `Pre-ofertas${ofertasFirma.length ? ` (${ofertasFirma.length})` : ''}`, icon: <Package className="w-3.5 h-3.5" /> })
-    tabs.push({ key: 'editar', label: 'Editar', icon: <Pencil className="w-3.5 h-3.5" /> })
-    tabs.push({ key: 'resultados', label: 'Resultados', icon: <BarChart3 className="w-3.5 h-3.5" /> })
+    tabs.push({ key: 'leads', label: 'Consultas', count: consultasNuevas, icon: <Inbox className="h-4 w-4" /> })
+    tabs.push({ key: 'remates', label: 'Remates', count: proximos.length, icon: <CalendarDays className="h-4 w-4" /> })
+    tabs.push({ key: 'resultados', label: 'Resultados', count: auctionResults.length, icon: <BarChart3 className="h-4 w-4" /> })
+    tabs.push({ key: 'preofertas', label: 'Pre-ofertas', count: ofertasFirma.length, icon: <Package className="h-4 w-4" /> })
+    tabs.push({ key: 'audiencia', label: 'Audiencia', icon: <Eye className="h-4 w-4" /> })
+    tabs.push({ key: 'mercado', label: 'Mercado', icon: <TrendingUp className="h-4 w-4" /> })
+    tabs.push({ key: 'editar', label: 'Perfil', icon: <Pencil className="h-4 w-4" /> })
   }
-  tabs.push({ key: 'plan', label: 'Mi plan', icon: <CreditCard className="w-3.5 h-3.5" /> })
+  tabs.push({ key: 'plan', label: 'Mi plan', icon: <CreditCard className="h-4 w-4" /> })
   if (frigorifico) {
-    tabs.push({ key: 'frigorifico', label: 'Frigorífico', icon: <Building2 className="w-3.5 h-3.5" /> })
+    tabs.push({ key: 'frigorifico', label: 'Frigorífico', icon: <Building2 className="h-4 w-4" /> })
     if (frigorifico.verified) {
-      tabs.push({ key: 'catalogo', label: `Catálogo (${frigoProducts.length})`, icon: <Package className="w-3.5 h-3.5" /> })
-      tabs.push({ key: 'pedidos', label: `Pedidos (${frigoRfqs.length})`, icon: <Inbox className="w-3.5 h-3.5" /> })
+      tabs.push({ key: 'catalogo', label: 'Catálogo', count: frigoProducts.length, icon: <Package className="h-4 w-4" /> })
+      tabs.push({ key: 'pedidos', label: 'Pedidos', count: frigoRfqs.length, icon: <Inbox className="h-4 w-4" /> })
     }
   }
 
   const hasPendingClaim = claims.some(c => c.status === 'pending') || frigoClaims.some(c => c.status === 'pending')
   const hasVerified = consignataria?.verified || frigorifico?.verified
+  const irA = (t: TabKey) => {
+    setActiveTab(t)
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  // La ficha, campo por campo: lo que el productor ve cuando entra al perfil.
+  const ficha = consignataria
+    ? [
+        { campo: 'Logo', listo: !!consignataria.logo_url },
+        { campo: 'WhatsApp', listo: !!consignataria.whatsapp },
+        { campo: 'Teléfono', listo: !!consignataria.phone },
+        { campo: 'Email de contacto', listo: !!consignataria.email },
+        { campo: 'Sitio web', listo: !!consignataria.website },
+        { campo: 'Descripción', listo: !!consignataria.description },
+      ]
+    : []
+  const fichaLista = ficha.filter((f) => f.listo).length
+  const linkGo = consignataria ? `https://consignatarias.com.ar/go/${consignataria.canonical_slug}` : ''
+
+  const encabezado = (kicker: string, titulo: string, sub?: React.ReactNode, acciones?: React.ReactNode) => (
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div className="min-w-0">
+        <p className="text-xxs font-medium text-accent">{kicker}</p>
+        <h1 className="mt-1.5 text-3xl font-semibold tracking-tight text-ink text-balance">{titulo}</h1>
+        {sub && <p className="mt-1.5 max-w-2xl text-sm text-zinc-400">{sub}</p>}
+      </div>
+      {acciones && <div className="flex shrink-0 flex-wrap gap-2">{acciones}</div>}
+    </div>
+  )
 
   return (
-    <div className="max-w-3xl mx-auto px-2 sm:px-4 py-4 space-y-4">
+    <div className="relative">
+      <div className="lienzo-puntos pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
+      <div className="panel-crm relative mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:py-10">
       {vistaAdmin && (
-        <div className="rounded-terminal border border-warning/40 bg-warning/10 px-4 py-3">
+        <div className="mb-6 rounded-xl border border-warning/40 bg-warning/10 px-4 py-3">
           <p className="text-sm text-zinc-100">
             Estás viendo el panel de <strong>{consignataria?.display_name ?? vistaAdmin.slug}</strong> como lo vería
             su dueño{vistaAdmin.vista === 'pro' ? ' con PRO' : vistaAdmin.vista === 'free' ? ' sin PRO' : ', con su plan real'}.
@@ -433,173 +470,574 @@ export default function DashboardClient({
         price={tierLabel === 'ENTERPRISE' ? 0 : 45000}
         dedupeId={subscription?.rebill_subscription_id ?? null}
       />
-      {/* Bienvenida post-upgrade — "ya sos PRO, esto desbloqueaste" + proximos pasos */}
       {showUpgradeToast && (tierLabel === 'PRO' || tierLabel === 'ENTERPRISE' || proConfirming) && (
-        <ProActivatedModule
-          tier={tierLabel === 'ENTERPRISE' ? 'ENTERPRISE' : 'PRO'}
-          periodEnd={subscription?.current_period_end}
-          confirming={proConfirming}
-          steps={proNextSteps}
-          onClose={() => setShowUpgradeToast(false)}
-        />
+        <div className="mb-6">
+          <ProActivatedModule
+            tier={tierLabel === 'ENTERPRISE' ? 'ENTERPRISE' : 'PRO'}
+            periodEnd={subscription?.current_period_end}
+            confirming={proConfirming}
+            steps={proNextSteps}
+            onClose={() => setShowUpgradeToast(false)}
+          />
+        </div>
       )}
 
-      {/* Header */}
-      <div className="terminal-panel">
-        <div className="terminal-panel-header flex items-center justify-between">
-          <span className="text-zinc-200 text-label tracking-widest">MI PANEL</span>
-          <div className="flex items-center gap-2">
-            {consignataria?.verified && (
-              <span className="text-xxs font-terminal px-1.5 py-0.5 border border-positive/30 text-positive rounded-terminal">VERIFICADA</span>
-            )}
-            {(tierLabel === 'PRO' || tierLabel === 'ENTERPRISE') && (
-              <span className="text-xxs font-terminal px-1.5 py-0.5 border border-accent/40 text-accent rounded-terminal">{tierLabel}</span>
-            )}
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[232px_minmax(0,1fr)]">
+        {/* ── Barra lateral: la firma y las secciones ── */}
+        <aside className="min-w-0 lg:sticky lg:top-20 lg:self-start">
+          <div className="flex items-center gap-3">
+            <span
+              className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-lg border border-terminal-border bg-zinc-100"
+              style={consignataria?.logo_fondo ? { backgroundColor: consignataria.logo_fondo } : undefined}
+            >
+              {consignataria?.logo_url ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img src={consignataria.logo_url} alt={consignataria.display_name} className="h-full w-full object-contain p-1" />
+              ) : (
+                <ImagenTema src="/marca/iconos-color/casa-remates.png" alt="" className="h-7 w-7" />
+              )}
+            </span>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold text-ink">
+                {consignataria?.display_name ?? frigorifico?.display_name ?? 'Mi panel'}
+              </p>
+              <p className="mt-0.5 flex items-center gap-1.5 text-[0.625rem]">
+                {(consignataria?.verified || frigorifico?.verified) && <span className="text-positive">Verificada</span>}
+                <span className={esPro ? 'font-bold text-accent' : 'text-zinc-500'}>{esPro ? `★ ${tierLabel}` : 'Plan FREE'}</span>
+              </p>
+            </div>
           </div>
-        </div>
-        {/* IDENTIDAD DE LA FIRMA.
-            Antes era una línea de texto con el nombre y un enlace. Ahora la casa se
-            reconoce al entrar: su logo, cómo se ve su perfil público, y el próximo
-            remate que encontramos en el calendario — que es la prueba concreta de que
-            la estamos siguiendo, aunque todavía no haya recibido una sola consulta. */}
-        <div className="px-panel py-4">
-          {consignataria ? (
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-              <span className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-terminal border border-terminal-border bg-zinc-100"
-                style={consignataria.logo_fondo ? { backgroundColor: consignataria.logo_fondo } : undefined}
-              >
-                {consignataria.logo_url ? (
-                  /* eslint-disable-next-line @next/next/no-img-element */
-                  <img
-                    src={consignataria.logo_url}
-                    alt={consignataria.display_name}
-                    className="h-full w-full object-contain p-1"
-                  />
-                ) : (
-                  <ImagenTema src="/marca/iconos-color/casa-remates.png" alt="" className="h-8 w-8" />
-                )}
-              </span>
+          <p className="mt-2 truncate text-[0.625rem] text-zinc-500">{email}</p>
 
-              <div className="min-w-0 flex-1">
-                <h2 className="text-lg font-semibold leading-tight text-zinc-50">
-                  {consignataria.display_name}
-                </h2>
-                <p className="mt-0.5 text-xxs font-terminal text-zinc-500">{email}</p>
-
-                <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
-                  <Link
-                    href={`/consignatarias/${consignataria.canonical_slug}`}
-                    className="text-xs font-medium text-accent hover:underline"
+          {(consignataria || frigorifico) && (
+            <nav className="-mx-4 mt-5 flex gap-1 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0" aria-label="Secciones del panel">
+              {tabs.map((tab) => {
+                const activo = activeTab === tab.key
+                return (
+                  <button
+                    key={tab.key}
+                    onClick={() => irA(tab.key)}
+                    aria-current={activo ? 'page' : undefined}
+                    className={`flex shrink-0 items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors ${
+                      activo ? 'bg-accent/[0.09] font-medium text-accent' : 'text-zinc-400 hover:bg-zinc-800/60 hover:text-ink'
+                    }`}
                   >
-                    Ver tu perfil público →
-                  </Link>
-                  {!consignataria.logo_url && (
-                    <button
-                      onClick={() => setActiveTab('editar')}
-                      className="text-xs text-amber-300 hover:underline"
-                    >
-                      Subí tu logo
-                    </button>
-                  )}
-                </div>
+                    {tab.icon}
+                    <span className="whitespace-nowrap lg:flex-1 lg:text-left">{tab.label}</span>
+                    {tab.count != null && tab.count > 0 && (
+                      <span className={`rounded-full px-1.5 text-[0.625rem] tabular-nums ${activo ? 'bg-accent/15 text-accent' : 'bg-zinc-800 text-zinc-400'}`}>
+                        {tab.count}
+                      </span>
+                    )}
+                  </button>
+                )
+              })}
+            </nav>
+          )}
 
-                {/* Próximo remate encontrado en el calendario. Sale del scrape, así
-                    que aparece sin que la firma haya cargado nada. */}
-                {(() => {
-                  const prox = [...ownerAuctions.map((a) => ({ date: a.date, title: a.title, location: a.location })),
-                                ...scrapedAuctions.map((a) => ({ date: a.date, title: a.title, location: a.location }))]
-                    .filter((a) => a.date >= new Date().toISOString().slice(0, 10))
-                    .sort((a, b) => a.date.localeCompare(b.date))[0]
-                  if (!prox) {
-                    return (
-                      <p className="mt-2 text-xs text-zinc-500">
-                        No tenemos ningún remate próximo tuyo en el calendario.{' '}
-                        <button onClick={() => setActiveTab('remates')} className="text-accent hover:underline">
-                          Cargá uno
+          {consignataria && (
+            <div className="mt-5 hidden space-y-1.5 border-t border-terminal-border pt-4 text-xs lg:block">
+              <Link href={`/consignatarias/${consignataria.canonical_slug}`} className="block text-zinc-400 hover:text-accent">
+                Ver tu perfil público ↗
+              </Link>
+              <a href={`/go/${consignataria.canonical_slug}`} target="_blank" rel="noopener noreferrer" className="block text-zinc-400 hover:text-accent">
+                Tu página con QR ↗
+              </a>
+            </div>
+          )}
+        </aside>
+
+        {/* ── Contenido ── */}
+        <main key={activeTab} className="page-transition min-w-0 space-y-12">
+      {/* ============ INICIO ============ */}
+      {activeTab === 'resumen' && consignataria?.verified && (
+        <>
+          {encabezado(
+            'Inicio',
+            consignataria.display_name,
+            proximos[0]
+              ? <>Próximo remate: <span className="text-zinc-200">{new Date(proximos[0].date + 'T12:00:00').toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' })}</span>{proximos[0].location ? ` · ${proximos[0].location}` : ''}</>
+              : 'No hay remates próximos tuyos en el calendario.',
+            <>
+              <BotonPrimario onClick={() => irA('remates')}>+ Cargar remate</BotonPrimario>
+              <BotonSecundario href="/dashboard/resultados/nuevo">Cargar resultado</BotonSecundario>
+            </>,
+          )}
+
+          {/* Indicadores: todos de la base, en cero si no hubo nada. */}
+          <Marco nombre="Últimos 30 días" cuerpo="p-0">
+            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 [&>*]:border-terminal-border [&>*]:border-b sm:[&>*]:border-r">
+              <Kpi
+                etiqueta="Vistas de tu perfil"
+                valor={viewCount}
+                cambio={performance ? { delta: performance.cambios.vistas.delta } : null}
+                detalle={provincialRank.position > 0 ? `#${provincialRank.position} en ${provincialRank.province} por remates` : undefined}
+              />
+              <Kpi
+                etiqueta="Consultas recibidas"
+                valor={leadsCount}
+                cambio={performance ? { delta: performance.cambios.leads.delta } : null}
+                detalle={consultasNuevas > 0 ? `${consultasNuevas} sin responder` : 'Ninguna pendiente'}
+                onClick={() => irA('leads')}
+              />
+              <Kpi etiqueta="Clics en tu WhatsApp" valor={whatsappClicks} detalle="Desde tu perfil" />
+              <Kpi etiqueta="Productores que te siguen" valor={followersCount} detalle="Reciben tus remates" />
+              <Kpi etiqueta="Marcas en tus remates" valor={marksCount + totalWatchers} detalle="Agendaron un remate tuyo" />
+            </div>
+          </Marco>
+
+          <div className="grid grid-cols-[minmax(0,1fr)] gap-x-5 gap-y-12 xl:grid-cols-3">
+            {/* Pipeline */}
+            <Marco
+              nombre="Consultas"
+              titulo="Pipeline de consultas"
+              accion={<button onClick={() => irA('leads')} className="text-accent hover:underline">Ver todas →</button>}
+              className="xl:col-span-2"
+            >
+              {leads.length === 0 ? (
+                <Vacio
+                  titulo="Todavía no recibiste consultas."
+                  texto="Entran desde el formulario de tu perfil, tu página con QR y la ficha de cada remate. Te avisamos por mail y quedan acá para que las sigas."
+                  accion={<BotonSecundario onClick={() => { navigator.clipboard.writeText(linkGo); trackEvent('referral_link_copy', { consignataria_slug: consignataria.canonical_slug, surface: 'panel_inicio' }) }}>Copiar el link de tu página</BotonSecundario>}
+                />
+              ) : (
+                <>
+                  <div className="flex h-2 overflow-hidden rounded-full bg-zinc-800" aria-hidden="true">
+                    {ETAPAS.map((e) => {
+                      const n = leads.filter((l) => etapaDe(l.status) === e).length
+                      return n ? <span key={e} className={TONO_ETAPA_BARRA[e]} style={{ width: `${(n / leads.length) * 100}%` }} /> : null
+                    })}
+                  </div>
+                  <dl className="mt-3 grid grid-cols-4 gap-2">
+                    {ETAPAS.map((e) => (
+                      <div key={e}>
+                        <dt className="text-[0.625rem] text-zinc-500">{ETAPA_LABEL[e]}</dt>
+                        <dd className="text-lg font-semibold tabular-nums text-ink">{leads.filter((l) => etapaDe(l.status) === e).length}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                  <ul className="mt-4 divide-y divide-terminal-border border-t border-terminal-border">
+                    {leads.slice(0, 5).map((l) => (
+                      <li key={l.id}>
+                        <button onClick={() => irA('leads')} className="flex w-full items-center gap-3 py-2.5 text-left hover:text-accent">
+                          <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${TONO_ETAPA_BARRA[etapaDe(l.status)]}`} aria-hidden="true" />
+                          <span className="w-28 shrink-0 truncate text-sm text-ink">{esPro ? l.name : l.name.split(' ')[0]}</span>
+                          <span className="min-w-0 flex-1 truncate text-xs text-zinc-500">{l.message || origenConsulta(l.source)}</span>
+                          <span className="shrink-0 text-[0.625rem] tabular-nums text-zinc-500">
+                            {new Date(l.created_at).toLocaleDateString('es-AR', { day: '2-digit', month: 'short' })}
+                          </span>
                         </button>
-                        .
-                      </p>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+            </Marco>
+
+            {/* Próximos remates */}
+            <Marco
+              nombre="Remates"
+              titulo="Próximos remates"
+              accion={<button onClick={() => irA('remates')} className="text-accent hover:underline">Gestionar →</button>}
+            >
+              {proximos.length === 0 ? (
+                <Vacio
+                  titulo="Sin remates próximos."
+                  texto="Cargá tu próximo remate y sale en el calendario, en tu perfil y en el mail semanal."
+                  accion={<BotonPrimario onClick={() => irA('remates')}>+ Cargar remate</BotonPrimario>}
+                />
+              ) : (
+                <ul className="space-y-3">
+                  {proximos.slice(0, 5).map((a, i) => {
+                    const d = new Date(a.date + 'T12:00:00')
+                    return (
+                      <li key={`${a.date}-${i}`} className="flex gap-3">
+                        <span className="grid w-11 shrink-0 place-items-center rounded-lg border border-terminal-border py-1.5 text-center leading-none">
+                          <span className="text-[0.625rem] uppercase text-zinc-500">{d.toLocaleDateString('es-AR', { month: 'short' }).replace('.', '')}</span>
+                          <span className="mt-0.5 text-lg font-semibold tabular-nums text-ink">{d.getDate()}</span>
+                        </span>
+                        <span className="min-w-0">
+                          <span className="block truncate text-sm text-ink">{a.title}</span>
+                          <span className="block truncate text-xxs text-zinc-500">
+                            {[a.time, a.location].filter(Boolean).join(' · ') || 'Sin lugar cargado'}
+                            {!a.propio && ' · del calendario'}
+                          </span>
+                        </span>
+                      </li>
                     )
-                  }
-                  const cuando = new Date(prox.date + 'T12:00:00').toLocaleDateString('es-AR', {
-                    weekday: 'long', day: '2-digit', month: 'long',
-                  })
-                  return (
-                    <p className="mt-2 text-xs leading-snug text-zinc-400">
-                      <span className="text-zinc-500">Tu próximo remate:</span>{' '}
-                      <span className="text-zinc-200">{cuando}</span>
-                      {prox.location ? ` · ${prox.location}` : ''}
-                      {prox.title ? ` — ${prox.title}` : ''}
-                    </p>
-                  )
-                })()}
+                  })}
+                </ul>
+              )}
+            </Marco>
+
+            {/* Vistas por día (PRO) */}
+            <Marco nombre="Audiencia" titulo="Vistas de tu perfil por día" className="xl:col-span-2"
+              accion={esPro ? <button onClick={() => irA('audiencia')} className="text-accent hover:underline">Ver de dónde llegan →</button> : undefined}
+            >
+              {esPro ? (
+                origenVisitas ? (
+                  <BarrasDiarias datos={origenVisitas.porDia} />
+                ) : (
+                  <Vacio titulo="Todavía no hay vistas registradas." texto="Cada visita a tu perfil se cuenta acá, día por día." />
+                )
+              ) : (
+                <SoloPro
+                  titulo="Quién te mira, día por día"
+                  beneficio={`Este mes tu perfil tuvo ${fmt(viewCount)} ${viewCount === 1 ? 'vista' : 'vistas'}. Con PRO las ves día por día y sabés si llegan desde Google, el calendario o una IA.`}
+                  desde="panel_inicio"
+                />
+              )}
+            </Marco>
+
+            {/* Para hacer */}
+            <Marco nombre="Pendientes" titulo="Para hacer">
+              {bandeja && bandeja.entradas.length > 0 ? (
+                <ul className="space-y-3">
+                  {bandeja.entradas.slice(0, 6).map((e) => (
+                    <li key={e.id} className="flex gap-2.5">
+                      <span className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${URGENCIA_TONO[e.urgencia]}`} aria-hidden="true" />
+                      <span className="min-w-0">
+                        <span className="block text-sm text-ink">{e.titulo}</span>
+                        <span className="block text-xxs text-zinc-500">{e.detalle}</span>
+                        {e.href && e.accion && <Link href={e.href} className="text-xxs text-accent hover:underline">{e.accion} →</Link>}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <Vacio titulo="Nada pendiente." texto="Acá aparecen las consultas sin responder, los remates de la semana y lo que le falta a tu ficha." />
+              )}
+            </Marco>
+
+            {/* Ficha */}
+            <Marco nombre="Ficha" titulo={`Tu ficha · ${fichaLista} de ${ficha.length}`}
+              accion={<button onClick={() => irA('editar')} className="text-accent hover:underline">Completar →</button>}
+            >
+              <div className="h-1.5 overflow-hidden rounded-full bg-zinc-800" aria-hidden="true">
+                <span className="block h-full rounded-full bg-accent transition-all" style={{ width: `${(fichaLista / ficha.length) * 100}%` }} />
+              </div>
+              <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2">
+                {ficha.map((f) => (
+                  <li key={f.campo} className={`flex items-center gap-2 text-xs ${f.listo ? 'text-zinc-300' : 'text-zinc-500'}`}>
+                    <span className={f.listo ? 'text-positive' : 'text-zinc-600'} aria-hidden="true">{f.listo ? '✓' : '○'}</span>
+                    {f.campo}
+                  </li>
+                ))}
+              </ul>
+            </Marco>
+
+            {/* Resultados */}
+            <Marco nombre="Resultados" titulo="Tus últimos resultados" className="xl:col-span-2"
+              accion={<Link href="/dashboard/resultados/nuevo" className="text-accent hover:underline">+ Cargar resultado</Link>}
+            >
+              {auctionResults.length === 0 ? (
+                <Vacio
+                  titulo="Todavía no cargaste resultados."
+                  texto="Cargá los promedios de cada remate: arman tu historial de precios y, con PRO, se comparan contra el Valor de Referencia de esa semana."
+                />
+              ) : (
+                <ul className="divide-y divide-terminal-border">
+                  {auctionResults.slice(0, 5).map((r) => (
+                    <li key={r.id} className="flex items-center gap-4 py-2.5 text-sm">
+                      <span className="w-14 shrink-0 text-xxs tabular-nums text-zinc-500">{formatDate(r.auction_date)}</span>
+                      <span className="min-w-0 flex-1 truncate text-ink">{r.auction_title}</span>
+                      {r.total_heads_sold != null && <span className="hidden text-xxs tabular-nums text-zinc-500 sm:inline">{fmt(r.total_heads_sold)} cab.</span>}
+                      {r.average_price != null && <span className="text-xs tabular-nums text-ink">${Number(r.average_price).toLocaleString('es-AR')}</span>}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </Marco>
+          </div>
+        </>
+      )}
+
+      {/* Inicio de una cuenta sin firma verificada (claims, frigorífico, nueva) */}
+      {activeTab === 'resumen' && !consignataria?.verified && (
+        <>
+          {encabezado('Inicio', frigorifico?.display_name ?? 'Tu panel', email)}
+          {claims.length > 0 && (
+            <Marco nombre="Solicitudes" titulo="Mis solicitudes" cuerpo="p-0">
+              <ul className="divide-y divide-terminal-border">
+                {claims.map(claim => (
+                  <li key={claim.id} className="flex items-center gap-4 px-5 py-3">
+                    <span className="flex-1 text-sm text-ink">{claim.consignatarias?.display_name || claim.consignataria_slug}</span>
+                    <span className={`rounded-sm border px-1.5 py-0.5 text-[0.625rem] font-semibold ${
+                      claim.status === 'pending' ? 'border-warning/40 text-warning'
+                        : claim.status === 'approved' ? 'border-positive/40 text-positive'
+                        : 'border-negative/40 text-negative'
+                    }`}>
+                      {claim.status === 'pending' ? 'Pendiente' : claim.status === 'approved' ? 'Aprobada' : 'Rechazada'}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </Marco>
+          )}
+          {!hasVerified && hasPendingClaim && <ClaimEnEspera claims={claims} />}
+          {!consignataria && !frigorifico && claims.length === 0 && frigoClaims.length === 0 && (
+            <Marco nombre="Primeros pasos" titulo="Reclamá tu firma">
+              <p className="max-w-xl text-sm text-zinc-400">
+                Buscá tu consignataria o tu frigorífico y reclamá el perfil. Cuando lo verifiquemos, este panel se abre con tus remates, tus consultas y tus números.
+              </p>
+              <div className="mt-5 flex flex-wrap gap-2">
+                <BotonPrimario href="/consignatarias">Buscar mi consignataria →</BotonPrimario>
+                <BotonSecundario href="/frigorificos">Buscar mi frigorífico</BotonSecundario>
+              </div>
+            </Marco>
+          )}
+          {frigorifico && (
+            <Marco nombre="Frigorífico" titulo={frigorifico.display_name}
+              accion={<button onClick={() => irA('frigorifico')} className="text-accent hover:underline">Abrir →</button>}
+            >
+              <dl className="grid grid-cols-2 gap-4">
+                <div><dt className="text-xxs text-zinc-500">Productos en catálogo</dt><dd className="text-2xl font-semibold tabular-nums text-ink">{fmt(frigoProducts.length)}</dd></div>
+                <div><dt className="text-xxs text-zinc-500">Pedidos recibidos</dt><dd className="text-2xl font-semibold tabular-nums text-ink">{fmt(frigoRfqs.length)}</dd></div>
+              </dl>
+            </Marco>
+          )}
+        </>
+      )}
+
+      {/* ============ CONSULTAS ============ */}
+      {activeTab === 'leads' && consignataria?.verified && (
+        <>
+          {encabezado(
+            'Consultas',
+            'Quién te buscó',
+            'Cada consulta entra como “Nueva”. Movela de etapa cuando le escribas y anotá lo que hablaron: queda guardado en tu cuenta.',
+          )}
+          <ConsultasCRM slug={consignataria.canonical_slug} inicial={leads} esPro={esPro} soloLectura={!!vistaAdmin} />
+        </>
+      )}
+
+      {/* ============ REMATES ============ */}
+      {activeTab === 'remates' && consignataria?.verified && (
+        <>
+          {encabezado(
+            'Remates',
+            'Tus remates',
+            'Cargá los nuevos y corregí los que el sitio encontró solo. Lo que cargás se ve al instante en tu perfil y en menos de una hora en el calendario y el mail semanal.',
+          )}
+          <AuctionManager
+            slug={consignataria.canonical_slug}
+            displayName={consignataria.display_name}
+            ownerAuctions={ownerAuctions}
+            scrapedAuctions={scrapedAuctions}
+            onAuctionsChange={setOwnerAuctions}
+          />
+        </>
+      )}
+
+      {/* ============ RESULTADOS ============ */}
+      {activeTab === 'resultados' && consignataria && (
+        <>
+          {encabezado(
+            'Resultados',
+            'Promedios de tus remates',
+            'Cabezas vendidas y precio por categoría de cada remate. Es tu historial de precios.',
+            <BotonPrimario href="/dashboard/resultados/nuevo">+ Cargar resultado</BotonPrimario>,
+          )}
+          <Marco nombre="Resultados" cuerpo="p-0">
+            {auctionResults.length > 0 ? (
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-terminal-border text-left text-xxs text-zinc-500">
+                    <th className="px-5 py-2.5 font-normal">Fecha</th>
+                    <th className="px-2 py-2.5 font-normal">Remate</th>
+                    <th className="hidden px-2 py-2.5 text-right font-normal sm:table-cell">Cabezas</th>
+                    <th className="px-2 py-2.5 text-right font-normal">Promedio</th>
+                    <th className="px-5 py-2.5" />
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-terminal-border">
+                  {auctionResults.map(r => (
+                    <tr key={r.id}>
+                      <td className="px-5 py-3 text-xxs tabular-nums text-zinc-500">{formatDate(r.auction_date)}</td>
+                      <td className="max-w-0 truncate px-2 py-3 text-ink">{r.auction_title}</td>
+                      <td className="hidden px-2 py-3 text-right tabular-nums text-zinc-400 sm:table-cell">{r.total_heads_sold != null ? fmt(r.total_heads_sold) : '—'}</td>
+                      <td className="px-2 py-3 text-right tabular-nums text-ink">{r.average_price != null ? `$${Number(r.average_price).toLocaleString('es-AR')}` : '—'}</td>
+                      <td className="px-5 py-3 text-right"><Link href={`/dashboard/resultados/${r.id}`} className="text-xs text-accent hover:underline">Editar</Link></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <div className="p-5">
+                <Vacio
+                  titulo="Todavía no cargaste resultados."
+                  texto="Elegí el remate, cargá las cabezas y el precio por categoría. Te sugerimos los remates de los últimos 90 días que todavía no tienen resultado."
+                  accion={<BotonPrimario href="/dashboard/resultados/nuevo">+ Cargar el primero</BotonPrimario>}
+                />
+              </div>
+            )}
+          </Marco>
+          <Marco nombre="Contra el mercado" titulo={esPro && resultadosVR && resultadosVR.length > 0 ? undefined : 'Tu precio contra el Valor de Referencia'} incrustado={!!(esPro && resultadosVR && resultadosVR.length > 0)}>
+            {esPro ? (
+              resultadosVR && resultadosVR.length > 0 ? (
+                <ResultadoVsMercado resultados={resultadosVR} />
+              ) : (
+                <Vacio titulo="Sin resultados para comparar." texto="Cuando cargues un resultado con precio por categoría, aparece acá contra el Valor de Referencia de esa semana." />
+              )
+            ) : (
+              <SoloPro titulo="Tu precio contra el mercado" beneficio="Cada categoría de tu remate contra el Valor de Referencia de esa semana. El número para pelear una consignación." desde="resultados" />
+            )}
+          </Marco>
+        </>
+      )}
+
+      {/* ============ PRE-OFERTAS ============ */}
+      {activeTab === 'preofertas' && consignataria?.verified && (
+        <>
+          {encabezado('Pre-ofertas', 'Lotes y ofertas', 'Publicá un lote antes del remate y recibí ofertas de compradores.')}
+          <PreofertasManager slug={consignataria.canonical_slug} esPro={plan.isPro} inicial={preofertasFirma} ofertas={ofertasFirma} />
+        </>
+      )}
+
+      {/* ============ AUDIENCIA ============ */}
+      {activeTab === 'audiencia' && consignataria?.verified && (
+        <>
+          {encabezado('Audiencia', 'Quién te mira', 'Las visitas a tu perfil, de dónde llegan y qué buscan en Google cuando aparece tu ficha.')}
+          {esPro ? (
+            <>
+              {performance && (
+                <Marco nombre="Mes contra mes" incrustado>
+                  <PerformanceMes perf={performance} />
+                </Marco>
+              )}
+              <Marco nombre="Origen de las visitas" incrustado={!!origenVisitas}>
+                {origenVisitas ? <OrigenVisitas d={origenVisitas} /> : <Vacio titulo="Todavía no hay visitas registradas." />}
+              </Marco>
+              <Marco nombre="Google" titulo={busquedasGoogle ? undefined : 'Lo que buscan en Google'} incrustado={!!busquedasGoogle}>
+                {busquedasGoogle ? (
+                  <BusquedasGoogle d={busquedasGoogle} />
+                ) : (
+                  <Vacio titulo="Todavía sin búsquedas." texto="Search Console se actualiza una vez por semana. Cuando tu ficha aparezca en Google, ves acá qué escribió la gente." />
+                )}
+              </Marco>
+              <Marco nombre="Distribución" titulo={distribucion ? undefined : 'A cuántos les llegaron tus remates'} incrustado={!!distribucion}>
+                {distribucion ? (
+                  <Distribucion dist={distribucion} />
+                ) : (
+                  <Vacio titulo="Tus remates todavía no salieron en el mail semanal." texto="Cada envío queda registrado con la cantidad de productores a los que les llegó." />
+                )}
+              </Marco>
+            </>
+          ) : (
+            <>
+              <Marco nombre="Este mes" cuerpo="p-0">
+                <div className="grid grid-cols-2 sm:grid-cols-3 [&>*]:border-terminal-border [&>*]:border-b sm:[&>*]:border-r">
+                  <Kpi etiqueta="Vistas de tu perfil" valor={viewCount} />
+                  <Kpi etiqueta="Clics en tu WhatsApp" valor={whatsappClicks} />
+                  <Kpi etiqueta="Productores que te siguen" valor={followersCount} />
+                </div>
+              </Marco>
+              <SoloPro
+                titulo="Audiencia completa"
+                beneficio="Tus vistas día por día, si llegan desde Google, el calendario o una IA, qué escriben en Google cuando aparece tu ficha y a cuántos productores les llegó cada remate en el mail semanal."
+                desde="audiencia"
+              />
+            </>
+          )}
+        </>
+      )}
+
+      {/* ============ MERCADO ============ */}
+      {activeTab === 'mercado' && consignataria?.verified && (
+        <>
+          {encabezado('Mercado', 'Tu firma en el mercado', 'Con quién compartís fecha en tu provincia y cómo se mueve el Mercado de Cañuelas.')}
+          <Marco nombre="Agenda regional" titulo={agenda ? undefined : 'Tu agenda contra la de tu provincia'} incrustado={!!agenda}>
+            {agenda ? <AgendaRegionalPanel a={agenda} /> : <Vacio titulo="Sin remates en tu provincia para comparar." />}
+          </Marco>
+          {hayDatosMag && (
+            esPro ? (
+              <>
+                {territorio && <Marco nombre="Territorio" incrustado><TerritorioPanel t={territorio} titular={territorioTitular} /></Marco>}
+                {cartera && <Marco nombre="Cartera" incrustado><CarteraPanel c={cartera} /></Marco>}
+                {benchmark && <Marco nombre="Precio" incrustado><BenchmarkMercado b={benchmark} /></Marco>}
+                {participacion && <Marco nombre="Participación" incrustado><ParticipacionMercado p={participacion} /></Marco>}
+              </>
+            ) : (
+              <SoloPro
+                titulo="Tu negocio en Cañuelas"
+                beneficio="Tu cartera de remitentes (quién dejó de consignarte y a quién le ganaste un cliente), tu precio contra el promedio de las 22 casas, tu cuota y en qué partidos no tenés remitentes."
+                desde="mercado"
+              />
+            )
+          )}
+          <Marco nombre="Cañuelas" incrustado>
+            <MagPulse />
+          </Marco>
+          <Marco nombre="Competencia" incrustado>
+            <MarketIntelPanel />
+          </Marco>
+        </>
+      )}
+
+      {/* ============ PERFIL ============ */}
+      {activeTab === 'editar' && consignataria?.verified && (
+        <>
+          {encabezado(
+            'Perfil',
+            'Tu ficha pública',
+            'Lo que ve el productor cuando entra a tu perfil.',
+            <BotonSecundario href={`/consignatarias/${consignataria.canonical_slug}`}>Ver tu perfil ↗</BotonSecundario>,
+          )}
+          <ProfileEditForm
+            slug={consignataria.canonical_slug}
+            initial={{
+              phone: consignataria.phone || '',
+              email: consignataria.email || '',
+              website: consignataria.website || '',
+              description: consignataria.description || '',
+              whatsapp: consignataria.whatsapp || '',
+              cuit: consignataria.cuit || '',
+            }}
+            logoUrl={consignataria.logo_url}
+          />
+          <Marco nombre="Link y QR" titulo="Tu página con QR">
+            <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
+              <QRCode url={`${linkGo}?utm_source=qr`} size={140} showDownload={true} />
+              <div className="flex-1 space-y-3">
+                <p className="text-sm text-zinc-400">
+                  Usalo en catálogos, tarjetas y carteles: el que lo escanea ve tu próximo remate y te puede consultar.
+                </p>
+                <p className="break-all rounded-md border border-terminal-border bg-terminal-bg/40 px-3 py-2 font-mono text-xs text-zinc-300">{linkGo}</p>
+                <div className="flex flex-wrap gap-2">
+                  <BotonSecundario onClick={() => { navigator.clipboard.writeText(linkGo); trackEvent('referral_link_copy', { consignataria_slug: consignataria.canonical_slug, surface: 'dashboard_qr' }) }}>Copiar link</BotonSecundario>
+                  <BotonSecundario href={`https://wa.me/?text=${encodeURIComponent(`Mirá mis próximos remates: ${linkGo}`)}`} externo>Compartir por WhatsApp</BotonSecundario>
+                  <BotonSecundario href={`/api/calendario/${consignataria.canonical_slug}`}>Agregar al calendario</BotonSecundario>
+                </div>
               </div>
             </div>
-          ) : (
-            <span className="text-xxs font-terminal text-zinc-500">{email}</span>
-          )}
-        </div>
-      </div>
-
-      {/* Tab Navigation */}
-      {(consignataria || frigorifico) && (
-        <div className="terminal-panel">
-          <div className="flex items-center gap-0 overflow-x-auto">
-            {tabs.map(tab => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`px-4 py-2.5 text-xxs font-terminal uppercase tracking-wider transition-colors border-b-2 flex-shrink-0 flex items-center gap-1.5 ${
-                  activeTab === tab.key
-                    ? 'text-accent border-accent bg-accent/5'
-                    : 'text-zinc-500 border-transparent hover:text-zinc-300 hover:border-zinc-700'
-                }`}
-              >
-                {tab.icon}
-                <span className="hidden sm:inline">{tab.label}</span>
-                <span className="sm:hidden">{tab.key === 'remates' ? `(${scrapedAuctions.length + ownerAuctions.length})` : ''}</span>
-              </button>
-            ))}
-          </div>
-        </div>
+          </Marco>
+          <Marco nombre="Widget" titulo="Tus remates en tu web">
+            {esPro ? (
+              <div className="space-y-3">
+                <p className="text-sm text-zinc-400">Copiá este código y pegalo en tu sitio. Se actualiza solo con tus remates.</p>
+                <pre className="overflow-x-auto rounded-md border border-terminal-border bg-terminal-bg/40 p-3 font-mono text-[0.6875rem] text-zinc-300">
+                  {`<iframe src="https://consignatarias.com.ar/api/widget/${consignataria.canonical_slug}" width="400" height="300" frameborder="0"></iframe>`}
+                </pre>
+                <div className="flex flex-wrap gap-2">
+                  <BotonSecundario onClick={() => { navigator.clipboard.writeText(`<iframe src="https://consignatarias.com.ar/api/widget/${consignataria.canonical_slug}" width="400" height="300" frameborder="0"></iframe>`); trackEvent('widget_code_copy', { consignataria_slug: consignataria.canonical_slug }) }}>Copiar código</BotonSecundario>
+                  <BotonSecundario href={`/api/widget/${consignataria.canonical_slug}?theme=light`} externo>Ver tema claro</BotonSecundario>
+                  <BotonSecundario href={`/api/widget/${consignataria.canonical_slug}?theme=dark`} externo>Ver tema oscuro</BotonSecundario>
+                </div>
+              </div>
+            ) : (
+              <SoloPro titulo="Widget de remates" beneficio="Tus próximos remates en tu propia web, con un código que se pega una vez y se actualiza solo." desde="widget" />
+            )}
+          </Marco>
+        </>
       )}
 
-      {/* key={activeTab} re-dispara el cross-fade (page-transition) en cada cambio
-          de tab, sin cambiar la semántica de estado. */}
-      <div key={activeTab} className="page-transition space-y-4">
-      {/* ============ TAB: RESUMEN ============ */}
-      {activeTab === 'resumen' && (
+      {/* ============ MI PLAN ============ */}
+      {activeTab === 'plan' && (
         <>
-          {/* Saludo + estado de cuenta (dato real de valor) */}
-          <WelcomeHero
-            email={email}
-            displayName={consignataria?.display_name ?? frigorifico?.display_name}
-            tier={tierLabel as 'FREE' | 'PRO' | 'ENTERPRISE'}
-            periodEnd={subscription?.current_period_end}
-            viewCount={consignataria?.verified ? viewCount : null}
-            viewPercentile={consignataria?.verified ? viewPercentile : 0}
-            provincialRank={provincialRank}
-          />
-
-          {/* Pulso del mercado — drip animado de la actividad de Cañuelas (dopamina + progreso) */}
-          <div className="mt-4">
-            <MagPulse />
-          </div>
-
-          {/* Intel de mercado — seguí la actividad de la competencia en el MAG (gancho + upsell) */}
-          {consignataria && (
-            <div className="mt-4">
-              <MarketIntelPanel />
-            </div>
-          )}
-
-          {showChecklist && completedFields && consignataria && (
-            <WelcomeChecklist profileSlug={consignataria.canonical_slug} displayName={consignataria.display_name} completedFields={completedFields} tieneRemate={ownerAuctions.length > 0 || scrapedAuctions.length > 0} />
-          )}
-
-          {/* Points Progress Tracker */}
-          {consignataria?.verified && tierLabel === 'FREE' && (
-            <>
+          {encabezado('Mi plan', esPro ? `PRO Consignataria` : 'Plan FREE', esPro && subscription?.current_period_end ? `Activo hasta el ${new Date(subscription.current_period_end).toLocaleDateString('es-AR')}.` : undefined)}
+          <SubscriptionPanel tier={tierLabel} subscription={subscription} plan={plan} />
+          {consignataria?.verified && !esPro && (
+            <div>
               <ProfileProgressTracker
                 profile={{
                   cuit: consignataria.cuit,
@@ -616,726 +1054,24 @@ export default function DashboardClient({
                 alreadyRedeemed={hasRedeemed}
                 onRedeem={handleRedeemPoints}
               />
-              {redeemError && (
-                <div className="mt-2 px-3 py-2 bg-negative/10 border border-negative/30 rounded">
-                  <p className="text-negative text-xxs font-terminal">{redeemError}</p>
-                </div>
-              )}
-              {isRedeeming && (
-                <div className="mt-2 px-3 py-2 bg-amber-500/10 border border-amber-500/30 rounded">
-                  <p className="text-amber-400 text-xxs font-terminal">Canjeando puntos...</p>
-                </div>
-              )}
-            </>
-          )}
-
-          {consignataria?.verified && (
-            <div className="terminal-panel">
-              <div className="terminal-panel-header flex items-center justify-between">
-                <span className="text-zinc-200 text-label tracking-widest">📊 TU IMPACTO — ÚLTIMOS 30 DÍAS</span>
-                {tierLabel !== 'FREE' && (
-                  <span className="text-xxs text-accent font-terminal">PRO Analytics</span>
-                )}
-              </div>
-              <div className="px-panel py-4">
-                {/* Mes contra mes. Va ARRIBA del grid de 30 días a propósito: la
-                    firma pregunta "¿mejoró?", y eso lo contesta una serie, no una
-                    foto. El grid de abajo queda como el detalle del período. */}
-                {/* El benchmark va PRIMERO: es la respuesta a "¿para qué me sirve
-                    esto si ya tengo mi sistema?". Lo demás es del sitio; esto es
-                    de su negocio. */}
-                {/* La BANDEJA primero: qué hay que hacer hoy. Los bloques de abajo
-                    son el detrás de cada línea, para el que quiera abrir el dato. */}
-                {bandeja && <BandejaEntrada b={bandeja} />}
-
-                {/* La agenda va antes que los bloques del MAG: le sirve a las 130
-                    casas, y decide algo que la firma todavía puede cambiar (la
-                    fecha del próximo remate). Es gratis a propósito — es lo que le
-                    demuestra a una casa del interior que el panel la mira a ella. */}
-                {agenda && <AgendaRegionalPanel a={agenda} />}
-
-                {/* Los tres bloques del Mercado.
-                    Una firma FREE ve la FORMA de cada uno con datos de ejemplo, no
-                    los suyos difuminados: el blur es maquillaje y el dato real
-                    seguiría en el HTML —y acá son nombres de terceros y es justo lo
-                    que se cobra—. Sólo se muestran si la firma opera en el MAG: a las
-                    22 de Cañuelas les sirve; al resto no se les ofrece algo que no
-                    vamos a poder darles.
-
-                    La cartera va antes que el precio: lo primero es a quién hay que
-                    llamar hoy, después cómo se vendió. */}
-                {/* El territorio va PRIMERO: la cartera dice a quién no perder, esto
-                    dice a quién ir a buscar. Para una casa que quiere crecer, la segunda
-                    pregunta es la que mueve al comercial. */}
-                {hayDatosMag && (
-                  <MuestraPro
-                    esPro={tierLabel !== 'FREE'}
-                    titulo="Tu territorio"
-                    beneficio="En qué partidos no tenés un solo remitente, sobre productores que ya mandan hacienda a Cañuelas con otra casa."
-                    muestra={<TerritorioPanel t={TERRITORIO_MUESTRA} titular="Ayacucho: 64 productores mandan al MAG desde ahí y ninguno es tuyo. 1.854 establecimientos en el partido." />}
-                  >
-                    {territorio && <TerritorioPanel t={territorio} titular={territorioTitular} />}
-                  </MuestraPro>
-                )}
-
-                {hayDatosMag && (
-                  <MuestraPro
-                    esPro={tierLabel !== 'FREE'}
-                    titulo="Tu cartera en el Mercado"
-                    beneficio="Quién dejó de consignarte y hace cuánto, a quién le sacaste un cliente a la competencia, y de qué remitentes dependés."
-                    muestra={<CarteraPanel c={CARTERA_MUESTRA} />}
-                  >
-                    {cartera && <CarteraPanel c={cartera} />}
-                  </MuestraPro>
-                )}
-
-                {hayDatosMag && (
-                  <MuestraPro
-                    esPro={tierLabel !== 'FREE'}
-                    titulo="Cómo vendiste contra el mercado"
-                    beneficio="Tu precio por categoría contra el promedio de las 22 casas de Cañuelas. El número que usás para pelear una consignación."
-                    muestra={<BenchmarkMercado b={BENCHMARK_MUESTRA} />}
-                  >
-                    {benchmark && <BenchmarkMercado b={benchmark} />}
-                  </MuestraPro>
-                )}
-
-                {hayDatosMag && (
-                  <MuestraPro
-                    esPro={tierLabel !== 'FREE'}
-                    titulo="Tu lugar en el Mercado"
-                    beneficio="Tu cuota sobre las cabezas operadas, tu puesto entre las 22 casas, y si estás creciendo o perdiendo terreno."
-                    muestra={<ParticipacionMercado p={PARTICIPACION_MUESTRA} />}
-                  >
-                    {participacion && <ParticipacionMercado p={participacion} />}
-                  </MuestraPro>
-                )}
-
-                {/* Tu precio contra el mercado: para las casas sin dato del MAG (el
-                    interior), sus resultados cargados contra el Valor de Referencia. */}
-                {(!hayDatosMag || (resultadosVR?.length ?? 0) > 0) && (
-                  <MuestraPro
-                    esPro={tierLabel !== 'FREE'}
-                    titulo="Tu precio contra el mercado"
-                    beneficio="Cargá los promedios de tu remate y mirá cada categoría contra el Valor de Referencia de esa semana."
-                    muestra={<ResultadoVsMercado resultados={RESULTADO_VS_MERCADO_MUESTRA} />}
-                  >
-                    {resultadosVR && <ResultadoVsMercado resultados={resultadosVR} />}
-                  </MuestraPro>
-                )}
-
-                {performance && <PerformanceMes perf={performance} />}
-
-                {/* Quién te mira, cuándo y desde dónde: lo que vende "Analytics de tu
-                    perfil". Para una FREE, la forma con datos de ejemplo. */}
-                <MuestraPro
-                  esPro={tierLabel !== 'FREE'}
-                  titulo="Quién te mira y desde dónde"
-                  beneficio="Tus vistas día por día, si llegan desde Google, desde el calendario o desde una IA como ChatGPT, y qué día te miran más."
-                  muestra={<OrigenVisitas d={ORIGEN_VISITAS_MUESTRA} />}
-                >
-                  {origenVisitas && <OrigenVisitas d={origenVisitas} />}
-                </MuestraPro>
-
-                <MuestraPro
-                  esPro={tierLabel !== 'FREE'}
-                  titulo="Lo que buscan en Google sobre tu firma"
-                  beneficio="Qué escribe la gente en Google cuando aparece tu ficha, cuántas veces apareció y cuántos entraron."
-                  muestra={<BusquedasGoogle d={BUSQUEDAS_GOOGLE_MUESTRA} />}
-                >
-                  {busquedasGoogle && <BusquedasGoogle d={busquedasGoogle} />}
-                </MuestraPro>
-
-                {/* Distribución: sólo PRO, y sólo si hubo. Es literalmente lo que
-                    se paga —"a cuántos les llegó mi remate"— así que no se regala.
-                    Un cero tampoco se muestra: se leería como error del sistema. */}
-                {distribucion && tierLabel !== 'FREE' && <Distribucion dist={distribucion} />}
-
-                {/* Stats grid - always show all 4 metrics */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
-                  {/* Seguidores — el dato B2B: productores suscriptos a tus remates */}
-                  <div className="bg-zinc-800/50 rounded-terminal p-3 text-center">
-                    <div className="text-2xl font-terminal tabular-nums text-sky-300 font-bold">
-                      {followersCount.toLocaleString('es-AR')}
-                    </div>
-                    <div className="text-[10px] text-zinc-500 uppercase font-terminal mt-1">
-                      productores te siguen
-                    </div>
-                  </div>
-
-                  {/* Marcas en tus remates */}
-                  <div className="bg-zinc-800/50 rounded-terminal p-3 text-center">
-                    <div className="text-2xl font-terminal tabular-nums text-sky-300 font-bold">
-                      {marksCount.toLocaleString('es-AR')}
-                    </div>
-                    <div className="text-[10px] text-zinc-500 uppercase font-terminal mt-1">
-                      marcas en tus remates
-                    </div>
-                  </div>
-
-                  {/* Views */}
-                  <div className="bg-zinc-800/50 rounded-terminal p-3 text-center">
-                    <div className="text-2xl font-terminal tabular-nums text-zinc-100 font-bold">
-                      {viewCount.toLocaleString('es-AR')}
-                    </div>
-                    <div className="text-[10px] text-zinc-500 uppercase font-terminal mt-1">
-                      vistas perfil
-                    </div>
-                  </div>
-                  
-                  {/* WhatsApp Clicks */}
-                  <div className="bg-zinc-800/50 rounded-terminal p-3 text-center">
-                    <div className="text-2xl font-terminal tabular-nums text-emerald-400 font-bold">
-                      {whatsappClicks.toLocaleString('es-AR')}
-                    </div>
-                    <div className="text-[10px] text-zinc-500 uppercase font-terminal mt-1">
-                      clics WhatsApp
-                    </div>
-                  </div>
-                  
-                  {/* Leads */}
-                  <div className="bg-zinc-800/50 rounded-terminal p-3 text-center relative">
-                    <div className={`text-2xl font-terminal tabular-nums font-bold ${leadsCount > 0 ? 'text-positive' : 'text-negative'}`}>
-                      {leadsCount}
-                    </div>
-                    <div className="text-[10px] text-zinc-500 uppercase font-terminal mt-1">
-                      leads capturados
-                    </div>
-                    {/* Show alert dot if WA clicks but no leads */}
-                    {whatsappClicks > 0 && leadsCount === 0 && (
-                      <div className="absolute -top-1 -right-1 w-2 h-2 bg-negative rounded-full animate-pulse" />
-                    )}
-                  </div>
-                  
-                  {/* Provincial Rank */}
-                  <div className="bg-zinc-800/50 rounded-terminal p-3 text-center">
-                    <div className="text-2xl font-terminal tabular-nums text-amber-400 font-bold">
-                      {provincialRank.position > 0 ? `#${provincialRank.position}` : '—'}
-                    </div>
-                    <div className="text-[10px] text-zinc-500 uppercase font-terminal mt-1 truncate">
-                      en {provincialRank.province || 'provincia'}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Gap Alert - THE WOW MOMENT (only if clicks but no leads) */}
-                {whatsappClicks > 0 && leadsCount === 0 && (
-                  <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-terminal mb-4">
-                    <div className="flex items-start gap-2">
-                      <span className="text-amber-400 text-lg">⚠️</span>
-                      <div>
-                        <p className="text-sm font-terminal text-amber-300 font-medium">
-                          {whatsappClicks} personas hicieron clic en tu WhatsApp
-                        </p>
-                        <p className="text-xxs font-terminal text-zinc-400 mt-1">
-                          Un clic en WhatsApp no deja nombre ni teléfono: sabemos que pasó, no quién fue. Las consultas con nombre llegan por el formulario de tu perfil.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Demand Signal - Watchers */}
-                {(totalWatchers + followersCount) > 0 && (
-                  <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-terminal mb-4">
-                    <div className="flex items-start gap-2">
-                      <span className="text-emerald-400 text-lg">👁️</span>
-                      <div>
-                        <p className="text-sm font-terminal text-emerald-300 font-medium">
-                          {totalWatchers + followersCount} {(totalWatchers + followersCount) === 1 ? 'productor está' : 'productores están'} pendientes de tus remates
-                        </p>
-                        <p className="text-xxs font-terminal text-zinc-400 mt-1">
-                          Entre los que siguen tu casa y los que marcaron uno de tus remates desde su cuenta.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* PRO extras */}
-                {tierLabel !== 'FREE' && viewPercentile > 0 && (
-                  <div className="text-center pt-3 border-t border-terminal-border">
-                    <span className="text-xs text-zinc-500 font-terminal">
-                      Estás en el <span className="text-amber-400 font-bold">Top {100 - viewPercentile}%</span> de las consignatarias con visitas este mes
-                    </span>
-                  </div>
-                )}
-
-                {/* Extras PRO.
-                    NOTA: estos tres son derivados de las vistas (una división, un
-                    percentil y un ranking) y no son lo que sostiene el plan. Lo que
-                    lo sostiene son los leads con contacto, la distribución auditable
-                    y el reporte mes a mes. Se dejan como color, no como argumento. */}
-                {tierLabel !== 'FREE' && (
-                  <div className="grid grid-cols-3 gap-3 pt-3 border-t border-terminal-border mt-3">
-                    <div className="bg-zinc-800/50 rounded-terminal p-2.5">
-                      <div className="text-lg font-terminal tabular-nums text-zinc-200">
-                        {Math.round(viewCount / 30)}
-                      </div>
-                      <div className="text-[10px] text-zinc-500 uppercase font-terminal">
-                        visitas/día
-                      </div>
-                    </div>
-                    <div className="bg-zinc-800/50 rounded-terminal p-2.5">
-                      <div className="text-lg font-terminal tabular-nums text-amber-400">
-                        {viewPercentile > 0 ? `Top ${100 - viewPercentile}%` : '—'}
-                      </div>
-                      <div className="text-[10px] text-zinc-500 uppercase font-terminal">
-                        vs el país
-                      </div>
-                    </div>
-                    <div className="bg-zinc-800/50 rounded-terminal p-2.5">
-                      <div className="text-lg font-terminal tabular-nums text-emerald-400">
-                        {provincialRank.position > 0 ? `#${provincialRank.position}` : '—'}
-                      </div>
-                      <div className="text-[10px] text-zinc-500 uppercase font-terminal truncate" title={provincialRank.province}>
-                        en {provincialRank.province || 'provincia'}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Upgrade CTA for free users - stronger value prop */}
-                {tierLabel === 'FREE' && (
-                  <div className="mt-4 p-3 bg-amber-500/5 border border-amber-500/20 rounded-terminal">
-                    <p className="text-xxs font-terminal text-zinc-300 mb-1">
-                      🔒 Tu perfil es visible pero no destaca
-                    </p>
-                    <p className="text-xxs font-terminal text-zinc-500 mb-3">
-                      Con PRO: tus remates van primero en el newsletter semanal y medís a cuántos les llegó, ves quién te consultó con nombre y contacto, y de dónde llegan las visitas a tu perfil.
-                    </p>
-                    <Link
-                      href="/planes?audience=consignataria&from=dashboard"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/20 border border-amber-500/40 text-amber-400 text-xxs font-terminal uppercase tracking-wider hover:bg-amber-500/30 transition-colors rounded-terminal"
-                    >
-                      ★ Activar PRO Consignataria — $45.000/mes
-                    </Link>
-                  </div>
-                )}
-              </div>
+              {redeemError && <p className="mt-2 text-xs text-negative">{redeemError}</p>}
+              {isRedeeming && <p className="mt-2 text-xs text-warning">Canjeando puntos…</p>}
             </div>
           )}
-
-          {/* Quick actions */}
-          {consignataria?.verified && (
-            <div className="terminal-panel">
-              <div className="terminal-panel-header"><span className="text-zinc-200 text-label tracking-widest">ACCIONES RAPIDAS</span></div>
-              <div className="px-panel py-3 flex flex-wrap gap-3">
-                <button onClick={() => setActiveTab('remates')} className="px-3 py-1.5 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors">
-                  Agregar remate
-                </button>
-                <button onClick={() => setActiveTab('editar')} className="px-3 py-1.5 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors">
-                  Editar perfil
-                </button>
-                <button onClick={() => setActiveTab('resultados')} className="px-3 py-1.5 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors">
-                  Cargar resultados
-                </button>
-                <Link href="/mi-cuenta/guias" className="px-3 py-1.5 bg-sky-500/10 border border-sky-500/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-sky-500/20 transition-colors">
-                  📄 Mis Guías DT-e
-                </Link>
-                {tierLabel !== 'FREE' && (
-                  <a 
-                    href={`/api/consignatarias/${consignataria.canonical_slug}/report`}
-                    className="px-3 py-1.5 bg-sky-500/10 border border-sky-500/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-sky-500/20 transition-colors"
-                  >
-                    📄 Reporte PDF
-                  </a>
-                )}
-              </div>
-            </div>
+          {esPro && consignataria && (
+            <Marco nombre="Reporte" titulo="Reporte mensual en PDF">
+              <p className="text-sm text-zinc-400">Tus vistas, consultas y remates del mes, listo para compartir.</p>
+              <div className="mt-4"><BotonSecundario href={`/api/consignatarias/${consignataria.canonical_slug}/report`}>Descargar reporte</BotonSecundario></div>
+            </Marco>
           )}
-
-          {/* QR Code + Landing Page Link */}
-          {consignataria?.verified && (
-            <div className="terminal-panel">
-              <div className="terminal-panel-header flex items-center justify-between">
-                <span className="text-zinc-200 text-label tracking-widest">📱 TU LINK Y QR</span>
-                <a 
-                  href={`/go/${consignataria.canonical_slug}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors"
-                >
-                  Ver landing →
-                </a>
-              </div>
-              <div className="px-panel py-4">
-                <div className="flex flex-col sm:flex-row items-center gap-6">
-                  {/* QR Code */}
-                  <div className="flex-shrink-0">
-                    <QRCode 
-                      url={`https://consignatarias.com.ar/go/${consignataria.canonical_slug}?utm_source=qr`}
-                      size={140}
-                      showDownload={true}
-                    />
-                  </div>
-                  
-                  {/* Info */}
-                  <div className="flex-1 text-center sm:text-left space-y-3">
-                    <p className="text-xxs text-zinc-400 font-terminal">
-                      Usá este QR en tus catálogos, tarjetas y carteles. Los compradores escanean y ven tu próximo remate al instante.
-                    </p>
-                    
-                    {/* Actions */}
-                    <div className="flex flex-wrap gap-2">
-                      <button
-                        onClick={() => {
-                          navigator.clipboard.writeText(`https://consignatarias.com.ar/go/${consignataria.canonical_slug}`)
-                          trackEvent('referral_link_copy', { consignataria_slug: consignataria.canonical_slug, surface: 'dashboard_qr' })
-                          alert('Link copiado!')
-                        }}
-                        className="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 text-ink text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors"
-                      >
-                        📋 Copiar
-                      </button>
-                      <a
-                        href={`https://wa.me/?text=${encodeURIComponent(`Mirá mis próximos remates: https://consignatarias.com.ar/go/${consignataria.canonical_slug}`)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => trackEvent('referral_whatsapp_share', { consignataria_slug: consignataria.canonical_slug, surface: 'dashboard_qr' })}
-                        className="px-3 py-1.5 bg-[#25D366] hover:bg-[#20BD5A] text-white text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors text-center"
-                      >
-                        📤 WhatsApp
-                      </a>
-                      <a
-                        href={`/api/calendario/${consignataria.canonical_slug}`}
-                        className="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors text-center"
-                        title="Agregar a Google Calendar, Apple Calendar u Outlook"
-                      >
-                        📅 Calendario
-                      </a>
-                    </div>
-                    <p className="text-[10px] text-zinc-600 font-terminal mt-2">
-                      El calendario se sincroniza automáticamente con tus remates
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Embeddable Widget - PRO only */}
-          {consignataria?.verified && tierLabel !== 'FREE' && (
-            <div className="terminal-panel">
-              <div className="terminal-panel-header flex items-center justify-between">
-                <span className="text-zinc-200 text-label tracking-widest">🔗 WIDGET PARA TU WEB</span>
-                <a 
-                  href={`/api/widget/${consignataria.canonical_slug}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors"
-                >
-                  Ver preview →
-                </a>
-              </div>
-              <div className="px-panel py-4 space-y-4">
-                <p className="text-xxs text-zinc-400 font-terminal">
-                  Mostrá tus próximos remates en tu propia página web. Copiá este código y pegalo en tu sitio:
-                </p>
-                
-                {/* Code snippet */}
-                <div className="bg-zinc-900 border border-zinc-800 rounded p-3 font-mono text-[10px] text-zinc-300 overflow-x-auto">
-                  <code>{`<iframe src="https://consignatarias.com.ar/api/widget/${consignataria.canonical_slug}" width="400" height="300" frameborder="0"></iframe>`}</code>
-                </div>
-                
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    onClick={() => {
-                      const code = `<iframe src="https://consignatarias.com.ar/api/widget/${consignataria.canonical_slug}" width="400" height="300" frameborder="0"></iframe>`
-                      navigator.clipboard.writeText(code)
-                      trackEvent('widget_code_copy', { consignataria_slug: consignataria.canonical_slug })
-                      alert('Código copiado!')
-                    }}
-                    className="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 text-ink text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors"
-                  >
-                    📋 Copiar código
-                  </button>
-                  <a
-                    href={`/api/widget/${consignataria.canonical_slug}?theme=light`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-3 py-1.5 bg-zinc-200 hover:bg-zinc-100 text-zinc-800 text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors"
-                  >
-                    ☀️ Tema claro
-                  </a>
-                  <a
-                    href={`/api/widget/${consignataria.canonical_slug}?theme=dark`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-ink text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors"
-                  >
-                    🌙 Tema oscuro
-                  </a>
-                </div>
-                
-                <p className="text-[10px] text-zinc-600 font-terminal">
-                  Parámetros: ?theme=light|dark &amp; ?max=1-5
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Upcoming scraped auctions */}
-          {scrapedAuctions.length > 0 && (
-            <div className="terminal-panel">
-              <div className="terminal-panel-header flex items-center justify-between">
-                <span className="text-zinc-200 text-label tracking-widest">PROXIMOS REMATES</span>
-                <span className="text-xxs text-zinc-500 font-terminal">{scrapedAuctions.length} del scraper</span>
-              </div>
-              <div className="divide-y divide-terminal-border">
-                {scrapedAuctions.map((a, i) => (
-                  <div key={i} className="px-panel py-2 flex items-center gap-4">
-                    <span className="text-xxs font-terminal text-zinc-500 tabular-nums w-12 flex-shrink-0">{formatDate(a.date)}</span>
-                    {a.time && <span className="text-xxs font-terminal text-zinc-500 w-12 flex-shrink-0">{a.time}</span>}
-                    <span className="text-data font-terminal text-zinc-300 flex-1 truncate">{a.title}</span>
-                    <span className="text-xxs font-terminal text-zinc-500 hidden sm:inline">{a.location}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Claims status */}
-          {claims.length > 0 && (
-            <div className="terminal-panel">
-              <div className="terminal-panel-header"><span className="text-zinc-200 text-label tracking-widest">MIS SOLICITUDES</span></div>
-              <div className="divide-y divide-terminal-border">
-                {claims.map(claim => (
-                  <div key={claim.id} className="px-panel py-2 flex items-center gap-4">
-                    <span className="text-data font-terminal text-zinc-300 flex-1">{claim.consignatarias?.display_name || claim.consignataria_slug}</span>
-                    <span className={`text-xxs font-terminal px-1.5 py-0.5 border rounded-terminal ${
-                      claim.status === 'pending' ? 'border-warning/30 text-warning'
-                        : claim.status === 'approved' ? 'border-positive/30 text-positive'
-                        : 'border-negative/30 text-negative'
-                    }`}>
-                      {claim.status === 'pending' ? 'PENDIENTE' : claim.status === 'approved' ? 'APROBADA' : 'RECHAZADA'}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {!hasVerified && hasPendingClaim && <ClaimEnEspera claims={claims} />}
-
-          {!consignataria && !frigorifico && claims.length === 0 && frigoClaims.length === 0 && (
-            <div className="terminal-panel">
-              <div className="terminal-panel-header">
-                <span className="text-zinc-200 text-label tracking-widest">PRIMEROS PASOS</span>
-              </div>
-              <div className="px-panel py-6 space-y-6">
-                <p className="text-data font-terminal text-zinc-400">
-                  Bienvenido a Consignatarias.com.ar. Para acceder a todas las funciones, completá estos pasos:
-                </p>
-                
-                {/* Step 1 - Active */}
-                <div className="flex items-start gap-4 p-3 bg-positive/5 border border-positive/20 rounded-lg">
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-positive/20 text-positive flex items-center justify-center font-terminal text-sm font-bold">1</span>
-                  <div className="flex-1">
-                    <p className="text-data font-terminal text-zinc-200 font-medium">Verificá tu perfil</p>
-                    <p className="text-xxs font-terminal text-zinc-500 mt-1">
-                      Buscá tu consignataria o frigorífico y reclamá el perfil para poder editarlo y publicar remates.
-                    </p>
-                    <div className="flex items-center gap-3 mt-3">
-                      <Link href="/consignatarias" className="px-3 py-1.5 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors rounded">
-                        Buscar consignataria →
-                      </Link>
-                      <Link href="/frigorificos" className="px-3 py-1.5 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors rounded">
-                        Buscar frigorífico →
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Step 2 - Pending */}
-                <div className="flex items-start gap-4 p-3 opacity-50">
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-zinc-800 text-zinc-500 flex items-center justify-center font-terminal text-sm">2</span>
-                  <div>
-                    <p className="text-data font-terminal text-zinc-400">Completá tu información</p>
-                    <p className="text-xxs font-terminal text-zinc-600 mt-1">
-                      Teléfono, email, descripción, logo — cada campo mejora tu visibilidad.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Step 3 - Pending */}
-                <div className="flex items-start gap-4 p-3 opacity-50">
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-zinc-800 text-zinc-500 flex items-center justify-center font-terminal text-sm">3</span>
-                  <div>
-                    <p className="text-data font-terminal text-zinc-400">Publicá tus remates</p>
-                    <p className="text-xxs font-terminal text-zinc-600 mt-1">
-                      Aparecen en el calendario, en tu widget y en el newsletter semanal.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Value prop */}
-                <div className="pt-4 border-t border-zinc-800/50">
-                  <p className="text-xxs font-terminal text-zinc-500 text-center">
-                    💡 Con el perfil verificado accedés a: editar información, publicar remates, cargar DTe, ver analytics y más.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
+          {!vistaAdmin && <CambiarContrasena />}
         </>
       )}
 
-      {/* ============ TAB: LEADS ============ */}
-      {activeTab === 'leads' && consignataria?.verified && (
-        <div className="space-y-3">
-          <div>
-            <h2 className="text-lg font-semibold text-zinc-100">Leads · quién te buscó</h2>
-            <p className="text-sm text-zinc-400">
-              Productores que dejaron sus datos o te contactaron desde tu perfil. Escribiles vos.
-            </p>
-          </div>
-          {leads.length === 0 ? (
-            <div className="rounded-terminal border border-terminal-border bg-terminal-panel">
-              <EmptyState
-                icon="buscador-lupa"
-                compact
-                title="Todavía no hay leads."
-                sub="Cuando un productor deje sus datos o toque tu WhatsApp desde el perfil, aparece acá con nombre y contacto."
-              />
-            </div>
-          ) : (
-            <>
-              {/* GATE — el contacto del lead es LO que se paga.
-                  Se muestra siempre que el lead existe, con su fecha y su mensaje:
-                  eso prueba que la demanda es real. Lo que se guarda hasta que
-                  pague es el teléfono y el email, que es lo accionable. Soft-gate,
-                  nunca muro: la firma ve exactamente lo que se está perdiendo. */}
-              {tierLabel === 'FREE' && (
-                <div className="rounded-terminal border border-accent/30 bg-accent/5 p-3">
-                  <p className="text-sm font-terminal text-zinc-100">
-                    {leads.length === 1
-                      ? 'Hay 1 productor que te buscó y todavía no le escribiste.'
-                      : `Hay ${leads.length} productores que te buscaron y todavía no les escribiste.`}
-                  </p>
-                  <p className="mt-1 text-xxs font-terminal text-zinc-400">
-                    Con PRO ves el teléfono y el email de cada uno, y les escribís desde acá.
-                  </p>
-                  <Link
-                    href="/planes?audience=consignataria&from=leads"
-                    className="mt-2 inline-block rounded-terminal bg-accent px-3 py-1.5 text-xs font-semibold text-terminal-bg"
-                  >
-                    Ver PRO
-                  </Link>
-                </div>
-              )}
-              <div className="divide-y divide-terminal-border rounded-terminal border border-terminal-border bg-terminal-panel">
-                {leads.map((l) => (
-                  <LeadRow key={l.id} lead={l} bloqueado={tierLabel === 'FREE'} />
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-      )}
-
-      {/* ============ TAB: REMATES ============ */}
-      {activeTab === 'remates' && consignataria?.verified && (
-        <AuctionManager
-          slug={consignataria.canonical_slug}
-          displayName={consignataria.display_name}
-          ownerAuctions={ownerAuctions}
-          scrapedAuctions={scrapedAuctions}
-          onAuctionsChange={setOwnerAuctions}
-        />
-      )}
-
-      {/* ============ TAB: EDITAR ============ */}
-      {activeTab === 'editar' && consignataria?.verified && (
-        <ProfileEditForm
-          slug={consignataria.canonical_slug}
-          initial={{
-            phone: consignataria.phone || '',
-            email: consignataria.email || '',
-            website: consignataria.website || '',
-            description: consignataria.description || '',
-            whatsapp: consignataria.whatsapp || '',
-            cuit: consignataria.cuit || '',
-          }}
-          logoUrl={consignataria.logo_url}
-        />
-      )}
-
-      {/* ============ TAB: RESULTADOS ============ */}
-      {activeTab === 'resultados' && consignataria && (
-        <div className="terminal-panel">
-          <div className="terminal-panel-header flex items-center justify-between">
-            <span className="text-zinc-200 text-label tracking-widest">RESULTADOS DE REMATES</span>
-            <Link href="/dashboard/resultados/nuevo" className="px-3 py-1 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors">
-              Cargar resultado
-            </Link>
-          </div>
-          {auctionResults.length > 0 ? (
-            <div className="divide-y divide-terminal-border">
-              {auctionResults.map(r => (
-                <div key={r.id} className="px-panel py-2 flex items-center gap-4">
-                  <span className="text-xxs font-terminal text-zinc-500 tabular-nums w-12 flex-shrink-0">{formatDate(r.auction_date)}</span>
-                  <span className="text-data font-terminal text-zinc-300 flex-1 truncate">{r.auction_title}</span>
-                  {r.total_heads_sold != null && <span className="text-xxs font-terminal text-zinc-500 hidden sm:inline">{r.total_heads_sold} cab.</span>}
-                  {r.average_price != null && <span className="text-xxs font-terminal text-positive tabular-nums">${Number(r.average_price).toLocaleString('es-AR')}</span>}
-                  <Link href={`/dashboard/resultados/${r.id}`} className="text-xxs font-terminal text-accent hover:underline flex-shrink-0">Editar</Link>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="px-panel py-10 text-center space-y-4">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-sky-500/10 border border-sky-500/20 mb-2">
-                <svg className="w-7 h-7 text-sky-500/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-data font-terminal text-zinc-300 font-medium mb-1">
-                  Empezá a trackear tus resultados
-                </p>
-                <p className="text-xxs font-terminal text-zinc-500">
-                  Cargá los resultados de tus remates para ver analytics de precios, cabezas y tendencias.
-                </p>
-              </div>
-              <div className="grid grid-cols-3 gap-3 pt-2 max-w-sm mx-auto">
-                <div className="text-center">
-                  <div className="text-lg mb-1">📊</div>
-                  <p className="text-[10px] text-zinc-600 font-terminal">Precios promedio</p>
-                </div>
-                <div className="text-center">
-                  <div className="text-lg mb-1">📈</div>
-                  <p className="text-[10px] text-zinc-600 font-terminal">Tendencias</p>
-                </div>
-                <div className="text-center">
-                  <div className="text-lg mb-1">🎯</div>
-                  <p className="text-[10px] text-zinc-600 font-terminal">Comparativas</p>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ============ TAB: MI PLAN ============ */}
-      {activeTab === 'preofertas' && consignataria?.verified && (
-        <PreofertasManager slug={consignataria.canonical_slug} esPro={plan.isPro} inicial={preofertasFirma} ofertas={ofertasFirma} />
-      )}
-      {activeTab === 'plan' && <SubscriptionPanel tier={tierLabel} subscription={subscription} plan={plan} />}
-      {activeTab === 'plan' && !vistaAdmin && <CambiarContrasena />}
-
-      {/* ============ TAB: FRIGORIFICO ============ */}
+      {/* ============ FRIGORÍFICO ============ */}
       {activeTab === 'frigorifico' && frigorifico && (
         <>
-          <div className="terminal-panel">
-            <div className="terminal-panel-header flex items-center justify-between">
-              <span className="text-zinc-200 text-label tracking-widest">MI FRIGORIFICO</span>
-              {frigorifico.verified && <span className="text-xxs font-terminal px-1.5 py-0.5 border border-positive/30 text-positive rounded-terminal">VERIFICADO</span>}
-            </div>
-            <div className="px-panel py-3 space-y-2">
-              <div className="text-data font-terminal text-zinc-200">{frigorifico.display_name}</div>
-              <Link href={`/frigorificos/${frigorifico.cuit}`} className="text-xxs text-accent font-terminal hover:underline">Ver perfil publico →</Link>
-            </div>
-          </div>
+          {encabezado('Frigorífico', frigorifico.display_name, undefined, <BotonSecundario href={`/frigorificos/${frigorifico.cuit}`}>Ver perfil público ↗</BotonSecundario>)}
           {frigorifico.verified && <FrigoProCTA cuit={frigorifico.cuit} email={email} isPro={frigoIsPro} />}
           {frigorifico.verified && (
             <>
@@ -1345,17 +1081,65 @@ export default function DashboardClient({
           )}
         </>
       )}
-
-      {/* ============ TAB: CATALOGO (productos de carne) ============ */}
       {activeTab === 'catalogo' && frigorifico && (
-        <FrigoProductManager cuit={frigorifico.cuit} initial={frigoProducts} />
+        <>
+          {encabezado('Catálogo', 'Productos de carne')}
+          <FrigoProductManager cuit={frigorifico.cuit} initial={frigoProducts} />
+        </>
       )}
-
-      {/* ============ TAB: PEDIDOS (RFQ mayoristas) ============ */}
       {activeTab === 'pedidos' && frigorifico && (
-        <FrigoPedidos rfqs={frigoRfqs} />
+        <>
+          {encabezado('Pedidos', 'Pedidos mayoristas')}
+          <FrigoPedidos rfqs={frigoRfqs} />
+        </>
       )}
+        </main>
       </div>
+      </div>
+    </div>
+  )
+}
+
+const TONO_ETAPA_BARRA: Record<Etapa, string> = {
+  new: 'bg-accent',
+  contacted: 'bg-warning',
+  converted: 'bg-positive',
+  archived: 'bg-zinc-600',
+}
+
+const URGENCIA_TONO: Record<'urgente' | 'atencion' | 'buena' | 'info', string> = {
+  urgente: 'bg-negative',
+  atencion: 'bg-warning',
+  buena: 'bg-positive',
+  info: 'bg-zinc-500',
+}
+
+/** Barras de vistas por día (30 días). Un día sin vistas es una raya en cero, no un hueco. */
+function BarrasDiarias({ datos }: { datos: { dia: string; vistas: number }[] }) {
+  const max = Math.max(1, ...datos.map((d) => d.vistas))
+  const total = datos.reduce((s, d) => s + d.vistas, 0)
+  const corto = (iso: string) => new Date(iso + 'T12:00:00').toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })
+  return (
+    <div>
+      <p className="text-xxs text-zinc-500">
+        <strong className="text-2xl font-semibold tabular-nums text-ink">{fmt(total)}</strong> vistas en 30 días
+      </p>
+      <div className="mt-4 flex h-36 items-end gap-[3px]" role="img" aria-label={`Vistas por día, ${fmt(total)} en total`}>
+        {datos.map((d) => (
+          <span
+            key={d.dia}
+            title={`${corto(d.dia)}: ${d.vistas}`}
+            className={`flex-1 rounded-t-sm ${d.vistas ? 'bg-accent' : 'bg-zinc-800'}`}
+            style={{ height: d.vistas ? `${Math.max(4, (d.vistas / max) * 100)}%` : '2px' }}
+          />
+        ))}
+      </div>
+      {datos.length > 0 && (
+        <div className="mt-2 flex justify-between text-[0.625rem] text-zinc-500">
+          <span>{corto(datos[0].dia)}</span>
+          <span>{corto(datos[datos.length - 1].dia)}</span>
+        </div>
+      )}
     </div>
   )
 }
@@ -2038,78 +1822,6 @@ function ClaimEnEspera({ claims }: { claims: Claim[] }) {
           <p className="text-[10px] leading-snug text-warning/80">
             Está tardando más de lo normal. Escribinos y lo resolvemos en el momento.
           </p>
-        )}
-      </div>
-    </div>
-  )
-}
-
-/**
- * Una fila de la bandeja de leads.
- *
- * `bloqueado` = plan FREE. En ese caso se ve QUE el lead existe (nombre corto,
- * fecha, lo que escribió) pero no CÓMO contactarlo. El mensaje se muestra entero
- * a propósito: es lo que prueba que la demanda es real y lo que hace que valga la
- * pena pagar. Los datos de contacto nunca llegan al cliente cuando está bloqueado
- * —se enmascaran acá, no se ocultan con CSS— así que no se leen desde el inspector.
- */
-function LeadRow({ lead: l, bloqueado }: { lead: Lead; bloqueado: boolean }) {
-  const fecha = new Date(l.created_at).toLocaleDateString('es-AR', {
-    day: '2-digit', month: '2-digit', year: '2-digit',
-  })
-
-  // "Juan Carlos Fleitas" → "Juan C." — identifica sin entregar.
-  const nombreCorto = (() => {
-    const partes = l.name.trim().split(/\s+/)
-    return partes.length === 1 ? partes[0] : `${partes[0]} ${partes[1][0].toUpperCase()}.`
-  })()
-
-  const wa = whatsappLink(l.phone, `Hola ${l.name.split(' ')[0]}, te contacto desde consignatarias.com.ar.`)
-
-  return (
-    <div className="p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-      <div className="min-w-0">
-        <div className="text-sm font-semibold text-zinc-100">
-          {bloqueado ? nombreCorto : l.name}
-          <span className="ml-2 text-xxs uppercase tracking-wider text-zinc-500">{fecha}</span>
-        </div>
-        <div className="text-xs text-zinc-400">
-          {bloqueado ? (
-            <span className="mr-2 font-terminal text-zinc-600">
-              {l.phone ? '·· ···· ····' : ''}{l.phone && l.email ? '  ' : ''}{l.email ? '·······@·····' : ''}
-            </span>
-          ) : (
-            <>
-              {l.phone && <span className="mr-2">{l.phone}</span>}
-              {l.email && <span className="mr-2">{l.email}</span>}
-            </>
-          )}
-          {l.source && <span className="text-zinc-600">· {l.source}</span>}
-        </div>
-        {l.message && <div className="text-xs text-zinc-500 mt-1 truncate">{l.message}</div>}
-      </div>
-
-      <div className="flex items-center gap-2 shrink-0">
-        {bloqueado ? (
-          <Link
-            href="/planes?audience=consignataria&from=leads"
-            className="rounded-terminal border border-accent/40 px-3 py-1.5 text-xs font-semibold text-accent hover:bg-accent/10 transition-colors"
-          >
-            Ver contacto
-          </Link>
-        ) : (
-          <>
-            {wa && (
-              <a href={wa} target="_blank" rel="noopener noreferrer" className="rounded-terminal bg-emerald-500 hover:bg-emerald-400 px-3 py-1.5 text-xs font-semibold text-white transition-colors">
-                WhatsApp
-              </a>
-            )}
-            {l.email && (
-              <a href={`mailto:${l.email}`} className="rounded-terminal border border-terminal-border px-3 py-1.5 text-xs text-zinc-200 hover:border-accent transition-colors">
-                Email
-              </a>
-            )}
-          </>
         )}
       </div>
     </div>

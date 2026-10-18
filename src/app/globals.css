@@ -1029,3 +1029,16 @@ html:not([data-theme='dark']) .solo-oscuro {
   .marquesina-pista { animation: none; }
   .reveal-init .barra-alcance { transform: none; }
 }
+
+/* PANEL CRM (v1.230.0): los bloques heredados del panel (remates, plan, perfil,
+   pre-ofertas, frigorífico) usan .terminal-panel. Adentro del panel nuevo toman
+   la forma de los frames del lienzo: esquinas de 12px, sin sombra y el título
+   como título, no como rótulo en mayúsculas. Sólo dentro de .panel-crm. */
+.panel-crm .terminal-panel { border-radius: 0.75rem; box-shadow: none; }
+html .panel-crm .terminal-panel-header {
+  text-transform: none; letter-spacing: 0; font-size: 0.875rem; font-weight: 600;
+  color: rgb(var(--ink)); padding: 0.875rem 1.25rem;
+}
+.panel-crm .terminal-panel-header :is(h1, h2, h3, h4, span, .text-label):not(.tabular-nums):not([class*='border']) {
+  font-size: inherit; letter-spacing: inherit; text-transform: none; color: inherit;
+}
