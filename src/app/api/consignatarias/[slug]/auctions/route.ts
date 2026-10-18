@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { requireAuth } from '@/lib/admin-auth'
+import { mismoEmail } from '@/lib/claims/aprobar'
+import { flyerValido, urlValida } from '@/lib/remates-firma'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -15,7 +17,7 @@ export async function GET(_req: NextRequest, { params }: Props) {
   const { data, error } = await supabase
     .from('consignataria_auctions')
     .select(
-      'id, consignataria_slug, title, date, time, location, province, type, main_category, estimated_heads, description, catalog_url, youtube_url, status, created_at, updated_at',
+      'id, consignataria_slug, title, date, time, location, province, type, main_category, estimated_heads, description, catalog_url, youtube_url, flyer_url, status, created_at, updated_at',
     )
     .eq('consignataria_slug', slug)
     .order('date', { ascending: true })
@@ -40,15 +42,21 @@ export async function POST(req: NextRequest, { params }: Props) {
     .eq('canonical_slug', slug)
     .single()
 
-  if (!consig || consig.claimed_by_email !== auth.email) {
+  if (!consig || !mismoEmail(consig.claimed_by_email, auth.email)) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 
   const body = await req.json()
-  const { title, date, time, location, province, type, main_category, estimated_heads, description, catalog_url, youtube_url } = body
+  const { title, date, time, location, province, type, main_category, estimated_heads, description, catalog_url, youtube_url, flyer_url, reemplaza_clave } = body
 
   if (!title || !date) {
     return NextResponse.json({ error: 'Titulo y fecha son obligatorios' }, { status: 400 })
+  }
+  if (!urlValida(catalog_url) || !urlValida(youtube_url)) {
+    return NextResponse.json({ error: 'Los enlaces tienen que empezar con https://' }, { status: 400 })
+  }
+  if (!flyerValido(flyer_url, slug)) {
+    return NextResponse.json({ error: 'El flyer tiene que subirse desde el panel' }, { status: 400 })
   }
 
   const { data, error } = await supabase
@@ -66,6 +74,9 @@ export async function POST(req: NextRequest, { params }: Props) {
       description: description || null,
       catalog_url: catalog_url || null,
       youtube_url: youtube_url || null,
+      flyer_url: flyer_url || null,
+      // Sólo si corrige un remate del calendario: la clave "fecha|LOCALIDAD" de ese remate.
+      reemplaza_clave: typeof reemplaza_clave === 'string' && /^\d{4}-\d{2}-\d{2}\|/.test(reemplaza_clave) ? reemplaza_clave.slice(0, 200) : null,
       created_by: auth.email!,
     })
     .select()

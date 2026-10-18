@@ -7,6 +7,34 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.229.0] — 2026-10-18
+
+### Panel de la firma: sus remates, su flyer y sus resultados, de punta a punta
+
+Probado en producción con la cuenta de Reggi y Cía. (usuario y contraseña) y de punta a punta en local contra la base real: corregir un remate del calendario, subir flyer, crear/editar/borrar un remate, cargar/editar/borrar un resultado.
+
+**Remates**
+- Los remates que el sitio encuentra solo ya no son de sólo lectura: **Editar** precarga el formulario y lo que la firma guarda reemplaza a ese remate (columna `reemplaza_clave` = fecha|localidad original, porque los ids de `remates.json` se renumeran en cada scrape).
+- **Flyer**: subida desde el formulario (`POST /api/consignatarias/<slug>/flyer`, JPG/PNG/WebP hasta 5 MB, bucket `consignataria-assets/flyers/<slug>/`). Se muestra en la ficha del remate. La API sólo acepta flyers de ese bucket y de esa firma (`lib/remates-firma.ts` + test).
+- Lo que carga la firma llega al **calendario general, la ficha del remate y el mail semanal**: `scripts/remates-de-firmas.ts` lo une en `remates.json` (idempotente: saca lo de la corrida anterior y vuelve a poner), en el scrape diario y en `remates-de-firmas.yml` cada hora de 8 a 22 (commitea sólo si cambió). Hasta hoy un remate cargado desde el panel sólo se veía en el perfil, el widget y el iCal.
+- Provincia con desplegable (antes texto libre, que no matcheaba los filtros del calendario). Los enlaces de catálogo y video tienen que ser https.
+
+**Resultados**
+- Se pueden **editar y borrar** (`/dashboard/resultados/<id>`, `PATCH`/`DELETE /api/auction-results/<id>`): un promedio mal tipeado quedaba para siempre en "Tu precio contra el mercado" y en el reporte mensual.
+- Al cargar uno, el formulario ofrece los remates de la firma de los últimos 90 días sin resultado: elegir uno completa fecha, título y lugar.
+
+**Arreglos**
+- Las escrituras del panel (`/api/consignatarias/<slug>/…` con sesión) heredaban el límite **anónimo de 1 pedido por minuto**: subir el flyer y guardar el remate ya daba 429.
+- Ese 429 trae `error` como objeto y el panel lo ponía directo en pantalla: se caía entero ("Algo falló"). `lib/ui/mensaje-error.ts` (+ test) en el panel y el formulario de resultados.
+- El ranking provincial tomaba la provincia del primer remate del archivo: Reggi (Corrientes) figuraba "#47 en BUENOS AIRES". Ahora es la provincia donde más remata ("#4 en Corrientes").
+- Las rutas de remates comparan el mail del dueño sin distinguir mayúsculas.
+
+**Propuesta PRO**
+- Diapositiva nueva "Sus remates, cargados y corregidos por usted" (captura de ejemplo `capturas/remates.png`).
+- Capturas **reales** del panel de una firma: `scripts/propuesta-capturas-firma.mjs <base> <slug> <email> <clave>` las guarda en `private/capturas-firmas/<slug>/` (fuera de git: llevan sus datos) y la propuesta las usa en vez de las de ejemplo, sin el rótulo "datos de ejemplo", más una diapositiva "Su panel, hoy". En producción no existen y sale la versión de ejemplo.
+
+---
+
 ## [1.228.0] — 2026-10-17
 
 ### PRO Consignataria: cada promesa, verificada contra el código

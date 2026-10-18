@@ -20,6 +20,10 @@ export interface Auction {
   sourceUrl: string | null
   status: 'scheduled' | 'live' | 'completed'
   featured?: boolean
+  /** Flyer del remate subido por la firma desde su panel (URL pública). */
+  flyerUrl?: string | null
+  /** id en `consignataria_auctions` cuando el remate lo cargó o corrigió la firma. */
+  firmaAuctionId?: number
 }
 
 export interface FeaturedLink {

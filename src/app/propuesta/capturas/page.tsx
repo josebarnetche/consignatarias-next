@@ -7,6 +7,7 @@ import CarteraPanel from '@/components/dashboard/CarteraPanel'
 import BenchmarkMercado from '@/components/dashboard/BenchmarkMercado'
 import { CARTERA_MUESTRA, BENCHMARK_MUESTRA, ORIGEN_VISITAS_MUESTRA } from '@/lib/reports/muestras'
 import { PREOFERTA_EJEMPLO, OFERTAS_EJEMPLO, LEADS_EJEMPLO } from '@/lib/propuesta/muestras'
+import RematesMuestra from './RematesMuestra'
 import ResultadoVsMercado from '@/components/dashboard/ResultadoVsMercado'
 import { RESULTADO_VS_MERCADO_MUESTRA } from '@/lib/reports/muestras'
 
@@ -39,6 +40,10 @@ export default async function CapturasPage() {
           __html: `body:has(.capturas-root) .fixed, body:has(.capturas-root) [class*='fixed'], nextjs-portal { display: none !important; }`,
         }}
       />
+
+      <Bloque id="remates">
+        <RematesMuestra />
+      </Bloque>
 
       <Bloque id="preoferta">
         <PreofertasManager slug="ejemplo" esPro inicial={[PREOFERTA_EJEMPLO]} ofertas={OFERTAS_EJEMPLO} />

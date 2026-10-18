@@ -40,6 +40,9 @@ interface OwnerAuctionRow {
   catalog_url: string | null
   youtube_url: string | null
   status: string | null
+  flyer_url?: string | null
+  /** Si corrige un remate del calendario: la clave (fecha|localidad) de ese remate. */
+  reemplaza_clave?: string | null
 }
 
 /**
@@ -68,6 +71,8 @@ export function normalizeOwnerAuction(row: OwnerAuctionRow, firmaNombre: string,
     description: row.description || '',
     youtubeUrl: row.youtube_url || null,
     catalogUrl: row.catalog_url || null,
+    flyerUrl: row.flyer_url || null,
+    firmaAuctionId: row.id,
     source: 'manual',
     sourceUrl: null,
     status: (row.status as Auction['status']) || 'scheduled',
@@ -75,7 +80,7 @@ export function normalizeOwnerAuction(row: OwnerAuctionRow, firmaNombre: string,
 }
 
 /** Clave para detectar que dos filas son el MISMO remate del mundo real. */
-function claveRemate(a: Pick<Auction, 'date' | 'location'>): string {
+export function claveRemate(a: Pick<Auction, 'date' | 'location'>): string {
   return `${a.date}|${(a.location || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().trim()}`
 }
 
@@ -88,8 +93,11 @@ function claveRemate(a: Pick<Auction, 'date' | 'location'>): string {
  *
  * Ordena por fecha y hora ascendente.
  */
-export function mergeAuctions(scrapeadas: Auction[], propias: Auction[]): Auction[] {
-  const clavesPropias = new Set(propias.map(claveRemate))
+export function mergeAuctions(scrapeadas: Auction[], propias: Auction[], reemplazos: (string | null | undefined)[] = []): Auction[] {
+  // Además de la coincidencia exacta, una fila de la firma puede declarar qué remate del
+  // calendario corrige (`reemplaza_clave`): si cambió la fecha o el lugar, la clave
+  // nueva ya no coincide con la del remate scrapeado y quedarían los dos.
+  const clavesPropias = new Set([...propias.map(claveRemate), ...reemplazos.filter((c): c is string => !!c)])
   const sinPisar = scrapeadas.filter((a) => !clavesPropias.has(claveRemate(a)))
 
   return [...sinPisar, ...propias].sort(
@@ -118,14 +126,15 @@ export async function getMergedAuctionsForConsignataria(
   try {
     const { data, error } = await db
       .from('consignataria_auctions')
-      .select('id, title, date, time, location, province, type, main_category, estimated_heads, description, catalog_url, youtube_url, status')
+      .select('id, title, date, time, location, province, type, main_category, estimated_heads, description, catalog_url, youtube_url, status, flyer_url, reemplaza_clave')
       .eq('consignataria_slug', slug)
       .order('date', { ascending: true })
 
     if (error || !data) return mergeAuctions(scrapeadas, [])
 
-    const propias = (data as OwnerAuctionRow[]).map((r) => normalizeOwnerAuction(r, firmaNombre, slug))
-    return mergeAuctions(scrapeadas, propias)
+    const filas = data as OwnerAuctionRow[]
+    const propias = filas.map((r) => normalizeOwnerAuction(r, firmaNombre, slug))
+    return mergeAuctions(scrapeadas, propias, filas.map((r) => r.reemplaza_clave))
   } catch {
     return mergeAuctions(scrapeadas, [])
   }
@@ -154,7 +163,7 @@ export async function getOwnerAuctionsBySlug(
   try {
     const { data, error } = await db
       .from('consignataria_auctions')
-      .select('id, consignataria_slug, title, date, time, location, province, type, main_category, estimated_heads, description, catalog_url, youtube_url, status')
+      .select('id, consignataria_slug, title, date, time, location, province, type, main_category, estimated_heads, description, catalog_url, youtube_url, status, flyer_url, reemplaza_clave')
       .order('date', { ascending: true })
       .limit(5000)
 

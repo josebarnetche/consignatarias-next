@@ -8,8 +8,24 @@ import { ALCANCE_GOOGLE } from '@/lib/data/alcance-google'
 import { Presentacion, type FormatoPresentacion } from './Presentacion'
 import { getBusquedasFicha } from '@/lib/gsc/fichas'
 import { createServiceClient } from '@/lib/supabase'
+import { existsSync, readdirSync } from 'node:fs'
+import path from 'node:path'
 
 const SITIO = 'https://www.consignatarias.com.ar'
+
+/**
+ * Capturas reales del panel de la firma, si alguien las sacó en esta máquina
+ * (scripts/propuesta-capturas-firma.mjs → private/capturas-firmas/<slug>/<id>.png).
+ * `private/capturas-firmas/` está fuera de git: llevan datos de la firma. En producción
+ * no existen y la propuesta sale con las capturas de ejemplo.
+ */
+function capturasDeFirma(slug: string): Record<string, string> {
+  const dir = path.join(process.cwd(), 'private/capturas-firmas', slug)
+  if (!existsSync(dir)) return {}
+  return Object.fromEntries(
+    readdirSync(dir).filter((f) => f.endsWith('.png')).map((f) => [f.slice(0, -4), path.join(dir, f)]),
+  )
+}
 
 const mesAnio = (iso: string) =>
   new Date(`${iso}T12:00:00`).toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })
@@ -50,6 +66,7 @@ export async function generarPresentacionPro(
       porMes={[...ALCANCE_GOOGLE.porMes]}
       busquedas={busquedas}
       formato={formato}
+      capturasReales={capturasDeFirma(slug)}
     />,
   )
 }
