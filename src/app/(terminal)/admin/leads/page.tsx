@@ -6,6 +6,7 @@ import { EmptyState } from '@/components/ui'
 import { computeSpread } from '@/lib/leads/spread'
 import LeadActivity from '@/components/admin/LeadActivity'
 import { KIND_LABEL, OUTCOME_LABEL, type ActivityRow } from '@/lib/leads/activity'
+import type { OrigenLead } from '@/lib/leads/origen-admin'
 
 interface Lead {
   id: number
@@ -22,6 +23,7 @@ interface Lead {
   email: string | null
   message: string | null
   source: string | null
+  origen?: OrigenLead
   estimated_value_ars: number | null
   fee_pct: number
   fee_ars: number | null
@@ -71,6 +73,7 @@ export default function AdminLeadsPage() {
   const [savingId, setSavingId] = useState<number | null>(null)
   const [activity, setActivity] = useState<Record<number, ActivityRow[]>>({})
   const [verCerrados, setVerCerrados] = useState(false)
+  const [grupo, setGrupo] = useState<string | null>(null)
 
   async function load() {
     setLoading(true)
@@ -176,7 +179,7 @@ export default function AdminLeadsPage() {
   const maxDay = Math.max(1, ...byDay.map((d) => d.count))
   const bySource = (() => {
     const map = new Map<string, number>()
-    for (const l of leads) { const s = l.source || '—'; map.set(s, (map.get(s) || 0) + 1) }
+    for (const l of leads) { const s = l.origen?.grupo || l.source || '—'; map.set(s, (map.get(s) || 0) + 1) }
     return [...map.entries()].sort((a, b) => b[1] - a[1])
   })()
 
@@ -259,12 +262,17 @@ export default function AdminLeadsPage() {
             <p className="mt-2 text-xs text-zinc-600">{byDay.reduce((a, d) => a + d.count, 0)} leads en 14 días</p>
           </div>
           <div className="rounded-lg border border-zinc-800 bg-zinc-900/40 p-4">
-            <p className="mb-3 text-xs uppercase tracking-wider text-zinc-500">Por origen</p>
+            <p className="mb-3 text-xs uppercase tracking-wider text-zinc-500">Por origen <span className="normal-case tracking-normal text-zinc-600">· tocá uno para filtrar la lista</span></p>
             <div className="flex flex-wrap gap-2">
               {bySource.map(([src, n]) => (
-                <span key={src} className="rounded-full border border-zinc-700 bg-zinc-800/50 px-2.5 py-1 text-xs text-zinc-300">
+                <button
+                  key={src}
+                  type="button"
+                  onClick={() => setGrupo((g) => (g === src ? null : src))}
+                  className={`rounded-full border px-2.5 py-1 text-xs ${grupo === src ? 'border-sky-500 bg-sky-500/20 text-ink' : 'border-zinc-700 bg-zinc-800/50 text-zinc-300 hover:border-zinc-500'}`}
+                >
                   {src} <span className="font-semibold text-sky-300">{n}</span>
-                </span>
+                </button>
               ))}
             </div>
           </div>
@@ -327,6 +335,7 @@ export default function AdminLeadsPage() {
           })()}
           {leads
             .filter((l) => verCerrados || !CERRADOS.includes(l.status))
+            .filter((l) => !grupo || (l.origen?.grupo || l.source || '—') === grupo)
             .map((l) => {
             const meta = STATUS_META[l.status] || STATUS_META.new
             return (
@@ -351,8 +360,18 @@ export default function AdminLeadsPage() {
                         const over = sp.spreadPct > 3
                         return <span className={`rounded px-1.5 py-0.5 text-[10px] font-semibold ${over ? 'bg-amber-500/20 text-amber-300' : 'bg-emerald-500/20 text-emerald-300'}`} title={`pide vs mercado ${ars(sp.marketPrice)}/kg`}>{sp.spreadPct >= 0 ? '+' : ''}{sp.spreadPct.toFixed(0)}% vs mercado</span>
                       })()}
-                      <span className="text-xs text-zinc-600">#{l.id} · {fmtDate(l.created_at)}{l.source ? ` · ${l.source}` : ''}</span>
+                      <span className="text-xs text-zinc-600">#{l.id} · {fmtDate(l.created_at)}</span>
                     </div>
+                    {l.origen && l.origen.grupo !== 'Sin origen' && (
+                      <p className="mt-2 text-xs text-zinc-500">
+                        {l.origen.grupo === 'Frigorífico' ? 'Escribió en la ficha de ' : 'Vino de: '}
+                        {l.origen.href ? (
+                          <a href={l.origen.href} target="_blank" rel="noopener noreferrer" className="font-medium text-sky-400 hover:underline">{l.origen.etiqueta}</a>
+                        ) : (
+                          <span className="text-zinc-300">{l.origen.etiqueta}</span>
+                        )}
+                      </p>
+                    )}
                     <p className="mt-2 font-semibold text-ink">{l.name}</p>
                     <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
                       {l.phone && <a href={`tel:${l.phone}`} className="flex items-center gap-1 text-sky-400"><Phone className="h-3.5 w-3.5" />{l.phone}</a>}

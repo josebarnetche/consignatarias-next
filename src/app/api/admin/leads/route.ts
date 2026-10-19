@@ -3,6 +3,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { requireServiceClient } from '@/lib/supabase'
 import { createClient } from '@/lib/supabase-server'
 import { logActivity, describeStatusChange, getActivityByLead } from '@/lib/leads/activity'
+import { origenLead } from '@/lib/leads/origen-admin'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -68,7 +69,8 @@ export async function GET(_req: NextRequest) {
   const actividad = await getActivityByLead(db(), rows.map((r) => r.id))
 
   return NextResponse.json({
-    leads: rows,
+    // `origen`: la clave de `source` en palabras (la planta con nombre, no el CUIT).
+    leads: rows.map((r) => ({ ...r, origen: origenLead((r as { source?: string | null }).source ?? null) })),
     activity: Object.fromEntries(actividad),
     stats: { total: rows.length, byStatus, openFeePotential, wonFee },
   })

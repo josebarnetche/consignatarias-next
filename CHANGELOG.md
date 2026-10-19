@@ -7,6 +7,14 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.234.0] — 2026-10-19
+
+### Leads: a qué frigorífico le escribió cada productor
+
+- **/admin/leads** mostraba el origen como clave cruda (`frigorifico:30718669592:otra-consulta`) y no había forma de saber a qué planta le quería vender cada productor. Ahora cada lead dice "Escribió en la ficha de Frigorífico Ovechas (Chaco)", con enlace a la ficha. Campos y arrendamiento también se leen en palabras (`lib/leads/origen-admin.ts` + test, resuelto en el server contra el padrón de 1.100 plantas).
+- **Por origen** agrupa por tipo (Frigorífico, Campos, Arrendamiento, Herramientas) en vez de 33 claves sueltas. Tocar un grupo filtra la lista.
+- **Corrección**: las consultas de "otra consulta" (`frigorifico:<cuit>:otra-consulta`) buscaban la planta con el sufijo pegado al CUIT y nunca se le avisaban. Ahora el aviso sale igual que en las demás consultas, cuando la planta tiene un mail donde recibirlo.
+
 ## [1.233.0] — 2026-10-19
 
 ### Cargar un remate: se completa solo
