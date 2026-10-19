@@ -35,6 +35,8 @@ export interface PreofertaFirma {
   cierre: string
   condiciones: string | null
   estado: EstadoPreoferta
+  /** Remate del panel al que pertenece ("AAAA-MM-DD|LOCALIDAD"), si se creó desde uno. */
+  remate_clave?: string | null
   created_at: string
   updated_at: string
   lotes: LoteFirma[]
@@ -59,7 +61,7 @@ export interface PreofertaFirmaPublica extends PreofertaFirma {
   consignataria_nombre: string
 }
 
-const COLUMNAS_PREOFERTA = 'id, consignataria_slug, titulo, fecha_remate, lugar, cierre, condiciones, estado, created_at, updated_at'
+const COLUMNAS_PREOFERTA = 'id, consignataria_slug, titulo, fecha_remate, lugar, cierre, condiciones, estado, remate_clave, created_at, updated_at'
 const COLUMNAS_LOTE = 'id, preoferta_id, orden, titulo, categoria, cabezas, peso_kg, video_url, descripcion, precio_base'
 
 type FilaPreoferta = Omit<PreofertaFirma, 'lotes' | 'estado'> & { estado: string }

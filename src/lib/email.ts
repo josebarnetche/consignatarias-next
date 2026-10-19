@@ -1203,7 +1203,7 @@ export function buildWeeklyNewsletterHtml(
   const utm = 'utm_source=newsletter&utm_medium=email&utm_campaign=remates-semana'
   const enlace = (path?: string) => `${APP_URL}${path ?? '/remates'}?${utm}`
 
-  // DESTACADO DE LA SEMANA (19-10-2026): el remate PRO que más dice de sí mismo va
+  // DESTACADO DE LA SEMANA (18-10-2026): el remate PRO que más dice de sí mismo va
   // arriba, grande, con lo que remata y un botón a la ficha y otro a la firma.
   const destacado = elegirDestacado(featuredRemates.map((r) => ({ ...r, path: r.path ?? '/remates' })))
   const resto = destacado ? featuredRemates.filter((r) => !(r.title === destacado.title && r.date === destacado.date && r.slug === destacado.slug)) : featuredRemates

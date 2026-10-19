@@ -2698,6 +2698,7 @@ export type Database = {
           fecha_remate: string
           id: string
           lugar: string | null
+          remate_clave: string | null
           titulo: string
           updated_at: string
         }
@@ -2710,6 +2711,7 @@ export type Database = {
           fecha_remate: string
           id?: string
           lugar?: string | null
+          remate_clave?: string | null
           titulo: string
           updated_at?: string
         }
@@ -2722,6 +2724,7 @@ export type Database = {
           fecha_remate?: string
           id?: string
           lugar?: string | null
+          remate_clave?: string | null
           titulo?: string
           updated_at?: string
         }

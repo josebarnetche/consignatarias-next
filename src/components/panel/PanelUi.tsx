@@ -1,36 +1,33 @@
+'use client'
+
 import Link from 'next/link'
-import type { ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 
 /**
- * Piezas del panel de la firma con el lenguaje de la landing (19-10-2026): cada
- * bloque es un frame del lienzo, con su nombre arriba a la izquierda y las manijas
- * de selección al pasar el mouse (CSS LIENZO en globals.css). El nombre queda
- * FUERA de la caja (top: -1.45rem), así que las grillas que los contienen dejan
- * al menos gap-y-10 entre filas.
+ * Piezas del panel de la firma (v2, 18-10-2026). Diseño de producto moderno: tarjetas
+ * limpias, mucho aire, una sola acción fuerte por bloque. Quien lo usa no es técnico y
+ * no quiere llenar formularios: cada bloque dice qué es en una línea y ofrece el botón.
  *
  * Nada de acá trae datos de ejemplo: un número es real o es cero.
  */
 
-export function Marco({
-  nombre,
+export function Tarjeta({
   titulo,
+  bajada,
   accion,
-  activo = false,
   className = '',
-  cuerpo = 'p-5',
+  cuerpo = 'p-5 sm:p-6',
   incrustado = false,
   children,
 }: {
-  nombre: string
   titulo?: ReactNode
+  bajada?: ReactNode
   accion?: ReactNode
-  activo?: boolean
   className?: string
   /** Padding del contenido. 'p-0' para listas que van de borde a borde. */
   cuerpo?: string
-  /** El contenido es un bloque que ya trae su propia caja y su título (los del
-   *  reporte): se le saca el borde y el fondo para que no quede una caja adentro
-   *  de otra. */
+  /** El contenido ya trae su propia caja (bloques del reporte): se le saca. */
   incrustado?: boolean
   children: ReactNode
 }) {
@@ -38,79 +35,57 @@ export function Marco({
     ? 'p-1 [&>*]:!m-0 [&>*]:!rounded-none [&>*]:!border-0 [&>*]:!bg-transparent [&>*]:!shadow-none'
     : cuerpo
   return (
-    <section className={`frame rounded-xl border border-terminal-border bg-terminal-panel ${activo ? 'frame-activo' : ''} ${className}`}>
-      <span className="frame-nombre" aria-hidden="true">
-        # {nombre}
-      </span>
+    <section className={`rounded-2xl border border-terminal-border bg-terminal-panel shadow-[0_1px_2px_rgb(0_0_0/0.04),0_8px_24px_-12px_rgb(0_0_0/0.08)] ${className}`}>
       {(titulo || accion) && (
-        <header className="flex items-start justify-between gap-3 border-b border-terminal-border px-5 py-3.5">
-          {titulo ? <h3 className="text-sm font-semibold text-ink">{titulo}</h3> : <span />}
-          {accion && <div className="shrink-0 text-xs">{accion}</div>}
+        <header className="flex items-start justify-between gap-4 px-5 pt-5 sm:px-6">
+          <div className="min-w-0">
+            {titulo && <h3 className="text-base font-semibold tracking-tight text-ink">{titulo}</h3>}
+            {bajada && <p className="mt-0.5 text-sm text-zinc-500">{bajada}</p>}
+          </div>
+          {accion && <div className="shrink-0 text-sm">{accion}</div>}
         </header>
       )}
       <div className={clsCuerpo}>{children}</div>
-      <span className="frame-sel" aria-hidden="true">
-        <i />
-        <i />
-        <i />
-        <i />
-      </span>
     </section>
   )
 }
 
 export const fmt = (n: number) => n.toLocaleString('es-AR')
 
-/** Un indicador: etiqueta, número y, si hay con qué comparar, el cambio. */
-export function Kpi({
+/** Un número grande con su etiqueta. Sin cajas: va dentro de una tarjeta. */
+export function Numero({
   etiqueta,
   valor,
   detalle,
-  cambio,
-  onClick,
+  tono = 'ink',
 }: {
   etiqueta: string
   valor: number | string
   detalle?: ReactNode
-  /** Diferencia contra el período anterior (positivo = subió). */
-  cambio?: { delta: number; leyenda?: string } | null
-  onClick?: () => void
+  tono?: 'ink' | 'accent' | 'positive'
 }) {
-  const contenido = (
-    <>
-      <span className="block text-xxs text-zinc-500">{etiqueta}</span>
-      <span className="mt-1.5 block text-3xl font-semibold leading-none tracking-tight tabular-nums text-ink">
+  const color = { ink: 'text-ink', accent: 'text-accent', positive: 'text-positive' }[tono]
+  return (
+    <div className="min-w-0">
+      <p className="text-sm text-zinc-500">{etiqueta}</p>
+      <p className={`mt-1 text-3xl font-semibold leading-none tracking-tight tabular-nums ${color}`}>
         {typeof valor === 'number' ? fmt(valor) : valor}
-      </span>
-      {cambio && cambio.delta !== 0 ? (
-        <span className={`mt-2 block text-xxs tabular-nums ${cambio.delta > 0 ? 'text-positive' : 'text-negative'}`}>
-          {cambio.delta > 0 ? '▲' : '▼'} {fmt(Math.abs(cambio.delta))} {cambio.leyenda ?? 'vs el mes anterior'}
-        </span>
-      ) : detalle ? (
-        <span className="mt-2 block text-xxs text-zinc-500">{detalle}</span>
-      ) : null}
-    </>
-  )
-  const cls = 'block min-w-0 px-5 py-4 text-left'
-  return onClick ? (
-    <button type="button" onClick={onClick} className={`${cls} transition-colors hover:bg-accent/[0.04]`}>
-      {contenido}
-    </button>
-  ) : (
-    <div className={cls}>{contenido}</div>
+      </p>
+      {detalle && <p className="mt-1.5 text-xs text-zinc-500">{detalle}</p>}
+    </div>
   )
 }
 
-/** Estado vacío: dice qué va a aparecer acá y cómo llega, con una acción si la hay. */
-export function Vacio({ titulo, texto, accion }: { titulo: string; texto?: ReactNode; accion?: ReactNode }) {
+/** Estado vacío: qué va a aparecer acá y cómo llega, con una acción si la hay. */
+export function Vacio({ titulo, texto, accion, icono }: { titulo: string; texto?: ReactNode; accion?: ReactNode; icono?: ReactNode }) {
   return (
-    <div className="relative overflow-hidden rounded-lg border border-dashed border-zinc-700 px-5 py-6">
-      <div className="lienzo-puntos absolute inset-0 opacity-40" aria-hidden="true" />
-      <div className="relative">
+    <div className="flex flex-col items-start gap-3 rounded-xl bg-zinc-800/40 px-5 py-6 sm:flex-row sm:items-center">
+      {icono && <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-accent/10 text-accent">{icono}</span>}
+      <div className="min-w-0 flex-1">
         <p className="text-sm font-medium text-ink">{titulo}</p>
-        {texto && <p className="mt-1 max-w-md text-xs leading-relaxed text-zinc-500">{texto}</p>}
-        {accion && <div className="mt-4">{accion}</div>}
+        {texto && <p className="mt-0.5 max-w-lg text-sm text-zinc-500">{texto}</p>}
       </div>
+      {accion && <div className="shrink-0">{accion}</div>}
     </div>
   )
 }
@@ -118,33 +93,28 @@ export function Vacio({ titulo, texto, accion }: { titulo: string; texto?: React
 /** Lo que trae PRO, dicho sin datos de ejemplo: qué es y cómo activarlo. */
 export function SoloPro({ titulo, beneficio, desde = 'panel' }: { titulo: string; beneficio: string; desde?: string }) {
   return (
-    <div className="relative overflow-hidden rounded-lg border border-accent/30 bg-accent/[0.04] px-5 py-5">
-      <div className="flex items-center gap-2">
-        <span className="rounded-sm border border-accent/50 px-1.5 py-0.5 text-[0.625rem] font-bold text-accent">★ PRO</span>
-        <p className="text-sm font-semibold text-ink">{titulo}</p>
-      </div>
-      <p className="mt-2 max-w-lg text-xs leading-relaxed text-zinc-400">{beneficio}</p>
+    <div className="rounded-xl bg-gradient-to-br from-accent/[0.08] to-transparent px-5 py-5 ring-1 ring-inset ring-accent/20">
+      <p className="text-xs font-semibold text-accent">★ PRO</p>
+      <p className="mt-1 text-base font-semibold text-ink">{titulo}</p>
+      <p className="mt-1 max-w-lg text-sm text-zinc-400">{beneficio}</p>
       <Link
         href={`/planes?audience=consignataria&from=${desde}`}
-        className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-accent px-4 py-2 text-xs font-semibold text-white oscuro:text-zinc-950 transition-colors hover:bg-accent-bright"
+        className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-white oscuro:text-zinc-950 transition-colors hover:bg-accent-bright"
       >
-        Activar PRO · ARS 45.000/mes <span aria-hidden="true">→</span>
+        Activar PRO <span aria-hidden="true">→</span>
       </Link>
     </div>
   )
 }
 
-export function BotonPrimario({ children, onClick, href }: { children: ReactNode; onClick?: () => void; href?: string }) {
-  const cls =
-    'inline-flex items-center gap-1.5 rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-white oscuro:text-zinc-950 transition-colors hover:bg-accent-bright'
+const BASE_BOTON = 'inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition-colors disabled:opacity-50'
+
+export function BotonPrimario({ children, onClick, href, disabled, type = 'button' }: { children: ReactNode; onClick?: () => void; href?: string; disabled?: boolean; type?: 'button' | 'submit' }) {
+  const cls = `${BASE_BOTON} bg-accent text-white oscuro:text-zinc-950 hover:bg-accent-bright`
   return href ? (
-    <Link href={href} className={cls}>
-      {children}
-    </Link>
+    <Link href={href} className={cls}>{children}</Link>
   ) : (
-    <button type="button" onClick={onClick} className={cls}>
-      {children}
-    </button>
+    <button type={type} onClick={onClick} disabled={disabled} className={cls}>{children}</button>
   )
 }
 
@@ -153,28 +123,74 @@ export function BotonSecundario({
   onClick,
   href,
   externo = false,
+  disabled,
 }: {
   children: ReactNode
   onClick?: () => void
   href?: string
   externo?: boolean
+  disabled?: boolean
 }) {
-  const cls =
-    'inline-flex items-center gap-1.5 rounded-lg border border-zinc-700 px-4 py-2.5 text-sm font-medium text-zinc-200 transition-colors hover:border-accent hover:text-accent'
+  const cls = `${BASE_BOTON} bg-zinc-800/70 font-medium text-ink hover:bg-zinc-700/70`
   if (href && externo) {
-    return (
-      <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>
-        {children}
-      </a>
-    )
+    return <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>{children}</a>
   }
   return href ? (
-    <Link href={href} className={cls}>
-      {children}
-    </Link>
+    <Link href={href} className={cls}>{children}</Link>
   ) : (
-    <button type="button" onClick={onClick} className={cls}>
-      {children}
-    </button>
+    <button type="button" onClick={onClick} disabled={disabled} className={cls}>{children}</button>
+  )
+}
+
+/**
+ * Hoja lateral: lo que antes era un formulario en el medio de la página ahora se abre
+ * al costado (abajo en el celular), con el resto del panel quieto detrás. Escape cierra.
+ */
+export function Hoja({ abierta, titulo, bajada, onCerrar, children }: { abierta: boolean; titulo: string; bajada?: ReactNode; onCerrar: () => void; children: ReactNode }) {
+  useEffect(() => {
+    if (!abierta) return
+    const alTeclear = (e: KeyboardEvent) => e.key === 'Escape' && onCerrar()
+    document.addEventListener('keydown', alTeclear)
+    const overflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', alTeclear)
+      document.body.style.overflow = overflow
+    }
+  }, [abierta, onCerrar])
+  // Va al <body>: adentro del panel hay contenedores con transform (la transición de
+  // sección) y un `fixed` ahí adentro se posiciona contra ellos, no contra la pantalla.
+  const [montado, setMontado] = useState(false)
+  useEffect(() => setMontado(true), [])
+  if (!abierta || !montado) return null
+  return createPortal(
+    <div className="fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-label={titulo}>
+      <button type="button" aria-label="Cerrar" onClick={onCerrar} className="absolute inset-0 bg-zinc-950/40 backdrop-blur-[2px]" />
+      <div className="absolute inset-x-0 bottom-0 flex max-h-[92dvh] flex-col rounded-t-3xl bg-terminal-panel shadow-2xl sm:inset-y-0 sm:left-auto sm:right-0 sm:max-h-none sm:w-[min(560px,100vw)] sm:rounded-none sm:rounded-l-3xl">
+        <header className="flex items-start justify-between gap-4 border-b border-terminal-border px-6 py-5">
+          <div className="min-w-0">
+            <h2 className="text-lg font-semibold tracking-tight text-ink">{titulo}</h2>
+            {bajada && <p className="mt-0.5 text-sm text-zinc-500">{bajada}</p>}
+          </div>
+          <button type="button" onClick={onCerrar} className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-zinc-800/70 text-zinc-300 hover:bg-zinc-700" aria-label="Cerrar">
+            ✕
+          </button>
+        </header>
+        <div className="flex-1 overflow-y-auto px-6 py-6">{children}</div>
+      </div>
+    </div>,
+    document.body,
+  )
+}
+
+/** Fecha en bloque (mes arriba, día grande), para listas de remates. */
+export function BloqueFecha({ fecha }: { fecha: string }) {
+  const d = new Date(fecha + 'T12:00:00')
+  return (
+    <span className="grid w-14 shrink-0 place-items-center rounded-xl bg-zinc-800/60 py-2 text-center leading-none">
+      <span className="text-[0.6875rem] font-medium uppercase text-accent">{d.toLocaleDateString('es-AR', { month: 'short' }).replace('.', '')}</span>
+      <span className="mt-1 text-xl font-semibold tabular-nums text-ink">{d.getDate()}</span>
+      <span className="mt-0.5 text-[0.625rem] text-zinc-500">{d.toLocaleDateString('es-AR', { weekday: 'short' }).replace('.', '')}</span>
+    </span>
   )
 }

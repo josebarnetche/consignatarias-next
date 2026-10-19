@@ -1,4 +1,4 @@
--- Seguimiento de consultas en el panel de la firma (19-10-2026).
+-- Seguimiento de consultas en el panel de la firma (18-10-2026).
 --
 -- El panel pasa a ser un CRM: cada consulta avanza por un pipeline
 -- (new → contacted → converted | archived; los valores ya existían en `status`)

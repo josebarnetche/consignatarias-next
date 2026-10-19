@@ -1,5 +1,5 @@
 /**
- * Etapas de una consulta en el panel de la firma (19-10-2026). Los valores son los
+ * Etapas de una consulta en el panel de la firma (18-10-2026). Los valores son los
  * que ya tenía `consignataria_leads.status` desde la tabla original; lo nuevo es que
  * la firma los puede mover. "converted" = la consulta terminó en negocio.
  */

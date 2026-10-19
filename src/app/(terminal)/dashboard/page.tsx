@@ -27,6 +27,8 @@ import { claveRemate } from '@/lib/dal/auctions'
 import { provinciaNombre } from '@/lib/ui/tokens'
 import type { Auction } from '@/lib/db/schema'
 import { getLogoUrl, getBrandWhiteLogo, getBrandColor } from '@/lib/data/logo-map'
+import { rematePath } from '@/lib/remate-slug'
+import { isWeeklyRecipient } from '@/lib/newsletter-segments'
 
 export const dynamic = 'force-dynamic'
 
@@ -207,6 +209,7 @@ export default async function DashboardPage({
     flyer_url: string | null
     reemplaza_clave: string | null
     status: string
+    path: string
   }[] = []
   if (consignataria) {
     const { data } = await service
@@ -231,6 +234,14 @@ export default async function DashboardPage({
       flyer_url: a.flyer_url,
       reemplaza_clave: a.reemplaza_clave,
       status: a.status ?? 'scheduled',
+      // La ficha pública, armada como la arma scripts/remates-de-firmas.ts al pasarlo
+      // al calendario (slug canónico, provincia en mayúsculas sin acentos).
+      path: rematePath({
+        consignatariaSlug: consignataria.canonical_slug,
+        type: a.type ?? 'general',
+        province: (a.province ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().trim() || null,
+        date: a.date,
+      }),
     }))
   }
 
@@ -254,6 +265,7 @@ export default async function DashboardPage({
           clave: claveRemate(r), title: r.title, date: r.date, time: r.time, location: r.location,
           province: r.province, type: r.type, main_category: r.mainCategory, estimated_heads: r.estimatedHeads,
           description: r.description, catalog_url: r.catalogUrl, youtube_url: r.youtubeUrl,
+          path: rematePath(r),
         }))
     : []
 
@@ -692,6 +704,14 @@ export default async function DashboardPage({
       }
     : null
 
+  // A cuántos productores les llega el mail semanal de remates (el mismo filtro que
+  // usa el envío). Una firma PRO sale primera ahí: es su alcance garantizado.
+  let alcanceMail = 0
+  if (consignataria) {
+    const { data: subs } = await service.from('newsletter_subscribers').select('source').eq('status', 'active').limit(10000)
+    alcanceMail = (subs ?? []).filter((x) => isWeeklyRecipient(x.source)).length
+  }
+
   // Get DTE count for this user
   let dteCount = 0
   const { count: userDteCount } = await service
@@ -792,6 +812,7 @@ export default async function DashboardPage({
       hayDatosMag={hayDatosMag}
       agenda={agenda}
       distribucion={distribucion}
+      alcanceMail={alcanceMail}
       dteCount={dteCount}
       alreadyRedeemed={alreadyRedeemed}
     />

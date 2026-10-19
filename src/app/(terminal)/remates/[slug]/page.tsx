@@ -22,6 +22,7 @@ import { BreadcrumbSchema, EventSchema, VideoObjectSchema } from '@/components/s
 import { AddToCalendarButton } from '@/components/ui/AddToCalendarButton'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 import LoginGate from '@/components/LoginGate'
+import ConsultarRemate from '@/components/remates/ConsultarRemate'
 // DteCTA inline implementation for remate pages (lock-in strategy)
 import { 
   Calendar, 
@@ -671,6 +672,18 @@ export default async function RemateDetailPage({ params }: Props) {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={flyer} alt={`Flyer: ${remate.title}`} loading="lazy" className="w-full h-auto rounded-lg border border-terminal-border" />
                 </a>
+              </div>
+            )}
+
+            {/* Consultar a la firma por este remate (18-10-2026): sin login, tres campos. */}
+            {!isPast && consigProfile && (
+              <div className="px-6 pb-6">
+                <ConsultarRemate
+                  slug={consigProfile.canonicalSlug}
+                  firma={consigProfile.displayName}
+                  remate={remate.title}
+                  remateId={typeof remate.id === 'number' && remate.id < 100000 ? remate.id : undefined}
+                />
               </div>
             )}
 
