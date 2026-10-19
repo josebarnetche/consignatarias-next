@@ -1833,7 +1833,7 @@
       }
     ],
     "latestVolume": 7411,
-    "periodVolume": 145805
+    "periodVolume": 140345
   },
   "categories": {
     "novillos": {
@@ -1888,72 +1888,36 @@
     }
   },
   "corn": {
-    "current": 231.5,
+    "current": 229.83,
     "prev": 231.5,
-    "change": 0,
+    "change": -0.7,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
-    "current": 1555,
+    "current": 1560,
     "prev": 1555,
-    "change": 0,
+    "change": 0.3,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
   "usdOficial": {
-    "current": 1535,
+    "current": 1540,
     "prev": 1535,
-    "change": 0,
+    "change": 0.3,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-10-18",
+  "lastUpdate": "2026-10-19",
   "provinceEntry": {
-    "date": "2026-10-16",
-    "totalCabezas": 7411,
+    "date": "2026-10-19",
+    "totalCabezas": 38,
     "provinces": [
       {
         "province": "BUENOS AIRES",
-        "enPie": 5771,
-        "total": 5777,
-        "percentage": 77.95
-      },
-      {
-        "province": "SANTA FE",
-        "enPie": 466,
-        "total": 467,
-        "percentage": 6.3
-      },
-      {
-        "province": "ENTRE RIOS",
-        "enPie": 412,
-        "total": 412,
-        "percentage": 5.56
-      },
-      {
-        "province": "LA PAMPA",
-        "enPie": 341,
-        "total": 341,
-        "percentage": 4.6
-      },
-      {
-        "province": "CORDOBA",
-        "enPie": 327,
-        "total": 327,
-        "percentage": 4.41
-      },
-      {
-        "province": "SANTIAGO DEL ESTERO",
-        "enPie": 60,
-        "total": 60,
-        "percentage": 0.81
-      },
-      {
-        "province": "SAN LUIS",
-        "enPie": 27,
-        "total": 27,
-        "percentage": 0.36
+        "enPie": 38,
+        "total": 38,
+        "percentage": 100
       }
     ]
   },
@@ -2700,11 +2664,11 @@
     "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)"
   },
   "soy": {
-    "current": 493,
+    "current": 490.33,
     "prev": 493,
-    "change": 0,
+    "change": -0.5,
     "unit": "USD/tn",
     "source": "MAGYP FOB API",
-    "date": "2026-10-16"
+    "date": "2026-10-19"
   }
 }
