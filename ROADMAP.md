@@ -1,6 +1,6 @@
 # Roadmap
 
-**Current:** v1.192.0 (2026-08-10) — see [CHANGELOG.md](CHANGELOG.md) for the full per-version history.
+**Current:** v1.234.0 (2026-10-19) — see [CHANGELOG.md](CHANGELOG.md) for the full per-version history.
 **Strategic frame:** [docs/strategy/PLAN-DE-NEGOCIOS-2026.md](docs/strategy/PLAN-DE-NEGOCIOS-2026.md)
 (plan de negocios v2, 36 meses — el marco canónico) + [docs/strategy/POSITIONING-THESIS.md](docs/strategy/POSITIONING-THESIS.md)
 (tesis de categoría). **Dos motores de ingreso secuenciados** sobre la capa de datos libre y citable:
@@ -16,6 +16,41 @@ MAJOR boundary, so the product stays on 1.x.
 > first dollar is **unblocked** (email-first checkout live for both B2C and Enterprise, verified to
 > reach a real Rebill payment link). The remaining gate is a real test payment + the institutional
 > sales motion — not more code.
+
+---
+
+## Estado — v1.193 → v1.234 (2026-10-19) · contra el Horizonte 1
+
+> Revisado contra el CHANGELOG el 19-10-2026. Corto: **se construyó mucho y en buena dirección,
+> y el gate sigue sin cruzarse. Ingreso externo: $0.**
+
+| Entregable del Horizonte 1 | Estado al 19-10 |
+|---|---|
+| v1.188 · funnel de leads medido + digest | ✅ `/admin/leads` con ritmo, calificación comercial (40/300 cabezas), digest diario de lo sin responder y, desde v1.234, el nombre de la planta en cada lead |
+| v1.189 · **primer pago real verificado** | 🟡 **Destrabado, no cruzado.** El webhook de Rebill nunca había validado una firma: nadie que pagó recibió nada. Se corrigió y ahora hay reconciliación contra la API cada 10 min (05-10). El único pago registrado es una **compra de prueba propia** (informe de canon, ARS 19.900): la plomería anda, pero ningún cliente pagó |
+| v1.190 · PRO self-serve | 🟡 Alta y propuesta PRO desde el checkout y desde admin, panel de la firma rehecho para usuarios no técnicos (v1.231–v1.233). Las **4 firmas PRO** (Reggi, Haciendas Federales, KyL, Javier Ulises Ávalos) son `featured` puesto a mano, con **0 suscripciones en Rebill** |
+| v1.191 · prueba B2B en el outreach | ✅ "Tu alcance" en el panel, búsquedas de Google por ficha, propuesta en PDF con datos reales de la firma, mail semanal con "Destacado" |
+| v1.192 · 1 % operacionalizado | ❌ Ninguna operación cerrada registrada. 24 leads a frigoríficos y ~12 de campos, casi todos sin trabajar |
+
+**Lo que no estaba en el plan y se hizo:** campos e inmobiliaria rural (v1.188–1.192), `/lotes` con la
+oferta propia, ruteo de frigoríficos con habilitación SENASA por rubro (APS2), El Corredor rehecho
+(el viejo publicaba el ciclo invertido) y El Corredor Semanal en dólares, tema claro, auditoría SEO,
+sanidad (Res. 201/2026), MCP v1.6–v1.7 de-gateado y con citabilidad.
+
+**Motor 2:** el MCP tiene **un** consumidor externo sostenido (integración anónima desde Misiones, días
+hábiles, desde el 27-08) y ningún pago; el 98 % del tráfico son escáneres. Las 5 API keys siguen siendo
+propias. `/api/lots` sigue sin un integrador que lo use.
+
+**Contra el gate del horizonte** (≥7 PRO pagando, ~ARS 3M MRR): **0 de 7.** La hipótesis de 90 días del
+plan (si tras ~50 conversaciones <5 firmas pagan → pivotar) **no se puede evaluar todavía**, porque las
+conversaciones comerciales no se hicieron. Reggi es la primera firma usando el panel de verdad.
+
+**Lo que mueve la aguja ahora, en orden:**
+1. **Cobrar la primera firma.** Reggi con suscripción real en Rebill, no `featured` a mano.
+2. **Trabajar los leads que ya existen.** Contactar a las plantas que tienen mail y llamar a las que no.
+   Es plata en la mesa y no requiere código.
+3. **Las ~50 conversaciones con firmas** que pide el plan para validar o descartar el SaaS.
+4. Recién después, más producto.
 
 ---
 

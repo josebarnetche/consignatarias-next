@@ -274,6 +274,48 @@ deroga la Res. 368/2011) y con la Disp. DNSA 27/2026 (B.O. 15/10/2026), que fija
 
 ---
 
+## [Sin versión] — 2026-10-04 → 2026-10-16
+
+### Lo que entró a main sin entrada propia (reconstruido del historial el 19-10-2026)
+
+Entre la 1.223.0 y la 1.224.0 se mergearon ~50 commits directo a main sin subir la versión. Se documentan acá, agrupados, para que el CHANGELOG vuelva a ser el historial completo. El detalle de cada cambio está en el mensaje de su commit.
+
+**Lotes de hacienda (`/lotes`)**
+- Vidriera con los lotes que deCampoaCampo publica en sus dos páginas públicas (JSON-LD `Product`, catálogo acumulativo, sin recorrer el rango de sku) y una referencia propia por lote: la mediana del VR por categoría y peso (`A_CATEGORIA_VR`; vaca preñada → VACA, terneros sin referencia a propósito).
+- Oferta por lote con + y − desde la referencia; las fotos reales se sirven desde el aviso (apagables con `MOSTRAR_FOTOS`), con el glifo de marca de respaldo.
+- La vidriera arranca con la oferta propia: `producer_leads` de venta anonimizados (`scripts/lotes-propios.mjs`, sin nombre, contacto ni precio pedido), con un piso de 10 cabezas.
+
+**Leads y frigoríficos**
+- Calificación comercial (menos de 40 cabezas = chico, 40+ se trabaja, 300+ pro; sin cabezas = sin datos, se pregunta) y digest diario de lo que quedó sin responder.
+- CUIT (con dígito verificador) y razón social obligatorios para ofrecer hacienda; la consulta a la planta queda separada de la operación (`contactar_frigorifico`).
+- Contacto relevado de las plantas en `email_ruteo` / `telefono_ruteo` / `notas_internas`, nunca en los campos que se publican. Se suman los contactos declarados en SENASA APS2 (104 de 132 plantas).
+- Estado de habilitación por rubro (APS2), con reintento por razón social cuando el número no identifica: 60 → 132 plantas verificadas y cero cruces errados. Las plantas que no operan o no faenan bovinos no muestran el formulario de venta ni reciben derivaciones (Vicentin Faenas, cerrada desde 2017).
+
+**Pagos y mails**
+- El webhook de Rebill rechazaba todas las firmas desde que existe: nadie que pagó recibió lo comprado. Ahora se prueban los esquemas de firma conocidos y corre una **reconciliación contra la API de Rebill cada 10 minutos**.
+- `resend.emails.send()` no lanza cuando la API rechaza: 38 de 45 envíos ignoraban el `error`, incluidos los de entrega de compras. Corregido.
+- Las respuestas a `hola@consignatarias.com` (sin buzón) ahora van a `agro@memola.com.ar` (`REPLY_TO`).
+
+**El Corredor**
+- Generador nuevo y reemplazo de la edición de septiembre: el indicador de hembras sumaba 2 de las 8 categorías del MAG (32 % contra 60,1 % real) y recomendaba "retener vientres" en plena liquidación. El pipeline mensual ya publica el generador nuevo y no sigue si el PDF falla.
+- Página de lo que se pagó fuera de Cañuelas (SIO Carnes, agregado oficial, no microdato).
+- **El Corredor Semanal** pasa a US$ 33/mes, anclado en dólares y cobrado en pesos al blue (ARS 51.000/mes; el anual de US$ 340 todavía no tiene camino de cobro propio).
+
+**MCP (v1.6 → v1.7)**
+- v1.6: `price_seasonality` (estacionalidad del INMAG en dólares) y `farmland_yield` (renta del campo, también agrícola). v1.7: `international_price_gap` (novillo contra EE. UU., Uruguay y Australia en US$/kg vivo).
+- `consignatarias_band`: la Banda Consignatarias (P10–P90 de la semana) con nombre propio.
+- Nombres de tools en inglés con descripciones bilingües, y los nombres viejos en castellano como alias.
+- `serverInfo` con título y `websiteUrl`.
+- Enumeración del directorio abierta: quien barría era MCP-Bench. La consulta por provincia sola ya es válida.
+- `farmland_yield` usaba la producción y no el canon: el rendimiento salía unas 3 veces inflado.
+- **Citabilidad**: cada respuesta cierra con la cita ya redactada, y el Dataset de `/mercado/inmag` lleva `citation`, `creditText` y `usageInfo`.
+
+**Rendimiento y mantenimiento**
+- `/remates` deja de mandar al navegador los remates pasados (First Load JS de 250 a 197 kB). Cuatro arreglos del informe de PageSpeed: badge PRO compuesto en GPU y `browserslist`, entre otros.
+- Next 15.5.24 → 15.5.27; overrides de pnpm para dependencias transitivas vulnerables (quedan 5 sin parche disponible).
+- Vercel construye menos: no construye por `reports/**` ni `.github/**`, el refresco se dispara una vez por día y no hay previews de dependabot.
+- El link "Ver tu perfil" en la aprobación de reclamos de frigoríficos llevaba a un 404.
+
 ## [1.223.0] — 2026-10-03
 
 ### De-gateo: el MCP deja de cobrar la consulta y pasa a cobrar la descarga
