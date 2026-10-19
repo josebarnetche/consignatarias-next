@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.236.1] — 2026-10-19
+
+### Admin: retoques tras la revisión en producción
+- Leads, Campos, Suscriptores y Consignatarias (páginas de cliente) tienen su título de pestaña (`layout.tsx` con metadata); antes heredaban el del sitio.
+- El ítem "Firmas: ver como y alta" pasa a "Firmas" en la navegación: se cortaba en la columna lateral.
+
 ## [1.236.0] — 2026-10-19
 
 ### El panel de admin, rediseñado para el trabajo diario

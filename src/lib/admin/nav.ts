@@ -48,7 +48,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
     label: 'Directorio',
     items: [
       { href: '/admin/consignatarias', label: 'Consignatarias' },
-      { href: '/admin/ver-como', label: 'Firmas: ver como y alta' },
+      { href: '/admin/ver-como', label: 'Firmas' },
       { href: '/admin/propuesta', label: 'Propuestas PRO' },
     ],
   },
