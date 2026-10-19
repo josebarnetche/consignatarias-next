@@ -20,6 +20,7 @@ import { puedeFaenarBovinos } from '@/lib/frigorificos/faena'
 import { getFeaturedSlugs } from '@/lib/featured'
 import { logActivity, type ActivityOutcome } from '@/lib/leads/activity'
 import { LEAD_ALERT_TO } from '@/lib/email'
+import { CABEZAS_MINIMAS } from '@/lib/leads/calidad'
 import { elegirContrapartes, type Candidato } from './contrapartes'
 import { enviar, leerBandeja, CASILLA, type Entrante } from './correo'
 import { triageLead, leerRespuesta } from './ia'
@@ -461,9 +462,16 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
         precio_pedido_kg: l.desired_price_ars && l.desired_price_ars > 100 ? Number(l.desired_price_ars) : null,
       }
       const datos = unirDatos(base, t.datos as DatosHacienda)
-      const sirve = t.es_operacion && !!t.lado && !!l.email
+      const chico = !!datos.cabezas && datos.cabezas < CABEZAS_MINIMAS
+      const sirve = t.es_operacion && !!t.lado && !!l.email && !chico
       const estado: EstadoCaso = sirve ? 'nuevo' : 'descartado'
-      const motivo = sirve ? t.motivo : !l.email ? 'sin email para trabajarlo' : t.motivo
+      const motivo = sirve
+        ? t.motivo
+        : !l.email
+          ? 'sin email para trabajarlo'
+          : chico && t.es_operacion
+            ? `chico: ${datos.cabezas} cabezas, debajo del mínimo de ${CABEZAS_MINIMAS}`
+            : t.motivo
       if (sirve) inf.nuevos++
       else inf.descartados++
       if (dryRun) {
@@ -522,6 +530,12 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
 
     if (caso.estado === 'nuevo' || caso.estado === 'pidiendo_datos') {
       if (!horarioRespuesta(ahora)) continue
+      // Debajo de 40 cabezas no le interesa a nadie (regla de José, calidad.ts): no se ofrece.
+      if (falta.length === 0 && (caso.datos.cabezas ?? 0) < CABEZAS_MINIMAS) {
+        await guardarCaso(lead.id, { estado: 'descartado', motivo: `chico: ${caso.datos.cabezas} cabezas, debajo del mínimo de ${CABEZAS_MINIMAS}` })
+        await bitacora(lead.id, `No se ofrece: ${caso.datos.cabezas} cabezas, debajo del mínimo de ${CABEZAS_MINIMAS}`)
+        continue
+      }
       if (falta.length === 0) {
         await mandar({ leadId: lead.id, para: [lead.email], correo: M.avisoOfreciendo({ leadId: lead.id, nombre: lead.name, lado: caso.lado, datos: caso.datos }), plantilla: 'aviso_ofreciendo' })
         await guardarCaso(lead.id, { estado: 'ofreciendo', proximo_at: ahora.toISOString() })
