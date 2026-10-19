@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.236.0] — 2026-10-19
+
+### El panel de admin, rediseñado para el trabajo diario
+
+- **Navegación lateral por tarea** (`src/lib/admin/nav.ts`): Hoy · Por decidir (Verificaciones, Leads, Campos, Reseñas, Pre-ofertas) · Directorio (Consignatarias, Firmas: ver como y alta, Propuestas PRO) · Métricas (En vivo, Negocio, Suscriptores, Productos) · Sistema (Ops, Calculadora). Contadores de pendientes y crons en rojo en cada ítem (`src/lib/admin/pendientes.ts`, soft-fail a `s/d`, nunca un 0 inventado).
+- **Portada `/admin` (Hoy)**: lo que espera una decisión, la salud del sistema, cuatro números del negocio y los últimos leads sin trabajar. "Mi Panel" y `/dashboard` sin `?como=` llevan acá.
+- **Verificaciones**: un solo tablero para consignatarias y frigoríficos (`VerificacionesBoard`). Exige el método de verificación de identidad para aprobar, avisa si hay otras solicitudes del mismo perfil que se rechazarán, el motivo de rechazo va en un diálogo (no `prompt()`), y muestra la advertencia de rol o el mail que no salió.
+- **Leads**: bandeja por estado con buscador, detalle lateral con WhatsApp, descartar spam/pruebas en un clic con deshacer, j/k para navegar, origen con el nombre de la planta y enlace a su ficha.
+- **En vivo / Negocio**: audiencia separada de ingresos/conversión/frescura/salud del mail; cada número aparece una sola vez.
+- **Ops** abre con crons en rojo y errores; Mi Ganado plegado al fondo. **Directorio** con editor en panel lateral y lista paginada. **Suscriptores** con buscador y CSV. Campos, Reseñas, Productos, Pre-ofertas, Propuestas y Calculadora con el mismo kit (`src/components/admin/kit.tsx`, `kit-client.tsx`).
+- Sin cambios de URL ni de API: siguen los enlaces de los mails, el digest de leads y `?slug=`. `/admin/overview` baja de 2 hex a 0 (baseline del ratchet).
+
 ## [1.235.0] — 2026-10-19
 
 ### El agente de operaciones: los leads de hacienda se trabajan solos hasta el cierre
