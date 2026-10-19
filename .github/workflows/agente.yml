@@ -1,0 +1,36 @@
+name: Agente de operaciones
+
+# Cada 15 minutos lee la casilla agente@consignatarias.com y avanza los casos.
+# Los horarios de envío los decide el código (días hábiles 8-19 para contactos
+# nuevos, 7-22 para responder), no este cron. Ver src/lib/agente/motor.ts.
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Calcular sin mandar nada (true/false)'
+        default: 'false'
+
+permissions: {}
+
+concurrency:
+  group: agente
+  cancel-in-progress: false
+
+jobs:
+  agente:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Correr el agente
+        run: |
+          Q=""
+          [ "${{ github.event.inputs.dry_run }}" = "true" ] && Q="?dryRun=1"
+          RESP=$(curl -sS -m 320 -w $'\n%{http_code}' -X POST \
+            "https://www.consignatarias.com.ar/api/cron/agente$Q" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}")
+          CODE=$(printf '%s' "$RESP" | tail -n1)
+          BODY=$(printf '%s' "$RESP" | sed '$d')
+          echo "HTTP $CODE — $(printf '%s' "$BODY" | head -c 600)"
+          [ "$CODE" = "200" ] || exit 1

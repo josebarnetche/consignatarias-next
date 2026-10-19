@@ -74,8 +74,12 @@ async function main() {
     process.exit(1)
   }
 
+  // Los de hacienda los trabaja el agente (src/lib/agente): acá quedan solo los
+  // que no tomó, para no avisar dos veces lo mismo.
+  const { data: casos } = await sb.from('agente_casos').select('lead_id')
+  const delAgente = new Set((casos ?? []).map((c) => c.lead_id))
   const lotes = matchesDeLotes()
-  const filas = (data as Fila[]).map((l) => {
+  const filas = (data as Fila[]).filter((l) => !delAgente.has(l.id)).map((l) => {
     const c = calificarLead({
       intent: l.intent,
       category: l.category,
@@ -98,7 +102,8 @@ async function main() {
   const masViejo = Math.max(0, ...filas.map((f) => f.cal.diasSinContactar ?? 0))
   const resumen =
     `${filas.length} leads abiertos · ${porNivel('pro').length} pro · ${porNivel('trabajable').length} trabajables · ` +
-    `${porNivel('sin_datos').length} sin datos · ${porNivel('chico').length} chicos · el más viejo, ${masViejo} días sin contactar`
+    `${porNivel('sin_datos').length} sin datos · ${porNivel('chico').length} chicos · el más viejo, ${masViejo} días sin contactar` +
+    (delAgente.size ? ` · ${delAgente.size} de hacienda los trabaja el agente` : '')
 
   console.log(`\n=== Leads abiertos — ${new Date().toISOString().slice(0, 10)} ===`)
   console.log(resumen + '\n')
