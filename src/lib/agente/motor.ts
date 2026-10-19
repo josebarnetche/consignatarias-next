@@ -37,6 +37,7 @@ import {
   debeEscalar,
   enDias,
   esAutomatica,
+  esRemitenteSistema,
   faltantes,
   filtraContacto,
   horarioHabil,
@@ -261,6 +262,10 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
     const lead = leadId ? await leerLead(leadId) : null
     const caso = leadId ? await leerCaso(leadId) : null
     if (!lead || !caso) {
+      if (esRemitenteSistema(m.de)) {
+        await registrar({ tipo: 'sistema' })
+        return
+      }
       await registrar({ tipo: 'sin_caso' })
       await escalar(`Correo sin caso de ${m.de}`, `Llegó a ${CASILLA} y no lo pude asociar a ningún caso.\n\nAsunto: ${m.asunto}\n\n${texto}`, m.de)
       return
