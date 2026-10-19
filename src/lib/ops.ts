@@ -71,6 +71,7 @@ export interface CronHealthRow {
 // programados y ensuciaban el dashboard como "nunca corrió"/"overdue". Los no
 // listados caen a 24h por default (getCronHealth), así que TODO scheduled va acá.
 export const EXPECTED_CRONS: Record<string, number> = {
+  'gsc-fichas': 168, // semanal (lunes): búsquedas de Google por ficha
   // Diarios (24h)
   'scrape-auctions': 24,            // 14:00 ART
   'post-remate-outreach': 24,       // ventana horaria 14-22h

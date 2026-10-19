@@ -6,7 +6,7 @@
  * facilitator rechaza por monto exacto y el agente re-cotiza).
  *
  * La activación replica EXACTO el grant del webhook de Rebill (Branch 2):
- * upsert subscriptions(active, +30d/mes) + consignatarias.featured + revalidate
+ * upsert subscriptions(active, +30d/mes) + revalidate (sin tocar consignatarias.featured)
  * del perfil y /go. Diferencias: preserva rebill_*_id si la firma ya tenía
  * suscripción Rebill (no la pisa con null) y EXTIENDE desde el fin de período
  * vigente si lo hay.
@@ -78,7 +78,8 @@ export async function activarProX402(opts: {
   )
   if (error) throw new Error(`No se pudo activar el PRO: ${error.message}`)
 
-  await service.from('consignatarias').update({ featured: true }).eq('canonical_slug', opts.canonical)
+  // `featured` es el destaque manual y significa PRO para siempre: no se prende al
+  // cobrar. El período pagado vive en `subscriptions` (revisión del 17-10-2026).
 
   try {
     revalidatePath(`/consignatarias/${opts.canonical}`)

@@ -13,13 +13,16 @@ import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
 import marketPrices from '@/lib/data/market-prices.json'
 import existenciasData from '@/lib/data/existencias-bovinas.json'
-import { getAllProfiles, consignatariaProfilePath } from '@/lib/data/consignataria-slugs'
+import { getAllProfiles, consignatariaProfilePath, getCanonicalSlug } from '@/lib/data/consignataria-slugs'
+import { getFeaturedSlugs } from '@/lib/featured'
+import ProBadge from '@/components/badges/ProBadge'
 import { getConsignatariaProfile } from '@/lib/dal/consignatarias'
 import { normalizeUrl } from '@/lib/utils/url'
 import { BreadcrumbSchema, EventSchema, VideoObjectSchema } from '@/components/seo/JsonLd'
 import { AddToCalendarButton } from '@/components/ui/AddToCalendarButton'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 import LoginGate from '@/components/LoginGate'
+import ConsultarRemate from '@/components/remates/ConsultarRemate'
 // DteCTA inline implementation for remate pages (lock-in strategy)
 import { 
   Calendar, 
@@ -327,6 +330,7 @@ export default async function RemateDetailPage({ params }: Props) {
   const dateFormatted = formatDate(remate.date)
   const today = new Date().toISOString().slice(0, 10)
   const isPast = remate.date < today
+  const flyer = (remate as { flyerUrl?: string | null }).flyerUrl ?? null
   const isToday = remate.date === today
   
   // Get consignataria profile if exists
@@ -335,7 +339,16 @@ export default async function RemateDetailPage({ params }: Props) {
 
   // Enriched profile (Supabase): "persona detrás" + region/especialidad/años.
   // Falls back gracefully to null if unavailable.
-  const consigEnriched = consigProfile ? await getConsignatariaProfile(consigProfile.canonicalSlug) : null
+  // PRO (17-10-2026): la promesa "en las fichas de remate". La página es SSG y se
+  // regenera a diario, así que el set se pide una vez por render. El slug del
+  // remate suele ser una VARIANTE: se compara el canónico.
+  const [consigEnriched, proSlugs] = await Promise.all([
+    consigProfile ? getConsignatariaProfile(consigProfile.canonicalSlug) : Promise.resolve(null),
+    getFeaturedSlugs(),
+  ])
+  const isPro = proSlugs.has(
+    getCanonicalSlug(remate.consignatariaSlug) ?? consigProfile?.canonicalSlug ?? remate.consignatariaSlug,
+  )
 
   // INMAG market context at the auction date — the price reference a
   // buyer/seller had on the day. Real observed series, not derived.
@@ -539,6 +552,15 @@ export default async function RemateDetailPage({ params }: Props) {
                   ) : (
                     <p className="text-ink font-medium">{remate.consignatariaName}</p>
                   )}
+                  {isPro && (
+                    <Link
+                      href={consignatariaProfilePath(remate.consignatariaSlug)}
+                      className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-sky-400 claro:text-accent hover:underline"
+                    >
+                      <ProBadge size="sm" animated={false} />
+                      Consignataria PRO
+                    </Link>
+                  )}
                 </div>
               </div>
               
@@ -642,6 +664,29 @@ export default async function RemateDetailPage({ params }: Props) {
               </div>
             )}
             
+            {/* Flyer que subió la firma desde su panel (scripts/remates-de-firmas.ts lo trae
+                al JSON). Va a la vista: es la pieza con la que la firma promociona el remate. */}
+            {flyer && (
+              <div className="px-6 pb-6">
+                <a href={flyer} target="_blank" rel="noopener noreferrer" className="block max-w-md">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={flyer} alt={`Flyer: ${remate.title}`} loading="lazy" className="w-full h-auto rounded-lg border border-terminal-border" />
+                </a>
+              </div>
+            )}
+
+            {/* Consultar a la firma por este remate (18-10-2026): sin login, tres campos. */}
+            {!isPast && consigProfile && (
+              <div className="px-6 pb-6">
+                <ConsultarRemate
+                  slug={consigProfile.canonicalSlug}
+                  firma={consigProfile.displayName}
+                  remate={remate.title}
+                  remateId={typeof remate.id === 'number' && remate.id < 100000 ? remate.id : undefined}
+                />
+              </div>
+            )}
+
             {/* Action buttons — catálogo / calendario / fuente: bajo login */}
             <div className="px-6 pb-6">
             <LoginGate feature="El catálogo, el calendario y la fuente" minHeight={88}>
@@ -775,7 +820,10 @@ export default async function RemateDetailPage({ params }: Props) {
                     {consigProfile.displayName.charAt(0)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-lg font-semibold text-ink">{consigProfile.displayName}</p>
+                    <p className="text-lg font-semibold text-ink flex items-center gap-2">
+                      {consigProfile.displayName}
+                      {isPro && <ProBadge size="sm" className="flex-shrink-0" />}
+                    </p>
                     {consigEnriched?.referenteNombre && (
                       <p className="text-slate-400 text-sm">
                         {consigEnriched.referenteNombre}

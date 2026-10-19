@@ -1,82 +1,106 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
-import { sendMonthlyMetrics } from '@/lib/email'
+import { sendMonthlyMetrics, type ReporteMensualFirma } from '@/lib/email'
+import { authorizeCron } from '@/lib/cron-auth'
+import { getFeaturedSlugs } from '@/lib/featured'
+import { esMotorIA } from '@/lib/reports/origen-visitas'
+import { logEvent } from '@/lib/ops'
+import { getBusquedasFicha } from '@/lib/gsc/fichas'
+
+export const dynamic = 'force-dynamic'
 
 /**
- * Monthly metrics email — sends profile view stats to all claimed consignatarias.
- * Triggered by GitHub Actions cron (1st of each month) or manually via admin.
- * Auth: requires ADMIN_SECRET as Bearer token or ?secret= query param.
+ * Reporte mensual a cada firma con la ficha reclamada (reescrito el 17-10-2026).
+ *
+ * Es el "reportes mensuales" que se le promete a PRO. Antes contaba sólo vistas, leía
+ * `profile_views` sin paginar (PostgREST corta en 1.000 filas: con más visitas en el
+ * mes, el número salía mal sin avisar) y el workflow que lo disparaba estaba apagado.
+ * Ahora cada número es un `count` por firma, con el mes cerrado anterior:
+ * vistas, visitas desde IAs, consultas, envíos del newsletter y seguidores.
+ *
+ * Auth: authorizeCron (CRON_SECRET / ADMIN_SECRET).
+ *   ?test=<email>&slug=<firma> → manda el reporte de esa firma a ese mail, nada más.
+ *   ?month=YYYY-MM             → otro mes (por defecto, el anterior).
  */
 export async function POST(req: NextRequest) {
-  const secret = req.headers.get('authorization')?.replace('Bearer ', '')
-    || req.nextUrl.searchParams.get('secret')
+  if (!authorizeCron(req)) return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
 
-  if (!secret || secret !== process.env.ADMIN_SECRET) {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+  const db = requireServiceClient()
+  const params = req.nextUrl.searchParams
+  const test = params.get('test')
+  const testSlug = params.get('slug')
+
+  // Mes cerrado, en hora argentina (UTC−3).
+  const ahora = new Date(Date.now() - 3 * 3600_000)
+  const [a, m] = (params.get('month') ?? '').match(/^\d{4}-\d{2}$/)
+    ? params.get('month')!.split('-').map(Number)
+    : [ahora.getUTCMonth() === 0 ? ahora.getUTCFullYear() - 1 : ahora.getUTCFullYear(), ahora.getUTCMonth() === 0 ? 12 : ahora.getUTCMonth()]
+  const desde = new Date(Date.UTC(a, m - 1, 1, 3)).toISOString()
+  const hasta = new Date(Date.UTC(a, m, 1, 3)).toISOString()
+  const monthName = new Date(Date.UTC(a, m - 1, 15)).toLocaleDateString('es-AR', { month: 'long', year: 'numeric', timeZone: 'UTC' })
+
+  let firmas: { canonical_slug: string; display_name: string; claimed_by_email: string | null }[] = []
+  if (test && testSlug) {
+    const { data } = await db.from('consignatarias').select('canonical_slug, display_name, claimed_by_email').eq('canonical_slug', testSlug).maybeSingle()
+    if (!data) return NextResponse.json({ error: 'Firma no encontrada' }, { status: 404 })
+    firmas = [{ ...data, claimed_by_email: test }]
+  } else {
+    const { data } = await db
+      .from('consignatarias')
+      .select('canonical_slug, display_name, claimed_by_email')
+      .not('claimed_by_email', 'is', null)
+    firmas = data ?? []
   }
+  if (firmas.length === 0) return NextResponse.json({ message: 'No hay consignatarias reclamadas', sent: 0 })
 
-  const supabase = requireServiceClient()
-
-  // Get all claimed consignatarias with owner email
-  const { data: claimed } = await supabase
-    .from('consignatarias')
-    .select('canonical_slug, display_name, claimed_by_email')
-    .not('claimed_by_email', 'is', null)
-
-  if (!claimed || claimed.length === 0) {
-    return NextResponse.json({ message: 'No hay consignatarias reclamadas', sent: 0 })
-  }
-
-  // Date range: previous month
-  const now = new Date()
-  const firstOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1)
-  const firstOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1)
-  const monthName = firstOfLastMonth.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })
-
-  // Get view counts for all claimed slugs in the previous month
-  const slugs = claimed.map(c => c.canonical_slug)
-
-  const { data: viewRows } = await supabase
-    .from('profile_views')
-    .select('entity_slug')
-    .in('entity_slug', slugs)
-    .gte('viewed_at', firstOfLastMonth.toISOString())
-    .lt('viewed_at', firstOfThisMonth.toISOString())
-
-  // Count views per slug
-  const viewCounts: Record<string, number> = {}
-  if (viewRows) {
-    for (const row of viewRows) {
-      viewCounts[row.entity_slug] = (viewCounts[row.entity_slug] || 0) + 1
-    }
-  }
-
-  // Send emails
+  const pro = await getFeaturedSlugs()
   let sent = 0
   const errors: string[] = []
 
-  for (const consig of claimed) {
-    if (!consig.claimed_by_email) continue
-    const views = viewCounts[consig.canonical_slug] || 0
+  for (const f of firmas) {
+    if (!f.claimed_by_email) continue
     try {
-      await sendMonthlyMetrics(
-        consig.claimed_by_email,
-        consig.display_name,
-        consig.canonical_slug,
-        views,
-        monthName,
-      )
-      sent++
+      const ficha = `/consignatarias/${f.canonical_slug}`
+      const [vistas, ias, consultas, campanas, seguidores] = await Promise.all([
+        db.from('profile_views').select('*', { count: 'exact', head: true })
+          .eq('entity_type', 'consignataria').eq('entity_slug', f.canonical_slug).gte('viewed_at', desde).lt('viewed_at', hasta),
+        db.from('ai_referrals').select('engine, path').like('path', `${ficha}%`).gte('created_at', desde).lt('created_at', hasta).limit(5000),
+        db.from('consignataria_leads').select('*', { count: 'exact', head: true })
+          .eq('consignataria_slug', f.canonical_slug).gte('created_at', desde).lt('created_at', hasta),
+        db.from('promotion_campaigns').select('destinatarios')
+          .eq('consignataria_slug', f.canonical_slug).gte('created_at', desde).lt('created_at', hasta).limit(1000),
+        db.from('user_favorites').select('*', { count: 'exact', head: true }).eq('consignataria_slug', f.canonical_slug),
+      ])
+      const visitasIA = (ias.data ?? []).filter((r) => {
+        const p = (r.path ?? '').split(/[?#]/)[0].replace(/\/+$/, '')
+        return esMotorIA(r.engine) && (p === ficha || p.startsWith(ficha + '/'))
+      }).length
+      const datos: ReporteMensualFirma = {
+        vistas: vistas.count ?? 0,
+        visitasIA,
+        consultas: consultas.count ?? 0,
+        envios: (campanas.data ?? []).reduce((s, c) => s + (c.destinatarios ?? 0), 0),
+        salidas: (campanas.data ?? []).length,
+        seguidores: seguidores.count ?? 0,
+        esPro: pro.has(f.canonical_slug),
+        google: await getBusquedasFicha(db as unknown as Parameters<typeof getBusquedasFicha>[0], f.canonical_slug)
+          .then((b) => (b?.d28 ? { impresiones: b.d28.impresiones, top: b.d28.consultas.slice(0, 3).map((c) => c.query) } : null))
+          .catch(() => null),
+      }
+      const res = await sendMonthlyMetrics(f.claimed_by_email, f.display_name, f.canonical_slug, datos, monthName)
+      if (res?.error) errors.push(`${f.canonical_slug}: ${res.error.message}`)
+      else sent++
     } catch (err) {
-      errors.push(`${consig.canonical_slug}: ${err}`)
+      errors.push(`${f.canonical_slug}: ${err instanceof Error ? err.message : String(err)}`)
     }
   }
 
-  return NextResponse.json({
-    message: `Emails enviados: ${sent}/${claimed.length}`,
-    sent,
-    total: claimed.length,
-    month: monthName,
-    errors: errors.length > 0 ? errors : undefined,
+  logEvent({
+    eventType: 'cron_finished',
+    status: errors.length && !sent ? 'error' : 'ok',
+    route: '/api/cron/monthly-metrics',
+    metadata: { mes: monthName, enviados: sent, firmas: firmas.length, errores: errors, test: !!test },
   })
+
+  return NextResponse.json({ month: monthName, sent, total: firmas.length, errors: errors.length ? errors : undefined })
 }

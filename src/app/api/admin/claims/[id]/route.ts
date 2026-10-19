@@ -3,6 +3,7 @@ import { requireServiceClient } from '@/lib/supabase'
 import { requireAdmin } from '@/lib/admin-auth'
 import { claimReviewSchema } from '@/lib/validators/claim'
 import { sendClaimApproved, sendClaimRejected } from '@/lib/email'
+import { normalizarEmail, otorgarRolDueno, METODOS_VERIFICACION } from '@/lib/claims/aprobar'
 
 type Props = { params: Promise<{ id: string }> }
 
@@ -28,10 +29,9 @@ export async function PATCH(req: NextRequest, { params }: Props) {
     )
   }
 
-  const { status, admin_notes } = parsed.data
+  const { status, admin_notes, verificacion } = parsed.data
   const supabase = requireServiceClient()
 
-  // Fetch the claim
   const { data: claim, error: fetchError } = await supabase
     .from('consignataria_claims')
     .select('*, consignatarias(display_name)')
@@ -46,72 +46,76 @@ export async function PATCH(req: NextRequest, { params }: Props) {
     return NextResponse.json({ error: 'Esta solicitud ya fue procesada' }, { status: 409 })
   }
 
-  // Update claim status
-  const { error: updateError } = await supabase
-    .from('consignataria_claims')
-    .update({ status, admin_notes: admin_notes || null })
-    .eq('id', id)
-
-  if (updateError) {
-    console.error('Claim update error:', updateError)
-    return NextResponse.json({ error: 'Error al actualizar' }, { status: 500 })
-  }
-
   const displayName = (claim.consignatarias as { display_name: string })?.display_name || ''
 
-  if (status === 'approved') {
-    // Mark consignataria as claimed
-    await supabase
-      .from('consignatarias')
-      .update({
-        verified: true,
-        claimed_at: new Date().toISOString(),
-        claimed_by_email: claim.claimant_email,
-      })
-      .eq('canonical_slug', claim.consignataria_slug)
-
-    // Auto-reject other pending claims for this consignataria
-    await supabase
+  if (status === 'rejected') {
+    const { error } = await supabase
       .from('consignataria_claims')
-      .update({ status: 'rejected', admin_notes: 'Otra solicitud fue aprobada' })
-      .eq('consignataria_slug', claim.consignataria_slug)
-      .eq('status', 'pending')
-      .neq('id', id)
-
-    // Auto-invite: create Supabase Auth user + owner role
-    try {
-      const { data: authUser, error: createError } = await supabase.auth.admin.createUser({
-        email: claim.claimant_email,
-        email_confirm: true,
-      })
-
-      if (!createError && authUser?.user) {
-        await supabase.from('user_roles').upsert({
-          user_id: authUser.user.id,
-          email: claim.claimant_email,
-          role: 'owner',
-        }, { onConflict: 'user_id' })
-      } else if (createError?.message?.includes('already been registered')) {
-        // User already exists — ensure they have owner role
-        const { data: existingUser } = await supabase.auth.admin.listUsers()
-        const found = existingUser?.users?.find(u => u.email === claim.claimant_email)
-        if (found) {
-          await supabase.from('user_roles').upsert({
-            user_id: found.id,
-            email: claim.claimant_email,
-            role: 'owner',
-          }, { onConflict: 'user_id' })
-        }
-      }
-    } catch (e) {
-      console.error('Auto-invite error:', e)
-      // Non-blocking — claim is already approved
+      .update({ status, admin_notes: admin_notes || null })
+      .eq('id', id)
+    if (error) {
+      console.error('Claim reject error:', error)
+      return NextResponse.json({ error: 'Error al actualizar' }, { status: 500 })
     }
-
-    sendClaimApproved(claim.claimant_email, displayName, `consignatarias/${claim.consignataria_slug}`)
-  } else {
-    sendClaimRejected(claim.claimant_email, displayName, admin_notes || undefined)
+    const envio = await sendClaimRejected(claim.claimant_email, displayName, admin_notes || undefined)
+    return NextResponse.json({ message: 'Solicitud rechazada', aviso_enviado: !!envio && !envio.error })
   }
 
-  return NextResponse.json({ message: `Solicitud ${status === 'approved' ? 'aprobada' : 'rechazada'}` })
+  // ORDEN (revisión del 17-10-2026): primero la ficha, verificando que se escribió;
+  // recién después el reclamo pasa a aprobado. Antes un update que no tocaba ninguna
+  // fila (o fallaba) dejaba el reclamo "aprobado" y la ficha sin dueño.
+  const email = normalizarEmail(claim.claimant_email)
+  const nota = [`Identidad: ${METODOS_VERIFICACION[verificacion!]}.`, admin_notes].filter(Boolean).join(' ')
+
+  const { data: actual } = await supabase
+    .from('consignatarias')
+    .select('claimed_by_email')
+    .eq('canonical_slug', claim.consignataria_slug)
+    .maybeSingle()
+  const duenoActual = normalizarEmail((actual as { claimed_by_email?: string | null } | null)?.claimed_by_email)
+  if (duenoActual && duenoActual !== email) {
+    return NextResponse.json(
+      { error: 'La ficha ya tiene otro titular. Liberala primero si corresponde cambiarlo.' },
+      { status: 409 },
+    )
+  }
+
+  const { data: fichas, error: fichaError } = await supabase
+    .from('consignatarias')
+    .update({ verified: true, claimed_at: new Date().toISOString(), claimed_by_email: email })
+    .eq('canonical_slug', claim.consignataria_slug)
+    .select('canonical_slug')
+  if (fichaError || !fichas?.length) {
+    console.error('Consignataria claim profile error:', fichaError ?? 'ninguna fila con ese slug')
+    return NextResponse.json({ error: 'No se pudo asignar la ficha: el reclamo sigue pendiente' }, { status: 500 })
+  }
+
+  const { error: claimError } = await supabase
+    .from('consignataria_claims')
+    .update({ status: 'approved', admin_notes: nota })
+    .eq('id', id)
+  if (claimError) {
+    console.error('Claim update error:', claimError)
+    return NextResponse.json({ error: 'La ficha quedó asignada pero el reclamo no se pudo marcar aprobado' }, { status: 500 })
+  }
+
+  const { error: otrosError } = await supabase
+    .from('consignataria_claims')
+    .update({ status: 'rejected', admin_notes: 'Otra solicitud fue aprobada' })
+    .eq('consignataria_slug', claim.consignataria_slug)
+    .eq('status', 'pending')
+    .neq('id', id)
+  if (otrosError) console.error('Claim auto-reject error:', otrosError)
+
+  const rol = await otorgarRolDueno(supabase, email)
+  if (!rol.ok) console.error('Consignataria owner role error:', rol.error)
+
+  const envio = await sendClaimApproved(email, displayName, `consignatarias/${claim.consignataria_slug}`)
+
+  return NextResponse.json({
+    message: 'Solicitud aprobada',
+    rol: rol.resultado,
+    aviso_enviado: !!envio && !envio.error,
+    ...(rol.ok ? {} : { advertencia: `La ficha quedó asignada pero el rol de dueño falló: ${rol.error}` }),
+  })
 }

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Badge from '@/components/ui/Badge'
 import { AdminPageHeader, AdminEmpty } from '@/components/admin/kit'
 import { AdminTabsClient, ReasonDialog } from '@/components/admin/kit-client'
+import { METODOS_VERIFICACION, type MetodoVerificacion } from '@/lib/claims/aprobar'
 
 /**
  * Bandeja única de verificaciones (reclamos de perfil). La usan
@@ -13,7 +14,9 @@ import { AdminTabsClient, ReasonDialog } from '@/components/admin/kit-client'
  *
  * Contratos (no cambiar sin tocar los route handlers):
  *   GET   /api/admin/{claims|frigorifico-claims}?status=all  → { claims: [...] }
- *   PATCH /api/admin/{claims|frigorifico-claims}/[id]        { status: 'approved'|'rejected', admin_notes: string }
+ *   PATCH /api/admin/{claims|frigorifico-claims}/[id]        { status: 'approved'|'rejected', admin_notes: string,
+ *                                                              verificacion (obligatorio al aprobar) }
+ *         → { aviso_enviado?: boolean, advertencia?: string }
  *         409 si ya fue procesada; al aprobar, el servidor rechaza las otras
  *         pendientes del mismo perfil (por eso se resincroniza después).
  */
@@ -208,7 +211,7 @@ export default function VerificacionesBoard({ kind }: { kind: VerificacionKind }
       return next
     })
 
-  async function review(claim: Claim, status: 'approved' | 'rejected', notes: string) {
+  async function review(claim: Claim, status: 'approved' | 'rejected', notes: string, verificacion?: MetodoVerificacion) {
     const prev = claims
     setBusyId(claim.id, true)
     setRowError((r) => {
@@ -224,7 +227,7 @@ export default function VerificacionesBoard({ kind }: { kind: VerificacionKind }
       const res = await fetch(`${cfg.api}/${claim.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status, admin_notes: notes || '' }),
+        body: JSON.stringify({ status, admin_notes: notes || '', ...(status === 'approved' ? { verificacion } : {}) }),
       })
       if (res.status === 401 || res.status === 403) {
         window.location.href = '/login'
@@ -234,6 +237,14 @@ export default function VerificacionesBoard({ kind }: { kind: VerificacionKind }
         const data = (await res.json().catch(() => ({}))) as { error?: string }
         throw new Error(data.error || `Error ${res.status}`)
       }
+      // Salió bien, pero algo del costado falló: se avisa arriba (la fila ya no está en Pendientes).
+      const ok = (await res.json().catch(() => ({}))) as { aviso_enviado?: boolean; advertencia?: string }
+      const aviso = ok.advertencia
+        ? ok.advertencia
+        : ok.aviso_enviado === false
+          ? `${status === 'approved' ? 'Aprobada' : 'Rechazada'}, pero el mail de aviso a ${claim.email} no salió: avisale a mano.`
+          : null
+      if (aviso) setRowError((r) => ({ ...r, [claim.id]: aviso }))
       // Al aprobar, el servidor rechaza las otras pendientes del mismo perfil.
       void load(true)
     } catch (e) {
@@ -355,7 +366,7 @@ export default function VerificacionesBoard({ kind }: { kind: VerificacionKind }
                 siblings={(pendingByProfile.get(c.profileKey) ?? 1) - 1}
                 busy={busy.has(c.id)}
                 error={rowError[c.id]}
-                onApprove={() => void review(c, 'approved', '')}
+                onApprove={(m) => void review(c, 'approved', '', m)}
                 onReject={() => setRejecting(c)}
               />
             ))}
@@ -411,9 +422,11 @@ function ClaimRow({
   siblings: number
   busy: boolean
   error?: string
-  onApprove: () => void
+  onApprove: (verificacion: MetodoVerificacion) => void
   onReject: () => void
 }) {
+  // Aprobar a mano exige decir cómo se verificó la identidad (lo exige también la API).
+  const [verif, setVerif] = useState<MetodoVerificacion | ''>('')
   const fecha = new Date(c.createdAt).toLocaleString('es-AR', {
     dateStyle: 'short',
     timeStyle: 'short',
@@ -487,11 +500,29 @@ function ClaimRow({
         </div>
 
         {c.status === 'pending' && (
-          <div className="flex shrink-0 gap-2 sm:flex-col sm:items-stretch">
+          <div className="flex shrink-0 flex-wrap gap-2 sm:w-64 sm:flex-col sm:items-stretch">
+            <label className="sr-only" htmlFor={`verif-${c.id}`}>
+              Cómo se verificó la identidad
+            </label>
+            <select
+              id={`verif-${c.id}`}
+              value={verif}
+              onChange={(e) => setVerif(e.target.value as MetodoVerificacion | '')}
+              disabled={busy}
+              className="terminal-input w-full py-1.5 text-xxs"
+            >
+              <option value="">¿Cómo verificaste la identidad?</option>
+              {(Object.keys(METODOS_VERIFICACION) as MetodoVerificacion[]).map((m) => (
+                <option key={m} value={m}>
+                  {METODOS_VERIFICACION[m]}
+                </option>
+              ))}
+            </select>
             <button
               type="button"
-              onClick={onApprove}
-              disabled={busy}
+              onClick={() => verif && onApprove(verif)}
+              disabled={busy || !verif}
+              title={verif ? undefined : 'Elegí primero cómo verificaste la identidad'}
               aria-label={`Aprobar a ${who} como dueño de ${c.profileName}`}
               className="terminal-btn flex-1 border-positive/40 text-positive hover:border-positive hover:text-positive hover:bg-positive/10 disabled:opacity-40"
             >

@@ -47,14 +47,6 @@ function getAuctionsForCity(citySlug: string): Auction[] {
   return rematesDeCiudad(auctions, citySlug)
 }
 
-// Map each location slug to its province (from the auction's province field,
-// not parsed from the location string, which has wrong provinces in some rows)
-function getProvinceForLocation(location: string): string {
-  const slug = normalizeCity(location)
-  const match = auctions.find(a => a.location && normalizeCity(a.location) === slug && !!a.province)
-  return match?.province?.trim() || ''
-}
-
 export async function generateStaticParams() {
   const cities = getAllCities()
   return cities.map(city => ({

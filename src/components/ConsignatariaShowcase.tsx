@@ -106,7 +106,9 @@ function Chat({ firm, cited }: { firm?: Firm; cited: string[] }) {
 /**
  * Scroll-to-discover para CONSIGNATARIAS — evocativa, no declarativa. Muestra el
  * momento (un productor le pregunta a una IA y una firma aparece) y deja que el
- * valor se infiera. Personalizable por slug (ABM).
+ * valor se infiera. Personalizable por slug (ABM). Copy verificado contra el código
+ * el 17-10-2026: la charla es un ejemplo (no "no es una demo"), PRO ordena el
+ * directorio que consultan las IAs —no su respuesta— y no hay CRM prometido.
  */
 export default function ConsignatariaShowcase({
   stats,
@@ -171,8 +173,8 @@ export default function ConsignatariaShowcase({
           <Chat firm={firm} cited={citedNames} />
         </div>
         <p className="cs-in d2 text-zinc-500 text-sm mt-6 max-w-xl">
-          No es una demo. Esa respuesta se arma con el dato de consignatarias.com.ar — el que ChatGPT y Copilot ya
-          consultan del mercado.
+          Es una conversación de ejemplo; los nombres son reales, de firmas que las IAs ya nombraron. Los agentes de
+          IA consultan nuestro directorio a través de nuestro servidor MCP.
         </p>
       </section>
 
@@ -215,8 +217,9 @@ export default function ConsignatariaShowcase({
         <p className="cs-in text-xxs font-terminal uppercase tracking-widest text-amber-400 mb-3">Consignataria PRO</p>
         <h2 className="cs-in d1 text-2xl md:text-3xl font-heading text-zinc-100 mb-4">Que seas vos la que aparece.</h2>
         <p className="cs-in d1 text-zinc-400 text-base max-w-xl mb-8">
-          Ponemos tu firma y tus remates adelante — en el sitio, en la respuesta de las IAs, y en el mail del
-          productor. Vos rematás; que el mercado te encuentre lo hacemos nosotros.
+          Ponemos tu firma y tus remates adelante — en el directorio y el calendario, en el directorio que
+          consultan las IAs y en el newsletter semanal. Vos rematás; que el mercado te encuentre lo hacemos
+          nosotros.
         </p>
         <div className="cs-in d2 flex flex-wrap gap-3 items-center">
           <Link
@@ -229,7 +232,8 @@ export default function ConsignatariaShowcase({
           <span className="text-zinc-600 text-xxs font-terminal">ARS 45.000/mes · sin permanencia</span>
         </div>
         <p className="cs-in d2 text-zinc-700 text-xxs mt-8">
-          Ya sos {stats.consignatarias} en el directorio. Pronto, tu CRM de remates.
+          {stats.consignatarias} consignatarias en el directorio. Con PRO, las consultas te llegan con nombre y
+          contacto.
         </p>
       </section>
     </div>

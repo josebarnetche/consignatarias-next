@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase-server'
+import { requireServiceClient } from '@/lib/supabase'
 import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
+import { mismoEmail } from '@/lib/claims/aprobar'
 
 // GET /api/consignatarias/[slug]/videos - Get video gallery for a consignataria
 export async function GET(
@@ -86,10 +88,11 @@ export async function POST(
       return NextResponse.json({ error: 'Consignataria not found' }, { status: 404 })
     }
 
-    // Get consignataria and check ownership
-    const { data: consignataria, error: consigError } = await supabase
+    // Get consignataria and check ownership. Con el cliente de servicio: el mail del
+    // dueño no es legible con la sesión del usuario (columna revocada, oct-2026).
+    const { data: consignataria, error: consigError } = await requireServiceClient()
       .from('consignatarias')
-      .select('id, claimed_by_email, name')
+      .select('id, claimed_by_email, display_name')
       .eq('canonical_slug', canonical)
       .single()
 
@@ -100,7 +103,7 @@ export async function POST(
       )
     }
 
-    if (consignataria.claimed_by_email !== user.email) {
+    if (!mismoEmail(consignataria.claimed_by_email, user.email)) {
       return NextResponse.json(
         { error: 'Not authorized to manage this consignataria' },
         { status: 403 }
@@ -142,7 +145,7 @@ export async function POST(
     }
     
     // Fallback to provided title or placeholder
-    videoTitle = videoTitle || `Video de ${consignataria.name}`
+    videoTitle = videoTitle || `Video de ${consignataria.display_name}`
 
     // Insert video
     const { data: video, error: insertError } = await supabase

@@ -16,7 +16,7 @@ endpoints auth-gated (`/api/precios`, `/api/lots`, …) desde un solo lugar.
 
 ```sql
 -- Resumen de UN consumidor: paths, params, user-agents, IPs
-SELECT * FROM api_consumers_summary WHERE owner_email = 'mapesteguia@gmail.com';
+SELECT * FROM api_consumers_summary WHERE owner_email = '<email-del-cliente>';
 ```
 
 Cómo leer el resultado para el caso Muu:

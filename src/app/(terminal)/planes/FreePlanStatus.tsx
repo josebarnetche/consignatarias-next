@@ -29,9 +29,7 @@ export default function FreePlanStatus() {
       
       // Check if user has a claimed consignataria
       const { data: consig } = await supabase
-        .from('consignatarias')
-        .select('canonical_slug')
-        .eq('claimed_by_email', data.user.email)
+        .rpc('mi_consignataria')
         .maybeSingle()
 
       if (!consig) {

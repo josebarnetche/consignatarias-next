@@ -23,6 +23,7 @@ import { getConsignatariaProfile, getRelatedConsignatarias } from '@/lib/dal/con
 import { getMergedAuctionsForConsignataria, OWNER_ID_OFFSET } from '@/lib/dal/auctions'
 import { getApprovedReviewsForSlug, getReviewStatsForSlug } from '@/lib/dal/reviews'
 import { getEntityTier } from '@/lib/features'
+import { getFeaturedSlugs } from '@/lib/featured'
 import { createServiceClient } from '@/lib/supabase'
 import { BreadcrumbSchema, LocalBusinessSchema, EventSchema, VideoObjectSchema, DatasetSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import { FaqList } from '@/components/seo/FaqList'
@@ -39,6 +40,7 @@ import { MediosPagoSection } from '@/components/consignataria/MediosPagoSection'
 import LoginGate from '@/components/LoginGate'
 import type { YouTubeChannelData } from './ConsignatariaProfileClient'
 import type { ConsignatariaVideo } from '@/components/video/VideoGallery'
+import { getChannelForSlug } from '@/lib/youtube-live'
 
 /* ------------------------------------------------------------------ */
 /*  MAG ENTRY DATA from market-prices.json                             */
@@ -260,20 +262,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // Non-custom branch targets both query intents for a consignataria: "<marca> remates" and
   // "precio hacienda <marca>". Dropped geo from the title to avoid truncation on long names
   // (geo stays in the description for local intent). customSEO branch (top profiles) intact.
+  // Firmas que transmiten por YouTube (17-10-2026): la gente busca "remate <marca> en
+  // vivo" (Reggi: 112 apariciones en 90 días por "reggi y cia remate hoy en vivo" y
+  // "remate reggi en vivo") y la ficha no lo decía en el título. Si tiene canal, lo dice.
+  const tieneCanal = !!getChannelForSlug(canonical)
   const title = customSEO
     ? `${profile.displayName} — ${customSEO.titleSuffix}`
-    : `${profile.displayName}: Precios y Remates de Hacienda`
+    : tieneCanal
+      ? `${profile.displayName}: Remates en Vivo, Fechas y Precios`
+      : `${profile.displayName}: Precios y Remates de Hacienda`
 
   // CUIT desde el registro MAG (consignatarias.json). Cuando existe, se añade a
   // la description para capturar además la búsqueda por CUIT crudo de la firma.
   const cuit = lookupCuit(profile.displayName)
 
   const description = customSEO?.description
-    || `Remates y precios de hacienda de ${profile.displayName}${geo}. ${profileAuctions.length} remates registrados${upcoming > 0 ? `, ${upcoming} próximos` : ''}. Cotizaciones por categoría actualizadas tras cada remate.${cuit ? ` CUIT ${formatCuit(cuit)}.` : ''}`
+    || `${tieneCanal ? 'Remates en vivo por YouTube, fechas y ' : 'Remates y '}precios de hacienda de ${profile.displayName}${geo}. ${profileAuctions.length} remates registrados${upcoming > 0 ? `, ${upcoming} próximos` : ''}. Cotizaciones por categoría actualizadas tras cada remate.${cuit ? ` CUIT ${formatCuit(cuit)}.` : ''}`
 
   // Thin profiles (0–1 remates, no SEO enhancement) have too little unique
   // content to index — keep them crawlable/followable but out of the index.
-  const thin = profileAuctions.length < 2 && !customSEO
+  // 17-10-2026: una firma PRO nunca va noindex — paga por estar lista para
+  // buscadores y respuestas de IA, aunque todavía tenga pocos remates cargados.
+  // El sitemap aplica la misma excepción (src/app/sitemap.ts).
+  const thin = profileAuctions.length < 2 && !customSEO && !(await getFeaturedSlugs()).has(canonical)
 
   return {
     title,

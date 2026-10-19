@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { formatVigencia } from './welcome-utils'
 import { CheckCircle2, Circle } from 'lucide-react'
+import { BENEFICIOS_PRO_CONSIGNATARIA } from '@/lib/pro-consignataria-beneficios'
 
 type Tier = 'PRO' | 'ENTERPRISE'
 
@@ -44,13 +45,9 @@ export default function ProActivatedModule({
   const doneCount = steps.filter(s => s.done).length
   const total = steps.length
 
-  // Capacidades reales que desbloquea PRO Consignataria.
-  const unlocked = [
-    'Tus remates llegan por email a toda nuestra base de productores',
-    'Perfil destacado con badge dorado en el directorio',
-    'Analytics: vistas, ranking provincial, reporte PDF',
-    'Landing con QR y widget embebible para tu web',
-  ]
+  // Capacidades reales que desbloquea PRO Consignataria: la lista verificada, no una
+  // propia (decía "toda nuestra base de productores", que nunca fue cierto).
+  const unlocked = BENEFICIOS_PRO_CONSIGNATARIA
 
   return (
     <div

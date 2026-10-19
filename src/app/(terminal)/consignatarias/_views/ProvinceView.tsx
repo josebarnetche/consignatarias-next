@@ -8,6 +8,8 @@ import { FaqList } from '@/components/seo/FaqList'
 import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
 import { CAT_LABELS, getCity, nombrePropio } from '@/lib/ui/tokens'
 import { remateAnchor, remateHref, tipoNombre } from '@/lib/remates-enlaces'
+import { getFeaturedSlugs } from '@/lib/featured'
+import ProBadge from '@/components/badges/ProBadge'
 
 /* ============================================================
    PROVINCE VIEW — used when /consignatarias/[slug] matches a
@@ -213,8 +215,12 @@ export async function ProvinceView({ provincia }: { provincia: string }) {
   const auctions = rematesData as Auction[]
   const profiles = getAllProfiles()
   const today = new Date().toISOString().slice(0, 10)
+  // Firmas PRO (featured o suscripción vigente) — misma fuente única que el
+  // directorio nacional. 17-10-2026: la promesa "primera en el directorio"
+  // tiene que valer también en el directorio de cada provincia.
+  const featured = await getFeaturedSlugs()
 
-  const entries = profiles
+  const porActividad = profiles
     .map((p) => {
       const pAuctions = getAuctionsForProfile(auctions, p.canonicalSlug)
       const provinceAuctions = pAuctions.filter((a) => a.province === provinceName)
@@ -226,22 +232,29 @@ export async function ProvinceView({ provincia }: { provincia: string }) {
         auctionCount: provinceAuctions.length,
         upcoming,
         types,
+        isPro: featured.has(p.canonicalSlug),
       }
     })
     .filter((e) => e.auctionCount > 0)
     .sort((a, b) => b.auctionCount - a.auctionCount)
+  // El listado visible (y su ItemList) pone primero a las PRO; el resumen y el
+  // FAQ siguen leyendo `porActividad`, porque afirman "las que más rematan" y
+  // eso tiene que ser cierto en los datos, no en el plan.
+  const entries = [...porActividad].sort(
+    (a, b) => (Number(b.isPro) - Number(a.isPro)) || (b.auctionCount - a.auctionCount),
+  )
 
   const totalRemates = entries.reduce((sum, e) => sum + e.auctionCount, 0)
   const totalUpcoming = entries.reduce((sum, e) => sum + e.upcoming, 0)
   const resumen = resumenProvincia(
     auctions.filter((a) => a.province === provinceName),
-    entries,
+    porActividad,
     provinceDisplay,
     today,
   )
   const proximoHref = resumen?.proximo ? remateHref(resumen.proximo) : null
 
-  const topConsignatarias = entries.slice(0, 6).map((e) => e.displayName)
+  const topConsignatarias = porActividad.slice(0, 6).map((e) => e.displayName)
   const faqItems = [
     {
       question: `¿Cuántas consignatarias operan en ${provinceDisplay}?`,
@@ -329,7 +342,10 @@ export async function ProvinceView({ provincia }: { provincia: string }) {
               className="flex items-center justify-between p-3 rounded-lg bg-zinc-900/50 border border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900 transition-colors"
             >
               <div>
-                <div className="text-zinc-100 font-medium">{nombrePropio(c.displayName)}</div>
+                <div className="text-zinc-100 font-medium flex items-center gap-2">
+                  {nombrePropio(c.displayName)}
+                  {c.isPro && <ProBadge size="sm" className="flex-shrink-0" />}
+                </div>
                 <div className="text-zinc-500 text-sm">
                   {c.auctionCount} remates en {provinceDisplay}
                   {c.upcoming > 0 && <span className="text-emerald-400"> · {c.upcoming} próximos</span>}

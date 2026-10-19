@@ -13,6 +13,11 @@ export default function LoginClient() {
   const [loading, setLoading] = useState(false)
   const [oauthLoading, setOauthLoading] = useState(false)
   const [next, setNext] = useState('/cuenta')
+  // Contraseña (17-10-2026): para las cuentas que damos de alta nosotros con un
+  // usuario provisorio (p. ej. una firma que todavía no tiene su mail cargado). El
+  // ingreso de siempre sigue siendo Google o el enlace por mail.
+  const [conClave, setConClave] = useState(false)
+  const [clave, setClave] = useState('')
 
   useEffect(() => {
     // Accept both ?next= and legacy ?redirect= params, but only if same-origin
@@ -39,6 +44,21 @@ export default function LoginClient() {
       setOauthLoading(false)
     }
     // browser navigates to Google, no need to reset loading
+  }
+
+  async function handlePassword(e: React.FormEvent) {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+    const supabase = createClient()
+    const { error: authError } = await supabase.auth.signInWithPassword({ email: email.trim(), password: clave })
+    setLoading(false)
+    if (authError) {
+      setError('El usuario o la contraseña no coinciden.')
+      return
+    }
+    // Las cuentas con contraseña son de firmas: van a su panel salvo que pidieran otra página.
+    window.location.href = next === '/cuenta' ? '/dashboard' : next
   }
 
   async function handleMagicLink(e: React.FormEvent) {
@@ -103,6 +123,40 @@ export default function LoginClient() {
             ingresar.
           </p>
         </div>
+      ) : conClave ? (
+        <form onSubmit={handlePassword} className="space-y-3">
+          <label className="block text-xxs font-mono text-zinc-500 uppercase tracking-widest">
+            Usuario y contraseña
+          </label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            autoComplete="username"
+            placeholder="usuario@consignatarias.com"
+            className="w-full bg-zinc-900 border border-zinc-800 rounded px-3 py-2.5 text-zinc-100 font-mono text-sm placeholder:text-zinc-600 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 transition-colors"
+          />
+          <input
+            type="password"
+            value={clave}
+            onChange={(e) => setClave(e.target.value)}
+            required
+            autoComplete="current-password"
+            placeholder="Contraseña"
+            className="w-full bg-zinc-900 border border-zinc-800 rounded px-3 py-2.5 text-zinc-100 font-mono text-sm placeholder:text-zinc-600 focus:outline-none focus:border-sky-400 focus:ring-1 focus:ring-sky-400 transition-colors"
+          />
+          <button
+            type="submit"
+            disabled={loading || !email || !clave}
+            className="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-mono text-sm px-4 py-2.5 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? 'Ingresando…' : 'Ingresar'}
+          </button>
+          <button type="button" onClick={() => { setConClave(false); setError('') }} className="w-full text-xxs font-mono text-zinc-500 hover:text-zinc-300">
+            Prefiero recibir un enlace por mail
+          </button>
+        </form>
       ) : (
         <form onSubmit={handleMagicLink} className="space-y-3">
           <label className="block text-xxs font-mono text-zinc-500 uppercase tracking-widest">
@@ -122,6 +176,9 @@ export default function LoginClient() {
             className="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-mono text-sm px-4 py-2.5 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Enviando…' : 'Enviame el enlace'}
+          </button>
+          <button type="button" onClick={() => { setConClave(true); setError('') }} className="w-full text-xxs font-mono text-zinc-500 hover:text-zinc-300">
+            Tengo usuario y contraseña
           </button>
         </form>
       )}

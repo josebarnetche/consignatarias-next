@@ -123,7 +123,7 @@ export function CoverageMap({ counts }: { counts: Record<string, number> }) {
       >
         {/* Context provinces — faint, non-interactive */}
         {CONTEXT.map((d, i) => (
-          <path key={`ctx-${i}`} d={d} fill="#17171a" stroke="#2a2a30" strokeWidth={1.5} />
+          <path key={`ctx-${i}`} d={d} fill="#17171a" stroke="#2a2a30" strokeWidth={1.5} className="claro:fill-zinc-800 claro:stroke-white" />
         ))}
 
         {provinces.map((p) => {
@@ -137,7 +137,7 @@ export function CoverageMap({ counts }: { counts: Record<string, number> }) {
                 fill={isActive ? '#202024' : '#17171a'}
                 stroke={isActive ? '#3f3f46' : '#2a2a30'}
                 strokeWidth={1.5}
-                className="cursor-default transition-colors"
+                className={`cursor-default transition-colors ${isActive ? 'claro:fill-zinc-700 claro:stroke-zinc-600' : 'claro:fill-zinc-800 claro:stroke-white'}`}
                 onMouseEnter={() =>
                   setActive({ name: p.name, slug: p.slug, count: 0, covered: false })
                 }
@@ -168,7 +168,7 @@ export function CoverageMap({ counts }: { counts: Record<string, number> }) {
                 fill={fill}
                 stroke={isActive ? '#fde68a' : 'rgba(0,0,0,0.35)'}
                 strokeWidth={isActive ? 4 : 1.5}
-                className="cursor-pointer transition-all"
+                className={`cursor-pointer transition-all ${isActive ? 'claro:stroke-accent' : 'claro:stroke-white'}`}
                 style={{ filter: isActive ? 'brightness(1.18)' : undefined }}
               />
             </Link>

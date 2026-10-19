@@ -23,10 +23,10 @@ interface Signal {
   asOf: string | null
 }
 
-const ZONE: Record<Signal['zone'], { label: string; color: string; bg: string; border: string }> = {
-  alta: { label: 'Zona alta del año', color: '#34d399', bg: 'rgba(52,211,153,0.06)', border: 'rgba(52,211,153,0.35)' },
-  media: { label: 'Zona media', color: '#a1a1aa', bg: 'rgba(161,161,170,0.06)', border: 'rgba(161,161,170,0.30)' },
-  baja: { label: 'Zona baja del año', color: '#fbbf24', bg: 'rgba(251,191,36,0.06)', border: 'rgba(251,191,36,0.35)' },
+const ZONE: Record<Signal['zone'], { label: string; claro: string; color: string; bg: string; border: string }> = {
+  alta: { label: 'Zona alta del año', claro: 'claro:!text-emerald-700', color: '#34d399', bg: 'rgba(52,211,153,0.06)', border: 'rgba(52,211,153,0.35)' },
+  media: { label: 'Zona media', claro: 'claro:!text-zinc-400', color: '#a1a1aa', bg: 'rgba(161,161,170,0.06)', border: 'rgba(161,161,170,0.30)' },
+  baja: { label: 'Zona baja del año', claro: 'claro:!text-amber-700', color: '#fbbf24', bg: 'rgba(251,191,36,0.06)', border: 'rgba(251,191,36,0.35)' },
 }
 
 const TREND: Record<Signal['trend'], { label: string; arrow: string }> = {
@@ -85,13 +85,13 @@ export default function SellZoneBadge({
         <span className="text-xxs font-mono uppercase tracking-widest text-zinc-500">Semáforo de venta · {categoriaLabel}</span>
       </div>
       <div className="mt-1.5 flex items-baseline gap-2 flex-wrap">
-        <span className="text-base font-semibold" style={{ color: z.color }}>{z.label}</span>
+        <span className={`text-base font-semibold ${z.claro}`} style={{ color: z.color }}>{z.label}</span>
         <span className="text-xs font-mono text-zinc-400">{t.arrow} {t.label}</span>
       </div>
       <div className="mt-0.5 text-xs font-mono text-zinc-500 tabular-nums">
         percentil {sig.pct365} del año · {sig.pct30} del mes
       </div>
-      {nota && <p className="text-xxs mt-1.5 leading-relaxed" style={{ color: sig.alertWorthy ? z.color : '#71717a' }}>{nota}</p>}
+      {nota && <p className={`text-xxs mt-1.5 leading-relaxed ${sig.alertWorthy ? z.claro : 'claro:!text-zinc-500'}`} style={{ color: sig.alertWorthy ? z.color : '#71717a' }}>{nota}</p>}
       <p className="text-xxs text-zinc-600 mt-1 leading-relaxed">
         Medido sobre el INMAG en dólares reales. {categoriaLabel === 'novillo'
           ? 'Preciso para el novillo.'

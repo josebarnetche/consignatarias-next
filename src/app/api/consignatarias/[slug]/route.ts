@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { requireAuth } from '@/lib/admin-auth'
 import { profileUpdateSchema } from '@/lib/validators/consignataria-profile'
+import { mismoEmail } from '@/lib/claims/aprobar'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -23,7 +24,7 @@ export async function PATCH(req: NextRequest, { params }: Props) {
     return NextResponse.json({ error: 'Consignataria no encontrada' }, { status: 404 })
   }
 
-  if (consignataria.claimed_by_email !== auth.email) {
+  if (!mismoEmail(consignataria.claimed_by_email, auth.email)) {
     return NextResponse.json({ error: 'No sos el propietario de este perfil' }, { status: 403 })
   }
 
@@ -47,7 +48,8 @@ export async function PATCH(req: NextRequest, { params }: Props) {
     .from('consignatarias')
     .update({ ...parsed.data, updated_at: new Date().toISOString() })
     .eq('canonical_slug', slug)
-    .select()
+    // Solo los campos de la ficha pública que edita el dueño (no el registro entero).
+    .select('canonical_slug, display_name, phone, email, website, description, whatsapp, cuit, logo_url, verified, featured')
     .single()
 
   if (error) {

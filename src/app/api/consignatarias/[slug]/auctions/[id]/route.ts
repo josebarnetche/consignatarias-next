@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { requireAuth } from '@/lib/admin-auth'
+import { mismoEmail } from '@/lib/claims/aprobar'
+import { flyerValido, urlValida } from '@/lib/remates-firma'
 
 type Props = { params: Promise<{ slug: string; id: string }> }
 
@@ -17,7 +19,7 @@ export async function PATCH(req: NextRequest, { params }: Props) {
     .eq('canonical_slug', slug)
     .single()
 
-  if (!consig || consig.claimed_by_email !== auth.email) {
+  if (!consig || !mismoEmail(consig.claimed_by_email, auth.email)) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 
@@ -33,16 +35,27 @@ export async function PATCH(req: NextRequest, { params }: Props) {
   }
 
   const body = await req.json()
-  const allowed = ['title', 'date', 'time', 'location', 'province', 'type', 'main_category', 'estimated_heads', 'description', 'catalog_url', 'youtube_url', 'status']
+  if (!urlValida(body.catalog_url) || !urlValida(body.youtube_url)) {
+    return NextResponse.json({ error: 'Los enlaces tienen que empezar con https://' }, { status: 400 })
+  }
+  if (!flyerValido(body.flyer_url, slug)) {
+    return NextResponse.json({ error: 'El flyer tiene que subirse desde el panel' }, { status: 400 })
+  }
+  const allowed = ['title', 'date', 'time', 'location', 'province', 'type', 'main_category', 'estimated_heads', 'description', 'catalog_url', 'youtube_url', 'flyer_url', 'status']
   const updates: Record<string, unknown> = {}
   for (const key of allowed) {
     if (key in body) updates[key] = body[key] || null
+  }
+
+  if (('title' in updates && !updates.title) || ('date' in updates && !updates.date)) {
+    return NextResponse.json({ error: 'Titulo y fecha son obligatorios' }, { status: 400 })
   }
 
   if (Object.keys(updates).length === 0) {
     return NextResponse.json({ error: 'Nada para actualizar' }, { status: 400 })
   }
 
+  updates.updated_at = new Date().toISOString()
   const { data, error } = await supabase
     .from('consignataria_auctions')
     .update(updates)
@@ -70,7 +83,7 @@ export async function DELETE(_req: NextRequest, { params }: Props) {
     .eq('canonical_slug', slug)
     .single()
 
-  if (!consig || consig.claimed_by_email !== auth.email) {
+  if (!consig || !mismoEmail(consig.claimed_by_email, auth.email)) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
   }
 

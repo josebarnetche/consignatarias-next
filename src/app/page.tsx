@@ -1,13 +1,14 @@
-import { ImagenTema, PictureTema } from '@/components/ui/ImagenTema'
 import { PromoGuiaBanner } from '@/components/PromoGuiaBanner'
 import ThemeToggle from "@/components/ThemeToggle";
+import NavDropdown from "@/components/nav/NavDropdown";
+import MobileMenu from "@/components/nav/MobileMenu";
+import { buildNavGroups } from "@/lib/nav";
 import Link from "next/link";
 import Image from "next/image";
 import { Metadata } from "next";
 import marketPrices from "@/lib/data/market-prices.json";
 import frigorificosData from "@/lib/data/frigorificos.json";
 import rematesData from "@/lib/data/remates.json";
-import corredorManifest from "../../public/el-corredor/manifest.json";
 import { getAllProfiles } from "@/lib/data/consignataria-slugs";
 import { resolveYoutubeUrl } from "@/lib/youtube-live";
 import { getLogoUrl, getBrandColor, getBrandKeepColor, getBrandSolidLogo } from "@/lib/data/logo-map";
@@ -20,13 +21,20 @@ import NewsletterSignup from "@/components/NewsletterSignup";
 import ValuationWidget from "@/components/landing/ValuationWidget";
 import MarketTape, { type TapeItem } from "@/components/landing/MarketTape";
 import { fetchUsdBlue } from "@/lib/markets/usd";
-import LiveHero from "@/components/landing/LiveHero";
 import ScrollReveal from "@/components/landing/ScrollReveal";
 import { CoverageMap } from "@/components/landing/CoverageMap";
 import SellZoneBadge from "@/components/SellZoneBadge";
 import { getBandasPublicas, getSlugsConBanda, vrCobertura, VR_VENTANA_DIAS } from "@/lib/vr";
 import { getEffectiveStatus } from "@/lib/ui/tokens";
 import { rematesDesdeHoy } from "@/lib/remates-conteo";
+import HeroPro from "@/components/landing/lienzo/HeroPro";
+import AlcanceGoogle from "@/components/landing/lienzo/AlcanceGoogle";
+import BeneficiosPro from "@/components/landing/lienzo/BeneficiosPro";
+import MapaDelSitio, { type GrupoMapa } from "@/components/landing/lienzo/MapaDelSitio";
+import { adminClientOpcional } from "@/lib/supabase-server";
+import { getAiCitationStats } from "@/lib/ai-citations";
+import { TOTAL_GUIAS } from "@/lib/data/guias";
+import tierraData from "@/lib/data/tierra-por-kilo.json";
 
 /* ================================================================== */
 /*  SVG ICONS                                                          */
@@ -47,7 +55,6 @@ const TODAY = new Date().toISOString().slice(0, 10);
 // El criterio vive en `lib/remates-conteo` para que haya uno solo, con test: la home
 // filtraba sólo `scheduled` y se comía los remates de HOY, que el scraper marca `live`.
 const rematesProximos = rematesDesdeHoy(rematesData, TODAY);
-const totalHeads = rematesProximos.reduce((s, r) => s + (r.estimatedHeads ?? 0), 0);
 // `frigorificos-summary.json` quedó congelado en 364 desde febrero mientras el
 // directorio indexaba 1.115: la home subdeclaraba la cobertura en dos tercios. Se
 // cuenta de la misma fuente que lee /frigorificos, y se dice HABILITADAS, que es el
@@ -59,6 +66,7 @@ const provinciasConFrigo = new Set(
   (frigorificosData as { province?: string | null }[]).map((f) => f.province).filter(Boolean),
 ).size;
 const totalConsignatarias = getAllProfiles().length;
+const NAV_GROUPS = buildNavGroups({ plantas: frigorificosHabilitados, firmas: totalConsignatarias });
 
 /* --- Regional grid: top consignatarios by upcoming-remate count, bucketed by region.
    Region is inferred from the most-frequent province for that consignataria's
@@ -144,7 +152,6 @@ const rematesEnVivo = rematesProximos
   })
   .filter((x): x is { remate: (typeof rematesProximos)[number]; confidence: "confirmed" | "probable" } => x !== null);
 const enVivoCount = rematesEnVivo.length;
-const enVivoConfirmed = rematesEnVivo.filter((x) => x.confidence === "confirmed").length;
 
 function fmt(n: number, d = 0) {
   return n.toLocaleString("es-AR", {
@@ -162,6 +169,10 @@ const BANDAS_HOME = getBandasPublicas()
 const VR_COBERTURA = vrCobertura();
 
 const FAQ_ITEMS = [
+  {
+    question: "¿Qué gana mi consignataria con PRO?",
+    answer: `Tu firma sale primero: perfil verificado con el sello PRO, arriba en el directorio, en el muro de la portada y en el calendario de remates. Tus remates llegan por email a la base de productores (newsletter, alertas de remate y envío directo), con registro de a cuántos les llegó. Sumás pre-oferta de lotes con video y captura de interesados, analytics de tu perfil y una página propia con QR. Cuesta ARS 45.000 por mes, sin permanencia. El sitio tuvo más de un millón de impresiones en Google entre marzo y octubre de 2026.`,
+  },
   {
     question: "¿Qué es el Valor de Referencia?",
     answer: `Es el rango de precio al que realmente se vendió cada categoría de hacienda en el Mercado Agroganadero en los últimos ${VR_VENTANA_DIAS} días: el precio del 10 % más barato de los lotes, la mediana y el del 10 % más caro, con la cantidad de lotes que lo sostienen (${fmt(VR_COBERTURA.lotes)} en la ventana vigente). Se calcula también por rango de peso, porque el peso mueve el precio por kilo. No es una tasación ni una cotización en firme: es lo que se pagó, publicado con su metodología.`,
@@ -196,7 +207,7 @@ const FAQ_ITEMS = [
   },
   {
     question: "¿Qué es un frigorífico?",
-    answer: `Un frigorífico es una planta habilitada por SENASA y MAGYP para la faena y procesamiento de carne vacuna. En nuestra base de datos tenemos ${fmt(frigorificosHabilitados)} plantas habilitadas en ${provinciasConFrigo} provincias, con datos de CUIT, matrícula y clasificación por ciclo (Tránsito, Ciclo II, Ciclo III).`,
+    answer: `Un frigorífico es una planta habilitada por SENASA y MAGYP para la faena y procesamiento de carne vacuna. En nuestra base de datos tenemos ${fmt(frigorificosHabilitados)} plantas habilitadas en ${provinciasConFrigo} provincias, con datos de CUIT, matrícula y clasificación por ciclo (Ciclo I matadero, Ciclo II elaborador, Ciclo III dador de frío).`,
   },
   {
     question: "¿Consignatarias.com.ar es gratis?",
@@ -205,6 +216,87 @@ const FAQ_ITEMS = [
   {
     question: "¿De dónde obtienen los datos de remates?",
     answer: "Combinamos datos de la API de la CACG (Cámara Argentina de Consignatarios de Ganado), scraping de sitios web de consignatarias individuales como Colombo y Colombo, O'Farrell, Cooperativa Lehmann y Madelan, más carga manual de fuentes no digitalizables. Todo se actualiza cada día.",
+  },
+];
+
+/* Todo el sitio en el lienzo (MapaDelSitio): cada frame es una sección real con su
+   dato del día. Las rutas están verificadas contra src/app; si se agrega una sección
+   importante, va acá. */
+const VR_NOVILLO = BANDAS_HOME.find((b) => b.slug === 'novillo') ?? BANDAS_HOME[0];
+const PROVINCIAS_TIERRA = new Set((tierraData as { provincia: string }[]).map((t) => t.provincia)).size;
+const GRUPOS_MAPA: GrupoMapa[] = [
+  {
+    id: 'productor',
+    nombre: 'Valuar y vender',
+    bajada: 'Para decidir cuándo vender, a cuánto y con quién.',
+    items: [
+      { nombre: 'Valor de Referencia', href: '/vr', dato: VR_NOVILLO ? `$${fmt(VR_NOVILLO.mediana)}/kg` : undefined, detalle: `Lo que se pagó por cada categoría y peso. ${fmt(VR_COBERTURA.lotes)} lotes en ${VR_VENTANA_DIAS} días.` },
+      { nombre: 'Mi Ganado', href: '/mi-ganado', detalle: 'Tu rodeo valuado todos los días contra lo que se vendió. Gratis con tu cuenta.' },
+      { nombre: '¿Vendo ahora?', href: '/mercado/vender-ahora', detalle: 'Tu lote contra los últimos 365 días: si el precio está alto o bajo para su época.' },
+      { nombre: 'Calculadora de neto', href: '/calculadora', detalle: 'Lo que te queda en mano después de comisión, flete e impuestos.' },
+      { nombre: 'Flete de hacienda', href: '/cuanto-cuesta-el-flete-de-hacienda', detalle: 'Cuánto cuesta mover la hacienda, por distancia y por jaula.' },
+      { nombre: 'Lotes a la venta', href: '/lotes', detalle: 'Lotes publicados con la referencia de precio de su categoría al lado.' },
+    ],
+  },
+  {
+    id: 'mercado',
+    nombre: 'Mercado',
+    bajada: 'El índice del día, la serie larga y la lectura del ciclo.',
+    items: [
+      { nombre: 'INMAG', href: '/mercado/inmag', dato: `$${fmt(marketPrices.inmag.current)}/kg`, detalle: 'El índice del Mercado Agroganadero, diario, con su serie desde 2015.' },
+      { nombre: 'El novillo en dólares', href: '/mercado/inmag-dolares', detalle: 'El precio del novillo en dólares reales: dónde está contra su historia.' },
+      { nombre: 'Índice de liquidación', href: '/mercado/liquidacion', detalle: 'Cuántas hembras se faenan: si el rodeo se retiene o se liquida.' },
+      { nombre: 'Cañuelas', href: '/mercado/canuelas', detalle: 'La rueda del Mercado Agroganadero, categoría por categoría.' },
+      { nombre: 'Precios de hacienda', href: '/precios', detalle: 'Precio por categoría: novillo, vaca, vaquillona, ternero y más.' },
+      { nombre: 'El Corredor', href: '/el-corredor', detalle: 'El cierre mensual del mercado bovino: 12 páginas, gratis por email.' },
+    ],
+  },
+  {
+    id: 'remates',
+    nombre: 'Remates y firmas',
+    bajada: 'Quién remata, cuándo y dónde, y con quién conviene operar.',
+    items: [
+      { nombre: 'Calendario de remates', href: '/remates', dato: fmt(rematesProximos.length), detalle: 'Remates próximos de todo el país, filtrables por provincia y tipo.' },
+      { nombre: 'En vivo', href: '/remates/en-vivo', dato: enVivoCount > 0 ? `${enVivoCount} hoy` : undefined, detalle: 'Los remates que se transmiten hoy, en un solo muro.' },
+      { nombre: 'Consignatarias', href: '/consignatarias', dato: fmt(totalConsignatarias), detalle: 'El directorio: calendario, historial y contacto de cada firma.' },
+      { nombre: 'Frigoríficos', href: '/frigorificos', dato: fmt(frigorificosHabilitados), detalle: `Plantas habilitadas por SENASA en ${provinciasConFrigo} provincias, con CUIT y matrícula.` },
+      { nombre: 'Comparar firmas', href: '/comparar', detalle: 'Dos o más consignatarias lado a lado: remates, zonas y precios.' },
+      { nombre: 'Pre-ofertas', href: '/preofertas', detalle: 'Lotes con video ofertados antes del remate.' },
+    ],
+  },
+  {
+    id: 'campos',
+    nombre: 'Campos',
+    bajada: 'Cuánto vale la hectárea y qué se paga de arrendamiento.',
+    items: [
+      { nombre: '¿Cuánto vale mi campo?', href: '/campos/valuar', dato: `${PROVINCIAS_TIERRA} provincias`, detalle: `Valor de la hectárea en ${(tierraData as unknown[]).length} zonas ganaderas, con su fuente fechada.` },
+      { nombre: 'Índice de arrendamiento', href: '/mercado/arrendamiento', detalle: 'El canon en kilos de novillo y su valor en pesos, actualizado.' },
+      { nombre: 'Campos ofrecidos', href: '/campos', detalle: 'Campos a la venta y en alquiler.' },
+      { nombre: 'Inmobiliarias rurales', href: '/inmobiliarias-rurales', detalle: 'Las firmas que venden y arriendan campos, por zona.' },
+    ],
+  },
+  {
+    id: 'sanidad',
+    nombre: 'Sanidad y guías',
+    bajada: 'Lo que pide SENASA y lo que conviene saber antes de firmar.',
+    items: [
+      { nombre: 'Sanidad SENASA', href: '/sanidad', dato: 'Res. 201/2026', detalle: 'Calendario de aftosa, el vacunador que elegís desde 2027 y lo que pide mover hacienda.' },
+      { nombre: 'DT-e y RENSPA', href: '/dte', detalle: 'Qué es el DT-e, cómo se emite y cómo validar un RENSPA.' },
+      { nombre: 'Buenas prácticas', href: '/buenas-practicas', detalle: 'Las 14 prácticas ganaderas de la guía de la Red BPA.' },
+      { nombre: 'Guías', href: '/guias', dato: fmt(TOTAL_GUIAS), detalle: 'Cómo vender hacienda, leer una liquidación, tasar un campo y más.' },
+      { nombre: 'Glosario', href: '/glosario', detalle: 'Cada término del mercado ganadero, explicado corto.' },
+    ],
+  },
+  {
+    id: 'empresas',
+    nombre: 'Empresas e IA',
+    bajada: 'El dato del mercado dentro de tu sistema, por API y por MCP.',
+    items: [
+      { nombre: 'Servidor MCP', href: '/mcp', dato: 'Gratis', detalle: 'Conectá cualquier agente de IA al dato del mercado ganadero.' },
+      { nombre: 'API Enterprise', href: '/enterprise', detalle: 'Precios, lotes y series para bancos, aseguradoras, agtech y frigoríficos.' },
+      { nombre: 'Índices', href: '/indices', detalle: 'Los índices propios del sitio, con su metodología.' },
+      { nombre: 'Documentación', href: '/api-docs', detalle: 'Endpoints, autenticación y ejemplos.' },
+    ],
   },
 ];
 
@@ -248,62 +340,8 @@ export const metadata: Metadata = {
 /* ================================================================== */
 /*  PAGE                                                               */
 /* ================================================================== */
-// El Corredor — SIEMPRE desde el manifest (nunca hardcodear la edición: quedó
-// en mayo con junio ya publicado). Mismo source que /el-corredor.
-const CORREDOR = corredorManifest.current as {
-  ym: string; edition_label: string; edition_short: string; cover_path: string;
-};
-const CORREDOR_NEXT = (() => {
-  const m = Number(CORREDOR.ym.split("-")[1]);
-  const MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
-  return MESES[m % 12]; // m es 1-based → % 12 da el índice del mes siguiente
-})();
 
 
-/* Las cuatro puertas de entrada del sitio. Se mantiene corto a propósito: es
-   descubrimiento, no un mapa del sitio — para eso está el footer. */
-const SECCIONES = [
-  {
-    titulo: 'Precios y mercado',
-    bajada: 'El INMAG del día, la serie de veinte años y el precio por categoría.',
-    links: [
-      { label: 'INMAG hoy', href: '/mercado/inmag' },
-      { label: 'Precios de hacienda', href: '/precios' },
-      { label: 'El novillo en dólares', href: '/mercado/inmag-dolares' },
-      { label: 'Índice de liquidación', href: '/mercado/liquidacion' },
-    ],
-  },
-  {
-    titulo: 'Campos',
-    bajada: 'Cuánto vale la hectárea en tu zona y qué se paga de arrendamiento.',
-    links: [
-      { label: '¿Cuánto vale mi campo?', href: '/campos/valuar' },
-      { label: 'Índice de arrendamiento', href: '/mercado/arrendamiento' },
-      { label: 'Campos ofrecidos', href: '/campos' },
-      { label: 'Cómo comprar un campo', href: '/como-comprar-un-campo' },
-    ],
-  },
-  {
-    titulo: 'Remates y firmas',
-    bajada: 'Quién remata, cuándo y dónde. Y con quién conviene operar.',
-    links: [
-      { label: 'Calendario de remates', href: '/remates' },
-      { label: 'Consignatarias', href: '/consignatarias' },
-      { label: 'Frigoríficos', href: '/frigorificos' },
-      { label: 'Comparar firmas', href: '/comparar' },
-    ],
-  },
-  {
-    titulo: 'Herramientas y guías',
-    bajada: 'Para calcular antes de decidir, y para entender lo que se firma.',
-    links: [
-      { label: 'Calculadora de neto', href: '/calculadora' },
-      { label: 'Mi Ganado', href: '/mi-ganado' },
-      { label: 'Todas las guías', href: '/guias' },
-      { label: 'Glosario', href: '/glosario' },
-    ],
-  },
-]
 
 export default async function LandingPage() {
   // USD blue en vivo — descongela la cinta y activa el DeltaFlash real. Falla
@@ -317,13 +355,21 @@ export default async function LandingPage() {
   // onto the wall even with no recent remates, shown with a PRO badge, and sorted
   // first so a paying firm always appears with priority where producers look.
   const proSlugs = await getFeaturedSlugs()
+  // Firmas que las IAs nombraron el último mes (ai_referrals). Opcional: un build sin
+  // service-role sigue sin la marquesina en vez de voltear el render.
+  const SIN_CITAS = { aiRefsMes: 0, firmsCitadas: 0, citadas: [] as { nombre: string }[] }
+  const ai = adminClientOpcional() ? await getAiCitationStats().catch(() => SIN_CITAS) : SIN_CITAS
+  const citadas = ai.citadas.map((c) => c.nombre).slice(0, 14)
   const activeSlugs = new Set(activeConsignatarias.map(c => c.slug))
   const featured = [...proSlugs]
     .filter(s => !activeSlugs.has(s))
     .map(s => ({ slug: s, name: getAllProfiles().find(p => p.canonicalSlug === s)?.displayName ?? s }))
   const showcaseItems = [...activeConsignatarias, ...featured]
     .map(c => ({ slug: c.slug, name: c.name, logoUrl: getLogoUrl(c.slug), brandColor: getBrandColor(c.slug), keepColor: getBrandKeepColor(c.slug), solidLogo: getBrandSolidLogo(c.slug), isPro: proSlugs.has(c.slug) }))
-    .filter(c => c.logoUrl && c.brandColor)
+    // Sin logo curado, una firma común no entra al muro (el muro es de marcas).
+    // 17-10-2026: una PRO entra igual — la promesa es "en el muro de la home" — y
+    // ConsignatariasShowcase la dibuja como baldosa de nombre con su sello.
+    .filter(c => c.isPro || (c.logoUrl && c.brandColor))
     // PRO firms first — paying firms appear with priority on the wall.
     .sort((a, b) => Number(b.isPro) - Number(a.isPro))
 
@@ -348,7 +394,6 @@ export default async function LandingPage() {
     ...(enVivoCount > 0 ? [{ label: 'En vivo', value: `${enVivoCount}`, change: null, live: true, href: '/remates/en-vivo' } as TapeItem] : []),
     { label: 'Plantas SENASA', value: `${fmt(frigorificosHabilitados)}`, change: null, href: '/frigorificos' },
   ]
-  const dateLabel = new Date().toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })
 
   return (
     <div className="font-sans text-zinc-300 selection:bg-zinc-800 selection:text-zinc-100">
@@ -362,35 +407,30 @@ export default async function LandingPage() {
             {/* El isotipo es blanco sobre transparente: sobre el nav claro desaparecía.
                 Va sobre un chip negro fijo (bg-black no invierte) en los dos temas. */}
             <Image src="/icon-32.png" alt="Consignatarias.com.ar" width={32} height={32} className="rounded bg-black" />
-            <span className="text-sm font-medium text-zinc-100 tracking-tight">
+            <span className="hidden min-[430px]:inline text-sm font-medium text-zinc-100 tracking-tight">
               consignatarias.com.ar
             </span>
           </div>
 
-          <div className="hidden md:flex items-center gap-8 text-sm font-normal text-zinc-400">
-            <Link href="/vr" className="hover:text-zinc-100 transition-colors">Valor de Referencia</Link>
-            <Link href="/mi-ganado" className="hover:text-zinc-100 transition-colors">Mi Ganado</Link>
-            <Link href="/remates" className="hover:text-zinc-100 transition-colors">Remates</Link>
-            <Link
-              href="/remates/en-vivo"
-              className={`flex items-center gap-1.5 transition-colors ${enVivoCount > 0 ? 'text-red-400 hover:text-red-300' : 'hover:text-zinc-100'}`}
-            >
-              <span className={`w-2 h-2 rounded-full ${enVivoCount > 0 ? 'bg-red-500 animate-pulse' : 'bg-zinc-600'}`} />
-              En Vivo
-              {enVivoCount > 0 && <span className="text-xs text-red-500">({enVivoCount})</span>}
-            </Link>
-            <Link href="/consignatarias" className="hover:text-zinc-100 transition-colors">Consignatarias</Link>
-            <Link href="/mercado" className="hover:text-zinc-100 transition-colors">Mercado</Link>
-            <Link href="/planes" className="hover:text-zinc-100 transition-colors">Planes</Link>
+          {/* El mismo menú que el resto del sitio (lib/nav): seis grupos. */}
+          <div className="hidden lg:flex items-center gap-0.5">
+            {NAV_GROUPS.map((g) => (
+              <NavDropdown key={g.label} group={g} active={false} />
+            ))}
           </div>
 
           <div className="flex items-center gap-3">
+            <div className="lg:hidden">
+              <MobileMenu groups={NAV_GROUPS} />
+            </div>
             <ThemeToggle />
             <Link
-              href="/mi-ganado"
-              className="text-xs font-medium text-zinc-950 bg-accent hover:bg-sky-300 transition-colors rounded py-2 px-4"
+              href="#pro"
+              className="text-xs font-medium text-zinc-950 bg-accent hover:bg-sky-300 claro:text-white claro:hover:bg-accent-bright transition-colors rounded py-2 px-4"
             >
-              Valuar mi rodeo
+              <span className="sm:hidden">PRO</span>
+              <span className="hidden sm:inline lg:hidden xl:inline">PRO para consignatarias</span>
+              <span className="hidden lg:inline xl:hidden">PRO</span>
             </Link>
           </div>
         </div>
@@ -403,70 +443,43 @@ export default async function LandingPage() {
         <ScrollReveal />
 
         {/* ============================================================ */}
-        {/*  HERO                                                        */}
+        {/*  HERO — PRO Consignataria, el producto principal (v1.226.0)  */}
         {/* ============================================================ */}
-        <section className="relative max-w-7xl mx-auto px-6 pt-16 pb-16">
-          {/* Foto de marca: la panorámica del amanecer (banco marca/), detrás de todo */}
-          <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
-            {/* WebP + variante mobile (60% del tráfico): 298KB JPG → 59KB/24KB webp.
-                Decorativa (opacity-35, detrás de gradientes) → compresión agresiva.
-                Baja el LCP mobile que PSI medía en ~5s. JPG queda de fallback. */}
-            <PictureTema
-              fuentes={[{ srcSet: '/marca/hero-pampa-mobile.webp', media: '(max-width: 768px)', type: 'image/webp' }, { srcSet: '/marca/hero-pampa.webp', type: 'image/webp' }]}
-                src="/marca/hero-pampa.jpg"
-                alt=""
-                className="w-full h-full object-cover object-[center_35%] opacity-35"
-                fetchPriority="high"
-              />
-            <div className="absolute inset-0 bg-gradient-to-r from-zinc-950 via-zinc-950/70 to-zinc-950/30" />
-            <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/60 via-transparent to-zinc-950" />
-          </div>
-          {/* El martillazo — motivo animado de marca (golpe → onda → dato → sonda) */}
-          <div className="absolute bottom-6 right-6 z-[1] w-[340px] xl:w-[420px] opacity-70 pointer-events-none hidden lg:block" aria-hidden="true">
-            <ImagenTema src="/marca/martillazo.svg" alt="" className="w-full h-auto" />
-          </div>
-          {/* Background Grid */}
-          <div
-            className="absolute inset-0 z-0 pointer-events-none opacity-20"
-            style={{
-              backgroundImage:
-                "linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)",
-              backgroundSize: "64px 64px",
-            }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-950/80 to-zinc-950" />
-          </div>
+        <HeroPro
+          rematesProximos={rematesProximos.length}
+          consignatarias={totalConsignatarias}
+          citadaReal={citadas[0]}
+        />
 
-          <LiveHero
-            consignatarias={totalConsignatarias}
-            remates={rematesProximos.length}
-            enVivo={enVivoCount}
-            enVivoConfirmed={enVivoConfirmed}
-            heads={totalHeads}
-            inmag={marketPrices.inmag.current}
-            inmagChange={marketPrices.inmag.change}
-            usdBlue={marketPrices.usdBlue.current}
-            frigorificos={frigorificosHabilitados}
-            provincias={13}
-            dateLabel={dateLabel}
-            rematesIndexados={rematesData.length}
-            bandas={BANDAS_HOME}
-            lotesVentana={VR_COBERTURA.lotes}
-            ventanaDias={VR_VENTANA_DIAS}
-          />
+        {/*  ALCANCE — el millón de impresiones, mes a mes (Search Console) */}
+        <AlcanceGoogle aiRefsMes={ai.aiRefsMes} />
 
-        </section>
+        {/*  BENEFICIOS PRO — ocho frames, uno por beneficio              */}
+        <BeneficiosPro citadas={citadas} />
 
-        {/* ============================================================ */}
-        {/*  VALUATION WIDGET — Aha Moment                                */}
-        {/* ============================================================ */}
-        <section className="max-w-4xl mx-auto px-6 py-12">
+        {/*  EL MURO — las firmas activas, PRO primero                    */}
+        <ConsignatariasShowcase items={showcaseItems} />
+
+        {/*  TODO EL SITIO — el mapa del sitio como lienzo de Figma       */}
+        <MapaDelSitio grupos={GRUPOS_MAPA} />
+
+        {/*  VALUAR — el productor prueba el Valor de Referencia acá      */}
+        <section id="valuar" className="max-w-4xl mx-auto px-6 pt-24 pb-12 scroll-mt-20">
+          <div className="mb-8">
+            <p className="text-xxs font-medium text-accent">Para el productor, gratis</p>
+            <h2 className="mt-3 text-3xl sm:text-4xl font-semibold tracking-tight text-ink text-balance">
+              Probalo acá: cuánto vale tu hacienda hoy.
+            </h2>
+            <p className="mt-3 text-zinc-400">
+              Medido en {fmt(VR_COBERTURA.lotes)} lotes vendidos en el Mercado Agroganadero en los últimos {VR_VENTANA_DIAS} días.
+            </p>
+          </div>
           <ValuationWidget />
 
           {/* Par productor: ya sabe cuánto vale su hacienda (widget) → ahora, ¿conviene
               venderla hoy? El semáforo gratis + el camino a la decisión completa. Primera
               vez que el valor PRO Usuario aparece en la puerta de entrada. */}
-          <div className="mt-6 rounded-lg border border-sky-500/20 bg-sky-950/10 p-5 space-y-4">
+          <div className="mt-6 rounded-lg border border-sky-500/20 bg-sky-950/10 claro:border-zinc-800 claro:bg-terminal-panel claro:shadow-panel p-5 space-y-4">
             <SellZoneBadge categoriaLabel="novillo" />
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <p className="flex-1 min-w-0 text-sm text-zinc-300 leading-relaxed">
@@ -475,7 +488,7 @@ export default async function LandingPage() {
               </p>
               <Link
                 href="/mercado/vender-ahora"
-                className="shrink-0 inline-flex items-center justify-center gap-2 text-sm font-medium text-zinc-100 border border-sky-500/40 hover:border-sky-400 hover:text-ink transition-colors rounded py-2.5 px-5 whitespace-nowrap"
+                className="shrink-0 inline-flex items-center justify-center gap-2 text-sm font-medium text-zinc-100 border border-sky-500/40 hover:border-sky-400 claro:border-accent/40 claro:text-accent claro:hover:border-accent hover:text-ink transition-colors rounded py-2.5 px-5 whitespace-nowrap"
               >
                 ¿Vendo ahora?
                 <IconArrowRight />
@@ -486,53 +499,7 @@ export default async function LandingPage() {
 
         <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
 
-        {/* ============================================================ */}
-        {/*  COMO FUNCIONA                                                */}
-        {/* ============================================================ */}
-        <section id="como-funciona" className="max-w-7xl mx-auto px-6 pt-24 pb-24">
-          <h2 className="text-2xl md:text-3xl font-medium text-zinc-100 tracking-tight text-center mb-16">
-            Cómo funciona
-          </h2>
-          <div className="reveal-stagger grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Step 1 */}
-            <div className="bg-zinc-900/60 border border-zinc-800 rounded-lg p-8 relative">
-              <div className="text-5xl font-bold text-zinc-800 absolute top-4 right-6 select-none">1</div>
-              <div className="relative z-10">
-                <div className="text-xs font-medium text-accent uppercase tracking-widest mb-3">Observamos</div>
-                <p className="text-sm md:text-base text-zinc-400 leading-relaxed">
-                  Cada lote vendido en el Mercado Agroganadero: categoría, peso, cabezas y precio. {fmt(VR_COBERTURA.lotes)} lotes en los últimos {VR_VENTANA_DIAS} días.
-                </p>
-              </div>
-            </div>
-            {/* Step 2 */}
-            <div className="bg-zinc-900/60 border border-zinc-800 rounded-lg p-8 relative">
-              <div className="text-5xl font-bold text-zinc-800 absolute top-4 right-6 select-none">2</div>
-              <div className="relative z-10">
-                <div className="text-xs font-medium text-accent uppercase tracking-widest mb-3">Medimos</div>
-                <p className="text-sm md:text-base text-zinc-400 leading-relaxed">
-                  La banda de cada categoría y peso: el 10 % más barato, la mediana y el 10 % más caro. Con el n a la vista y la metodología publicada.
-                </p>
-              </div>
-            </div>
-            {/* Step 3 */}
-            <div className="bg-zinc-900/60 border border-zinc-800 rounded-lg p-8 relative">
-              <div className="text-5xl font-bold text-zinc-800 absolute top-4 right-6 select-none">3</div>
-              <div className="relative z-10">
-                <div className="text-xs font-medium text-accent uppercase tracking-widest mb-3">Vos valuás</div>
-                <p className="text-sm md:text-base text-zinc-400 leading-relaxed">
-                  Tu rodeo, gratis, en Mi Ganado. Y cuando decidís vender: {fmt(rematesData.length)} remates indexados y {totalConsignatarias} consignatarias.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
-
-        {/* ============================================================ */}
-        {/*  ¿Y DÓNDE LA VENDO? — el directorio como paso siguiente       */}
-        {/*  (v1.212: buscador y mapa salen del hero; el hero es valuar)  */}
-        {/* ============================================================ */}
+        {/*  ¿DÓNDE LA VENDO? — buscador + mapa de cobertura               */}
         <section id="donde-vender" className="max-w-7xl mx-auto px-6 pt-24">
           <div className="max-w-2xl">
             <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest mb-2">Cuando decidas vender</div>
@@ -552,226 +519,13 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        {/* CONSIGNATARIAS SHOWCASE — wall of active consignatarias */}
-        <ConsignatariasShowcase items={showcaseItems} />
-
-        {/* Para las firmas: va DESPUÉS del directorio. Antes estaba en el hero, antes que
-            cualquier cosa para el productor: la home le hablaba primero a quien no la usa. */}
-        <section className="max-w-7xl mx-auto px-6">
-          {/* Conversion block — shown after value proofs */}
-          <div className="relative z-10 mt-8 rounded-lg border border-sky-500/20 bg-gradient-to-br from-sky-950/30 via-zinc-900/60 to-zinc-900/60 p-8 md:p-10 backdrop-blur-sm">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-              <div className="max-w-2xl">
-                <div className="inline-flex items-center gap-2 text-[0.65rem] text-accent/80 uppercase tracking-widest mb-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-                  Para consignatarias y martilleros
-                </div>
-                <h2 className="text-2xl md:text-3xl lg:text-4xl font-normal text-zinc-100 tracking-tight leading-tight mb-3">
-                  ¿Querés estar acá?
-                </h2>
-                <p className="text-base md:text-lg text-zinc-400 leading-relaxed">
-                  Sumá tu consignataria al directorio más visitado del mercado ganadero argentino. Reservá una reunión y te mostramos cómo.
-                </p>
-              </div>
-              <a
-                href="https://calendar.app.google/gr2BXY1ooDMki8TK7"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative flex items-center justify-center gap-3 text-base md:text-lg font-medium text-zinc-950 bg-gradient-to-br from-sky-300 via-sky-400 to-sky-500 hover:from-sky-200 hover:via-sky-300 hover:to-sky-400 transition-all rounded-md py-5 px-10 shadow-[0_0_40px_rgba(56,189,248,0.35)] hover:shadow-[0_0_60px_rgba(56,189,248,0.55)] whitespace-nowrap shrink-0"
-              >
-                <span className="w-2 h-2 rounded-full bg-black/70 animate-pulse" />
-                Reservar reunión
-                <IconArrowRight />
-              </a>
-            </div>
-          </div>
-        </section>
-
-        {/* ============================================================ */}
-        {/*  PROMO — la guía paga (novedad)                               */}
-        {/* ============================================================ */}
-        <div className="relative z-10 max-w-4xl mx-auto px-6 pt-2 pb-6">
+        {/*  PROMO — la guía paga                                          */}
+        <div className="relative z-10 max-w-4xl mx-auto px-6 pt-16 pb-6">
           <PromoGuiaBanner origen="home" />
         </div>
 
-        <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
-
-        {/* ============================================================ */}
-        {/*  CALENDARIO SANITARIO — SENASA (aftosa/brucelosis/movimiento) */}
-        {/* ============================================================ */}
+        {/*  CALENDARIO SANITARIO — SENASA, con la Res. 201/2026           */}
         <CalendarioSanitario />
-
-        <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
-
-
-
-        {/* ============================================================ */}
-        {/*  AI-READY — MCP                                               */}
-        {/* ============================================================ */}
-        <section id="ai-ready" className="max-w-7xl mx-auto px-6 pt-24 pb-24">
-          <div className="rounded-2xl border border-sky-500/25 bg-gradient-to-br from-sky-500/[0.06] to-transparent p-8 sm:p-12">
-            <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-10 items-center">
-              <div>
-                <span className="inline-flex items-center gap-2 rounded-full border border-sky-500/40 bg-sky-500/[0.08] px-3 py-1 text-xs font-mono uppercase tracking-widest text-sky-300">
-                  <span className="h-1.5 w-1.5 rounded-full bg-accent" /> Para empresas · API y MCP
-                </span>
-                <h2 className="mt-5 text-3xl sm:text-4xl font-bold text-ink leading-tight">
-                  El Valor de Referencia, dentro de tu sistema
-                </h2>
-                <p className="mt-4 text-zinc-400 leading-relaxed max-w-xl">
-                  Para bancos, aseguradoras, agtech, frigoríficos y agentes de IA que necesitan valuar hacienda y
-                  <strong className="text-zinc-200"> citar de dónde sale el número</strong>: la banda por categoría,
-                  la serie histórica de dispersión, el INMAG desde 2015 y el calendario de remates, por API y por
-                  servidor MCP. Esto es lo que se paga; el productor no paga nada.
-                </p>
-                <div className="mt-7 flex flex-wrap gap-3">
-                  <Link
-                    href="/mcp"
-                    className="rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-zinc-950 hover:bg-sky-300 transition-colors"
-                  >
-                    Ver el MCP y sus tools
-                  </Link>
-                  <Link
-                    href="/enterprise"
-                    className="rounded-lg border border-zinc-700 px-5 py-2.5 text-sm text-zinc-200 hover:border-zinc-500 transition-colors"
-                  >
-                    Planes para empresas
-                  </Link>
-                </div>
-              </div>
-              <div className="rounded-xl border border-zinc-800 bg-black/40 p-5 font-mono text-xs text-zinc-400 overflow-x-auto">
-                <p className="text-zinc-600 mb-2"># conectá cualquier agente MCP</p>
-                <pre className="text-zinc-300">{`{
-  "consignatarias": {
-    "url": "https://www.consignatarias.com.ar/api/mcp"
-  }
-}`}</pre>
-                {BANDAS_HOME[0] && (
-                  <p className="text-sky-300 mt-4">
-                    value_cattle_lot(&quot;{BANDAS_HOME[0].categoria.toLowerCase()}&quot;) → mediana ${fmt(BANDAS_HOME[0].mediana)}/kg · P10–P90 {fmt(BANDAS_HOME[0].p10)}–{fmt(BANDAS_HOME[0].p90)} · {fmt(BANDAS_HOME[0].lotes)} lotes
-                  </p>
-                )}
-                <p className="text-sky-300">livestock_prices(&quot;vacas&quot;)</p>
-                <p className="text-sky-300">inmag_history(desde, hasta)</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ============================================================ */}
-        {/*  EL CORREDOR — LEAD MAGNET                                    */}
-        {/* ============================================================ */}
-        <section id="el-corredor" className="max-w-7xl mx-auto px-6 pt-24 pb-24">
-          <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-12 items-center">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inset-0 rounded-full bg-sky-400/40 animate-ping" />
-                  <span className="relative rounded-full h-2 w-2 bg-sky-400" />
-                </span>
-                <span className="text-xs font-mono uppercase tracking-[0.18em] text-sky-400 font-semibold">
-                  Mesa de hacienda · cierre mensual
-                </span>
-              </div>
-
-              <h2 className="font-mono font-bold uppercase tracking-tight text-ink text-4xl md:text-5xl leading-[0.95] mb-5">
-                El Corredor
-              </h2>
-
-              <p className="text-base md:text-lg text-zinc-300 leading-relaxed mb-6 font-mono max-w-2xl">
-                El cierre mensual del mercado bovino argentino. <span className="text-ink">12 páginas</span> con
-                INMAG en USD reales, comparable interanual, 18 categorías de hacienda del MAG, lectura del ciclo y tesis del
-                mes próximo. <span className="text-sky-400">PDF gratuito con email.</span>
-              </p>
-
-              <ul className="reveal-stagger space-y-2.5 text-sm font-mono text-zinc-400 mb-8">
-                <li className="flex items-start gap-3">
-                  <span className="text-sky-400 font-mono">→</span>
-                  INMAG diario + comparable interanual real en USD oficial y blue
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-sky-400 font-mono">→</span>
-                  Las 18 subcategorías del MAG con min / máx / promedio / mediana
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-sky-400 font-mono">→</span>
-                  Tesis del mes próximo con escenarios y reglas operativas por perfil
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-sky-400 font-mono">→</span>
-                  Bibliografía citada (FAUBA, CACG, UNS) y metodología abierta
-                </li>
-              </ul>
-
-              <div className="flex flex-wrap items-center gap-4">
-                <a
-                  href="/el-corredor?ref=homepage"
-                  className="inline-flex items-center gap-2 bg-sky-400 hover:bg-sky-300 active:bg-sky-500 text-zinc-950 font-mono font-bold uppercase tracking-widest text-sm px-6 py-3 rounded transition-colors"
-                >
-                  Recibir Edición {CORREDOR.edition_short} →
-                </a>
-                <span className="text-xs font-mono text-zinc-500 uppercase tracking-widest">
-                  Sin tarjeta · próxima edición en {CORREDOR_NEXT}
-                </span>
-              </div>
-            </div>
-
-            <div className="relative justify-self-center lg:justify-self-end">
-              <div className="absolute -inset-8 bg-sky-500/10 blur-3xl rounded-full pointer-events-none" />
-              <Link href="/el-corredor?ref=homepage" className="relative block">
-                <Image
-                  src={CORREDOR.cover_path}
-                  alt={`El Corredor — ${CORREDOR.edition_label}`}
-                  width={320}
-                  height={427}
-                  className="w-full max-w-[320px] h-auto rounded shadow-2xl shadow-black/50 border border-zinc-800 hover:border-sky-500/40 transition-colors"
-                />
-                <div className="absolute -bottom-3 left-4 right-4 text-center pointer-events-none">
-                  <span className="inline-block bg-sky-400 text-zinc-950 text-xs font-mono uppercase tracking-widest px-3 py-1.5 font-bold rounded">
-                    Edición {CORREDOR.edition_short} · Disponible
-                  </span>
-                </div>
-              </Link>
-            </div>
-          </div>
-        </section>
-
-
-        <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
-
-        {/* ============================================================ */}
-        {/*  QUÉ HAY ADENTRO — la landing tenía 24 links y ninguno a      */}
-        {/*  campos, arrendamiento, precios ni guías. La página con más   */}
-        {/*  autoridad del sitio no repartía nada.                        */}
-        {/* ============================================================ */}
-        <section className="max-w-7xl mx-auto px-6 pt-24 pb-24">
-          <h2 className="text-2xl md:text-3xl font-medium text-zinc-100 tracking-tight text-center mb-4">
-            Qué hay adentro
-          </h2>
-          <p className="text-zinc-400 text-sm text-center max-w-2xl mx-auto mb-14">
-            Todo abierto y sin registro. El productor no paga nada.
-          </p>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {SECCIONES.map((sec) => (
-              <div key={sec.titulo} className="border border-zinc-800 rounded-lg bg-zinc-900/30 p-5">
-                <h3 className="text-zinc-100 text-sm font-medium mb-1">{sec.titulo}</h3>
-                <p className="text-zinc-500 text-xs mb-4 leading-relaxed">{sec.bajada}</p>
-                <ul className="space-y-1.5">
-                  {sec.links.map((l) => (
-                    <li key={l.href}>
-                      <Link
-                        href={l.href}
-                        className="text-zinc-400 hover:text-accent text-xs transition-colors"
-                      >
-                        {l.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </section>
 
         {/* ============================================================ */}
         {/*  FAQ                                                          */}
@@ -800,25 +554,36 @@ export default async function LandingPage() {
         </section>
 
         {/* ============================================================ */}
-        {/*  CTA FINAL                                                   */}
+        {/*  CTA FINAL — PRO                                              */}
         {/* ============================================================ */}
-        <section className="max-w-3xl mx-auto px-6 pb-32">
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-8 md:p-12 relative overflow-hidden text-center">
-            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-zinc-400 to-transparent opacity-20" />
-
-            <h2 className="text-2xl font-medium text-zinc-100 tracking-tight mb-3">
-              El mercado ganadero, en una sola pantalla
-            </h2>
-            <p className="text-sm text-zinc-400 mb-8 max-w-lg mx-auto">
-              {rematesProximos.length} remates de {totalConsignatarias}+ consignatarias. {fmt(frigorificosHabilitados)} frigoríficos habilitados. Precios de 6 categorías y referencias macro. Acceso libre. Sin registro. Actualizado todos los días.
-            </p>
-            <Link
-              href="/overview"
-              className="inline-flex items-center justify-center gap-2 text-sm font-medium text-zinc-900 bg-zinc-100 hover:bg-white transition-all rounded py-3.5 px-8 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
-            >
-              Acceder al Terminal
-              <IconArrowRight />
-            </Link>
+        <section className="max-w-5xl mx-auto px-6 pb-32">
+          <div className="frame relative overflow-hidden rounded-2xl border border-accent/40 bg-terminal-panel p-8 md:p-14">
+            <span className="frame-nombre" aria-hidden="true"># Tu firma, PRO</span>
+            <div className="lienzo-puntos absolute inset-0 opacity-60" aria-hidden="true" />
+            <div className="relative grid gap-8 md:grid-cols-[1.4fr_1fr] md:items-center">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-ink text-balance">
+                  Más de un millón de búsquedas ya pasaron por acá. Que la próxima te encuentre.
+                </h2>
+                <p className="mt-4 text-zinc-400">
+                  {totalConsignatarias} firmas en el directorio y {rematesProximos.length} remates próximos. Las PRO salen primero.
+                </p>
+              </div>
+              <div className="flex flex-col gap-3">
+                <Link
+                  href="/planes#consignataria"
+                  className="rounded-lg bg-accent px-6 py-4 text-center text-base font-semibold text-white oscuro:text-zinc-950 hover:bg-accent-bright transition-colors"
+                >
+                  Activar PRO · ARS 45.000/mes
+                </Link>
+                <Link
+                  href="/para-consignatarias"
+                  className="rounded-lg border border-zinc-700 px-6 py-4 text-center text-sm text-zinc-200 hover:border-accent hover:text-accent transition-colors"
+                >
+                  Cómo te ven las IAs →
+                </Link>
+              </div>
+            </div>
           </div>
         </section>
 

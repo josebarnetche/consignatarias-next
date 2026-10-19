@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { AnimatedPrice } from '@/components/AnimatedPrice'
 import { Stat, Delta, DeltaFlash } from '@/components/ui'
-import { signedTone, type SemanticTone } from '@/lib/ui/tokens'
+import { type SemanticTone } from '@/lib/ui/tokens'
 
 /* ================================================================== */
 /*  MarketHero — el número-hero compartido por /mercado/inmag y        */

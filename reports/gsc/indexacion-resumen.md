@@ -1,14 +1,14 @@
-# Indexación — 2026-10-16
+# Indexación — 2026-10-18
 
-Inspeccionadas 3516 de 2990 URLs del sitemap.
+Inspeccionadas 3539 de 2981 URLs del sitemap.
 
 | Sección | Inspeccionadas | Indexadas | NO indexadas | % |
 |---|---:|---:|---:|---:|
-| /remates | 1382 | 978 | 404 | 29% |
+| /remates | 1400 | 994 | 406 | 29% |
 | /productividad | 479 | 168 | 311 | 65% |
-| /consignatarias | 87 | 70 | 17 | 20% |
+| /consignatarias | 90 | 70 | 20 | 22% |
 | /frigorificos | 1144 | 1132 | 12 | 1% |
-| /calendario | 75 | 69 | 6 | 8% |
+| /calendario | 76 | 70 | 6 | 8% |
 | /precios | 117 | 114 | 3 | 3% |
 | /vr | 7 | 5 | 2 | 29% |
 | /mercado | 39 | 38 | 1 | 3% |
@@ -107,16 +107,17 @@ Inspeccionadas 3516 de 2990 URLs del sitemap.
 | /calendario-exportar | 1 | 1 | 0 | 0% |
 | /reporte-semanal | 1 | 1 | 0 | 0% |
 | /exportar | 1 | 1 | 0 | 0% |
+| /para-empresas | 1 | 1 | 0 | 0% |
 
 ## Motivos (coverageState)
 
 | Motivo | URLs |
 |---|---:|
-| Enviada e indexada | 2750 |
-| Descubierta: actualmente sin indexar | 456 |
+| Enviada e indexada | 2768 |
+| Descubierta: actualmente sin indexar | 457 |
 | Google no reconoce esta URL | 239 |
-| Rastreada: actualmente sin indexar | 38 |
-| Excluida por una etiqueta "noindex" | 17 |
+| Rastreada: actualmente sin indexar | 39 |
+| Excluida por una etiqueta "noindex" | 20 |
 | No se ha encontrado (404) | 6 |
 | Soft 404 | 6 |
 | Página con redirección | 3 |

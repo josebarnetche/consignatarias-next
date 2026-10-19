@@ -180,7 +180,7 @@ export function FrigorificoProvinceView({ provincia }: { provincia: string }) {
     },
     {
       question: '¿Qué significa el ciclo I, II o III de un frigorífico?',
-      answer: 'El ciclo indica la etapa de habilitación del establecimiento ante SENASA/MAGYP. Ciclo I corresponde a faena, Ciclo II a despostado/procesamiento y Ciclo III a ciclo completo. En este directorio cada planta muestra su ciclo asignado en el registro oficial.',
+      answer: 'El ciclo indica la etapa de habilitación del establecimiento ante SENASA/MAGYP. Ciclo I es matadero frigorífico (faena), Ciclo II es elaborador (procesa carne sin faenar) y Ciclo III es dador de frío (depósito en cámaras, sin faena ni elaboración). En este directorio cada planta muestra su ciclo asignado en el registro oficial.',
     },
     {
       question: `¿Dónde faenar hacienda en ${config.displayName}?`,

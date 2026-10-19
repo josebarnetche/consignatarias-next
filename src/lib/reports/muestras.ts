@@ -14,6 +14,8 @@ import type { Cartera } from './cartera'
 import type { Benchmark } from './benchmark'
 import type { Participacion } from './participacion'
 import type { Territorio } from './territorio'
+import type { OrigenVisitas } from './origen-visitas'
+import type { ResultadoVsMercado } from './resultado-vs-mercado'
 
 export const CARTERA_MUESTRA: Cartera = {
   slug: 'ejemplo',
@@ -131,4 +133,113 @@ export const TERRITORIO_MUESTRA: Territorio = {
     { partido: 'Trenque Lauquen', slugProvincia: 'buenos-aires', slugDepartamento: 'trenque-lauquen', propios: 0, totales: 79, cuota: 0, casas: 11, cabezasPropias: 0, stock: 361889, establecimientos: 724, escalaMedia: 500, indice: 0.66 },
     { partido: 'Adolfo Alsina', slugProvincia: 'buenos-aires', slugDepartamento: 'adolfo-alsina', propios: 0, totales: 68, cuota: 0, casas: 8, cabezasPropias: 0, stock: 245349, establecimientos: 812, escalaMedia: 302, indice: 0.64 },
   ],
+}
+
+/** Muestra del bloque "Quién te mira" (OrigenVisitas). Inventada, como todo lo de acá. */
+export const ORIGEN_VISITAS_MUESTRA: OrigenVisitas = {
+  porDia: Array.from({ length: 30 }, (_, i) => ({
+    dia: new Date(Date.UTC(2026, 0, 1 + i)).toISOString().slice(0, 10),
+    vistas: [2, 4, 3, 6, 1, 0, 5][i % 7] + (i % 5),
+  })),
+  total: 142,
+  porOrigen: [
+    { origen: 'buscadores', vistas: 58 },
+    { origen: 'sitio', vistas: 47 },
+    { origen: 'directo', vistas: 21 },
+    { origen: 'ias', vistas: 9 },
+    { origen: 'redes', vistas: 7 },
+  ],
+  porSeccion: [
+    { seccion: 'remates', vistas: 26 },
+    { seccion: 'directorio', vistas: 21 },
+  ],
+  sinDato: 0,
+  ias: [
+    { motor: 'ChatGPT', visitas: 6 },
+    { motor: 'Copilot', visitas: 3 },
+  ],
+  iasTotal: 9,
+  diaFuerte: 3,
+}
+
+/**
+ * Muestra de "Su precio contra el mercado" (ResultadoVsMercado), para las firmas del
+ * interior que todavía no son PRO. 17-10-2026. Inventada como todo lo de acá: el
+ * remate, las cabezas y los precios son de ejemplo, y las bandas son del orden de
+ * las del VR pero no son la banda de ningún día. Trae una fila de cada situación
+ * (arriba, en la banda, debajo, sin referencia) para que se vea qué responde el panel.
+ */
+export const RESULTADO_VS_MERCADO_MUESTRA: ResultadoVsMercado[] = [
+  {
+    id: 'ejemplo-1',
+    fecha: '2026-10-10',
+    titulo: 'Remate de ejemplo · Feria mensual',
+    provincia: 'Corrientes',
+    filas: [
+      {
+        categoria: 'Vaca', codigo: 'VACA', cabezas: 320, pesoKg: 420, precioFirma: 3150,
+        referencia: { p10: 2650, mediana: 3000, p90: 3600, lotes: 410, confianza: 'alta', base: 'rango_peso', rango: { desde_kg: 400, hasta_kg: 449 }, origen: null, fechaBanda: '2026-10-09' },
+        posicion: 'en la banda, arriba de la mediana', pctVsMediana: 5, nota: 'Banda nacional de los lotes de 400–449 kg.',
+      },
+      {
+        categoria: 'Novillito', codigo: 'NOVILLITO', cabezas: 140, pesoKg: null, precioFirma: 5150,
+        referencia: { p10: 3900, mediana: 4600, p90: 5000, lotes: 480, confianza: 'alta', base: 'categoria', rango: null, origen: null, fechaBanda: '2026-10-09' },
+        posicion: 'arriba de la banda', pctVsMediana: 12, nota: 'Banda nacional de la categoría.',
+      },
+      {
+        categoria: 'Vaquillona', codigo: 'VAQUILLONA', cabezas: 95, pesoKg: 300, precioFirma: 3300,
+        referencia: { p10: 3450, mediana: 4400, p90: 4900, lotes: 210, confianza: 'alta', base: 'rango_peso', rango: { desde_kg: 300, hasta_kg: 349 }, origen: null, fechaBanda: '2026-10-09' },
+        posicion: 'debajo de la banda', pctVsMediana: -25, nota: 'Banda nacional de los lotes de 300–349 kg.',
+      },
+      {
+        categoria: 'Ternero', codigo: null, cabezas: 610, pesoKg: 180, precioFirma: 5600,
+        referencia: null, posicion: null, pctVsMediana: null,
+        nota: 'El MAG no opera terneros por lote: no hay Valor de Referencia para esta categoría.',
+      },
+    ],
+  },
+]
+
+/**
+ * Muestra del bloque "Lo que buscan en Google sobre su firma" (BusquedasGoogle,
+ * 17-10-2026). Inventada, como todo lo de acá: "La Ejemplo" no es ninguna casa. Los
+ * órdenes de magnitud son los de una ficha real con tráfico de marca (miles de
+ * impresiones en 90 días, decenas de clics) para que se vea el tamaño del dato.
+ */
+// Tipo en línea (y no un import arriba) para que este agregado sea sólo al final del archivo.
+export const BUSQUEDAS_GOOGLE_MUESTRA: import('@/lib/gsc/fichas').BusquedasFicha = {
+  d28: {
+    dias: 28,
+    desde: '2026-01-04',
+    hasta: '2026-01-31',
+    impresiones: 712,
+    clics: 6,
+    posicion: 6.4,
+    consultas: [
+      { query: 'la ejemplo y cia', impresiones: 251, clics: 2, posicion: 6.1 },
+      { query: 'la ejemplo', impresiones: 133, clics: 1, posicion: 7.0 },
+      { query: 'la ejemplo remate hoy en vivo', impresiones: 22, clics: 1, posicion: 7.4 },
+      { query: 'remate la ejemplo en vivo', impresiones: 17, clics: 0, posicion: 7.8 },
+      { query: 'la ejemplo consignataria', impresiones: 9, clics: 0, posicion: 5.0 },
+    ],
+    actualizado: '2026-02-02T12:00:00Z',
+  },
+  d90: {
+    dias: 90,
+    desde: '2025-11-03',
+    hasta: '2026-01-31',
+    impresiones: 2840,
+    clics: 19,
+    posicion: 6.5,
+    consultas: [
+      { query: 'la ejemplo y cia', impresiones: 1310, clics: 6, posicion: 6.2 },
+      { query: 'la ejemplo', impresiones: 402, clics: 3, posicion: 7.1 },
+      { query: 'la ejemplo y cia srl', impresiones: 88, clics: 1, posicion: 5.8 },
+      { query: 'la ejemplo remate hoy en vivo', impresiones: 61, clics: 2, posicion: 7.5 },
+      { query: 'remate la ejemplo en vivo', impresiones: 44, clics: 0, posicion: 7.7 },
+      { query: 'la ejemplo consignataria', impresiones: 27, clics: 0, posicion: 5.0 },
+      { query: 'la ejemplo cuit', impresiones: 15, clics: 0, posicion: 4.2 },
+    ],
+    actualizado: '2026-02-02T12:00:00Z',
+  },
 }

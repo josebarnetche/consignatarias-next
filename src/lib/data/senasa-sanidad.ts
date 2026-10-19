@@ -26,7 +26,8 @@ export const FUENTES: Record<string, Fuente> = {
   ley_24305: { norma: 'Ley 24.305', titulo: 'Sanidad Animal', url: 'https://www.argentina.gob.ar/normativa/nacional/ley-24305-701/texto' },
   aftosa_plan: { norma: 'Res. SENASA 5/2001', titulo: 'Plan Nacional de Erradicación de la Fiebre Aftosa', url: 'https://www.argentina.gob.ar/senasa/programas-sanitarios/cadena-animal/bovinos-y-bubalinos/bovinos-y-bubalinos-produccion-primaria/fiebre-aftosa' },
   aftosa_calendario_2026: { norma: 'Res. SENASA 711/2025', titulo: 'Calendario de vacunación antiaftosa 2026', url: 'https://www.argentina.gob.ar/noticias/calendario-de-vacunacion-2026-para-las-campanas-contra-la-fiebre-aftosa' },
-  aftosa_2027: { norma: 'Res. SENASA 201/2026', titulo: 'Elección de veterinario privado acreditado para vacunar (anunciada para 2027 — verificar vigencia)', url: 'https://digesto.senasa.gob.ar/' },
+  aftosa_2027: { norma: 'Res. SENASA 201/2026', titulo: 'Libre elección del veterinario vacunador en las campañas de aftosa y brucelosis (rige desde el 1/1/2027)', url: 'https://www.argentina.gob.ar/normativa/nacional/norma-423874/texto' },
+  aftosa_2027_reglamento: { norma: 'Disp. DNSA-SENASA 27/2026', titulo: 'Reglamentación de la Res. 201/2026: elección del VPA, depósitos de frío y plazos (B.O. 15/10/2026)', url: 'https://www.boletinoficial.gob.ar/detalleAviso/primera/348998/20261015' },
   brucelosis_plan: { norma: 'Res. SENASA 67/2019', titulo: 'Plan Nacional de Control y Erradicación de Brucelosis Bovina', url: 'https://www.argentina.gob.ar/normativa/nacional/resoluci%C3%B3n-67-2019-319485/texto' },
   brucelosis_estrategica: { norma: 'Res. SENASA 957/2024', titulo: 'Vacunación estratégica RB51 y DeltaPGM en adultas', url: 'https://www.argentina.gob.ar/noticias/avanza-vacunacion-estrategica-antibrucelica-con-cepas-rb51-y-deltapgm' },
   brucelosis_movimiento: { norma: 'Res. SENASA 421/2025', titulo: 'Requisitos serológicos de brucelosis para movimiento/exposiciones', url: 'https://www.argentina.gob.ar/normativa/nacional/resoluci%C3%B3n-421-2025-413903/texto' },
@@ -112,9 +113,9 @@ export const PLANES: PlanSanitario[] = [
     regimen: 'Vacunación sistemática en la zona libre CON vacunación, según calendario anual. La zona libre SIN vacunación (Patagonia, Valles de Calingasta) no vacuna.',
     categorias_afectadas: '1ra campaña: la totalidad de las categorías bovinas y bubalinas. 2da campaña: solo terneros y terneras (refuerzo).',
     resumen:
-      'Plan Nacional de Erradicación (Res. 5/2001). SENASA fija la estrategia; los ~303 Entes Sanitarios ejecutan la vacunación en campo, con Planes Locales aprobados por CONALFA y coordinados con las COPROSA. Cambio anunciado para 2027 (Res. 201/2026, verificar vigencia): el productor podría elegir veterinario privado acreditado para aplicar la vacuna.',
+      'Plan Nacional de Erradicación (Res. 5/2001). SENASA fija la estrategia; los ~303 Entes Sanitarios ejecutan la vacunación en campo, con Planes Locales aprobados por CONALFA y coordinados con las COPROSA. Desde el 1/1/2027 (Res. 201/2026) el titular del RENSPA puede elegir un veterinario privado acreditado que compre, conserve y aplique la vacuna; si no elige, sigue con su Ente Sanitario. La elección para la 1ra campaña 2027 se informa entre el 15/10 y el 15/12/2026 (Disp. DNSA 27/2026).',
     zoonosis: false,
-    fuentes: ['aftosa_plan', 'aftosa_calendario_2026', 'aftosa_2027', 'ley_24305'],
+    fuentes: ['aftosa_plan', 'aftosa_calendario_2026', 'aftosa_2027', 'aftosa_2027_reglamento', 'ley_24305'],
   },
   {
     id: 'brucelosis',
@@ -123,12 +124,12 @@ export const PLANES: PlanSanitario[] = [
     especies: ['bovinos', 'bubalinos'],
     obligatorio: true,
     regimen:
-      'Vacunación obligatoria con cepa B19 al 100% de las terneras de 3 a 8 meses, en simultáneo con las campañas antiaftosa, en todo el país salvo la zona libre de brucelosis y tuberculosis (Tierra del Fuego, Antártida e Islas del Atlántico Sur). Res. 957/2024 suma vacunación estratégica voluntaria (RB51 / DeltaPGM) en hembras adultas ≥24 meses en establecimientos con casos.',
+      'Vacunación obligatoria con cepa B19 al 100% de las terneras de 3 a 8 meses, en simultáneo con las campañas antiaftosa, en todo el país salvo la zona libre de brucelosis y tuberculosis (Tierra del Fuego, Antártida e Islas del Atlántico Sur). Res. 957/2024 suma vacunación estratégica voluntaria (RB51 / DeltaPGM) en hembras adultas ≥24 meses en establecimientos con casos. Desde 2027 (Res. 201/2026) la puede aplicar el veterinario acreditado que elija el productor, junto con la antiaftosa.',
     categorias_afectadas: 'Terneras de 3 a 8 meses (B19, obligatoria). Adultas ≥24 meses (RB51/DeltaPGM, estratégica voluntaria).',
     resumen:
       'Plan Nacional de Control y Erradicación (Res. 67/2019). Para movimiento/exposiciones (Res. 421/2025): machos >6 meses y hembras >18 meses requieren 1 diagnóstico serológico negativo dentro de los 60 días corridos previos; exentos los provenientes de Establecimiento Libre de Brucelosis Bovina.',
     zoonosis: true,
-    fuentes: ['brucelosis_plan', 'brucelosis_estrategica', 'brucelosis_movimiento'],
+    fuentes: ['brucelosis_plan', 'brucelosis_estrategica', 'brucelosis_movimiento', 'aftosa_2027'],
   },
   {
     id: 'tuberculosis',
@@ -230,6 +231,46 @@ export const CALENDARIO_MENSUAL: Record<string, { campana: '1ra' | '2da' | null;
 export const SEGUNDA_CAMPANA_NOTA =
   '2da campaña (solo terneros y terneras): la ventana del 2do semestre es tentativa — el mes exacto lo fija tu Ente Sanitario.'
 
+// ── Vacunador elegido desde 2027 (Res. SENASA 201/2026 + Disp. DNSA 27/2026) ──
+// Texto de la resolución: B.O. 13/03/2026, rige desde el 1/1/2027, deroga la Res. 368/2011.
+// La disposición (B.O. 15/10/2026) sustituye su art. 2: la elección se informa del
+// 15/10 al 15/12 del año anterior a la 1ra campaña en la que se aplica.
+export const VACUNADOR_2027 = {
+  vigencia: 'Desde el 1 de enero de 2027',
+  plazo: 'Del 15/10 al 15/12/2026, ambos inclusive',
+  plazo_detalle: 'Para la 1ra campaña de 2027. En adelante, cada año del 15/10 al 15/12 del año anterior a la campaña.',
+  resumen:
+    'El titular del RENSPA puede elegir un Veterinario Privado Acreditado (VPA) para vacunar contra aftosa y brucelosis, en lugar del Ente Sanitario. El VPA puede comprar, conservar y aplicar las dos vacunas, en las campañas sistemáticas y en las estratégicas.',
+  puntos: [
+    {
+      titulo: 'Cómo se elige',
+      texto:
+        'El titular del RENSPA completa la declaración jurada en SIGTrámites de SENASA y el veterinario acepta o rechaza ahí mismo. La vinculación queda firme cuando el veterinario acepta. Un RENSPA puede tener un solo VPA.',
+    },
+    {
+      titulo: 'Si no elegís',
+      texto:
+        'El establecimiento sigue asociado al Ente Sanitario de su jurisdicción, como hasta ahora. Lo mismo pasa mientras el veterinario no acepta o si rechaza la designación.',
+    },
+    {
+      titulo: 'Qué tiene que tener el veterinario',
+      texto:
+        'Acreditación vigente de SENASA como vacunador de aftosa y en brucelosis bovina. Responde por la cadena de frío desde la compra hasta la aplicación, vacuna las terneras contra brucelosis junto con la aftosa y registra en SIGSA dentro de los 7 días corridos de vacunar.',
+    },
+    {
+      titulo: 'Cambiar de veterinario',
+      texto:
+        'La baja la puede pedir el productor o el veterinario por SIGTrámites; después hay que elegir de nuevo entre otro VPA o el Ente. Fuera del período 15/10–15/12, el cambio se pide en la Oficina Local de SENASA.',
+    },
+    {
+      titulo: 'Depósitos de frío',
+      texto:
+        'Quien guarde vacunas antiaftosa o antibrucélica, sea o no veterinario, inscribe el depósito en SIGTrámites con declaración jurada. Cada depósito guarda una reserva del 10% de las dosis y las vacunas se retiran dentro de las 24 horas previas a vacunar.',
+    },
+  ],
+  fuentes: ['aftosa_2027', 'aftosa_2027_reglamento'] as string[],
+}
+
 // ── Requisitos sanitarios de movimiento (bovinos) ────────────────────────────
 export interface RequisitoMovimiento {
   concepto: string
@@ -316,6 +357,18 @@ export const FAQ_SANIDAD: FaqSanidad[] = [
     respuesta:
       'En la 1ra campaña (enero a abril) se vacuna la totalidad de las categorías bovinas y bubalinas. En la 2da campaña se vacunan únicamente terneros y terneras (dosis de refuerzo). El día exacto lo fija el Plan Local de tu Ente Sanitario.',
     fuentes: ['aftosa_calendario_2026'],
+  },
+  {
+    pregunta: '¿Puedo elegir el veterinario que vacuna contra la aftosa?',
+    respuesta:
+      'Sí, desde el 1 de enero de 2027. La Res. SENASA 201/2026 permite que el titular del RENSPA elija un veterinario privado acreditado para vacunar contra aftosa y brucelosis. Para la 1ra campaña de 2027 la elección se informa en SIGTrámites entre el 15 de octubre y el 15 de diciembre de 2026, y el veterinario tiene que aceptarla.',
+    fuentes: ['aftosa_2027', 'aftosa_2027_reglamento'],
+  },
+  {
+    pregunta: '¿Qué pasa si no elijo veterinario para 2027?',
+    respuesta:
+      'Nada cambia: el establecimiento sigue asociado al Ente Sanitario de tu jurisdicción y vacuna como hasta ahora. Si después querés cambiar fuera del período 15/10–15/12, el pedido se hace en la Oficina Local de SENASA.',
+    fuentes: ['aftosa_2027', 'aftosa_2027_reglamento'],
   },
   {
     pregunta: '¿La Patagonia se vacuna contra la aftosa?',

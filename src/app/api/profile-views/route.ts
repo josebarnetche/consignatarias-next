@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true, throttled: true })
     }
 
-    const { entityType, entitySlug } = await req.json()
+    const { entityType, entitySlug, referrer: referrerCliente } = await req.json()
 
     if (!entityType || !entitySlug || typeof entityType !== 'string' || typeof entitySlug !== 'string') {
       return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
@@ -61,7 +61,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true })
     }
 
-    const referrer = req.headers.get('referer') || null
+    // El origen de la visita lo manda el cliente (`document.referrer`). Hasta el
+    // 17-10-2026 se guardaba el header Referer del POST, que es la propia ficha: los
+    // 1.800 registros de antes dicen todos "consignatarias.com.ar" y no sirven para
+    // contestar "desde dónde te miran". Sólo se acepta una URL http(s).
+    const referrer =
+      typeof referrerCliente === 'string' && /^https?:\/\//.test(referrerCliente)
+        ? referrerCliente.slice(0, 512)
+        : null
     const service = requireServiceClient()
 
     await service.from('profile_views').insert({

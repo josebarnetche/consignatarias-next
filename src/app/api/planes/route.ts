@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { BENEFICIOS_PRO_CONSIGNATARIA } from '@/lib/pro-consignataria-beneficios'
 
 export const dynamic = 'force-static';
 export const revalidate = false // Cost optimization: static at build time
@@ -32,22 +33,18 @@ const PLANS = {
     price: 45000,
     currency: 'ARS',
     billing: 'monthly',
-    description: 'Perfil destacado con badge PRO, analytics de visitas y soporte prioritario.',
-    features: [
-      'Perfil verificado y destacado',
-      'Analytics de perfil (vistas, clicks)',
-      'Remates con badge PRO',
-      'Logo y descripción personalizada',
-      'Soporte prioritario por email',
-      'Hasta 50 remates/mes',
-    ],
+    description: 'Sello ★ PRO, primera en el directorio y en el newsletter semanal, leads con nombre y contacto y panel de visitas.',
+    // La misma lista verificada que usa el panel (lib/pro-consignataria-beneficios).
+    // Antes decía "soporte prioritario" y "hasta 50 remates/mes": ninguna de las dos
+    // existía, y logo/descripción los edita cualquier firma que reclamó su ficha.
+    features: [...BENEFICIOS_PRO_CONSIGNATARIA],
     limits: {
       remates_per_month: 50,
       logo: true,
       analytics: true,
       api_access: false,
       api_rate_limit: null,
-      priority_support: true,
+      priority_support: false,
     },
     cta: {
       text: 'Suscribirse',

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { BENEFICIOS_PRO_CONSIGNATARIA } from '@/lib/pro-consignataria-beneficios'
 
 interface Props {
   slug: string
@@ -67,7 +68,7 @@ export default function ActivarProForm({ slug, displayName, views }: Props) {
 
         <p className="text-data text-zinc-400 font-terminal">
           Activá el perfil PRO de <span className="text-zinc-200 font-semibold">{displayName}</span> y
-          aparecé con prioridad ante los productores que buscan consignataria.
+          que tu firma aparezca primera ante los productores que buscan consignataria.
         </p>
 
         {state === 'error' && (
@@ -112,22 +113,13 @@ export default function ActivarProForm({ slug, displayName, views }: Props) {
             Tu perfil PRO incluye:
           </p>
           <ul className="space-y-1.5 text-xs text-zinc-400 font-terminal">
-            <li className="flex items-center gap-2">
-              <span className="text-positive">✓</span>
-              Prioridad de aparición (destacado) + badge PRO
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-positive">✓</span>
-              Analítica de tu perfil (vistas, ranking)
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-positive">✓</span>
-              Promoción de tus remates por email
-            </li>
-            <li className="flex items-center gap-2">
-              <span className="text-positive">✓</span>
-              Tu calendario distribuible y tu historial verificable
-            </li>
+            {/* La lista verificada (lib/pro-consignataria-beneficios), la misma de la propuesta. */}
+            {BENEFICIOS_PRO_CONSIGNATARIA.map((b) => (
+              <li key={b} className="flex items-start gap-2">
+                <span className="text-positive">✓</span>
+                {b}
+              </li>
+            ))}
           </ul>
         </div>
 

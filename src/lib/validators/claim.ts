@@ -11,8 +11,12 @@ export const claimSchema = z.object({
     .optional()
     .or(z.literal(''))
     .nullable(),
+  // Normalizado acá: la sesión de Supabase siempre es minúscula, y un reclamo con
+  // mayúsculas dejaba al dueño afuera de su propia ficha.
   claimant_email: z
     .string()
+    .trim()
+    .toLowerCase()
     .email('Email inválido')
     .max(255),
   claimant_name: z
@@ -45,6 +49,14 @@ export const claimReviewSchema = z.object({
     .max(1000)
     .optional()
     .or(z.literal('')),
+  /** Cómo se verificó la identidad de quien reclama. Obligatorio para aprobar
+   *  (lib/claims/aprobar.ts → METODOS_VERIFICACION). */
+  verificacion: z
+    .enum(['email_registrado', 'dominio_propio', 'documentacion', 'llamada'])
+    .optional(),
+}).refine((d) => d.status !== 'approved' || !!d.verificacion, {
+  message: 'Para aprobar hay que indicar cómo se verificó la identidad',
+  path: ['verificacion'],
 })
 
 export type ClaimReviewInput = z.infer<typeof claimReviewSchema>
@@ -58,8 +70,12 @@ export const frigorificoClaimSchema = z.object({
     .string()
     .min(1, 'El nombre es obligatorio')
     .max(255),
+  // Normalizado acá: la sesión de Supabase siempre es minúscula, y un reclamo con
+  // mayúsculas dejaba al dueño afuera de su propia ficha.
   claimant_email: z
     .string()
+    .trim()
+    .toLowerCase()
     .email('Email inválido')
     .max(255),
   claimant_name: z

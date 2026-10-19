@@ -5,12 +5,10 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useSearchParams, useRouter } from 'next/navigation'
-import WelcomeChecklist from '@/components/onboarding/WelcomeChecklist'
 import ProfileProgressTracker from '@/components/onboarding/ProfileProgressTracker'
-import { WelcomeHero, ProActivatedModule, type NextStep } from '@/components/welcome'
+import { ProActivatedModule, type NextStep } from '@/components/welcome'
 import { WhatsAppIconButton } from '@/components/share/WhatsAppShare'
-import { LayoutDashboard, CalendarDays, Pencil, BarChart3, CreditCard, Building2, Inbox, Package } from 'lucide-react'
-import QRCode from '@/components/QRCode'
+import { LayoutDashboard, CalendarDays, Pencil, BarChart3, CreditCard, Building2, Inbox, Package, TrendingUp } from 'lucide-react'
 import { UpgradeConfirmTracker } from '@/components/UpgradeConfirmTracker'
 import MarketIntelPanel from '@/components/MarketIntelPanel'
 import MagPulse from '@/components/MagPulse'
@@ -24,18 +22,29 @@ import CarteraPanel from '@/components/dashboard/CarteraPanel'
 import type { Cartera } from '@/lib/reports/cartera'
 import type { Territorio } from '@/lib/reports/territorio'
 import { TerritorioPanel } from '@/components/dashboard/TerritorioPanel'
-import { TERRITORIO_MUESTRA } from '@/lib/reports/muestras'
 import ParticipacionMercado from '@/components/dashboard/ParticipacionMercado'
 import type { Participacion } from '@/lib/reports/participacion'
-import BandejaEntrada from '@/components/dashboard/BandejaEntrada'
 import type { Bandeja } from '@/lib/reports/bandeja'
 import AgendaRegionalPanel from '@/components/dashboard/AgendaRegionalPanel'
 import type { AgendaRegional } from '@/lib/reports/agenda-regional'
-import MuestraPro from '@/components/dashboard/MuestraPro'
-import { CARTERA_MUESTRA, BENCHMARK_MUESTRA, PARTICIPACION_MUESTRA } from '@/lib/reports/muestras'
 import type { ResumenDistribucion } from '@/lib/promotion'
-import { whatsappLink } from '@/lib/leads/routing'
 import type { Performance } from '@/lib/reports/performance'
+import type { ConsignatariaPlanStatus } from '@/lib/features'
+import { BENEFICIOS_PRO_CONSIGNATARIA } from '@/lib/pro-consignataria-beneficios'
+import OrigenVisitas from '@/components/dashboard/OrigenVisitas'
+import type { PreofertaFirma, OfertaRecibida } from '@/components/dashboard/PreofertasManager'
+import ResultadoVsMercado from '@/components/dashboard/ResultadoVsMercado'
+import BusquedasGoogle from '@/components/dashboard/BusquedasGoogle'
+import CambiarContrasena from '@/components/dashboard/CambiarContrasena'
+import type { BusquedasFicha } from '@/lib/gsc/fichas'
+import type { ResultadoVsMercado as ResultadoVsMercadoDatos } from '@/lib/reports/resultado-vs-mercado'
+import type { OrigenVisitas as OrigenVisitasDatos } from '@/lib/reports/origen-visitas'
+import { provinciaNombre } from '@/lib/ui/tokens'
+import { mensajeError } from '@/lib/ui/mensaje-error'
+import { Tarjeta, Numero, Vacio, SoloPro, BotonPrimario, BotonSecundario, Hoja, BloqueFecha, fmt } from '@/components/panel/PanelUi'
+import ConsultasLista from '@/components/panel/ConsultasLista'
+import RematesPanel, { hoyAr } from '@/components/panel/RematesPanel'
+import CompartirRemate from '@/components/panel/CompartirRemate'
 
 interface Consignataria {
   display_name: string
@@ -48,6 +57,8 @@ interface Consignataria {
   whatsapp?: string | null
   cuit?: string | null
   logo_url?: string | null
+  /** Fondo para un logo blanco del directorio (color de la marca). */
+  logo_fondo?: string | null
 }
 
 interface Claim {
@@ -63,6 +74,17 @@ interface ScrapedAuction {
   date: string
   location: string
   time: string | null
+  /** "fecha|LOCALIDAD": con esto la corrección de la firma reemplaza a este remate. */
+  clave?: string
+  province?: string
+  type?: string
+  main_category?: string
+  estimated_heads?: number | null
+  description?: string
+  catalog_url?: string | null
+  youtube_url?: string | null
+  /** Ficha pública del remate (/remates/…). */
+  path?: string | null
 }
 
 interface OwnerAuction {
@@ -78,7 +100,10 @@ interface OwnerAuction {
   description: string | null
   catalog_url: string | null
   youtube_url: string | null
+  flyer_url?: string | null
+  reemplaza_clave?: string | null
   status: string
+  path?: string | null
 }
 
 interface AuctionResult {
@@ -167,6 +192,9 @@ interface Lead {
   message: string | null
   source: string | null
   status: string | null
+  notes?: string | null
+  contacted_at?: string | null
+  updated_at?: string | null
   created_at: string
 }
 
@@ -208,6 +236,14 @@ interface Props {
   provincialRank: { position: number; total: number; province: string }
   completedFields: CompletedFields | null
   subscription: Subscription | null
+  /** Estado de plan decidido en el server (getConsignatariaPlanStatus). Única fuente. */
+  plan?: ConsignatariaPlanStatus
+  origenVisitas?: OrigenVisitasDatos | null
+  vistaAdmin?: VistaAdmin | null
+  preofertasFirma?: PreofertaFirma[]
+  ofertasFirma?: OfertaRecibida[]
+  resultadosVR?: ResultadoVsMercadoDatos[] | null
+  busquedasGoogle?: BusquedasFicha | null
   frigorifico?: Frigorifico | null
   frigoClaims?: FrigoClaim[]
   frigoProducts?: FrigoProduct[]
@@ -215,7 +251,17 @@ interface Props {
   frigoIsPro?: boolean
   dteCount?: number
   alreadyRedeemed?: boolean
+  /** Productores que reciben el mail semanal de remates. */
+  alcanceMail?: number
 }
+
+/** "Ver como" de admin: el panel de una firma, con el plan forzado o el real. */
+export interface VistaAdmin {
+  slug: string
+  vista: 'pro' | 'free' | 'real'
+}
+
+const PLAN_FREE: ConsignatariaPlanStatus = { isPro: false, tier: 'free', source: null, periodEnd: null }
 
 function formatDate(d: string) {
   const parts = d.split('-')
@@ -223,30 +269,32 @@ function formatDate(d: string) {
   return `${parts[2]}/${parts[1]}`
 }
 
-type TabKey = 'resumen' | 'leads' | 'remates' | 'editar' | 'resultados' | 'plan' | 'frigorifico' | 'catalogo' | 'pedidos'
+type TabKey = 'resumen' | 'leads' | 'remates' | 'preofertas' | 'editar' | 'resultados' | 'estadisticas' | 'audiencia' | 'mercado' | 'plan' | 'frigorifico' | 'catalogo' | 'pedidos'
 
 export default function DashboardClient({
   email, consignataria, claims, scrapedAuctions, ownerAuctions: initialOwnerAuctions,
-  auctionResults, viewCount, whatsappClicks, leadsCount, followersCount = 0, marksCount = 0, leads = [], totalWatchers, viewPercentile, provincialRank, completedFields, subscription, frigorifico, frigoClaims = [],
+  auctionResults, viewCount, whatsappClicks, leadsCount, followersCount = 0, leads = [], provincialRank, completedFields, subscription, plan = PLAN_FREE, origenVisitas = null, vistaAdmin = null, preofertasFirma = [], ofertasFirma = [], resultadosVR = null, busquedasGoogle = null, frigorifico, frigoClaims = [],
   frigoProducts = [], frigoRfqs = [], frigoIsPro = false,
-  dteCount = 0, alreadyRedeemed = false, performance = null, distribucion = null, benchmark = null, cartera = null, territorio = null, territorioTitular = '', participacion = null, bandeja = null, hayDatosMag = false, agenda = null,
+  dteCount = 0, alreadyRedeemed = false, alcanceMail = 0, performance = null, distribucion = null, benchmark = null, cartera = null, territorio = null, territorioTitular = '', participacion = null, hayDatosMag = false, agenda = null,
 }: Props) {
   const searchParams = useSearchParams()
+  const router = useRouter()
   const justUpgraded = searchParams.get('upgraded') === 'true'
   const tabParam = searchParams.get('tab') as TabKey | null
   const [showUpgradeToast, setShowUpgradeToast] = useState(justUpgraded)
   const [upgradeConfirmed, setUpgradeConfirmed] = useState(false)
   const [upgradePollCount, setUpgradePollCount] = useState(0)
   const [activeTab, setActiveTab] = useState<TabKey>(tabParam || 'resumen')
-  const [ownerAuctions, setOwnerAuctions] = useState(initialOwnerAuctions)
+  // Viene del server: la hoja de remates hace router.refresh() al guardar.
+  const ownerAuctions = initialOwnerAuctions
+  // "Cargar remate" desde Inicio abre la hoja de carga al llegar a Remates.
+  const [abrirCarga, setAbrirCarga] = useState(false)
+  // Los enlaces internos (?tab=…, p. ej. desde la bandeja o los mails) cambian la
+  // sección aunque el panel ya esté abierto.
+  useEffect(() => {
+    if (tabParam) setActiveTab(tabParam)
+  }, [tabParam])
 
-  // Se muestra mientras falte algo esencial (WhatsApp, un remate, teléfono). Antes
-  // exigía los 5 campos del perfil, y como la descripción no la tiene NINGUNA firma
-  // (0 de 130), el bloque quedaba pegado en el panel para siempre.
-  const showChecklist = !!consignataria && !!completedFields && (
-    !completedFields.whatsapp || !completedFields.phone ||
-    (ownerAuctions.length === 0 && scrapedAuctions.length === 0)
-  )
 
 
   // Points redemption state
@@ -254,14 +302,14 @@ export default function DashboardClient({
   const [hasRedeemed, setHasRedeemed] = useState(alreadyRedeemed)
   const [redeemError, setRedeemError] = useState<string | null>(null)
 
-  const tierLabel = (upgradeConfirmed || subscription || hasRedeemed)
-    ? (subscription?.plan_name || '').toLowerCase().includes('enterprise')
-      ? 'ENTERPRISE'
-      : 'PRO'
-    : 'FREE'
+  // El plan lo decide el server (`plan`, la misma regla que gatea los datos). Acá no
+  // se recalcula: si el cliente dijera PRO y el server no, el panel mostraría los
+  // bloques pagos vacíos; al revés, mostraría muestras de ejemplo con los datos reales
+  // ya en mano.
+  const tierLabel = plan.isPro ? (plan.tier === 'enterprise' ? 'ENTERPRISE' : 'PRO') : 'FREE'
 
-  // PRO ya activo (suscripción confirmada) vs todavía procesando el pago.
-  const proActivated = !!subscription || upgradeConfirmed
+  // PRO ya activo vs todavía procesando el pago.
+  const proActivated = plan.isPro || upgradeConfirmed
   const proConfirming = justUpgraded && !proActivated
 
   // Próximos pasos de activación PRO — destinos reales del dashboard.
@@ -302,7 +350,7 @@ export default function DashboardClient({
         // Show success and refresh to get updated subscription
         window.location.reload()
       } else {
-        setRedeemError(data.error || 'Error al canjear puntos')
+        setRedeemError(mensajeError(data, 'Error al canjear puntos'))
       }
     } catch {
       setRedeemError('Error de conexión')
@@ -313,7 +361,7 @@ export default function DashboardClient({
 
   // Poll subscription status after upgrade redirect
   useEffect(() => {
-    if (!justUpgraded || subscription || upgradeConfirmed) return
+    if (!justUpgraded || plan.isPro || upgradeConfirmed) return
     if (upgradePollCount >= 12) return // Stop after 60s (12 x 5s)
 
     const timer = setTimeout(async () => {
@@ -322,6 +370,8 @@ export default function DashboardClient({
         const data = await res.json()
         if (data.status === 'active') {
           setUpgradeConfirmed(true)
+          // El server recalcula el plan y manda los bloques PRO con el dato real.
+          router.refresh()
         } else {
           setUpgradePollCount(prev => prev + 1)
         }
@@ -331,32 +381,122 @@ export default function DashboardClient({
     }, 5000)
 
     return () => clearTimeout(timer)
-  }, [justUpgraded, subscription, upgradeConfirmed, upgradePollCount])
+  }, [justUpgraded, plan.isPro, upgradeConfirmed, upgradePollCount, router])
 
-  // Build tab list with icons
-  const tabs: { key: TabKey; label: string; icon: React.ReactNode }[] = [
-    { key: 'resumen', label: 'Resumen', icon: <LayoutDashboard className="w-3.5 h-3.5" /> },
+  // NAVEGACIÓN (v2, 18-10-2026): siete lugares, ordenados por lo que la firma hace.
+  // Las claves viejas siguen andando (?tab=leads, ?tab=editar, ?tab=preofertas…)
+  // porque hay enlaces en mails y en la bandeja que las usan.
+  const hoy = hoyAr()
+  const proximos = [
+    ...ownerAuctions.map((a) => ({ date: a.date, time: a.time, title: a.title, location: a.location ?? '', path: a.path ?? null })),
+    ...scrapedAuctions.map((a) => ({ date: a.date, time: a.time, title: a.title, location: a.location, path: a.path ?? null })),
+  ]
+    .filter((a) => a.date >= hoy)
+    .sort((a, b) => a.date.localeCompare(b.date) || (a.time ?? '').localeCompare(b.time ?? ''))
+  const esPro = tierLabel !== 'FREE'
+  const consultasRecientes = leads.filter((l) => Date.now() - new Date(l.created_at).getTime() < 7 * 86_400_000).length
+  const [compartirInicio, setCompartirInicio] = useState<null | (typeof proximos)[number] | 'firma'>(null)
+
+  const tabs: { key: TabKey; label: string; count?: number; icon: React.ReactNode }[] = [
+    { key: 'resumen', label: 'Inicio', icon: <LayoutDashboard className="h-[18px] w-[18px]" /> },
   ]
   if (consignataria?.verified) {
-    tabs.push({ key: 'leads', label: `Leads (${leadsCount})`, icon: <Inbox className="w-3.5 h-3.5" /> })
-    tabs.push({ key: 'remates', label: `Remates (${scrapedAuctions.length + ownerAuctions.length})`, icon: <CalendarDays className="w-3.5 h-3.5" /> })
-    tabs.push({ key: 'editar', label: 'Editar', icon: <Pencil className="w-3.5 h-3.5" /> })
-    tabs.push({ key: 'resultados', label: 'Resultados', icon: <BarChart3 className="w-3.5 h-3.5" /> })
+    tabs.push({ key: 'remates', label: 'Remates', count: proximos.length, icon: <CalendarDays className="h-[18px] w-[18px]" /> })
+    tabs.push({ key: 'leads', label: 'Consultas', count: consultasRecientes, icon: <Inbox className="h-[18px] w-[18px]" /> })
+    tabs.push({ key: 'resultados', label: 'Resultados', icon: <BarChart3 className="h-[18px] w-[18px]" /> })
+    tabs.push({ key: 'estadisticas', label: 'Estadísticas', icon: <TrendingUp className="h-[18px] w-[18px]" /> })
+    tabs.push({ key: 'editar', label: 'Mi ficha', icon: <Pencil className="h-[18px] w-[18px]" /> })
   }
-  tabs.push({ key: 'plan', label: 'Mi plan', icon: <CreditCard className="w-3.5 h-3.5" /> })
+  tabs.push({ key: 'plan', label: 'Mi plan', icon: <CreditCard className="h-[18px] w-[18px]" /> })
   if (frigorifico) {
-    tabs.push({ key: 'frigorifico', label: 'Frigorífico', icon: <Building2 className="w-3.5 h-3.5" /> })
+    tabs.push({ key: 'frigorifico', label: 'Frigorífico', icon: <Building2 className="h-[18px] w-[18px]" /> })
     if (frigorifico.verified) {
-      tabs.push({ key: 'catalogo', label: `Catálogo (${frigoProducts.length})`, icon: <Package className="w-3.5 h-3.5" /> })
-      tabs.push({ key: 'pedidos', label: `Pedidos (${frigoRfqs.length})`, icon: <Inbox className="w-3.5 h-3.5" /> })
+      tabs.push({ key: 'catalogo', label: 'Catálogo', count: frigoProducts.length, icon: <Package className="h-[18px] w-[18px]" /> })
+      tabs.push({ key: 'pedidos', label: 'Pedidos', count: frigoRfqs.length, icon: <Inbox className="h-[18px] w-[18px]" /> })
     }
   }
+  // Claves viejas → la sección nueva que las contiene.
+  const seccion: TabKey = activeTab === 'preofertas' ? 'remates' : activeTab === 'audiencia' || activeTab === 'mercado' ? 'estadisticas' : activeTab
 
   const hasPendingClaim = claims.some(c => c.status === 'pending') || frigoClaims.some(c => c.status === 'pending')
   const hasVerified = consignataria?.verified || frigorifico?.verified
+  const irA = (t: TabKey) => {
+    setActiveTab(t)
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  // La ficha, campo por campo: lo que el productor ve cuando entra al perfil.
+  const ficha = consignataria
+    ? [
+        { campo: 'Logo', listo: !!consignataria.logo_url },
+        { campo: 'WhatsApp', listo: !!consignataria.whatsapp },
+        { campo: 'Teléfono', listo: !!consignataria.phone },
+        { campo: 'Email', listo: !!consignataria.email },
+        { campo: 'Sitio web', listo: !!consignataria.website },
+        { campo: 'Descripción', listo: !!consignataria.description },
+      ]
+    : []
+  const faltaEnFicha = ficha.filter((f) => !f.listo).map((f) => f.campo.toLowerCase())
+  const sitio = 'https://www.consignatarias.com.ar'
+
+  // SUGERENCIAS DEL DÍA: el panel mira lo que hay y propone la próxima acción, una por
+  // línea y con su botón. Es lo primero que ve la firma: qué hacer hoy, no un tablero.
+  const prox = proximos[0]
+  const diasAlProx = prox ? Math.round((new Date(prox.date + 'T12:00:00').getTime() - new Date(hoy + 'T12:00:00').getTime()) / 86_400_000) : null
+  const cuandoProx = prox
+    ? diasAlProx === 0 ? 'hoy' : diasAlProx === 1 ? 'mañana' : `el ${new Date(prox.date + 'T12:00:00').toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric' })}`
+    : ''
+  const sugerencias: { id: string; texto: React.ReactNode; boton: string; accion: () => void }[] = []
+  if (consignataria?.verified) {
+    const nuevas = leads.filter((l) => (l.status ?? 'new') === 'new' && Date.now() - new Date(l.created_at).getTime() < 14 * 86_400_000).length
+    if (nuevas > 0) sugerencias.push({ id: 'consultas', texto: <><strong className="text-ink">{nuevas === 1 ? 'Tenés una consulta nueva.' : `Tenés ${nuevas} consultas nuevas.`}</strong> Contestá rápido: el productor suele escribirle a varias casas.</>, boton: 'Ver consultas', accion: () => irA('leads') })
+    if (prox && diasAlProx != null && diasAlProx <= 14) {
+      sugerencias.push({
+        id: 'compartir',
+        texto: <><strong className="text-ink">Tu remate es {cuandoProx}.</strong> {esPro && alcanceMail > 0 ? `Sale primero en el mail semanal a ${fmt(alcanceMail)} productores. ` : ''}Compartilo por WhatsApp con tus clientes: la tarjeta y el QR ya están armados.</>,
+        boton: 'Compartir',
+        accion: () => setCompartirInicio(prox),
+      })
+      if (esPro && !preofertasFirma.some((p) => p.fecha_remate === prox.date)) {
+        sugerencias.push({ id: 'preofertas', texto: <><strong className="text-ink">Abrí pre-ofertas para {prox.title}.</strong> Cargá los lotes con su video y recibí ofertas antes del martillo.</>, boton: 'Abrir', accion: () => irA('remates') })
+      }
+    }
+    if (!prox) sugerencias.push({ id: 'cargar', texto: <><strong className="text-ink">No tenés remates próximos publicados.</strong> Subí el flyer del próximo y lo distribuimos en el calendario y el mail semanal.</>, boton: 'Cargar remate', accion: () => { setAbrirCarga(true); irA('remates') } })
+    if (faltaEnFicha.length > 0 && sugerencias.length < 3) sugerencias.push({ id: 'ficha', texto: <><strong className="text-ink">A tu ficha le falta {faltaEnFicha.slice(0, 2).join(' y ')}.</strong> Las fichas completas reciben más consultas.</>, boton: 'Completar', accion: () => irA('editar') })
+  }
+
+  const saludo = consignataria?.display_name ?? frigorifico?.display_name ?? 'tu panel'
+  const encabezado = (titulo: string, sub?: React.ReactNode, acciones?: React.ReactNode) => (
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div className="min-w-0">
+        <h1 className="text-[1.75rem] font-semibold leading-tight tracking-tight text-ink sm:text-[2rem]">{titulo}</h1>
+        {sub && <p className="mt-1.5 max-w-2xl text-[0.9375rem] text-zinc-500">{sub}</p>}
+      </div>
+      {acciones && <div className="flex shrink-0 flex-wrap gap-2">{acciones}</div>}
+    </div>
+  )
 
   return (
-    <div className="max-w-3xl mx-auto px-2 sm:px-4 py-4 space-y-4">
+    <div className="relative min-h-[80vh] bg-gradient-to-b from-accent/[0.035] via-transparent to-transparent">
+      <div className="panel-crm relative mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:py-10">
+      {vistaAdmin && (
+        <div className="mb-6 rounded-2xl bg-warning/10 px-5 py-4 ring-1 ring-inset ring-warning/30">
+          <p className="text-sm text-ink">
+            Estás viendo el panel de <strong>{consignataria?.display_name ?? vistaAdmin.slug}</strong> como lo vería
+            su dueño{vistaAdmin.vista === 'pro' ? ' con PRO' : vistaAdmin.vista === 'free' ? ' sin PRO' : ', con su plan real'}.
+            Es de sólo lectura: los cambios no se guardan.
+          </p>
+          <div className="mt-2 flex flex-wrap gap-3 text-xs">
+            {(['pro', 'free', 'real'] as const).map((v) => (
+              <a key={v} href={`/dashboard?como=${vistaAdmin.slug}&vista=${v}`} className={vistaAdmin.vista === v ? 'font-semibold text-ink underline' : 'text-accent hover:underline'}>
+                {v === 'pro' ? 'Vista PRO' : v === 'free' ? 'Vista FREE' : 'Plan real'}
+              </a>
+            ))}
+            <a href="/admin/ver-como" className="text-zinc-400 hover:underline">Otra firma</a>
+            <a href="/dashboard" className="text-zinc-400 hover:underline">Salir</a>
+          </div>
+        </div>
+      )}
       {/* Fire the GA4 pro_upgrade conversion only once PRO is DB-confirmed
           (subscription prop or polled /api/subscription-status), never on the
           bare ?upgraded=true redirect param. */}
@@ -366,171 +506,377 @@ export default function DashboardClient({
         price={tierLabel === 'ENTERPRISE' ? 0 : 45000}
         dedupeId={subscription?.rebill_subscription_id ?? null}
       />
-      {/* Bienvenida post-upgrade — "ya sos PRO, esto desbloqueaste" + proximos pasos */}
       {showUpgradeToast && (tierLabel === 'PRO' || tierLabel === 'ENTERPRISE' || proConfirming) && (
-        <ProActivatedModule
-          tier={tierLabel === 'ENTERPRISE' ? 'ENTERPRISE' : 'PRO'}
-          periodEnd={subscription?.current_period_end}
-          confirming={proConfirming}
-          steps={proNextSteps}
-          onClose={() => setShowUpgradeToast(false)}
-        />
-      )}
-
-      {/* Header */}
-      <div className="terminal-panel">
-        <div className="terminal-panel-header flex items-center justify-between">
-          <span className="text-zinc-200 text-label tracking-widest">MI PANEL</span>
-          <div className="flex items-center gap-2">
-            {consignataria?.verified && (
-              <span className="text-xxs font-terminal px-1.5 py-0.5 border border-positive/30 text-positive rounded-terminal">VERIFICADA</span>
-            )}
-            {(tierLabel === 'PRO' || tierLabel === 'ENTERPRISE') && (
-              <span className="text-xxs font-terminal px-1.5 py-0.5 border border-accent/40 text-accent rounded-terminal">{tierLabel}</span>
-            )}
-          </div>
-        </div>
-        {/* IDENTIDAD DE LA FIRMA.
-            Antes era una línea de texto con el nombre y un enlace. Ahora la casa se
-            reconoce al entrar: su logo, cómo se ve su perfil público, y el próximo
-            remate que encontramos en el calendario — que es la prueba concreta de que
-            la estamos siguiendo, aunque todavía no haya recibido una sola consulta. */}
-        <div className="px-panel py-4">
-          {consignataria ? (
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-              <span className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-terminal border border-terminal-border bg-zinc-100">
-                {consignataria.logo_url ? (
-                  /* eslint-disable-next-line @next/next/no-img-element */
-                  <img
-                    src={consignataria.logo_url}
-                    alt={consignataria.display_name}
-                    className="h-full w-full object-contain p-1"
-                  />
-                ) : (
-                  <ImagenTema src="/marca/iconos-color/casa-remates.png" alt="" className="h-8 w-8" />
-                )}
-              </span>
-
-              <div className="min-w-0 flex-1">
-                <h2 className="text-lg font-semibold leading-tight text-zinc-50">
-                  {consignataria.display_name}
-                </h2>
-                <p className="mt-0.5 text-xxs font-terminal text-zinc-500">{email}</p>
-
-                <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
-                  <Link
-                    href={`/consignatarias/${consignataria.canonical_slug}`}
-                    className="text-xs font-medium text-accent hover:underline"
-                  >
-                    Ver tu perfil público →
-                  </Link>
-                  {!consignataria.logo_url && (
-                    <button
-                      onClick={() => setActiveTab('editar')}
-                      className="text-xs text-amber-300 hover:underline"
-                    >
-                      Subí tu logo
-                    </button>
-                  )}
-                </div>
-
-                {/* Próximo remate encontrado en el calendario. Sale del scrape, así
-                    que aparece sin que la firma haya cargado nada. */}
-                {(() => {
-                  const prox = [...ownerAuctions.map((a) => ({ date: a.date, title: a.title, location: a.location })),
-                                ...scrapedAuctions.map((a) => ({ date: a.date, title: a.title, location: a.location }))]
-                    .filter((a) => a.date >= new Date().toISOString().slice(0, 10))
-                    .sort((a, b) => a.date.localeCompare(b.date))[0]
-                  if (!prox) {
-                    return (
-                      <p className="mt-2 text-xs text-zinc-500">
-                        No tenemos ningún remate próximo tuyo en el calendario.{' '}
-                        <button onClick={() => setActiveTab('remates')} className="text-accent hover:underline">
-                          Cargá uno
-                        </button>
-                        .
-                      </p>
-                    )
-                  }
-                  const cuando = new Date(prox.date + 'T12:00:00').toLocaleDateString('es-AR', {
-                    weekday: 'long', day: '2-digit', month: 'long',
-                  })
-                  return (
-                    <p className="mt-2 text-xs leading-snug text-zinc-400">
-                      <span className="text-zinc-500">Tu próximo remate:</span>{' '}
-                      <span className="text-zinc-200">{cuando}</span>
-                      {prox.location ? ` · ${prox.location}` : ''}
-                      {prox.title ? ` — ${prox.title}` : ''}
-                    </p>
-                  )
-                })()}
-              </div>
-            </div>
-          ) : (
-            <span className="text-xxs font-terminal text-zinc-500">{email}</span>
-          )}
-        </div>
-      </div>
-
-      {/* Tab Navigation */}
-      {(consignataria || frigorifico) && (
-        <div className="terminal-panel">
-          <div className="flex items-center gap-0 overflow-x-auto">
-            {tabs.map(tab => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`px-4 py-2.5 text-xxs font-terminal uppercase tracking-wider transition-colors border-b-2 flex-shrink-0 flex items-center gap-1.5 ${
-                  activeTab === tab.key
-                    ? 'text-accent border-accent bg-accent/5'
-                    : 'text-zinc-500 border-transparent hover:text-zinc-300 hover:border-zinc-700'
-                }`}
-              >
-                {tab.icon}
-                <span className="hidden sm:inline">{tab.label}</span>
-                <span className="sm:hidden">{tab.key === 'remates' ? `(${scrapedAuctions.length + ownerAuctions.length})` : ''}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* key={activeTab} re-dispara el cross-fade (page-transition) en cada cambio
-          de tab, sin cambiar la semántica de estado. */}
-      <div key={activeTab} className="page-transition space-y-4">
-      {/* ============ TAB: RESUMEN ============ */}
-      {activeTab === 'resumen' && (
-        <>
-          {/* Saludo + estado de cuenta (dato real de valor) */}
-          <WelcomeHero
-            email={email}
-            displayName={consignataria?.display_name ?? frigorifico?.display_name}
-            tier={tierLabel as 'FREE' | 'PRO' | 'ENTERPRISE'}
+        <div className="mb-6">
+          <ProActivatedModule
+            tier={tierLabel === 'ENTERPRISE' ? 'ENTERPRISE' : 'PRO'}
             periodEnd={subscription?.current_period_end}
-            viewCount={consignataria?.verified ? viewCount : null}
-            viewPercentile={consignataria?.verified ? viewPercentile : 0}
-            provincialRank={provincialRank}
+            confirming={proConfirming}
+            steps={proNextSteps}
+            onClose={() => setShowUpgradeToast(false)}
           />
+        </div>
+      )}
 
-          {/* Pulso del mercado — drip animado de la actividad de Cañuelas (dopamina + progreso) */}
-          <div className="mt-4">
-            <MagPulse />
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-12">
+        {/* ── Barra lateral ── */}
+        <aside className="min-w-0 lg:sticky lg:top-20 lg:self-start">
+          <div className="flex items-center gap-3">
+            <span
+              className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-xl bg-zinc-100 ring-1 ring-inset ring-terminal-border"
+              style={consignataria?.logo_fondo ? { backgroundColor: consignataria.logo_fondo } : undefined}
+            >
+              {consignataria?.logo_url ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img src={consignataria.logo_url} alt={consignataria.display_name} className="h-full w-full object-contain p-1" />
+              ) : (
+                <ImagenTema src="/marca/iconos-color/casa-remates.png" alt="" className="h-6 w-6" />
+              )}
+            </span>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold text-ink">{saludo}</p>
+              <p className="mt-0.5 text-xs">
+                <span className={esPro ? 'font-semibold text-accent' : 'text-zinc-500'}>{esPro ? `★ ${tierLabel}` : 'Plan gratis'}</span>
+              </p>
+            </div>
           </div>
 
-          {/* Intel de mercado — seguí la actividad de la competencia en el MAG (gancho + upsell) */}
+          {(consignataria || frigorifico) && (
+            <nav className="-mx-4 mt-6 flex gap-1 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0" aria-label="Secciones del panel">
+              {tabs.map((tab) => {
+                const activo = seccion === tab.key
+                return (
+                  <button
+                    key={tab.key}
+                    onClick={() => irA(tab.key)}
+                    aria-current={activo ? 'page' : undefined}
+                    className={`flex shrink-0 items-center gap-3 rounded-full px-4 py-2.5 text-[0.9375rem] transition-colors lg:rounded-xl ${
+                      activo ? 'bg-accent text-white oscuro:text-zinc-950 font-medium shadow-sm' : 'text-zinc-400 hover:bg-zinc-800/60 hover:text-ink'
+                    }`}
+                  >
+                    {tab.icon}
+                    <span className="whitespace-nowrap lg:flex-1 lg:text-left">{tab.label}</span>
+                    {tab.count != null && tab.count > 0 && (
+                      <span className={`rounded-full px-2 text-xs tabular-nums ${activo ? 'bg-white/20' : 'bg-zinc-800 text-zinc-400'}`}>{tab.count}</span>
+                    )}
+                  </button>
+                )
+              })}
+            </nav>
+          )}
+
           {consignataria && (
-            <div className="mt-4">
-              <MarketIntelPanel />
+            <div className="mt-6 hidden space-y-2 text-sm lg:block">
+              <Link href={`/consignatarias/${consignataria.canonical_slug}`} className="block text-zinc-500 hover:text-accent">Ver mi perfil público ↗</Link>
+              <button type="button" onClick={() => setCompartirInicio('firma')} className="block text-zinc-500 hover:text-accent">Compartir mi página ↗</button>
             </div>
           )}
+        </aside>
 
-          {showChecklist && completedFields && consignataria && (
-            <WelcomeChecklist profileSlug={consignataria.canonical_slug} displayName={consignataria.display_name} completedFields={completedFields} tieneRemate={ownerAuctions.length > 0 || scrapedAuctions.length > 0} />
+        {/* ── Contenido ── */}
+        <main key={seccion} className="page-transition min-w-0 space-y-8">
+      {/* ============ INICIO ============ */}
+      {seccion === 'resumen' && consignataria?.verified && (
+        <>
+          {encabezado(`Hola, ${saludo}`, new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'America/Argentina/Buenos_Aires' }))}
+
+          {/* Sugerencias del día */}
+          {sugerencias.length > 0 && (
+            <section className="overflow-hidden rounded-3xl bg-gradient-to-br from-accent/[0.10] via-accent/[0.04] to-transparent ring-1 ring-inset ring-accent/15">
+              <p className="flex items-center gap-2 px-6 pt-5 text-sm font-semibold text-accent">
+                <span className="relative flex h-2 w-2" aria-hidden="true">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60 motion-reduce:hidden" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+                </span>
+                Para hoy
+              </p>
+              <ul className="divide-y divide-accent/10 px-6 pb-2">
+                {sugerencias.slice(0, 3).map((s) => (
+                  <li key={s.id} className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center">
+                    <p className="min-w-0 flex-1 text-[0.9375rem] leading-relaxed text-zinc-400">{s.texto}</p>
+                    <BotonPrimario onClick={s.accion}>{s.boton}</BotonPrimario>
+                  </li>
+                ))}
+              </ul>
+            </section>
           )}
 
-          {/* Points Progress Tracker */}
-          {consignataria?.verified && tierLabel === 'FREE' && (
+          {/* Alcance: lo que la plataforma hizo por la firma, con número real. */}
+          <Tarjeta titulo="Tu alcance" bajada="Lo que movimos por tu firma en los últimos 30 días.">
+            <div className="grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-4">
+              {esPro && busquedasGoogle?.d28 ? (
+                <Numero etiqueta="Veces que apareciste en Google" valor={busquedasGoogle.d28.impresiones} detalle={`${fmt(busquedasGoogle.d28.clics)} entraron a tu ficha`} tono="accent" />
+              ) : null}
+              <Numero etiqueta="Visitas a tu perfil" valor={viewCount} detalle={provincialRank.position > 0 ? `#${provincialRank.position} en ${provincialRank.province} por remates` : undefined} />
+              {esPro ? (
+                <Numero etiqueta="Productores que reciben tus remates" valor={alcanceMail} detalle="En el mail semanal, primero" />
+              ) : (
+                <Numero etiqueta="Productores que te siguen" valor={followersCount} detalle="Reciben tus remates" />
+              )}
+              {esPro && origenVisitas && origenVisitas.iasTotal > 0 ? (
+                <Numero etiqueta="Visitas desde una IA" valor={origenVisitas.iasTotal} detalle="ChatGPT, Gemini y otras · 90 días" />
+              ) : (
+                <Numero etiqueta="Consultas" valor={leadsCount} detalle={leadsCount ? 'En los últimos 30 días' : 'Todavía ninguna este mes'} />
+              )}
+            </div>
+            {!esPro && (
+              <p className="mt-5 border-t border-terminal-border pt-4 text-sm text-zinc-500">
+                Con PRO tus remates salen primeros en el mail semanal a {fmt(alcanceMail)} productores y ves cuántas veces te mostró Google.{' '}
+                <Link href="/planes?audience=consignataria&from=alcance" className="font-semibold text-accent hover:underline">Ver PRO →</Link>
+              </p>
+            )}
+          </Tarjeta>
+
+          <div className="grid grid-cols-[minmax(0,1fr)] gap-6 xl:grid-cols-5">
+            <Tarjeta titulo="Próximos remates" accion={<button onClick={() => irA('remates')} className="font-medium text-accent hover:underline">Ver todos</button>} className="xl:col-span-3">
+              {proximos.length === 0 ? (
+                <Vacio titulo="No hay remates próximos." texto="Subí el flyer del próximo y lo distribuimos." accion={<BotonPrimario onClick={() => { setAbrirCarga(true); irA('remates') }}>Cargar remate</BotonPrimario>} />
+              ) : (
+                <ul className="space-y-4">
+                  {proximos.slice(0, 3).map((a, i) => (
+                    <li key={`${a.date}-${i}`} className="flex items-center gap-4">
+                      <BloqueFecha fecha={a.date} />
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-[0.9375rem] font-medium text-ink">{a.title}</p>
+                        <p className="truncate text-sm text-zinc-500">{[a.time ? `${a.time} hs` : null, a.location].filter(Boolean).join(' · ')}</p>
+                      </div>
+                      <button type="button" onClick={() => setCompartirInicio(a)} className="shrink-0 rounded-full bg-accent/10 px-3.5 py-1.5 text-sm font-semibold text-accent hover:bg-accent/20">
+                        Compartir
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </Tarjeta>
+            <Tarjeta titulo="Consultas" accion={leads.length > 0 ? <button onClick={() => irA('leads')} className="font-medium text-accent hover:underline">Ver todas</button> : undefined} className="xl:col-span-2">
+              <ConsultasLista consultas={leads} esPro={esPro} max={3} />
+            </Tarjeta>
+          </div>
+        </>
+      )}
+
+      {/* Inicio de una cuenta sin firma verificada (claims, frigorífico, nueva) */}
+      {seccion === 'resumen' && !consignataria?.verified && (
+        <>
+          {encabezado(`Hola`, email)}
+          {claims.length > 0 && (
+            <Tarjeta titulo="Mis solicitudes" cuerpo="px-5 pb-4 sm:px-6">
+              <ul className="divide-y divide-terminal-border">
+                {claims.map(claim => (
+                  <li key={claim.id} className="flex items-center gap-4 py-3">
+                    <span className="flex-1 text-sm text-ink">{claim.consignatarias?.display_name || claim.consignataria_slug}</span>
+                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                      claim.status === 'pending' ? 'bg-warning/10 text-warning'
+                        : claim.status === 'approved' ? 'bg-positive/10 text-positive'
+                        : 'bg-negative/10 text-negative'
+                    }`}>
+                      {claim.status === 'pending' ? 'Pendiente' : claim.status === 'approved' ? 'Aprobada' : 'Rechazada'}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </Tarjeta>
+          )}
+          {!hasVerified && hasPendingClaim && <ClaimEnEspera claims={claims} />}
+          {!consignataria && !frigorifico && claims.length === 0 && frigoClaims.length === 0 && (
+            <Tarjeta titulo="Reclamá tu firma" bajada="Cuando la verifiquemos, este panel se abre con tus remates, tus consultas y tus números.">
+              <div className="flex flex-wrap gap-2">
+                <BotonPrimario href="/consignatarias">Buscar mi consignataria</BotonPrimario>
+                <BotonSecundario href="/frigorificos">Buscar mi frigorífico</BotonSecundario>
+              </div>
+            </Tarjeta>
+          )}
+          {frigorifico && (
+            <Tarjeta titulo={frigorifico.display_name} accion={<button onClick={() => irA('frigorifico')} className="font-medium text-accent hover:underline">Abrir</button>}>
+              <div className="grid grid-cols-2 gap-6">
+                <Numero etiqueta="Productos en catálogo" valor={frigoProducts.length} />
+                <Numero etiqueta="Pedidos recibidos" valor={frigoRfqs.length} />
+              </div>
+            </Tarjeta>
+          )}
+        </>
+      )}
+
+      {/* ============ REMATES (con sus pre-ofertas) ============ */}
+      {seccion === 'remates' && consignataria?.verified && (
+        <>
+          {encabezado('Remates', 'Cargá, compartí y abrí pre-ofertas para cada remate.')}
+          <RematesPanel
+            slug={consignataria.canonical_slug}
+            firma={consignataria.display_name}
+            esPro={esPro}
+            propios={ownerAuctions}
+            calendario={scrapedAuctions}
+            preofertas={preofertasFirma}
+            ofertas={ofertasFirma}
+            soloLectura={!!vistaAdmin}
+            abrirNuevo={abrirCarga}
+            alcanceMail={alcanceMail}
+          />
+        </>
+      )}
+
+      {/* ============ CONSULTAS ============ */}
+      {seccion === 'leads' && consignataria?.verified && (
+        <>
+          {encabezado('Consultas', 'Productores que te escribieron desde tu perfil, la ficha de un remate o una pre-oferta. También te llegan por mail.')}
+          <Tarjeta>
+            <ConsultasLista consultas={leads} esPro={esPro} />
+          </Tarjeta>
+          {ofertasFirma.length > 0 && (
+            <Tarjeta titulo="Ofertas en tus pre-ofertas" bajada="Cada oferta trae el contacto del interesado." accion={<button onClick={() => irA('remates')} className="font-medium text-accent hover:underline">Ver por remate</button>}>
+              <ul className="divide-y divide-terminal-border">
+                {ofertasFirma.slice(0, 10).map((o) => (
+                  <li key={o.id} className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-3 text-sm">
+                    <span className="font-medium text-ink">{o.nombre ?? 'Sin nombre'}</span>
+                    <span className="text-zinc-500">{o.lote_titulo}</span>
+                    <span className="tabular-nums text-ink">{o.monto != null ? `$ ${fmt(o.monto)}` : 'Sin monto'}</span>
+                  </li>
+                ))}
+              </ul>
+            </Tarjeta>
+          )}
+        </>
+      )}
+
+      {/* ============ RESULTADOS ============ */}
+      {seccion === 'resultados' && consignataria && (
+        <>
+          {encabezado('Resultados', 'Cabezas y precio por categoría de cada remate: tu historial de precios.', <BotonPrimario href="/dashboard/resultados/nuevo">Cargar resultado</BotonPrimario>)}
+          <Tarjeta cuerpo="p-0">
+            {auctionResults.length > 0 ? (
+              <ul className="divide-y divide-terminal-border">
+                {auctionResults.map(r => (
+                  <li key={r.id} className="flex items-center gap-4 px-5 py-4 sm:px-6">
+                    <span className="w-14 shrink-0 text-sm tabular-nums text-zinc-500">{formatDate(r.auction_date)}</span>
+                    <span className="min-w-0 flex-1 truncate text-[0.9375rem] text-ink">{r.auction_title}</span>
+                    {r.total_heads_sold != null && <span className="hidden text-sm tabular-nums text-zinc-500 sm:inline">{fmt(r.total_heads_sold)} cab.</span>}
+                    <span className="text-sm tabular-nums text-ink">{r.average_price != null ? `$${Number(r.average_price).toLocaleString('es-AR')}` : '—'}</span>
+                    <Link href={`/dashboard/resultados/${r.id}`} className="text-sm text-accent hover:underline">Editar</Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="p-5 sm:p-6">
+                <Vacio
+                  titulo="Todavía no cargaste resultados."
+                  texto="Elegí el remate y cargá cabezas y precio por categoría. Te sugerimos los de los últimos 90 días."
+                  accion={<BotonPrimario href="/dashboard/resultados/nuevo">Cargar el primero</BotonPrimario>}
+                />
+              </div>
+            )}
+          </Tarjeta>
+          <Tarjeta titulo={esPro && resultadosVR?.length ? undefined : 'Tu precio contra el mercado'} incrustado={!!(esPro && resultadosVR?.length)}>
+            {esPro ? (
+              resultadosVR && resultadosVR.length > 0 ? <ResultadoVsMercado resultados={resultadosVR} /> : <Vacio titulo="Sin resultados para comparar." texto="Cuando cargues un resultado con precio por categoría, aparece acá contra el Valor de Referencia de esa semana." />
+            ) : (
+              <SoloPro titulo="Tu precio contra el mercado" beneficio="Cada categoría de tu remate contra el Valor de Referencia de esa semana. El número para pelear una consignación." desde="resultados" />
+            )}
+          </Tarjeta>
+        </>
+      )}
+
+      {/* ============ ESTADÍSTICAS ============ */}
+      {seccion === 'estadisticas' && consignataria?.verified && (
+        <>
+          {encabezado('Estadísticas', 'Quién te mira, de dónde llega y cómo estás en el mercado.')}
+          {esPro ? (
             <>
+              {performance && <Tarjeta incrustado><PerformanceMes perf={performance} /></Tarjeta>}
+              <Tarjeta incrustado={!!origenVisitas} titulo={origenVisitas ? undefined : 'De dónde llegan'}>
+                {origenVisitas ? <OrigenVisitas d={origenVisitas} /> : <Vacio titulo="Todavía no hay visitas registradas." />}
+              </Tarjeta>
+              <Tarjeta incrustado={!!busquedasGoogle} titulo={busquedasGoogle ? undefined : 'Lo que buscan en Google'}>
+                {busquedasGoogle ? <BusquedasGoogle d={busquedasGoogle} /> : <Vacio titulo="Todavía sin búsquedas." texto="Search Console se actualiza una vez por semana." />}
+              </Tarjeta>
+              <Tarjeta incrustado={!!distribucion} titulo={distribucion ? undefined : 'A cuántos les llegaron tus remates'}>
+                {distribucion ? <Distribucion dist={distribucion} /> : <Vacio titulo="Tus remates todavía no salieron en el mail semanal." texto={`El próximo envío es el lunes, a ${fmt(alcanceMail)} productores.`} />}
+              </Tarjeta>
+            </>
+          ) : (
+            <>
+              <Tarjeta>
+                <div className="grid grid-cols-2 gap-6 sm:grid-cols-3">
+                  <Numero etiqueta="Visitas a tu perfil" valor={viewCount} />
+                  <Numero etiqueta="Clics en tu WhatsApp" valor={whatsappClicks} />
+                  <Numero etiqueta="Productores que te siguen" valor={followersCount} />
+                </div>
+              </Tarjeta>
+              <SoloPro titulo="Estadísticas completas" beneficio="Tus visitas día por día, si llegan desde Google, el calendario o una IA, qué escriben en Google cuando aparece tu ficha y a cuántos productores les llegó cada remate." desde="estadisticas" />
+            </>
+          )}
+          <Tarjeta incrustado={!!agenda} titulo={agenda ? undefined : 'Tu agenda contra la de tu provincia'}>
+            {agenda ? <AgendaRegionalPanel a={agenda} /> : <Vacio titulo="Sin remates en tu provincia para comparar." />}
+          </Tarjeta>
+          {hayDatosMag && (esPro ? (
+            <>
+              {territorio && <Tarjeta incrustado><TerritorioPanel t={territorio} titular={territorioTitular} /></Tarjeta>}
+              {cartera && <Tarjeta incrustado><CarteraPanel c={cartera} /></Tarjeta>}
+              {benchmark && <Tarjeta incrustado><BenchmarkMercado b={benchmark} /></Tarjeta>}
+              {participacion && <Tarjeta incrustado><ParticipacionMercado p={participacion} /></Tarjeta>}
+            </>
+          ) : (
+            <SoloPro titulo="Tu negocio en Cañuelas" beneficio="Tu cartera de remitentes, tu precio contra el promedio de las 22 casas, tu cuota y en qué partidos no tenés remitentes." desde="mercado" />
+          ))}
+          <Tarjeta incrustado><MagPulse /></Tarjeta>
+          <Tarjeta incrustado><MarketIntelPanel /></Tarjeta>
+        </>
+      )}
+
+      {/* ============ MI FICHA ============ */}
+      {seccion === 'editar' && consignataria?.verified && (
+        <>
+          {encabezado('Mi ficha', 'Lo que ve el productor cuando entra a tu perfil.', <BotonSecundario href={`/consignatarias/${consignataria.canonical_slug}`}>Ver mi perfil ↗</BotonSecundario>)}
+          <Tarjeta titulo="Tu página con QR" bajada="Tu página con tus próximos remates y un botón para consultarte. Ideal para catálogos, tarjetas y carteles.">
+            <CompartirRemate
+              q={{
+                url: `${sitio}/go/${consignataria.canonical_slug}`,
+                firma: consignataria.display_name,
+                rotulo: 'Mis remates',
+                titulo: consignataria.display_name,
+                detalle: prox ? `Próximo remate: ${new Date(prox.date + 'T12:00:00').toLocaleDateString('es-AR', { day: 'numeric', month: 'long' })}${prox.location ? ` · ${prox.location}` : ''}` : undefined,
+                archivo: `${consignataria.canonical_slug}-pagina`,
+                slugFirma: consignataria.canonical_slug,
+              }}
+            />
+          </Tarjeta>
+          <ProfileEditForm
+            slug={consignataria.canonical_slug}
+            initial={{
+              phone: consignataria.phone || '',
+              email: consignataria.email || '',
+              website: consignataria.website || '',
+              description: consignataria.description || '',
+              whatsapp: consignataria.whatsapp || '',
+              cuit: consignataria.cuit || '',
+            }}
+            logoUrl={consignataria.logo_url}
+          />
+          <Tarjeta titulo="Tus remates en tu web" bajada="Un código que se pega una vez y se actualiza solo.">
+            {esPro ? (
+              <div className="space-y-3">
+                <pre className="overflow-x-auto rounded-xl bg-terminal-bg/60 p-4 font-mono text-xs text-zinc-300">
+                  {`<iframe src="${sitio}/api/widget/${consignataria.canonical_slug}" width="400" height="300" frameborder="0"></iframe>`}
+                </pre>
+                <div className="flex flex-wrap gap-2">
+                  <BotonSecundario onClick={() => { navigator.clipboard.writeText(`<iframe src="${sitio}/api/widget/${consignataria.canonical_slug}" width="400" height="300" frameborder="0"></iframe>`); trackEvent('widget_code_copy', { consignataria_slug: consignataria.canonical_slug }) }}>Copiar código</BotonSecundario>
+                  <BotonSecundario href={`/api/widget/${consignataria.canonical_slug}?theme=light`} externo>Ver cómo queda</BotonSecundario>
+                </div>
+              </div>
+            ) : (
+              <SoloPro titulo="Widget de remates" beneficio="Tus próximos remates en tu propia web, siempre al día." desde="widget" />
+            )}
+          </Tarjeta>
+        </>
+      )}
+
+      {/* ============ MI PLAN ============ */}
+      {seccion === 'plan' && (
+        <>
+          {encabezado('Mi plan', esPro ? 'PRO Consignataria' : 'Plan gratis', undefined)}
+          <SubscriptionPanel tier={tierLabel} subscription={subscription} plan={plan} />
+          {consignataria?.verified && !esPro && (
+            <div>
               <ProfileProgressTracker
                 profile={{
                   cuit: consignataria.cuit,
@@ -547,688 +893,23 @@ export default function DashboardClient({
                 alreadyRedeemed={hasRedeemed}
                 onRedeem={handleRedeemPoints}
               />
-              {redeemError && (
-                <div className="mt-2 px-3 py-2 bg-negative/10 border border-negative/30 rounded">
-                  <p className="text-negative text-xxs font-terminal">{redeemError}</p>
-                </div>
-              )}
-              {isRedeeming && (
-                <div className="mt-2 px-3 py-2 bg-amber-500/10 border border-amber-500/30 rounded">
-                  <p className="text-amber-400 text-xxs font-terminal">Canjeando puntos...</p>
-                </div>
-              )}
-            </>
-          )}
-
-          {consignataria?.verified && (
-            <div className="terminal-panel">
-              <div className="terminal-panel-header flex items-center justify-between">
-                <span className="text-zinc-200 text-label tracking-widest">📊 TU IMPACTO — ÚLTIMOS 30 DÍAS</span>
-                {tierLabel !== 'FREE' && (
-                  <span className="text-xxs text-accent font-terminal">PRO Analytics</span>
-                )}
-              </div>
-              <div className="px-panel py-4">
-                {/* Mes contra mes. Va ARRIBA del grid de 30 días a propósito: la
-                    firma pregunta "¿mejoró?", y eso lo contesta una serie, no una
-                    foto. El grid de abajo queda como el detalle del período. */}
-                {/* El benchmark va PRIMERO: es la respuesta a "¿para qué me sirve
-                    esto si ya tengo mi sistema?". Lo demás es del sitio; esto es
-                    de su negocio. */}
-                {/* La BANDEJA primero: qué hay que hacer hoy. Los bloques de abajo
-                    son el detrás de cada línea, para el que quiera abrir el dato. */}
-                {bandeja && <BandejaEntrada b={bandeja} />}
-
-                {/* La agenda va antes que los bloques del MAG: le sirve a las 130
-                    casas, y decide algo que la firma todavía puede cambiar (la
-                    fecha del próximo remate). Es gratis a propósito — es lo que le
-                    demuestra a una casa del interior que el panel la mira a ella. */}
-                {agenda && <AgendaRegionalPanel a={agenda} />}
-
-                {/* Los tres bloques del Mercado.
-                    Una firma FREE ve la FORMA de cada uno con datos de ejemplo, no
-                    los suyos difuminados: el blur es maquillaje y el dato real
-                    seguiría en el HTML —y acá son nombres de terceros y es justo lo
-                    que se cobra—. Sólo se muestran si la firma opera en el MAG: a las
-                    22 de Cañuelas les sirve; al resto no se les ofrece algo que no
-                    vamos a poder darles.
-
-                    La cartera va antes que el precio: lo primero es a quién hay que
-                    llamar hoy, después cómo se vendió. */}
-                {/* El territorio va PRIMERO: la cartera dice a quién no perder, esto
-                    dice a quién ir a buscar. Para una casa que quiere crecer, la segunda
-                    pregunta es la que mueve al comercial. */}
-                {hayDatosMag && (
-                  <MuestraPro
-                    esPro={tierLabel !== 'FREE'}
-                    titulo="Tu territorio"
-                    beneficio="En qué partidos no tenés un solo remitente, sobre productores que ya mandan hacienda a Cañuelas con otra casa."
-                    muestra={<TerritorioPanel t={TERRITORIO_MUESTRA} titular="Ayacucho: 64 productores mandan al MAG desde ahí y ninguno es tuyo. 1.854 establecimientos en el partido." />}
-                  >
-                    {territorio && <TerritorioPanel t={territorio} titular={territorioTitular} />}
-                  </MuestraPro>
-                )}
-
-                {hayDatosMag && (
-                  <MuestraPro
-                    esPro={tierLabel !== 'FREE'}
-                    titulo="Tu cartera en el Mercado"
-                    beneficio="Quién dejó de consignarte y hace cuánto, a quién le sacaste un cliente a la competencia, y de qué remitentes dependés."
-                    muestra={<CarteraPanel c={CARTERA_MUESTRA} />}
-                  >
-                    {cartera && <CarteraPanel c={cartera} />}
-                  </MuestraPro>
-                )}
-
-                {hayDatosMag && (
-                  <MuestraPro
-                    esPro={tierLabel !== 'FREE'}
-                    titulo="Cómo vendiste contra el mercado"
-                    beneficio="Tu precio por categoría contra el promedio de las 22 casas de Cañuelas. El número que usás para pelear una consignación."
-                    muestra={<BenchmarkMercado b={BENCHMARK_MUESTRA} />}
-                  >
-                    {benchmark && <BenchmarkMercado b={benchmark} />}
-                  </MuestraPro>
-                )}
-
-                {hayDatosMag && (
-                  <MuestraPro
-                    esPro={tierLabel !== 'FREE'}
-                    titulo="Tu lugar en el Mercado"
-                    beneficio="Tu cuota sobre las cabezas operadas, tu puesto entre las 22 casas, y si estás creciendo o perdiendo terreno."
-                    muestra={<ParticipacionMercado p={PARTICIPACION_MUESTRA} />}
-                  >
-                    {participacion && <ParticipacionMercado p={participacion} />}
-                  </MuestraPro>
-                )}
-
-                {performance && <PerformanceMes perf={performance} />}
-
-                {/* Distribución: sólo PRO, y sólo si hubo. Es literalmente lo que
-                    se paga —"a cuántos les llegó mi remate"— así que no se regala.
-                    Un cero tampoco se muestra: se leería como error del sistema. */}
-                {distribucion && tierLabel !== 'FREE' && <Distribucion dist={distribucion} />}
-
-                {/* Stats grid - always show all 4 metrics */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
-                  {/* Seguidores — el dato B2B: productores suscriptos a tus remates */}
-                  <div className="bg-zinc-800/50 rounded-terminal p-3 text-center">
-                    <div className="text-2xl font-terminal tabular-nums text-sky-300 font-bold">
-                      {followersCount.toLocaleString('es-AR')}
-                    </div>
-                    <div className="text-[10px] text-zinc-500 uppercase font-terminal mt-1">
-                      productores te siguen
-                    </div>
-                  </div>
-
-                  {/* Marcas en tus remates */}
-                  <div className="bg-zinc-800/50 rounded-terminal p-3 text-center">
-                    <div className="text-2xl font-terminal tabular-nums text-sky-300 font-bold">
-                      {marksCount.toLocaleString('es-AR')}
-                    </div>
-                    <div className="text-[10px] text-zinc-500 uppercase font-terminal mt-1">
-                      marcas en tus remates
-                    </div>
-                  </div>
-
-                  {/* Views */}
-                  <div className="bg-zinc-800/50 rounded-terminal p-3 text-center">
-                    <div className="text-2xl font-terminal tabular-nums text-zinc-100 font-bold">
-                      {viewCount.toLocaleString('es-AR')}
-                    </div>
-                    <div className="text-[10px] text-zinc-500 uppercase font-terminal mt-1">
-                      vistas perfil
-                    </div>
-                  </div>
-                  
-                  {/* WhatsApp Clicks */}
-                  <div className="bg-zinc-800/50 rounded-terminal p-3 text-center">
-                    <div className="text-2xl font-terminal tabular-nums text-emerald-400 font-bold">
-                      {whatsappClicks.toLocaleString('es-AR')}
-                    </div>
-                    <div className="text-[10px] text-zinc-500 uppercase font-terminal mt-1">
-                      clics WhatsApp
-                    </div>
-                  </div>
-                  
-                  {/* Leads */}
-                  <div className="bg-zinc-800/50 rounded-terminal p-3 text-center relative">
-                    <div className={`text-2xl font-terminal tabular-nums font-bold ${leadsCount > 0 ? 'text-positive' : 'text-negative'}`}>
-                      {leadsCount}
-                    </div>
-                    <div className="text-[10px] text-zinc-500 uppercase font-terminal mt-1">
-                      leads capturados
-                    </div>
-                    {/* Show alert dot if WA clicks but no leads */}
-                    {whatsappClicks > 0 && leadsCount === 0 && (
-                      <div className="absolute -top-1 -right-1 w-2 h-2 bg-negative rounded-full animate-pulse" />
-                    )}
-                  </div>
-                  
-                  {/* Provincial Rank */}
-                  <div className="bg-zinc-800/50 rounded-terminal p-3 text-center">
-                    <div className="text-2xl font-terminal tabular-nums text-amber-400 font-bold">
-                      {provincialRank.position > 0 ? `#${provincialRank.position}` : '—'}
-                    </div>
-                    <div className="text-[10px] text-zinc-500 uppercase font-terminal mt-1 truncate">
-                      en {provincialRank.province || 'provincia'}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Gap Alert - THE WOW MOMENT (only if clicks but no leads) */}
-                {whatsappClicks > 0 && leadsCount === 0 && (
-                  <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-terminal mb-4">
-                    <div className="flex items-start gap-2">
-                      <span className="text-amber-400 text-lg">⚠️</span>
-                      <div>
-                        <p className="text-sm font-terminal text-amber-300 font-medium">
-                          {whatsappClicks} personas hicieron clic en tu WhatsApp
-                        </p>
-                        <p className="text-xxs font-terminal text-zinc-400 mt-1">
-                          Pero no tenés forma de saber quiénes son. Activá la captura de leads para contactarlos después.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Demand Signal - Watchers */}
-                {(totalWatchers + followersCount) > 0 && (
-                  <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-terminal mb-4">
-                    <div className="flex items-start gap-2">
-                      <span className="text-emerald-400 text-lg">👁️</span>
-                      <div>
-                        <p className="text-sm font-terminal text-emerald-300 font-medium">
-                          {totalWatchers + followersCount} {(totalWatchers + followersCount) === 1 ? 'productor está' : 'productores están'} pendientes de tus remates
-                        </p>
-                        <p className="text-xxs font-terminal text-zinc-400 mt-1">
-                          Entre seguidores de tu casa y remates en watchlist. Reciben avisos cuando publicás — tu audiencia cautiva.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* PRO extras */}
-                {tierLabel !== 'FREE' && viewPercentile > 0 && (
-                  <div className="text-center pt-3 border-t border-terminal-border">
-                    <span className="text-xs text-zinc-500 font-terminal">
-                      Estás en el <span className="text-amber-400 font-bold">Top {100 - viewPercentile}%</span> de consignatarias más vistas del país
-                    </span>
-                  </div>
-                )}
-
-                {/* Extras PRO.
-                    NOTA: estos tres son derivados de las vistas (una división, un
-                    percentil y un ranking) y no son lo que sostiene el plan. Lo que
-                    lo sostiene son los leads con contacto, la distribución auditable
-                    y el reporte mes a mes. Se dejan como color, no como argumento. */}
-                {tierLabel !== 'FREE' && (
-                  <div className="grid grid-cols-3 gap-3 pt-3 border-t border-terminal-border mt-3">
-                    <div className="bg-zinc-800/50 rounded-terminal p-2.5">
-                      <div className="text-lg font-terminal tabular-nums text-zinc-200">
-                        {Math.round(viewCount / 30)}
-                      </div>
-                      <div className="text-[10px] text-zinc-500 uppercase font-terminal">
-                        visitas/día
-                      </div>
-                    </div>
-                    <div className="bg-zinc-800/50 rounded-terminal p-2.5">
-                      <div className="text-lg font-terminal tabular-nums text-amber-400">
-                        {viewPercentile > 0 ? `Top ${100 - viewPercentile}%` : '—'}
-                      </div>
-                      <div className="text-[10px] text-zinc-500 uppercase font-terminal">
-                        vs el país
-                      </div>
-                    </div>
-                    <div className="bg-zinc-800/50 rounded-terminal p-2.5">
-                      <div className="text-lg font-terminal tabular-nums text-emerald-400">
-                        {provincialRank.position > 0 ? `#${provincialRank.position}` : '—'}
-                      </div>
-                      <div className="text-[10px] text-zinc-500 uppercase font-terminal truncate" title={provincialRank.province}>
-                        en {provincialRank.province || 'provincia'}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Upgrade CTA for free users - stronger value prop */}
-                {tierLabel === 'FREE' && (
-                  <div className="mt-4 p-3 bg-amber-500/5 border border-amber-500/20 rounded-terminal">
-                    <p className="text-xxs font-terminal text-zinc-300 mb-1">
-                      🔒 Tu perfil es visible pero no destaca
-                    </p>
-                    <p className="text-xxs font-terminal text-zinc-500 mb-3">
-                      Con PRO: tus remates van primero en el newsletter semanal, ves quién te contactó con nombre y teléfono, y medís a cuántos les llegó cada uno.
-                    </p>
-                    <Link
-                      href="/planes?audience=consignataria&from=dashboard"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/20 border border-amber-500/40 text-amber-400 text-xxs font-terminal uppercase tracking-wider hover:bg-amber-500/30 transition-colors rounded-terminal"
-                    >
-                      ★ Activar PRO Consignataria — $45.000/mes
-                    </Link>
-                  </div>
-                )}
-              </div>
+              {redeemError && <p className="mt-2 text-sm text-negative">{redeemError}</p>}
+              {isRedeeming && <p className="mt-2 text-sm text-warning">Canjeando puntos…</p>}
             </div>
           )}
-
-          {/* Quick actions */}
-          {consignataria?.verified && (
-            <div className="terminal-panel">
-              <div className="terminal-panel-header"><span className="text-zinc-200 text-label tracking-widest">ACCIONES RAPIDAS</span></div>
-              <div className="px-panel py-3 flex flex-wrap gap-3">
-                <button onClick={() => setActiveTab('remates')} className="px-3 py-1.5 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors">
-                  Agregar remate
-                </button>
-                <button onClick={() => setActiveTab('editar')} className="px-3 py-1.5 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors">
-                  Editar perfil
-                </button>
-                <button onClick={() => setActiveTab('resultados')} className="px-3 py-1.5 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors">
-                  Cargar resultados
-                </button>
-                <Link href="/mi-cuenta/guias" className="px-3 py-1.5 bg-sky-500/10 border border-sky-500/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-sky-500/20 transition-colors">
-                  📄 Mis Guías DT-e
-                </Link>
-                {tierLabel !== 'FREE' && (
-                  <a 
-                    href={`/api/consignatarias/${consignataria.canonical_slug}/report`}
-                    className="px-3 py-1.5 bg-sky-500/10 border border-sky-500/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-sky-500/20 transition-colors"
-                  >
-                    📄 Reporte PDF
-                  </a>
-                )}
-              </div>
-            </div>
+          {esPro && consignataria && (
+            <Tarjeta titulo="Reporte mensual en PDF" bajada="Tus visitas, consultas y remates del mes, listo para compartir.">
+              <BotonSecundario href={`/api/consignatarias/${consignataria.canonical_slug}/report`}>Descargar reporte</BotonSecundario>
+            </Tarjeta>
           )}
-
-          {/* QR Code + Landing Page Link */}
-          {consignataria?.verified && (
-            <div className="terminal-panel">
-              <div className="terminal-panel-header flex items-center justify-between">
-                <span className="text-zinc-200 text-label tracking-widest">📱 TU LINK Y QR</span>
-                <a 
-                  href={`/go/${consignataria.canonical_slug}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors"
-                >
-                  Ver landing →
-                </a>
-              </div>
-              <div className="px-panel py-4">
-                <div className="flex flex-col sm:flex-row items-center gap-6">
-                  {/* QR Code */}
-                  <div className="flex-shrink-0">
-                    <QRCode 
-                      url={`https://consignatarias.com.ar/go/${consignataria.canonical_slug}?utm_source=qr`}
-                      size={140}
-                      showDownload={true}
-                    />
-                  </div>
-                  
-                  {/* Info */}
-                  <div className="flex-1 text-center sm:text-left space-y-3">
-                    <p className="text-xxs text-zinc-400 font-terminal">
-                      Usá este QR en tus catálogos, tarjetas y carteles. Los compradores escanean y ven tu próximo remate al instante.
-                    </p>
-                    
-                    {/* Actions */}
-                    <div className="flex flex-wrap gap-2">
-                      <button
-                        onClick={() => {
-                          navigator.clipboard.writeText(`https://consignatarias.com.ar/go/${consignataria.canonical_slug}`)
-                          trackEvent('referral_link_copy', { consignataria_slug: consignataria.canonical_slug, surface: 'dashboard_qr' })
-                          alert('Link copiado!')
-                        }}
-                        className="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 text-ink text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors"
-                      >
-                        📋 Copiar
-                      </button>
-                      <a
-                        href={`https://wa.me/?text=${encodeURIComponent(`Mirá mis próximos remates: https://consignatarias.com.ar/go/${consignataria.canonical_slug}`)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={() => trackEvent('referral_whatsapp_share', { consignataria_slug: consignataria.canonical_slug, surface: 'dashboard_qr' })}
-                        className="px-3 py-1.5 bg-[#25D366] hover:bg-[#20BD5A] text-white text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors text-center"
-                      >
-                        📤 WhatsApp
-                      </a>
-                      <a
-                        href={`/api/calendario/${consignataria.canonical_slug}`}
-                        className="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors text-center"
-                        title="Agregar a Google Calendar, Apple Calendar u Outlook"
-                      >
-                        📅 Calendario
-                      </a>
-                    </div>
-                    <p className="text-[10px] text-zinc-600 font-terminal mt-2">
-                      El calendario se sincroniza automáticamente con tus remates
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Embeddable Widget - PRO only */}
-          {consignataria?.verified && tierLabel !== 'FREE' && (
-            <div className="terminal-panel">
-              <div className="terminal-panel-header flex items-center justify-between">
-                <span className="text-zinc-200 text-label tracking-widest">🔗 WIDGET PARA TU WEB</span>
-                <a 
-                  href={`/api/widget/${consignataria.canonical_slug}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xxs font-terminal text-accent hover:text-accent-bright transition-colors"
-                >
-                  Ver preview →
-                </a>
-              </div>
-              <div className="px-panel py-4 space-y-4">
-                <p className="text-xxs text-zinc-400 font-terminal">
-                  Mostrá tus próximos remates en tu propia página web. Copiá este código y pegalo en tu sitio:
-                </p>
-                
-                {/* Code snippet */}
-                <div className="bg-zinc-900 border border-zinc-800 rounded p-3 font-mono text-[10px] text-zinc-300 overflow-x-auto">
-                  <code>{`<iframe src="https://consignatarias.com.ar/api/widget/${consignataria.canonical_slug}" width="400" height="300" frameborder="0"></iframe>`}</code>
-                </div>
-                
-                <div className="flex flex-wrap gap-2">
-                  <button
-                    onClick={() => {
-                      const code = `<iframe src="https://consignatarias.com.ar/api/widget/${consignataria.canonical_slug}" width="400" height="300" frameborder="0"></iframe>`
-                      navigator.clipboard.writeText(code)
-                      trackEvent('widget_code_copy', { consignataria_slug: consignataria.canonical_slug })
-                      alert('Código copiado!')
-                    }}
-                    className="px-3 py-1.5 bg-zinc-700 hover:bg-zinc-600 text-ink text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors"
-                  >
-                    📋 Copiar código
-                  </button>
-                  <a
-                    href={`/api/widget/${consignataria.canonical_slug}?theme=light`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-3 py-1.5 bg-zinc-200 hover:bg-zinc-100 text-zinc-800 text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors"
-                  >
-                    ☀️ Tema claro
-                  </a>
-                  <a
-                    href={`/api/widget/${consignataria.canonical_slug}?theme=dark`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-ink text-xxs font-terminal uppercase tracking-wider rounded-terminal transition-colors"
-                  >
-                    🌙 Tema oscuro
-                  </a>
-                </div>
-                
-                <p className="text-[10px] text-zinc-600 font-terminal">
-                  Parámetros: ?theme=light|dark &amp; ?max=1-5
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Upcoming scraped auctions */}
-          {scrapedAuctions.length > 0 && (
-            <div className="terminal-panel">
-              <div className="terminal-panel-header flex items-center justify-between">
-                <span className="text-zinc-200 text-label tracking-widest">PROXIMOS REMATES</span>
-                <span className="text-xxs text-zinc-500 font-terminal">{scrapedAuctions.length} del scraper</span>
-              </div>
-              <div className="divide-y divide-terminal-border">
-                {scrapedAuctions.map((a, i) => (
-                  <div key={i} className="px-panel py-2 flex items-center gap-4">
-                    <span className="text-xxs font-terminal text-zinc-500 tabular-nums w-12 flex-shrink-0">{formatDate(a.date)}</span>
-                    {a.time && <span className="text-xxs font-terminal text-zinc-500 w-12 flex-shrink-0">{a.time}</span>}
-                    <span className="text-data font-terminal text-zinc-300 flex-1 truncate">{a.title}</span>
-                    <span className="text-xxs font-terminal text-zinc-500 hidden sm:inline">{a.location}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Claims status */}
-          {claims.length > 0 && (
-            <div className="terminal-panel">
-              <div className="terminal-panel-header"><span className="text-zinc-200 text-label tracking-widest">MIS SOLICITUDES</span></div>
-              <div className="divide-y divide-terminal-border">
-                {claims.map(claim => (
-                  <div key={claim.id} className="px-panel py-2 flex items-center gap-4">
-                    <span className="text-data font-terminal text-zinc-300 flex-1">{claim.consignatarias?.display_name || claim.consignataria_slug}</span>
-                    <span className={`text-xxs font-terminal px-1.5 py-0.5 border rounded-terminal ${
-                      claim.status === 'pending' ? 'border-warning/30 text-warning'
-                        : claim.status === 'approved' ? 'border-positive/30 text-positive'
-                        : 'border-negative/30 text-negative'
-                    }`}>
-                      {claim.status === 'pending' ? 'PENDIENTE' : claim.status === 'approved' ? 'APROBADA' : 'RECHAZADA'}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {!hasVerified && hasPendingClaim && <ClaimEnEspera claims={claims} />}
-
-          {!consignataria && !frigorifico && claims.length === 0 && frigoClaims.length === 0 && (
-            <div className="terminal-panel">
-              <div className="terminal-panel-header">
-                <span className="text-zinc-200 text-label tracking-widest">PRIMEROS PASOS</span>
-              </div>
-              <div className="px-panel py-6 space-y-6">
-                <p className="text-data font-terminal text-zinc-400">
-                  Bienvenido a Consignatarias.com.ar. Para acceder a todas las funciones, completá estos pasos:
-                </p>
-                
-                {/* Step 1 - Active */}
-                <div className="flex items-start gap-4 p-3 bg-positive/5 border border-positive/20 rounded-lg">
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-positive/20 text-positive flex items-center justify-center font-terminal text-sm font-bold">1</span>
-                  <div className="flex-1">
-                    <p className="text-data font-terminal text-zinc-200 font-medium">Verificá tu perfil</p>
-                    <p className="text-xxs font-terminal text-zinc-500 mt-1">
-                      Buscá tu consignataria o frigorífico y reclamá el perfil para poder editarlo y publicar remates.
-                    </p>
-                    <div className="flex items-center gap-3 mt-3">
-                      <Link href="/consignatarias" className="px-3 py-1.5 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors rounded">
-                        Buscar consignataria →
-                      </Link>
-                      <Link href="/frigorificos" className="px-3 py-1.5 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors rounded">
-                        Buscar frigorífico →
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Step 2 - Pending */}
-                <div className="flex items-start gap-4 p-3 opacity-50">
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-zinc-800 text-zinc-500 flex items-center justify-center font-terminal text-sm">2</span>
-                  <div>
-                    <p className="text-data font-terminal text-zinc-400">Completá tu información</p>
-                    <p className="text-xxs font-terminal text-zinc-600 mt-1">
-                      Teléfono, email, descripción, logo — cada campo mejora tu visibilidad.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Step 3 - Pending */}
-                <div className="flex items-start gap-4 p-3 opacity-50">
-                  <span className="flex-shrink-0 w-8 h-8 rounded-full bg-zinc-800 text-zinc-500 flex items-center justify-center font-terminal text-sm">3</span>
-                  <div>
-                    <p className="text-data font-terminal text-zinc-400">Publicá tus remates</p>
-                    <p className="text-xxs font-terminal text-zinc-600 mt-1">
-                      Aparecen en el calendario, en tu widget y en el newsletter semanal.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Value prop */}
-                <div className="pt-4 border-t border-zinc-800/50">
-                  <p className="text-xxs font-terminal text-zinc-500 text-center">
-                    💡 Con el perfil verificado accedés a: editar información, publicar remates, cargar DTe, ver analytics y más.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
+          {!vistaAdmin && <CambiarContrasena />}
         </>
       )}
 
-      {/* ============ TAB: LEADS ============ */}
-      {activeTab === 'leads' && consignataria?.verified && (
-        <div className="space-y-3">
-          <div>
-            <h2 className="text-lg font-semibold text-zinc-100">Leads · quién te buscó</h2>
-            <p className="text-sm text-zinc-400">
-              Productores que dejaron sus datos o te contactaron desde tu perfil. Escribiles vos.
-            </p>
-          </div>
-          {leads.length === 0 ? (
-            <div className="rounded-terminal border border-terminal-border bg-terminal-panel">
-              <EmptyState
-                icon="buscador-lupa"
-                compact
-                title="Todavía no hay leads."
-                sub="Cuando un productor deje sus datos o toque tu WhatsApp desde el perfil, aparece acá con nombre y contacto."
-              />
-            </div>
-          ) : (
-            <>
-              {/* GATE — el contacto del lead es LO que se paga.
-                  Se muestra siempre que el lead existe, con su fecha y su mensaje:
-                  eso prueba que la demanda es real. Lo que se guarda hasta que
-                  pague es el teléfono y el email, que es lo accionable. Soft-gate,
-                  nunca muro: la firma ve exactamente lo que se está perdiendo. */}
-              {tierLabel === 'FREE' && (
-                <div className="rounded-terminal border border-accent/30 bg-accent/5 p-3">
-                  <p className="text-sm font-terminal text-zinc-100">
-                    {leads.length === 1
-                      ? 'Hay 1 productor que te buscó y todavía no le escribiste.'
-                      : `Hay ${leads.length} productores que te buscaron y todavía no les escribiste.`}
-                  </p>
-                  <p className="mt-1 text-xxs font-terminal text-zinc-400">
-                    Con PRO ves el teléfono y el email de cada uno, y les escribís desde acá.
-                  </p>
-                  <Link
-                    href="/planes?audience=consignataria&from=leads"
-                    className="mt-2 inline-block rounded-terminal bg-accent px-3 py-1.5 text-xs font-semibold text-terminal-bg"
-                  >
-                    Ver PRO
-                  </Link>
-                </div>
-              )}
-              <div className="divide-y divide-terminal-border rounded-terminal border border-terminal-border bg-terminal-panel">
-                {leads.map((l) => (
-                  <LeadRow key={l.id} lead={l} bloqueado={tierLabel === 'FREE'} />
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-      )}
-
-      {/* ============ TAB: REMATES ============ */}
-      {activeTab === 'remates' && consignataria?.verified && (
-        <AuctionManager
-          slug={consignataria.canonical_slug}
-          displayName={consignataria.display_name}
-          ownerAuctions={ownerAuctions}
-          scrapedAuctions={scrapedAuctions}
-          onAuctionsChange={setOwnerAuctions}
-        />
-      )}
-
-      {/* ============ TAB: EDITAR ============ */}
-      {activeTab === 'editar' && consignataria?.verified && (
-        <ProfileEditForm
-          slug={consignataria.canonical_slug}
-          initial={{
-            phone: consignataria.phone || '',
-            email: consignataria.email || '',
-            website: consignataria.website || '',
-            description: consignataria.description || '',
-            whatsapp: consignataria.whatsapp || '',
-            cuit: consignataria.cuit || '',
-          }}
-          logoUrl={consignataria.logo_url}
-        />
-      )}
-
-      {/* ============ TAB: RESULTADOS ============ */}
-      {activeTab === 'resultados' && consignataria && (
-        <div className="terminal-panel">
-          <div className="terminal-panel-header flex items-center justify-between">
-            <span className="text-zinc-200 text-label tracking-widest">RESULTADOS DE REMATES</span>
-            <Link href="/dashboard/resultados/nuevo" className="px-3 py-1 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors">
-              Cargar resultado
-            </Link>
-          </div>
-          {auctionResults.length > 0 ? (
-            <div className="divide-y divide-terminal-border">
-              {auctionResults.map(r => (
-                <div key={r.id} className="px-panel py-2 flex items-center gap-4">
-                  <span className="text-xxs font-terminal text-zinc-500 tabular-nums w-12 flex-shrink-0">{formatDate(r.auction_date)}</span>
-                  <span className="text-data font-terminal text-zinc-300 flex-1 truncate">{r.auction_title}</span>
-                  {r.total_heads_sold != null && <span className="text-xxs font-terminal text-zinc-500 hidden sm:inline">{r.total_heads_sold} cab.</span>}
-                  {r.average_price != null && <span className="text-xxs font-terminal text-positive tabular-nums">${Number(r.average_price).toLocaleString('es-AR')}</span>}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="px-panel py-10 text-center space-y-4">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-sky-500/10 border border-sky-500/20 mb-2">
-                <svg className="w-7 h-7 text-sky-500/70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-data font-terminal text-zinc-300 font-medium mb-1">
-                  Empezá a trackear tus resultados
-                </p>
-                <p className="text-xxs font-terminal text-zinc-500">
-                  Cargá los resultados de tus remates para ver analytics de precios, cabezas y tendencias.
-                </p>
-              </div>
-              <div className="grid grid-cols-3 gap-3 pt-2 max-w-sm mx-auto">
-                <div className="text-center">
-                  <div className="text-lg mb-1">📊</div>
-                  <p className="text-[10px] text-zinc-600 font-terminal">Precios promedio</p>
-                </div>
-                <div className="text-center">
-                  <div className="text-lg mb-1">📈</div>
-                  <p className="text-[10px] text-zinc-600 font-terminal">Tendencias</p>
-                </div>
-                <div className="text-center">
-                  <div className="text-lg mb-1">🎯</div>
-                  <p className="text-[10px] text-zinc-600 font-terminal">Comparativas</p>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ============ TAB: MI PLAN ============ */}
-      {activeTab === 'plan' && <SubscriptionPanel tier={tierLabel} subscription={subscription} />}
-
-      {/* ============ TAB: FRIGORIFICO ============ */}
-      {activeTab === 'frigorifico' && frigorifico && (
+      {/* ============ FRIGORÍFICO ============ */}
+      {seccion === 'frigorifico' && frigorifico && (
         <>
-          <div className="terminal-panel">
-            <div className="terminal-panel-header flex items-center justify-between">
-              <span className="text-zinc-200 text-label tracking-widest">MI FRIGORIFICO</span>
-              {frigorifico.verified && <span className="text-xxs font-terminal px-1.5 py-0.5 border border-positive/30 text-positive rounded-terminal">VERIFICADO</span>}
-            </div>
-            <div className="px-panel py-3 space-y-2">
-              <div className="text-data font-terminal text-zinc-200">{frigorifico.display_name}</div>
-              <Link href={`/frigorificos/${frigorifico.cuit}`} className="text-xxs text-accent font-terminal hover:underline">Ver perfil publico →</Link>
-            </div>
-          </div>
+          {encabezado(frigorifico.display_name, undefined, <BotonSecundario href={`/frigorificos/${frigorifico.cuit}`}>Ver perfil público ↗</BotonSecundario>)}
           {frigorifico.verified && <FrigoProCTA cuit={frigorifico.cuit} email={email} isPro={frigoIsPro} />}
           {frigorifico.verified && (
             <>
@@ -1238,17 +919,41 @@ export default function DashboardClient({
           )}
         </>
       )}
-
-      {/* ============ TAB: CATALOGO (productos de carne) ============ */}
-      {activeTab === 'catalogo' && frigorifico && (
-        <FrigoProductManager cuit={frigorifico.cuit} initial={frigoProducts} />
+      {seccion === 'catalogo' && frigorifico && (
+        <>
+          {encabezado('Catálogo', 'Tus productos de carne.')}
+          <FrigoProductManager cuit={frigorifico.cuit} initial={frigoProducts} />
+        </>
       )}
-
-      {/* ============ TAB: PEDIDOS (RFQ mayoristas) ============ */}
-      {activeTab === 'pedidos' && frigorifico && (
-        <FrigoPedidos rfqs={frigoRfqs} />
+      {seccion === 'pedidos' && frigorifico && (
+        <>
+          {encabezado('Pedidos', 'Pedidos mayoristas que te llegaron.')}
+          <FrigoPedidos rfqs={frigoRfqs} />
+        </>
       )}
+        </main>
       </div>
+      </div>
+
+      {consignataria && (
+        <Hoja abierta={compartirInicio != null} titulo={compartirInicio === 'firma' ? 'Compartir mi página' : 'Compartir remate'} bajada="Mandalo por WhatsApp, subí la tarjeta a tu estado o imprimí el QR." onCerrar={() => setCompartirInicio(null)}>
+          {compartirInicio != null && (
+            <CompartirRemate
+              q={compartirInicio === 'firma'
+                ? { url: `${sitio}/go/${consignataria.canonical_slug}`, firma: consignataria.display_name, rotulo: 'Mis remates', titulo: consignataria.display_name, archivo: `${consignataria.canonical_slug}-pagina`, slugFirma: consignataria.canonical_slug }
+                : {
+                    url: compartirInicio.path ? `${sitio}${compartirInicio.path}` : `${sitio}/go/${consignataria.canonical_slug}`,
+                    firma: consignataria.display_name,
+                    rotulo: 'Próximo remate',
+                    titulo: compartirInicio.title,
+                    detalle: [new Date(compartirInicio.date + 'T12:00:00').toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }), compartirInicio.time ? `${compartirInicio.time} hs` : null, compartirInicio.location || null].filter(Boolean).join(' · '),
+                    archivo: `remate-${compartirInicio.date}`,
+                    slugFirma: consignataria.canonical_slug,
+                  }}
+            />
+          )}
+        </Hoja>
+      )}
     </div>
   )
 }
@@ -1277,19 +982,67 @@ const EMPTY_AUCTION = {
   description: '',
   catalog_url: '',
   youtube_url: '',
+  flyer_url: '',
 }
 
-function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onAuctionsChange }: AuctionManagerProps) {
+const PROVINCIAS_REMATE = ['BUENOS AIRES', 'CORRIENTES', 'ENTRE RIOS', 'SANTA FE', 'CORDOBA', 'LA PAMPA', 'CHACO', 'FORMOSA', 'MISIONES', 'SANTIAGO DEL ESTERO', 'SAN LUIS', 'SALTA', 'TUCUMAN', 'JUJUY', 'RIO NEGRO', 'NEUQUEN', 'CHUBUT', 'MENDOZA', 'CATAMARCA', 'LA RIOJA', 'SAN JUAN', 'SANTA CRUZ', 'TIERRA DEL FUEGO']
+
+export function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onAuctionsChange }: AuctionManagerProps) {
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<number | null>(null)
   const [form, setForm] = useState(EMPTY_AUCTION)
   const [saving, setSaving] = useState(false)
   const [feedback, setFeedback] = useState<{ type: 'ok' | 'err'; msg: string } | null>(null)
   const [deleting, setDeleting] = useState<number | null>(null)
+  // Si el formulario corrige un remate del calendario: la clave de ese remate.
+  const [reemplaza, setReemplaza] = useState<string | null>(null)
+  const [subiendoFlyer, setSubiendoFlyer] = useState(false)
   const router = useRouter()
+
+  async function subirFlyer(file: File) {
+    setSubiendoFlyer(true)
+    setFeedback(null)
+    try {
+      const fd = new FormData()
+      fd.append('flyer', file)
+      const res = await fetch(`/api/consignatarias/${slug}/flyer`, { method: 'POST', body: fd })
+      const data = await res.json()
+      if (!res.ok) {
+        setFeedback({ type: 'err', msg: mensajeError(data, 'No se pudo subir el flyer') })
+        return
+      }
+      setForm(f => ({ ...f, flyer_url: data.url }))
+    } catch {
+      setFeedback({ type: 'err', msg: 'Error de conexion al subir el flyer' })
+    } finally {
+      setSubiendoFlyer(false)
+    }
+  }
+
+  function startCompletar(a: ScrapedAuction) {
+    setEditingId(null)
+    setReemplaza(a.clave ?? null)
+    setForm({
+      title: a.title,
+      date: a.date,
+      time: a.time || '',
+      location: a.location || '',
+      province: a.province || '',
+      type: a.type || 'general',
+      main_category: a.main_category || 'mixto',
+      estimated_heads: a.estimated_heads?.toString() || '',
+      description: a.description || '',
+      catalog_url: a.catalog_url || '',
+      youtube_url: a.youtube_url || '',
+      flyer_url: '',
+    })
+    setShowForm(true)
+    setFeedback(null)
+  }
 
   function startCreate() {
     setEditingId(null)
+    setReemplaza(null)
     setForm(EMPTY_AUCTION)
     setShowForm(true)
     setFeedback(null)
@@ -1297,6 +1050,7 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
 
   function startEdit(auction: OwnerAuction) {
     setEditingId(auction.id)
+    setReemplaza(null)
     setForm({
       title: auction.title,
       date: auction.date,
@@ -1309,6 +1063,7 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
       description: auction.description || '',
       catalog_url: auction.catalog_url || '',
       youtube_url: auction.youtube_url || '',
+      flyer_url: auction.flyer_url || '',
     })
     setShowForm(true)
     setFeedback(null)
@@ -1328,6 +1083,8 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
       description: form.description || null,
       catalog_url: form.catalog_url || null,
       youtube_url: form.youtube_url || null,
+      flyer_url: form.flyer_url || null,
+      ...(!editingId && reemplaza ? { reemplaza_clave: reemplaza } : {}),
     }
 
     try {
@@ -1343,7 +1100,7 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
 
       if (!res.ok) {
         const data = await res.json()
-        setFeedback({ type: 'err', msg: data.error || 'Error al guardar' })
+        setFeedback({ type: 'err', msg: mensajeError(data, 'Error al guardar') })
         return
       }
 
@@ -1358,7 +1115,8 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
       setShowForm(false)
       setForm(EMPTY_AUCTION)
       setEditingId(null)
-      setFeedback({ type: 'ok', msg: editingId ? 'Remate actualizado' : 'Remate creado' })
+      setReemplaza(null)
+      setFeedback({ type: 'ok', msg: `${editingId ? 'Remate actualizado' : reemplaza ? 'Remate corregido' : 'Remate creado'}. Ya se ve en tu perfil; el calendario general y el mail semanal lo toman en menos de una hora.` })
       router.refresh()
     } catch {
       setFeedback({ type: 'err', msg: 'Error de conexion' })
@@ -1386,6 +1144,11 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
 
   const inputClass = 'w-full bg-terminal-bg border border-terminal-border text-zinc-200 text-xxs font-terminal px-2 py-1.5 rounded-terminal focus:outline-none focus:border-accent transition-colors'
 
+  // Un remate del calendario recién corregido deja de listarse al instante, sin esperar
+  // a que el servidor vuelva a armar la página (en el server se filtra igual, page.tsx).
+  const corregidos = new Set(ownerAuctions.map(a => a.reemplaza_clave).filter(Boolean))
+  scrapedAuctions = scrapedAuctions.filter(a => !a.clave || !corregidos.has(a.clave))
+
   return (
     <div className="space-y-4">
       {/* Create button + feedback */}
@@ -1410,10 +1173,15 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
       {showForm && (
         <div className="terminal-panel border-accent/30">
           <div className="terminal-panel-header flex items-center justify-between">
-            <span className="text-zinc-200 text-label tracking-widest">{editingId ? 'EDITAR REMATE' : 'NUEVO REMATE'}</span>
-            <button onClick={() => { setShowForm(false); setEditingId(null) }} className="text-xxs font-terminal text-zinc-500 hover:text-zinc-400">Cancelar</button>
+            <span className="text-zinc-200 text-label tracking-widest">{editingId ? 'EDITAR REMATE' : reemplaza ? 'CORREGIR REMATE DEL CALENDARIO' : 'NUEVO REMATE'}</span>
+            <button onClick={() => { setShowForm(false); setEditingId(null); setReemplaza(null) }} className="text-xxs font-terminal text-zinc-500 hover:text-zinc-400">Cancelar</button>
           </div>
           <form onSubmit={handleSave} className="px-panel py-3 space-y-3">
+            {reemplaza && (
+              <p className="text-xxs font-terminal text-zinc-400">
+                Precargamos lo que figura en el calendario. Lo que guardes reemplaza a ese remate en tu perfil, en el calendario y en el mail semanal.
+              </p>
+            )}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="sm:col-span-2">
                 <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Titulo *</label>
@@ -1433,7 +1201,12 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
               </div>
               <div>
                 <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Provincia</label>
-                <input type="text" value={form.province} onChange={e => setForm(f => ({ ...f, province: e.target.value }))} className={inputClass} placeholder="BUENOS AIRES" />
+                <select value={form.province} onChange={e => setForm(f => ({ ...f, province: e.target.value }))} className={inputClass}>
+                  <option value="">Elegí la provincia</option>
+                  {[...new Set([...PROVINCIAS_REMATE, ...(form.province ? [form.province] : [])])].map(p => (
+                    <option key={p} value={p}>{provinciaNombre(p)}</option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Tipo</label>
@@ -1470,12 +1243,32 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
               </div>
             </div>
             <div>
+              <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Flyer del remate</label>
+              <div className="flex items-start gap-3">
+                {form.flyer_url && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={form.flyer_url} alt="Flyer del remate" className="w-24 h-auto rounded-terminal border border-terminal-border" />
+                )}
+                <div className="space-y-1">
+                  <label className="inline-block px-3 py-1 border border-terminal-border text-xxs font-terminal text-zinc-300 hover:border-accent cursor-pointer rounded-terminal">
+                    {subiendoFlyer ? 'Subiendo...' : form.flyer_url ? 'Cambiar flyer' : 'Subir flyer'}
+                    <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" disabled={subiendoFlyer}
+                      onChange={e => { const f = e.target.files?.[0]; if (f) subirFlyer(f); e.target.value = '' }} />
+                  </label>
+                  {form.flyer_url && (
+                    <button type="button" onClick={() => setForm(f => ({ ...f, flyer_url: '' }))} className="block text-xxs font-terminal text-zinc-500 hover:text-negative">Quitar flyer</button>
+                  )}
+                  <p className="text-[10px] font-terminal text-zinc-600">JPG, PNG o WebP, hasta 5 MB. Se muestra en la ficha del remate.</p>
+                </div>
+              </div>
+            </div>
+            <div>
               <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Descripcion</label>
               <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} className={`${inputClass} resize-none`} rows={2} maxLength={500} placeholder="Detalles del remate..." />
             </div>
             <div className="flex items-center gap-3">
-              <button type="submit" disabled={saving} className="px-4 py-1.5 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors disabled:opacity-50">
-                {saving ? 'Guardando...' : editingId ? 'Guardar cambios' : 'Crear remate'}
+              <button type="submit" disabled={saving || subiendoFlyer} className="px-4 py-1.5 bg-positive/10 border border-positive/30 text-positive text-xxs font-terminal uppercase tracking-wider hover:bg-positive/20 transition-colors disabled:opacity-50">
+                {saving ? 'Guardando...' : editingId || reemplaza ? 'Guardar cambios' : 'Crear remate'}
               </button>
               {feedback && <span className={`text-xxs font-terminal ${feedback.type === 'ok' ? 'text-positive' : 'text-negative'}`}>{feedback.msg}</span>}
             </div>
@@ -1487,7 +1280,7 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
       {ownerAuctions.length > 0 && (
         <div className="terminal-panel">
           <div className="terminal-panel-header">
-            <span className="text-zinc-400 text-xxs tracking-widest">REMATES CARGADOS POR VOS</span>
+            <span className="text-zinc-400 text-xxs tracking-widest">TUS REMATES (CARGADOS O CORREGIDOS POR VOS)</span>
           </div>
           <div className="divide-y divide-terminal-border">
             {ownerAuctions.map(a => {
@@ -1497,6 +1290,7 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
                   <span className="text-xxs font-terminal text-zinc-500 tabular-nums w-12 flex-shrink-0">{formatDate(a.date)}</span>
                   {a.time && <span className="text-xxs font-terminal text-zinc-500 w-12 flex-shrink-0">{a.time}</span>}
                   <span className="text-data font-terminal text-zinc-300 flex-1 truncate">{a.title}</span>
+                  {a.flyer_url && <span className="text-[10px] font-terminal text-positive flex-shrink-0">Flyer</span>}
                   <span className="text-xxs font-terminal text-zinc-500 hidden sm:inline">{a.location}</span>
                   <WhatsAppIconButton message={shareMsg} size="sm" className="flex-shrink-0" />
                   <button onClick={() => startEdit(a)} className="text-xxs font-terminal text-accent hover:underline flex-shrink-0">Editar</button>
@@ -1525,14 +1319,15 @@ function AuctionManager({ slug, displayName, ownerAuctions, scrapedAuctions, onA
                   <span className="text-xxs font-terminal text-zinc-500 tabular-nums w-12 flex-shrink-0">{formatDate(a.date)}</span>
                   {a.time && <span className="text-xxs font-terminal text-zinc-500 w-12 flex-shrink-0">{a.time}</span>}
                   <span className="text-data font-terminal text-zinc-400 flex-1 truncate">{a.title}</span>
-                  <span className="text-xxs font-terminal text-zinc-700 hidden sm:inline">{a.location}</span>
+                  <span className="text-xxs font-terminal text-zinc-500 hidden sm:inline">{a.location}</span>
                   <WhatsAppIconButton message={shareMsg} size="sm" className="flex-shrink-0" />
+                  <button onClick={() => startCompletar(a)} className="text-xxs font-terminal text-accent hover:underline flex-shrink-0">Editar</button>
                 </div>
               )
             })}
           </div>
           <div className="px-panel py-2">
-            <span className="text-[10px] font-terminal text-zinc-700">Estos remates se actualizan automaticamente por nuestro scraper diario.</span>
+            <span className="text-[10px] font-terminal text-zinc-700">Los encontramos solos en tu web o en la de tus remates. Con Editar los corregís, sumás catálogo, video o flyer: tu versión reemplaza a la nuestra.</span>
           </div>
         </div>
       )}
@@ -1585,10 +1380,10 @@ function ProfileEditForm({ slug, initial, logoUrl: initialLogoUrl }: ProfileEdit
       })
       if (!res.ok) {
         const data = await res.json()
-        setFeedback({ type: 'err', msg: data.error || 'Error al guardar' })
+        setFeedback({ type: 'err', msg: mensajeError(data, 'Error al guardar') })
         return
       }
-      setFeedback({ type: 'ok', msg: 'Perfil actualizado. Los cambios se reflejan en tu perfil publico.' })
+      setFeedback({ type: 'ok', msg: 'Listo, ya se ve en tu perfil.' })
     } catch {
       setFeedback({ type: 'err', msg: 'Error de conexion' })
     } finally {
@@ -1607,7 +1402,7 @@ function ProfileEditForm({ slug, initial, logoUrl: initialLogoUrl }: ProfileEdit
       const res = await fetch(`/api/consignatarias/${slug}/logo`, { method: 'POST', body: fd })
       const data = await res.json()
       if (!res.ok) {
-        setLogoFeedback({ type: 'err', msg: data.error || 'Error al subir logo' })
+        setLogoFeedback({ type: 'err', msg: mensajeError(data, 'Error al subir logo') })
         return
       }
       setLogoUrl(data.logo_url)
@@ -1620,69 +1415,69 @@ function ProfileEditForm({ slug, initial, logoUrl: initialLogoUrl }: ProfileEdit
     }
   }
 
-  const inputClass = 'w-full bg-terminal-bg border border-terminal-border text-zinc-200 text-xxs font-terminal px-2 py-1.5 rounded-terminal focus:outline-none focus:border-accent transition-colors'
+  const CAMPO = 'mt-1.5 block w-full rounded-xl border border-terminal-border bg-terminal-bg/60 px-3.5 py-2.5 text-[0.9375rem] text-ink placeholder:text-zinc-600 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20'
+  const ETIQUETA = 'block text-sm font-medium text-zinc-300'
+  const set = (k: keyof typeof form) => (e: { target: { value: string } }) => setForm((f) => ({ ...f, [k]: e.target.value }))
 
   return (
-    <div className="terminal-panel">
-      <div className="terminal-panel-header"><span className="text-zinc-200 text-label tracking-widest">EDITAR PERFIL</span></div>
-      <form onSubmit={handleSubmit} className="px-panel py-3 space-y-3">
-        <p className="text-xxs font-terminal text-zinc-500">Los datos que completes se muestran en tu perfil publico.</p>
+    <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl border border-terminal-border bg-terminal-panel p-5 sm:p-6">
+      <div>
+        <p className="text-base font-semibold text-ink">Datos de tu ficha</p>
+        <p className="mt-0.5 text-sm text-zinc-500">Lo que completes se ve en tu perfil público.</p>
+      </div>
 
-        {/* Logo upload */}
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-terminal border border-terminal-border bg-terminal-bg flex items-center justify-center overflow-hidden flex-shrink-0 relative">
-            {logoUrl ? (
-              <Image src={logoUrl} alt="Logo" className="object-contain" fill unoptimized />
-            ) : (
-              <span className="text-zinc-700 text-xxs font-terminal">LOGO</span>
-            )}
-          </div>
-          <div className="flex-1 space-y-1">
-            <label className="text-xxs text-zinc-500 uppercase font-terminal block">Logo</label>
-            <label className={`inline-block px-3 py-1 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors ${logoUploading ? 'opacity-50 pointer-events-none' : 'cursor-pointer'}`}>
-              {logoUploading ? 'Subiendo...' : 'Subir imagen'}
-              <input type="file" accept="image/jpeg,image/png,image/webp,image/svg+xml" onChange={handleLogoUpload} className="hidden" disabled={logoUploading} />
-            </label>
-            <p className="text-[10px] text-zinc-700 font-terminal">JPG, PNG, WebP o SVG. Max 2 MB.</p>
-            {logoFeedback && <span className={`text-xxs font-terminal ${logoFeedback.type === 'ok' ? 'text-positive' : 'text-negative'}`}>{logoFeedback.msg}</span>}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Telefono</label>
-            <input type="text" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} className={inputClass} placeholder="+54 11 1234-5678" />
-          </div>
-          <div>
-            <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Email</label>
-            <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} className={inputClass} placeholder="contacto@ejemplo.com" />
-          </div>
-          <div>
-            <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Sitio web</label>
-            <input type="text" value={form.website} onChange={e => setForm(f => ({ ...f, website: e.target.value }))} className={inputClass} placeholder="https://ejemplo.com" />
-          </div>
-          <div>
-            <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">WhatsApp</label>
-            <input type="text" value={form.whatsapp} onChange={e => setForm(f => ({ ...f, whatsapp: e.target.value }))} className={inputClass} placeholder="+54 11 1234-5678" />
-          </div>
-          <div>
-            <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">CUIT</label>
-            <input type="text" value={form.cuit} onChange={e => setForm(f => ({ ...f, cuit: e.target.value }))} className={inputClass} placeholder="20-12345678-9" />
-          </div>
-        </div>
+      {/* Logo */}
+      <div className="flex items-center gap-4">
+        <span className="relative grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-2xl bg-zinc-100 ring-1 ring-inset ring-terminal-border">
+          {logoUrl ? <Image src={logoUrl} alt="Logo" className="object-contain p-1.5" fill unoptimized /> : <span className="text-xs text-zinc-500">Logo</span>}
+        </span>
         <div>
-          <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Descripcion</label>
-          <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} className={`${inputClass} resize-none`} rows={3} maxLength={1000} placeholder="Breve descripcion de la consignataria..." />
-          <span className="text-[10px] text-zinc-700 font-terminal">{form.description.length}/1000</span>
+          <label className={`inline-flex cursor-pointer items-center rounded-full bg-zinc-800/70 px-4 py-2 text-sm font-medium text-ink hover:bg-zinc-700/70 ${logoUploading ? 'pointer-events-none opacity-50' : ''}`}>
+            {logoUploading ? 'Subiendo…' : logoUrl ? 'Cambiar logo' : 'Subir logo'}
+            <input type="file" accept="image/jpeg,image/png,image/webp,image/svg+xml" onChange={handleLogoUpload} className="sr-only" disabled={logoUploading} />
+          </label>
+          <p className="mt-1.5 text-xs text-zinc-500">JPG, PNG, WebP o SVG, hasta 2 MB.</p>
+          {logoFeedback && <p className={`mt-1 text-xs ${logoFeedback.type === 'ok' ? 'text-positive' : 'text-negative'}`}>{logoFeedback.msg}</p>}
         </div>
-        <div className="flex items-center gap-3">
-          <button type="submit" disabled={saving} className="px-4 py-1.5 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors disabled:opacity-50">
-            {saving ? 'Guardando...' : 'Guardar cambios'}
-          </button>
-          {feedback && <span className={`text-xxs font-terminal ${feedback.type === 'ok' ? 'text-positive' : 'text-negative'}`}>{feedback.msg}</span>}
-        </div>
-      </form>
-    </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <label className={ETIQUETA}>
+          WhatsApp
+          <input type="tel" value={form.whatsapp} onChange={set('whatsapp')} placeholder="Ej. 3794 123456" className={CAMPO} />
+        </label>
+        <label className={ETIQUETA}>
+          Teléfono
+          <input type="tel" value={form.phone} onChange={set('phone')} placeholder="Ej. 3774 42-1234" className={CAMPO} />
+        </label>
+        <label className={ETIQUETA}>
+          Email de contacto
+          <input type="email" value={form.email} onChange={set('email')} placeholder="contacto@tufirma.com" className={CAMPO} />
+        </label>
+        <label className={ETIQUETA}>
+          Sitio web
+          <input value={form.website} onChange={set('website')} placeholder="tufirma.com" className={CAMPO} />
+        </label>
+      </div>
+      <label className={ETIQUETA}>
+        Quiénes son, en dos líneas
+        <textarea value={form.description} onChange={set('description')} rows={3} maxLength={1000} placeholder="Ej. Consignataria de Curuzú Cuatiá. Remates de invernada y cría en el sur de Corrientes desde 1960." className={`${CAMPO} resize-none`} />
+      </label>
+      <details className="text-sm">
+        <summary className="cursor-pointer font-medium text-accent">Más datos (CUIT)</summary>
+        <label className={`${ETIQUETA} mt-3`}>
+          CUIT
+          <input value={form.cuit} onChange={set('cuit')} placeholder="30-12345678-9" className={CAMPO} />
+        </label>
+      </details>
+
+      <div className="flex flex-wrap items-center gap-3">
+        <button type="submit" disabled={saving} className="rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-white oscuro:text-zinc-950 hover:bg-accent-bright disabled:opacity-50">
+          {saving ? 'Guardando…' : 'Guardar'}
+        </button>
+        {feedback && <span className={`text-sm ${feedback.type === 'ok' ? 'text-positive' : 'text-negative'}`}>{feedback.msg}</span>}
+      </div>
+    </form>
   )
 }
 
@@ -1704,7 +1499,7 @@ function FrigorificoEditForm({ cuit, initial }: { cuit: string; initial: { phone
     setFeedback(null)
     try {
       const res = await fetch(`/api/frigorificos/${cuit}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) })
-      if (!res.ok) { const data = await res.json(); setFeedback({ type: 'err', msg: data.error || 'Error al guardar' }); return }
+      if (!res.ok) { const data = await res.json(); setFeedback({ type: 'err', msg: mensajeError(data, 'Error al guardar') }); return }
       setFeedback({ type: 'ok', msg: 'Perfil actualizado' })
     } catch { setFeedback({ type: 'err', msg: 'Error de conexion' }) }
     finally { setSaving(false) }
@@ -1720,7 +1515,7 @@ function FrigorificoEditForm({ cuit, initial }: { cuit: string; initial: { phone
       fd.append('logo', file)
       const res = await fetch(`/api/frigorificos/${cuit}/logo`, { method: 'POST', body: fd })
       const data = await res.json()
-      if (!res.ok) { setFeedback({ type: 'err', msg: data.error || 'Error al subir el logo' }); return }
+      if (!res.ok) { setFeedback({ type: 'err', msg: mensajeError(data, 'Error al subir el logo') }); return }
       setLogoUrl(data.logo_url)
       setFeedback({ type: 'ok', msg: 'Logo actualizado' })
     } catch { setFeedback({ type: 'err', msg: 'Error de conexion' }) }
@@ -1847,78 +1642,6 @@ function ClaimEnEspera({ claims }: { claims: Claim[] }) {
   )
 }
 
-/**
- * Una fila de la bandeja de leads.
- *
- * `bloqueado` = plan FREE. En ese caso se ve QUE el lead existe (nombre corto,
- * fecha, lo que escribió) pero no CÓMO contactarlo. El mensaje se muestra entero
- * a propósito: es lo que prueba que la demanda es real y lo que hace que valga la
- * pena pagar. Los datos de contacto nunca llegan al cliente cuando está bloqueado
- * —se enmascaran acá, no se ocultan con CSS— así que no se leen desde el inspector.
- */
-function LeadRow({ lead: l, bloqueado }: { lead: Lead; bloqueado: boolean }) {
-  const fecha = new Date(l.created_at).toLocaleDateString('es-AR', {
-    day: '2-digit', month: '2-digit', year: '2-digit',
-  })
-
-  // "Juan Carlos Fleitas" → "Juan C." — identifica sin entregar.
-  const nombreCorto = (() => {
-    const partes = l.name.trim().split(/\s+/)
-    return partes.length === 1 ? partes[0] : `${partes[0]} ${partes[1][0].toUpperCase()}.`
-  })()
-
-  const wa = whatsappLink(l.phone, `Hola ${l.name.split(' ')[0]}, te contacto desde consignatarias.com.ar.`)
-
-  return (
-    <div className="p-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-      <div className="min-w-0">
-        <div className="text-sm font-semibold text-zinc-100">
-          {bloqueado ? nombreCorto : l.name}
-          <span className="ml-2 text-xxs uppercase tracking-wider text-zinc-500">{fecha}</span>
-        </div>
-        <div className="text-xs text-zinc-400">
-          {bloqueado ? (
-            <span className="mr-2 font-terminal text-zinc-600">
-              {l.phone ? '·· ···· ····' : ''}{l.phone && l.email ? '  ' : ''}{l.email ? '·······@·····' : ''}
-            </span>
-          ) : (
-            <>
-              {l.phone && <span className="mr-2">{l.phone}</span>}
-              {l.email && <span className="mr-2">{l.email}</span>}
-            </>
-          )}
-          {l.source && <span className="text-zinc-600">· {l.source}</span>}
-        </div>
-        {l.message && <div className="text-xs text-zinc-500 mt-1 truncate">{l.message}</div>}
-      </div>
-
-      <div className="flex items-center gap-2 shrink-0">
-        {bloqueado ? (
-          <Link
-            href="/planes?audience=consignataria&from=leads"
-            className="rounded-terminal border border-accent/40 px-3 py-1.5 text-xs font-semibold text-accent hover:bg-accent/10 transition-colors"
-          >
-            Ver contacto
-          </Link>
-        ) : (
-          <>
-            {wa && (
-              <a href={wa} target="_blank" rel="noopener noreferrer" className="rounded-terminal bg-emerald-500 hover:bg-emerald-400 px-3 py-1.5 text-xs font-semibold text-white transition-colors">
-                WhatsApp
-              </a>
-            )}
-            {l.email && (
-              <a href={`mailto:${l.email}`} className="rounded-terminal border border-terminal-border px-3 py-1.5 text-xs text-zinc-200 hover:border-accent transition-colors">
-                Email
-              </a>
-            )}
-          </>
-        )}
-      </div>
-    </div>
-  )
-}
-
 function FrigoProCTA({ cuit, email, isPro }: { cuit: string; email: string; isPro: boolean }) {
   const [loading, setLoading] = useState(false)
   const [err, setErr] = useState<string | null>(null)
@@ -1945,7 +1668,7 @@ function FrigoProCTA({ cuit, email, isPro }: { cuit: string; email: string; isPr
         body: JSON.stringify({ cuit, email }),
       })
       const data = await res.json()
-      if (!res.ok || !data.checkoutUrl) { setErr(data.error || 'No se pudo iniciar el pago'); return }
+      if (!res.ok || !data.checkoutUrl) { setErr(mensajeError(data, 'No se pudo iniciar el pago')); return }
       window.location.href = data.checkoutUrl
     } catch { setErr('Error de conexión') }
     finally { setLoading(false) }
@@ -1991,7 +1714,7 @@ function HabilitacionForm({ cuit, nivel: initialNivel, verificada }: { cuit: str
       if (file) fd.append('doc', file)
       const res = await fetch(`/api/frigorificos/${cuit}/habilitacion`, { method: 'POST', body: fd })
       const data = await res.json()
-      if (!res.ok) { setFeedback({ type: 'err', msg: data.error || 'Error al enviar' }); return }
+      if (!res.ok) { setFeedback({ type: 'err', msg: mensajeError(data, 'Error al enviar') }); return }
       setFeedback({ type: 'ok', msg: 'Declaración enviada. La verificamos y activamos tu badge de alcance.' })
     } catch { setFeedback({ type: 'err', msg: 'Error de conexión' }) }
     finally { setSaving(false) }
@@ -2069,7 +1792,7 @@ function FrigoProductManager({ cuit, initial }: { cuit: string; initial: FrigoPr
         }),
       })
       const data = await res.json()
-      if (!res.ok) { setFeedback({ type: 'err', msg: data.error || 'Error al agregar' }); return }
+      if (!res.ok) { setFeedback({ type: 'err', msg: mensajeError(data, 'Error al agregar') }); return }
       setItems(prev => [data as FrigoProduct, ...prev])
       setForm(EMPTY_PRODUCT); setShowForm(false)
       setFeedback({ type: 'ok', msg: 'Producto agregado' })
@@ -2186,32 +1909,20 @@ function FrigoPedidos({ rfqs }: { rfqs: FrigoRfq[] }) {
 /*  SUBSCRIPTION PANEL                                                  */
 /* ------------------------------------------------------------------ */
 
-function SubscriptionPanel({ tier, subscription }: { tier: string; subscription: Subscription | null }) {
+function SubscriptionPanel({ tier, subscription, plan }: { tier: string; subscription: Subscription | null; plan: ConsignatariaPlanStatus }) {
   const [cancelling, setCancelling] = useState(false)
   const [cancelFeedback, setCancelFeedback] = useState<string | null>(null)
   const [cancelled, setCancelled] = useState(false)
-  const [spotsRemaining, setSpotsRemaining] = useState<number | null>(null)
-
-  // Fetch founder spots for scarcity messaging
-  useEffect(() => {
-    if (tier === 'FREE') {
-      fetch('/api/stats/pro-spots')
-        .then(r => r.json())
-        .then(d => {
-          if (d.success && d.data) {
-            setSpotsRemaining(d.data.remaining)
-          }
-        })
-        .catch(() => {})
-    }
-  }, [tier])
+  // (Se sacó el contador de "lugares fundador": contaba suscripciones de OTRO
+  // producto —PRO abierto, user_subscriptions— contra un cupo de 50 que no existe.
+  // Escasez inventada; revisión del 17-10-2026.)
 
   async function handleCancel() {
     if (!confirm('Cancelar suscripcion? Tu plan sigue activo hasta el fin del periodo.')) return
     setCancelling(true)
     try {
       const res = await fetch('/api/subscriptions/cancel', { method: 'POST' })
-      if (!res.ok) { const d = await res.json(); setCancelFeedback(d.error || 'Error'); return }
+      if (!res.ok) { const d = await res.json(); setCancelFeedback(mensajeError(d, 'Error')); return }
       setCancelled(true)
       setCancelFeedback('Suscripcion cancelada.')
     } catch { setCancelFeedback('Error de conexion') }
@@ -2227,14 +1938,35 @@ function SubscriptionPanel({ tier, subscription }: { tier: string; subscription:
         }`}>{tier}</span>
       </div>
       <div className="px-panel py-3 space-y-3">
-        {subscription && (tier === 'PRO' || tier === 'ENTERPRISE') ? (
+        {plan.isPro && !plan.source && !subscription ? (
+          <p className="text-xs text-zinc-300">
+            Vista previa de administrador: así ve la firma su panel con PRO activo. Lo que pagaría:
+            ARS 45.000/mes, sin permanencia.
+          </p>
+        ) : plan.source === 'featured' ? (
+          // Destaque manual: PRO sin cargo y sin vencimiento, otorgado por nosotros.
+          <div className="space-y-2">
+            <p className="text-xs text-zinc-200">Tu firma tiene PRO sin cargo, otorgado por consignatarias.com.ar.</p>
+            <ul className="text-xxs font-terminal text-zinc-400 space-y-1 list-none">
+              {BENEFICIOS_PRO_CONSIGNATARIA.map((b) => <li key={b}>→ {b}</li>)}
+            </ul>
+          </div>
+        ) : subscription && subscription.status === 'cancelled' && plan.isPro ? (
+          <p className="text-xs text-zinc-300">
+            Cancelaste la suscripción. Seguís con PRO hasta el{' '}
+            <span className="tabular-nums text-zinc-100">{subscription.current_period_end ? formatDate(subscription.current_period_end.slice(0, 10)) : 'fin del período'}</span>,
+            que es lo que ya pagaste.
+          </p>
+        ) : subscription && subscription.status === 'past_due' ? (
+          <p className="text-xs text-warning">
+            El último cobro no pasó. Mientras no se regularice, tu firma figura como FREE. Revisá el medio de pago en Rebill o escribinos a agro@memola.com.ar.
+          </p>
+        ) : subscription && (tier === 'PRO' || tier === 'ENTERPRISE') ? (
           <>
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <span className="text-xxs text-zinc-500 uppercase font-terminal">Estado:</span>
-                <span className={`text-xxs font-terminal ${subscription.status === 'active' ? 'text-positive' : 'text-warning'}`}>
-                  {subscription.status === 'active' ? 'ACTIVA' : 'PAGO PENDIENTE'}
-                </span>
+                <span className="text-xxs font-terminal text-positive">ACTIVA</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-xxs text-zinc-500 uppercase font-terminal">Vencimiento:</span>
@@ -2250,31 +1982,9 @@ function SubscriptionPanel({ tier, subscription }: { tier: string; subscription:
           </>
         ) : (
           <div className="space-y-3">
-            {/* Founder spots scarcity indicator */}
-            {spotsRemaining !== null && spotsRemaining > 0 && spotsRemaining <= 25 && (
-              <div className={`px-2 py-1.5 rounded text-center ${
-                spotsRemaining <= 10 
-                  ? 'bg-red-500/15 border border-red-500/50' 
-                  : 'bg-amber-500/15 border border-amber-500/40'
-              }`}>
-                <span className={`text-xxs font-terminal uppercase tracking-wider ${
-                  spotsRemaining <= 10 ? 'text-red-400' : 'text-amber-400'
-                }`}>
-                  {spotsRemaining <= 10 ? '🔥' : '⚡'} {spotsRemaining} lugares disponibles a $45.000/mes
-                </span>
-              </div>
-            )}
-            
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-amber-400 text-base">📧</span>
-              <p className="text-xs font-terminal text-zinc-200 font-medium">Tu remate, primero en el newsletter</p>
-            </div>
-            <p className="text-xxs font-terminal text-zinc-500">Tu plan actual es gratuito. Con PRO:</p>
+            <p className="text-xxs font-terminal text-zinc-500">Tu plan actual es gratuito. Con PRO (ARS 45.000/mes, sin permanencia):</p>
             <ul className="text-xxs font-terminal text-zinc-400 space-y-1 list-none">
-              <li>→ Tus remates enviados por email a toda nuestra base</li>
-              <li>→ Perfil destacado con badge dorado</li>
-              <li>→ Analytics: vistas, ranking provincial</li>
-              <li>→ Landing personalizada con QR para catálogos</li>
+              {BENEFICIOS_PRO_CONSIGNATARIA.map((b) => <li key={b}>→ {b}</li>)}
             </ul>
             <Link href="/planes?audience=consignataria&from=dashboard-subscription" className="inline-flex items-center gap-2 px-4 py-2 bg-amber-400/15 border border-amber-500/40 text-amber-400 text-xxs font-terminal uppercase tracking-wider hover:bg-amber-400/25 transition-colors">
               <span>★</span> Activar PRO Consignataria — $45.000/mes

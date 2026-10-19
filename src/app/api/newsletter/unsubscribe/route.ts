@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { logEvent } from '@/lib/ops'
+import { tokenBajaValido } from '@/lib/newsletter/baja'
 
 export const dynamic = 'force-dynamic'
 
@@ -23,9 +24,15 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
  */
 
 /** Marca al suscriptor como dado de baja. Idempotente. Devuelve true si el email era válido y la query no falló. */
-async function unsubscribe(emailRaw: string | null, campaign: string | null): Promise<{ ok: boolean; email: string | null }> {
+async function unsubscribe(emailRaw: string | null, campaign: string | null, token: string | null): Promise<{ ok: boolean; email: string | null }> {
   const email = (emailRaw ?? '').trim().toLowerCase()
   if (!email || !EMAIL_RE.test(email)) {
+    return { ok: false, email: null }
+  }
+  // Firma del link (lib/newsletter/baja). Un `t` que no corresponde al mail se
+  // rechaza. Sin `t` (mails enviados antes del 17-10-2026) se acepta todavía, marcado
+  // `sin_token`: cerrar ese camino cuando los registros dejen de mostrarlo.
+  if (token && !tokenBajaValido(email, token)) {
     return { ok: false, email: null }
   }
 
@@ -50,7 +57,7 @@ async function unsubscribe(emailRaw: string | null, campaign: string | null): Pr
       eventType: 'api_call',
       status: 'ok',
       route: '/api/newsletter/unsubscribe',
-      metadata: { kind: 'digest_unsubscribe', email, campaign },
+      metadata: { kind: 'digest_unsubscribe', email, campaign, sin_token: !token },
     })
 
     return { ok: true, email }
@@ -62,7 +69,7 @@ async function unsubscribe(emailRaw: string | null, campaign: string | null): Pr
 
 export async function POST(req: NextRequest) {
   const sp = req.nextUrl.searchParams
-  const { ok } = await unsubscribe(sp.get('email'), sp.get('campaign'))
+  const { ok } = await unsubscribe(sp.get('email'), sp.get('campaign'), sp.get('t'))
   // One-click: el cliente de correo sólo mira el status code. Cuerpo mínimo.
   return new NextResponse(ok ? 'unsubscribed' : 'invalid email', {
     status: ok ? 200 : 400,
@@ -72,10 +79,12 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   const sp = req.nextUrl.searchParams
-  const { ok, email } = await unsubscribe(sp.get('email'), sp.get('campaign'))
+  const { ok, email } = await unsubscribe(sp.get('email'), sp.get('campaign'), sp.get('t'))
   // Fallback humano: redirige a la página de confirmación que ya enlazan los emails.
   const target = new URL('/unsubscribe', APP_URL)
   if (email) target.searchParams.set('email', email)
+  const t = sp.get('t')
+  if (t) target.searchParams.set('t', t)
   target.searchParams.set('ok', ok ? '1' : '0')
   return NextResponse.redirect(target, { status: 302 })
 }

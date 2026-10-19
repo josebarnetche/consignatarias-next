@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next'
 import { PROVINCIAS_CON_DATO, ZONAS_CON_DATO, zonaIndexable } from '@/lib/campos-seo'
 import { getAllCanonicalSlugs, getAuctionsForProfile } from '@/lib/data/consignataria-slugs'
 import { getProfileSEO } from '@/lib/data/profile-seo'
+import { getFeaturedSlugs } from '@/lib/featured'
 import type { Auction } from '@/lib/db/schema'
 import rematesData from '@/lib/data/remates.json'
 import frigorificosData from '@/lib/data/frigorificos.json'
@@ -9,6 +10,8 @@ import marketPrices from '@/lib/data/market-prices.json'
 import { getQualitySegments, CABEZAS_INDEX_THRESHOLD } from '@/lib/data/quality-segments'
 import { BPG_TEMAS } from '@/lib/data/bpg-ganaderas'
 import { getActivePreofertas } from '@/lib/data/preofertas'
+import { getPreofertasFirmaAbiertas, urlPreofertaFirma } from '@/lib/preofertas-firma'
+import { createServiceClient } from '@/lib/supabase'
 import { PRODUCTOS_DATOS } from '@/lib/productos-datos'
 import { getProveedoresPublicados } from '@/lib/proveedores'
 import { getDepartamentosPublicables, ultimoAnio, fichaIndexable, META as PRODUCTIVIDAD_META } from '@/lib/productividad/panel'
@@ -79,6 +82,7 @@ const LAST_EDIT: Record<string, string> = {
   '/informes/parte-semanal': '2026-10-03',
   '/informes/valuacion-de-campo': '2026-10-03',
   '/para-consignatarias': '2026-10-03',
+  '/para-empresas': '2026-10-17',
   '/para-consignatarias/pro-territorio': '2026-10-03',
   '/para-consignatarias/informe-provincial': '2026-10-03',
   '/proveedores': '2026-10-03',
@@ -152,8 +156,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '',
   )
   const frigorificosDate = maxSenasa ? clampToday(maxSenasa.slice(0, 10)) : editado('/frigorificos')
-  /** /preofertas solo se ofrece mientras haya alguna abierta (si no, la página es un aviso vacío y va noindex). */
-  const preofertasAbiertas = getActivePreofertas(Date.now()).length > 0
+  /** /preofertas solo se ofrece mientras haya alguna abierta (si no, la página es un aviso vacío y va noindex).
+   *  Desde el 17-10-2026 cuentan también las que publican las firmas (preofertas_firma), y cada
+   *  una abierta suma su ficha; la cerrada va noindex y sale del sitemap con el mismo criterio. */
+  const preofertasFirma = await getPreofertasFirmaAbiertas(createServiceClient(), Date.now())
+  const preofertasAbiertas = getActivePreofertas(Date.now()).length > 0 || preofertasFirma.length > 0
   const currentYear = priceDate.getFullYear()
 
   // Static pages
@@ -635,6 +642,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
+      url: `${baseUrl}/para-empresas`,
+      lastModified: editado('/para-empresas'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    },
+    {
       url: `${baseUrl}/el-novillo-en-dolares`,
       lastModified: priceDate,
       changeFrequency: 'daily' as const,
@@ -667,6 +680,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...(preofertasAbiertas
       ? [{ url: `${baseUrl}/preofertas`, lastModified: latestRemateDate, changeFrequency: 'daily' as const, priority: 0.6 }]
       : []),
+    ...preofertasFirma.map((p) => ({
+      url: `${baseUrl}${urlPreofertaFirma(p.id)}`,
+      lastModified: new Date(p.updated_at),
+      changeFrequency: 'daily' as const,
+      priority: 0.5,
+    })),
     {
       url: `${baseUrl}/exportar`,
       lastModified: editado('/exportar'),
@@ -736,8 +755,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const max = getAuctionsForProfile(auctionsForSitemap, slug).reduce((m, a) => (a.date > m ? a.date : m), '')
     return max ? clampToday(max) : latestRemateDate
   }
+  // 17-10-2026: las firmas PRO entran siempre (su ficha nunca va noindex, ver el
+  // `thin` de la página). getFeaturedSlugs no tira: si falla, devuelve vacío y
+  // queda el criterio de siempre.
+  const proSlugs = await getFeaturedSlugs()
   const consignatariaPages: MetadataRoute.Sitemap = getAllCanonicalSlugs()
-    .filter((slug) => getAuctionsForProfile(auctionsForSitemap, slug).length >= 2 || getProfileSEO(slug))
+    .filter((slug) => getAuctionsForProfile(auctionsForSitemap, slug).length >= 2 || getProfileSEO(slug) || proSlugs.has(slug))
     .map((slug) => ({
       url: `${baseUrl}/consignatarias/${slug}`,
       lastModified: ultimoRemateDe(slug),

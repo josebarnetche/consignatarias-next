@@ -22,15 +22,15 @@ export default function CalendarioMensual({ compact = false }: { compact?: boole
                 'rounded-terminal border px-1 py-2 text-center transition-colors',
                 primera
                   ? d.grueso
-                    ? 'border-emerald-400/60 bg-emerald-400/15 text-emerald-200'
-                    : 'border-emerald-500/30 bg-emerald-500/[0.08] text-emerald-300'
+                    ? 'border-emerald-400/60 bg-emerald-400/15 text-emerald-200 claro:border-emerald-600/50 claro:bg-emerald-600/15 claro:text-emerald-800 claro:font-semibold'
+                    : 'border-emerald-500/30 bg-emerald-500/[0.08] text-emerald-300 claro:border-emerald-600/30 claro:bg-emerald-600/[0.07] claro:text-emerald-700'
                   : segunda
-                    ? 'border-dashed border-accent/40 bg-accent/[0.05] text-accent/80'
-                    : 'border-terminal-border bg-terminal-panel/50 text-zinc-600',
+                    ? 'border-dashed border-accent/40 bg-accent/[0.05] text-accent/80 claro:text-accent'
+                    : 'border-terminal-border bg-terminal-panel/50 text-zinc-600 claro:text-zinc-500',
               ].join(' ')}
             >
               <div className="text-xxs font-terminal tracking-wide">{m}</div>
-              {d.grueso && <div className="mt-0.5 h-1 w-1 rounded-full bg-emerald-400 mx-auto" />}
+              {d.grueso && <div className="mt-0.5 h-1 w-1 rounded-full bg-emerald-400 claro:bg-emerald-700 mx-auto" />}
             </div>
           )
         })}
@@ -42,7 +42,7 @@ export default function CalendarioMensual({ compact = false }: { compact?: boole
           1ra campaña · todas las categorías
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 claro:bg-emerald-700" />
           grueso del país (marzo)
         </span>
         <span className="inline-flex items-center gap-1.5">

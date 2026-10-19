@@ -9,7 +9,8 @@ import { trackCron } from '@/lib/ops'
  * POST /api/cron/pro-consignataria-outreach
  *
  * Motor WARM de conversión PRO. A la consignataria cuyo PERFIL tuvo tracción real
- * ("tu perfil fue visto N veces este mes"), le ofrecemos PRO — warm, no cold.
+ * ("tu perfil recibió N visitas en los últimos 30 días" — visitas, no "productores": la
+ * vista es anónima), le ofrecemos PRO — warm, no cold.
  *
  * Selección (todas las condiciones, en orden):
  *   1. ≥ min vistas de perfil en 30d (tabla profile_views, default min=10).

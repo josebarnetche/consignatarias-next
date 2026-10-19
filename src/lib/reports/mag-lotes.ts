@@ -32,28 +32,57 @@ const COLUMNAS =
  * `.limit(50000)` no lo cambia: no falla, simplemente devuelve menos y no avisa. En
  * 60 días hay ~8.000 lotes, así que sin esto los promedios del mercado salían
  * calculados sobre el 12% del dato y presentados como si fueran el número real.
+ *
+ * UNA LECTURA POR REQUEST (17-10-2026). El panel de la firma arma cuatro bloques del
+ * MAG (cartera, benchmark, participación, territorio) y cada uno bajaba su ventana por
+ * separado, de a 1.000 filas en serie: ~40 consultas y 18-21 s de carga del panel.
+ * Ahora la primera llamada con un cliente baja una ventana amplia (la mayor que piden
+ * los bloques), con las páginas de a cuatro en paralelo, y las siguientes del MISMO
+ * cliente filtran en memoria. La memoria es por cliente (WeakMap), así que no cruza
+ * requests ni sirve un dato de ayer.
  */
+const VENTANA_COMPARTIDA_DIAS = 120
+const lecturasPorCliente = new WeakMap<object, { desde: string; promesa: Promise<Lote[]> }>()
+
 export async function fetchLotesDesde(
   db: SupabaseClient,
   desdeISO: string,
   topeFilas = 60_000,
 ): Promise<Lote[]> {
-  const out: Lote[] = []
+  const previa = lecturasPorCliente.get(db)
+  if (previa && previa.desde <= desdeISO) {
+    return (await previa.promesa).filter((l) => l.date >= desdeISO)
+  }
+  const amplio = [desdeISO, haceDias(VENTANA_COMPARTIDA_DIAS)].sort()[0]
+  const promesa = leerLotes(db, amplio, topeFilas)
+  lecturasPorCliente.set(db, { desde: amplio, promesa })
+  // Un error no se memoriza: el próximo bloque reintenta.
+  promesa.catch(() => lecturasPorCliente.delete(db))
+  return (await promesa).filter((l) => l.date >= desdeISO)
+}
+
+async function leerLotes(db: SupabaseClient, desdeISO: string, topeFilas: number): Promise<Lote[]> {
   const PAGINA = 1000
+  const EN_PARALELO = 4
+  const out: Lote[] = []
 
-  for (let offset = 0; ; offset += PAGINA) {
-    const { data, error } = await db
-      .from('mag_consignataria_sales_lots')
-      .select(COLUMNAS)
-      .gte('date', desdeISO)
-      .order('id', { ascending: true })
-      .range(offset, offset + PAGINA - 1)
-
-    if (error) throw new Error(`[mag-lotes] ${error.message}`)
-    const pagina = (data ?? []) as Lote[]
-    out.push(...pagina)
-
-    if (pagina.length < PAGINA) break
+  for (let base = 0; ; base += PAGINA * EN_PARALELO) {
+    const paginas = await Promise.all(
+      Array.from({ length: EN_PARALELO }, async (_, i) => {
+        const offset = base + i * PAGINA
+        const { data, error } = await db
+          .from('mag_consignataria_sales_lots')
+          .select(COLUMNAS)
+          .gte('date', desdeISO)
+          .order('id', { ascending: true })
+          .range(offset, offset + PAGINA - 1)
+        if (error) throw new Error(`[mag-lotes] ${error.message}`)
+        return (data ?? []) as Lote[]
+      }),
+    )
+    for (const p of paginas) out.push(...p)
+    // Termina cuando alguna página vino incompleta: después de ella no hay más.
+    if (paginas.some((p) => p.length < PAGINA)) break
     if (out.length >= topeFilas) break
   }
 

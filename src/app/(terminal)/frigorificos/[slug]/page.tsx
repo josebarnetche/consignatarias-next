@@ -100,9 +100,9 @@ function relatedFrigAnchor(r: { nombre: string; matricula: string; localidad: st
 }
 
 function stageName(stage: number): string {
-  if (stage === 1) return 'Etapa 1 — Faena + Desposte'
-  if (stage === 2) return 'Etapa 2 — Desposte'
-  return 'Etapa 3 — Deposito'
+  if (stage === 1) return 'Ciclo I — Faena + Desposte'
+  if (stage === 2) return 'Ciclo II — Desposte'
+  return 'Ciclo III — Depósito'
 }
 
 function stageDescription(stage: number): string {
@@ -354,6 +354,11 @@ export default async function FrigorificoDetailPage({
   // SENASA habilitación check: cross-reference with current registry snapshot.
   const senasaRecord = getSenasaRecord(cuit)
   const senasaVigente = senasaRecord !== null
+  // Sello público: reclamada Y habilitada en SENASA. Una ficha reclamada que no figura
+  // en el registro mostraba "VERIFICADO" al lado de "habilitación no encontrada" (caso
+  // Riestra, oct-2026): leía como que la planta estaba habilitada. `verified` sigue
+  // decidiendo lo que es de la ficha reclamada (no ofrecer "reclamar" de nuevo).
+  const selloVerificado = verified && senasaVigente
   const senasaScrapedDate = getSenasaScrapedDate()
 
   // Vitrina de carne: el gate es el plan del DUEÑO del frigorífico (no el del
@@ -424,7 +429,7 @@ export default async function FrigorificoDetailPage({
         <div className="terminal-panel-header flex items-center justify-between">
           <span className="text-zinc-200 text-label tracking-widest">FICHA DEL ESTABLECIMIENTO</span>
           <span className={`text-xxs font-terminal px-1.5 py-0.5 border rounded-terminal ${stageBorderColor(basicF.stage)} ${stageColor(basicF.stage)}`}>
-            ETAPA {basicF.stage}
+            CICLO {['', 'I', 'II', 'III'][basicF.stage] ?? basicF.stage}
           </span>
         </div>
         <div className="px-panel pt-4 pb-4 flex items-start gap-3 sm:gap-4">
@@ -449,7 +454,7 @@ export default async function FrigorificoDetailPage({
               <h1 className="text-xl sm:text-2xl font-bold text-zinc-50 tracking-tight leading-tight">
                 {name}
               </h1>
-              {verified && (
+              {selloVerificado && (
                 <span className="text-xxs font-terminal px-1.5 py-0.5 border border-positive/30 text-positive rounded-terminal">
                   VERIFICADO
                 </span>
@@ -462,7 +467,7 @@ export default async function FrigorificoDetailPage({
               <BadgeConfianza
                 senasaActive={senasaVigente}
                 senasaScrapedDate={senasaScrapedDate}
-                verified={verified}
+                verified={selloVerificado}
                 habilitacionNivel={habilitacionNivel}
                 habilitacionVerificada={habilitacionVerificada}
                 province={province}
@@ -632,7 +637,7 @@ export default async function FrigorificoDetailPage({
             </dd>
           </div>
           <div className={rowClass}>
-            <dt className={labelClass}>Etapa</dt>
+            <dt className={labelClass}>Ciclo</dt>
             <dd className={`${valueClass} ${stageColor(basicF.stage)}`}>{stageName(basicF.stage)}</dd>
           </div>
           {ficha.categoria && (
@@ -893,7 +898,7 @@ export default async function FrigorificoDetailPage({
       )}
 
       {/* PRO upsell for verified frigoríficos */}
-      {verified && (
+      {selloVerificado && (
         <div className="terminal-panel border-positive/30">
           <div className="terminal-panel-header" style={{ borderBottomColor: 'rgba(34, 197, 94, 0.3)' }}>
             <span className="text-positive text-label tracking-widest">✓ PERFIL VERIFICADO</span>

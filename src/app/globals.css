@@ -954,3 +954,91 @@ html[data-theme='dark'] .solo-claro,
 html:not([data-theme='dark']) .solo-oscuro {
   display: none !important;
 }
+
+/* ============================================================
+   LIENZO — la landing como un archivo de Figma (v1.226.0)
+   Grilla de puntos, frames con nombre, manijas de selección al pasar
+   el mouse y cursores multijugador. Todo con tokens: responde a los
+   dos temas sin hex. Respeta prefers-reduced-motion.
+   ============================================================ */
+.lienzo-puntos {
+  background-image: radial-gradient(rgb(var(--z-600) / 0.45) 1px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+[data-theme='dark'] .lienzo-puntos {
+  background-image: radial-gradient(rgb(var(--z-700) / 0.7) 1px, transparent 1.2px);
+}
+
+/* Frame: el nombre arriba a la izquierda (como Figma) y las cuatro manijas en las
+   esquinas, que aparecen al pasar el mouse o con foco de teclado. */
+.frame { position: relative; }
+.frame-nombre {
+  position: absolute; left: 0; top: -1.45rem;
+  font-size: 0.6875rem; line-height: 1rem; letter-spacing: 0.01em;
+  color: rgb(var(--z-500)); white-space: nowrap; pointer-events: none;
+  transition: color .2s ease;
+}
+.frame-sel {
+  position: absolute; inset: -1px; border-radius: inherit; pointer-events: none;
+  outline: 1.5px solid rgb(var(--accent)); outline-offset: 0;
+  opacity: 0; transition: opacity .18s cubic-bezier(.16,1,.3,1);
+}
+.frame-sel i {
+  position: absolute; width: 7px; height: 7px;
+  background: rgb(var(--t-panel)); border: 1.5px solid rgb(var(--accent));
+}
+.frame-sel i:nth-child(1) { left: -4px; top: -4px; }
+.frame-sel i:nth-child(2) { right: -4px; top: -4px; }
+.frame-sel i:nth-child(3) { left: -4px; bottom: -4px; }
+.frame-sel i:nth-child(4) { right: -4px; bottom: -4px; }
+.frame:hover > .frame-sel, .frame:focus-within > .frame-sel, .frame.frame-activo > .frame-sel { opacity: 1; }
+.frame:hover > .frame-nombre, .frame:focus-within > .frame-nombre, .frame.frame-activo > .frame-nombre { color: rgb(var(--accent)); }
+
+/* Cursores multijugador: recorren el lienzo del hero en loop. */
+.cursor-mp {
+  position: absolute; z-index: 5; pointer-events: none;
+  animation: cursor-mp var(--dur, 14s) cubic-bezier(.45,0,.2,1) infinite;
+  animation-delay: var(--delay, 0s);
+}
+.cursor-mp-tag {
+  display: inline-block; margin-left: 12px; margin-top: 2px;
+  padding: 1px 7px; border-radius: 4px 9px 9px 9px;
+  font-size: 0.6875rem; line-height: 1.05rem; font-weight: 600; white-space: nowrap;
+}
+@keyframes cursor-mp {
+  0%   { transform: translate(var(--x0), var(--y0)); }
+  30%  { transform: translate(var(--x1), var(--y1)); }
+  55%  { transform: translate(var(--x2), var(--y2)); }
+  80%  { transform: translate(var(--x3), var(--y3)); }
+  100% { transform: translate(var(--x0), var(--y0)); }
+}
+
+/* Barras del alcance: crecen una sola vez al entrar (ScrollReveal pone .reveal-in). */
+.barra-alcance { transform-origin: bottom; transition: transform 1.1s cubic-bezier(.16,1,.3,1); }
+.reveal-init .barra-alcance { transform: scaleY(0.04); }
+.reveal-init.reveal-in .barra-alcance { transform: none; }
+
+/* Marquesina de firmas citadas por IAs. */
+.marquesina { mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.marquesina-pista { display: flex; width: max-content; animation: marquesina 48s linear infinite; }
+.marquesina:hover .marquesina-pista { animation-play-state: paused; }
+@keyframes marquesina { to { transform: translateX(-50%); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-mp { animation: none; transform: translate(var(--x1), var(--y1)); }
+  .marquesina-pista { animation: none; }
+  .reveal-init .barra-alcance { transform: none; }
+}
+
+/* PANEL CRM (v1.230.0): los bloques heredados del panel (remates, plan, perfil,
+   pre-ofertas, frigorífico) usan .terminal-panel. Adentro del panel nuevo toman
+   la forma de los frames del lienzo: esquinas de 12px, sin sombra y el título
+   como título, no como rótulo en mayúsculas. Sólo dentro de .panel-crm. */
+.panel-crm .terminal-panel { border-radius: 1rem; box-shadow: none; }
+html .panel-crm .terminal-panel-header {
+  text-transform: none; letter-spacing: 0; font-size: 0.875rem; font-weight: 600;
+  color: rgb(var(--ink)); padding: 0.875rem 1.25rem;
+}
+.panel-crm .terminal-panel-header :is(h1, h2, h3, h4, span, .text-label):not(.tabular-nums):not([class*='border']) {
+  font-size: inherit; letter-spacing: inherit; text-transform: none; color: inherit;
+}

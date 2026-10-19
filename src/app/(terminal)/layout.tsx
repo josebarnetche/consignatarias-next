@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import AuthButton from "@/components/auth/AuthButton";
 import ThemeToggle from "@/components/ThemeToggle";
 import MobileMenu from "@/components/nav/MobileMenu";
+import NavDropdown from "@/components/nav/NavDropdown";
+import { buildNavGroups, isGroupActive, matchPath } from "@/lib/nav";
 import OnboardingPrompt from "@/components/onboarding/OnboardingPrompt";
 import PageTransition from "@/components/ui/PageTransition";
 import SmartWelcome from "@/components/SmartWelcome";
@@ -19,154 +21,10 @@ const TOTAL_FIRMAS = getAllProfiles().length;
 const PLANTAS_HABILITADAS = (frigorificosResumen as { habilitados: number }).habilitados;
 
 /* ------------------------------------------------------------------ */
-/*  NAV TREE  (DESIGN-SYSTEM.md §3.1 — agrupar por modelo mental)      */
+/*  NAV — el árbol vive en lib/nav (uno solo para portada, terminal y   */
+/*  teléfono). Acá solo se completan los totales del directorio.        */
 /* ------------------------------------------------------------------ */
-// A leaf is a real destination. A group is a dropdown with leaves under it.
-// Tags (`live`/`seo`/`pro`/`core`) surface intent on the most valuable items.
-interface NavLeaf {
-  label: string;
-  href: string;
-  /** Optional descriptive sub-line shown in the dropdown panel. */
-  hint?: string;
-  /** Visual emphasis tag. */
-  tag?: "live" | "pro" | "core" | "new";
-}
-
-interface NavGroup {
-  /** Group label shown in the bar (e.g. "MERCADO"). */
-  label: string;
-  /** Base route used for active-state matching (e.g. "/mercado"). */
-  match: string;
-  items: NavLeaf[];
-}
-
-interface NavLink {
-  label: string;
-  href: string;
-}
-
-// Dropdowns agrupados. El logo lleva a la portada (/), que es la que dice la promesa.
-const NAV_GROUPS: NavGroup[] = [
-  // El producto va primero (v1.211.0): cuánto vale tu hacienda, medido en lo que se
-  // vendió, y tu rodeo valuado contra eso. Antes Mi Ganado estaba enterrado como el
-  // ítem 4 de HERRAMIENTAS y el Valor de Referencia no estaba en el nav.
-  {
-    label: "Valor",
-    match: "/vr",
-    items: [
-      { label: "Precio por categoría y peso", href: "/vr", hint: "Lo que se pagó de verdad, hoy", tag: "new" },
-      { label: "Cuánto vale mi hacienda", href: "/valuar-hacienda", hint: "Cómo se calcula, con un ejemplo" },
-      { label: "Mi Ganado", href: "/mi-ganado", hint: "Tu rodeo valuado · gratis con tu cuenta" },
-      { label: "Metodología", href: "/metodologia/vr", hint: "Cómo se calcula y qué no dice" },
-    ],
-  },
-  {
-    label: "Mercado",
-    match: "/mercado",
-    items: [
-      { label: "INMAG hoy", href: "/mercado/inmag", hint: "Precio de referencia", tag: "live" },
-      { label: "Pulso del mercado", href: "/mercado/pulso", hint: "Cañuelas por firma, en vivo", tag: "live" },
-      { label: "INMAG en USD", href: "/mercado/inmag-dolares", hint: "Serie dolarizada" },
-      { label: "Novillo 20 años", href: "/mercado/novillo-historico", hint: "2006→hoy · USD oficial y blue" },
-      { label: "Maíz / Novillo", href: "/mercado/spread", hint: "Relación de canje" },
-      { label: "Índice de Liquidación", href: "/mercado/liquidacion", hint: "% hembras · liquidación vs retención" },
-      { label: "Productividad por zona", href: "/productividad", hint: "El rodeo de cada partido", tag: "new" },
-      { label: "Precios hoy", href: "/precios", hint: "Hacienda en pie" },
-      { label: "Categorías", href: "/mercado", hint: "Terneros, novillos, vacas" },
-      { label: "Internacional", href: "/mercado/internacional", hint: "Chicago (CME) USD/kg" },
-    ],
-  },
-  {
-    label: "Remates",
-    match: "/remates",
-    items: [
-      { label: "Calendario", href: "/remates", hint: "Todos los remates" },
-      { label: "Hoy", href: "/remates/hoy" },
-      { label: "Esta semana", href: "/remates/semana" },
-      { label: "En vivo", href: "/remates/en-vivo", tag: "live" },
-      { label: "Anteriores", href: "/remates/anteriores", hint: "Resultados de los que ya pasaron" },
-      { label: "Lotes en venta", href: "/lotes", hint: "Hacienda publicada, con la banda observada", tag: "new" },
-    ],
-  },
-  {
-    label: "Campos",
-    match: "/campos",
-    items: [
-      { label: "Índice de arrendamiento", href: "/mercado/arrendamiento", hint: "Kg de novillo por hectárea, al índice oficial" },
-      { label: "¿Cuánto vale mi campo?", href: "/campos/valuar", hint: "Tasador · 15 provincias y 52 zonas relevadas" },
-      { label: "Campos ofrecidos", href: "/campos", hint: "En arrendamiento y en venta" },
-      { label: "Publicar un campo", href: "/campos/publicar", hint: "Gratis · tu contacto no se publica" },
-    ],
-  },
-  {
-    label: "Directorio",
-    match: "/consignatarias",
-    items: [
-      { label: "Frigoríficos", href: "/frigorificos", hint: `${PLANTAS_HABILITADAS.toLocaleString("es-AR")} plantas habilitadas por SENASA` },
-      { label: "Proveedores", href: "/proveedores", hint: "Quién le vende a la industria", tag: "new" },
-      { label: "Consignatarias", href: "/consignatarias", hint: `${TOTAL_FIRMAS} firmas` },
-      { label: "Sumá tu firma", href: "/para-consignatarias", hint: "PRO · más alcance para tus remates" },
-    ],
-  },
-  {
-    label: "Herramientas",
-    match: "/calculadora",
-    items: [
-      { label: "Pre-ofertas", href: "/preofertas", hint: "Pre-ofertá lotes de remates de cabaña · el puente al martillo" },
-      { label: "Calculadora", href: "/calculadora", hint: "Neto en mano · ¿vendo ahora? · ahora gratis" },
-      { label: "Comparar", href: "/comparar", hint: "Quién remata más seguido · gratis" },
-      { label: "Validar RENSPA", href: "/renspa", hint: "Decodificá el código de tu establecimiento" },
-      { label: "Sanidad / SENASA", href: "/sanidad", hint: "Vacunación · requisitos de movimiento" },
-      { label: "Quiero comprar", href: "/quiero-comprar", hint: "Decinos qué buscás y te avisamos del remate" },
-      { label: "Exportar / Calendario", href: "/calendario-exportar" },
-    ],
-  },
-  {
-    // Cincuenta páginas explicativas vivían sin ningún lugar desde donde
-    // llegar: se entraba por búsqueda y se salía. El hub las junta y les da
-    // los enlaces internos que las vuelven un cuerpo y no hojas sueltas.
-    label: "Guías",
-    match: "/guias",
-    items: [
-      { label: "Todas las guías", href: "/guias", hint: "El índice completo, por tema", tag: "new" },
-      { label: "Informes por zona", href: "/informes", hint: "El dato de tu zona, en PDF", tag: "new" },
-      { label: "Cómo vender hacienda", href: "/vender-hacienda-guia", hint: "Paso a paso, de la decisión al cobro" },
-      { label: "Cómo comprar un campo", href: "/como-comprar-un-campo", hint: "Papeles y qué mirar antes de señar" },
-      { label: "Cómo vender un campo", href: "/como-vender-un-campo", hint: "Precio, carpeta y tiempos reales" },
-      { label: "Impuestos de la venta de un campo", href: "/impuestos-por-la-venta-de-un-campo", hint: "El ITI está derogado" },
-      { label: "Buenas Prácticas (BPG)", href: "/buenas-practicas", hint: "Guía Red BPA" },
-      { label: "Glosario", href: "/glosario", hint: "Las palabras del oficio" },
-    ],
-  },
-];
-// Nota: MCP + API (audiencia developer/IA) NO van en el nav del productor —
-// viven en el footer (Empresa) + la página /mcp + /llms.txt + el registry MCP.
-// Planes va como link sutil a la derecha, no como item de nav.
-
-// Mobile: the scrollable bar can't host dropdowns, so we flatten to the highest-
-// value destinations — INMAG (activo #1), Calculadora y Arrendamiento dejan de
-// estar enterrados. Order = priority.
-interface MobileNavLink extends NavLink {
-  tag?: NavLeaf["tag"];
-}
-const MOBILE_NAV: MobileNavLink[] = [
-  { label: "Cuánto vale", href: "/vr" },
-  { label: "Mi Ganado", href: "/mi-ganado" },
-  { label: "INMAG", href: "/mercado/inmag", tag: "live" },
-  { label: "Arriendo", href: "/mercado/arrendamiento" },
-  { label: "Precios", href: "/precios" },
-  { label: "Remates", href: "/remates" },
-  // 02-10-2026: EN VIVO y FRIGORÍFICOS no tenían ninguna puerta de entrada desde el
-  // teléfono; solo vivían dentro de un desplegable de escritorio.
-  { label: "En vivo", href: "/remates/en-vivo", tag: "live" },
-  { label: "Frigoríficos", href: "/frigorificos" },
-  { label: "Campos", href: "/campos/valuar" },
-  { label: "Consignat.", href: "/consignatarias" },
-  { label: "Calcular", href: "/calculadora" },
-  { label: "Guías", href: "/guias" },
-  { label: "Informes", href: "/informes" },
-  { label: "Planes", href: "/planes", tag: "pro" },
-];
+const NAV_GROUPS = buildNavGroups({ plantas: PLANTAS_HABILITADAS, firmas: TOTAL_FIRMAS });
 
 /* ------------------------------------------------------------------ */
 /*  CLOCK                                                              */
@@ -194,155 +52,6 @@ function TerminalClock() {
     <span className="tabular-nums text-zinc-500 text-data font-terminal tracking-wide hidden sm:inline">
       {time}
     </span>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  HELPER: active-state matching                                      */
-/* ------------------------------------------------------------------ */
-function matchPath(pathname: string, href: string): boolean {
-  if (href === "/overview" || href === "/") return pathname === href;
-  return pathname === href || pathname.startsWith(href + "/");
-}
-
-// A group is active if any of its leaf hrefs (or its match base) matches.
-function isGroupActive(pathname: string, group: NavGroup): boolean {
-  if (matchPath(pathname, group.match)) return true;
-  return group.items.some((it) => matchPath(pathname, it.href));
-}
-
-const TAG_STYLE: Record<NonNullable<NavLeaf["tag"]>, string> = {
-  live: "border-positive text-positive",
-  pro: "border-amber-400/60 text-amber-300",
-  core: "border-zinc-500 text-zinc-300",
-  new: "border-sky-500/60 text-sky-300",
-};
-
-const TAG_LABEL: Record<NonNullable<NavLeaf["tag"]>, string> = {
-  live: "LIVE",
-  pro: "PRO",
-  core: "NÚCLEO",
-  new: "NUEVO",
-};
-
-function NavTag({ tag }: { tag: NonNullable<NavLeaf["tag"]> }) {
-  return (
-    <span
-      className={`ml-1.5 inline-flex items-center px-1 py-px text-[9px] leading-none font-terminal uppercase tracking-wider border rounded-[2px] ${TAG_STYLE[tag]}`}
-    >
-      {tag === "live" && <span className="status-dot-live mr-0.5" />}
-      {TAG_LABEL[tag]}
-    </span>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/*  DESKTOP DROPDOWN  (hover-intent + click/focus, Escape, outside)    */
-/* ------------------------------------------------------------------ */
-function NavDropdown({
-  group,
-  active,
-}: {
-  group: NavGroup;
-  active: boolean;
-}) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const openTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Close on outside click + Escape (keyboard accessible).
-  useEffect(() => {
-    if (!open) return;
-    const onDown = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    document.addEventListener("mousedown", onDown);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("mousedown", onDown);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [open]);
-
-  const clearTimers = () => {
-    if (closeTimer.current) clearTimeout(closeTimer.current);
-    if (openTimer.current) clearTimeout(openTimer.current);
-  };
-
-  const handleEnter = () => {
-    clearTimers();
-    openTimer.current = setTimeout(() => setOpen(true), 80); // intent-delay
-  };
-  const handleLeave = () => {
-    clearTimers();
-    closeTimer.current = setTimeout(() => setOpen(false), 120);
-  };
-
-  return (
-    <div
-      ref={ref}
-      className="relative flex items-center"
-      onMouseEnter={handleEnter}
-      onMouseLeave={handleLeave}
-    >
-      <button
-        type="button"
-        aria-haspopup="menu"
-        aria-expanded={open}
-        onClick={() => {
-          clearTimers();
-          setOpen((v) => !v);
-        }}
-        onFocus={() => setOpen(true)}
-        className={`relative flex items-center px-2 py-1.5 text-xxs font-terminal uppercase tracking-widest motion-hover claro:text-sm claro:font-medium claro:px-3 claro:rounded-terminal ${
-          active || open
-            ? "text-accent claro:bg-accent/[0.07]"
-            : "text-zinc-500 hover:text-zinc-100 claro:text-zinc-300 claro:hover:bg-zinc-900"
-        }`}
-      >
-        {group.label}
-        <span className="ml-1 text-[8px] opacity-70" aria-hidden>
-          ▾
-        </span>
-        {active && (
-          <span
-            className="absolute bottom-0 left-1 right-1 h-px bg-accent"
-            style={{ borderRadius: "1px" }}
-          />
-        )}
-      </button>
-
-      {open && (
-        <div
-          role="menu"
-          className="glass-panel animate-fade-in-up absolute left-0 top-full z-50 mt-1 min-w-[230px] py-1 shadow-panel"
-        >
-          {group.items.map((it) => (
-            <Link
-              key={it.href + it.label}
-              href={it.href}
-              role="menuitem"
-              onClick={() => setOpen(false)}
-              className="group/item flex items-center justify-between gap-3 px-3 py-1.5 text-zinc-300 hover:bg-accent/[0.06] hover:text-zinc-100 motion-hover"
-            >
-              <span className="flex flex-col min-w-0">
-                <span className="flex items-center text-data font-terminal">
-                  {it.label}
-                  {it.tag && <NavTag tag={it.tag} />}
-                </span>
-                {it.hint && (
-                  <span className="text-xxs text-zinc-500 truncate">{it.hint}</span>
-                )}
-              </span>
-            </Link>
-          ))}
-        </div>
-      )}
-    </div>
   );
 }
 
@@ -470,8 +179,10 @@ export default function TerminalLayout({
             }}
           />
 
-          {MOBILE_NAV.map((item, i) => {
-            const active = matchPath(pathname, item.href);
+          {/* La tira repite los seis grupos del menú (lib/nav): el mismo mapa que
+              en escritorio. El detalle de cada grupo está en el menú de la izquierda. */}
+          {NAV_GROUPS.map((item, i) => {
+            const active = isGroupActive(pathname, item);
             return (
               <span key={item.href} className="flex items-center flex-shrink-0">
                 {i > 0 && (
@@ -488,7 +199,6 @@ export default function TerminalLayout({
                   }`}
                 >
                   {item.label}
-                  {item.tag && <NavTag tag={item.tag} />}
                   {active && (
                     <span
                       className="absolute bottom-0 left-1 right-1 h-px bg-accent"
@@ -585,7 +295,9 @@ const FOOTER_COLUMNS: FooterColumn[] = [
       { label: "Manifiesto", href: "/el-oraculo" },
       { label: "Preguntas frecuentes", href: "/preguntas-frecuentes" },
       { label: "Guías", href: "/guias" },
+      { label: "Buenas prácticas", href: "/buenas-practicas" },
       { label: "Glosario", href: "/glosario" },
+      { label: "Para empresas", href: "/para-empresas" },
       { label: "API", href: "/api-docs" },
       { label: "MCP para IAs", href: "/mcp" },
       { label: "Acceso institucional", href: "/enterprise#acceso-institucional" },

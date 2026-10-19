@@ -7,6 +7,265 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.233.0] — 2026-10-19
+
+### Cargar un remate: se completa solo
+
+Pensado para la firma que recién entra (Reggi): poner fecha y lugar alcanza, el resto lo calcula el panel (`lib/panel/remate-auto.ts` + test).
+
+- **"¿Es uno de estos?"**: arriba de la carga aparecen los próximos remates que el sitio ya encontró en su web y la firma no completó. Con un toque se llenan fecha, hora, lugar, provincia, tipo y descripción, y solo falta subir el flyer.
+- **Donde ya rematás**: botones con los lugares que la firma usó antes. Un toque completa lugar y provincia, y si escribe un lugar conocido la provincia se completa sola. Lo que viene de su web como "EA. Aguay, CORRIENTES" queda en "EA. Aguay" y la provincia en su campo.
+- **El nombre es opcional**: si queda vacío se arma con el tipo y el lugar ("Remate de invernada en Mercedes") y se muestra antes de guardar.
+- **Qué pasa al guardar**, calculado de la fecha: cuántos días faltan, que sale en el perfil y el calendario, y en qué mail semanal entra y a cuántos productores. En PRO va primero; en FREE entra si queda lugar. Si ya no llega a ningún envío, se dice.
+
+## [1.232.0] — 2026-10-18
+
+### Formularios simples y el reporte mensual que no bajaba
+
+- **Reporte mensual**: "Descargar reporte" devolvía `RATE_LIMIT_EXCEEDED` (límite anónimo de 1 pedido por minuto) si la firma había abierto antes Estadísticas, que consulta la misma API. Las rutas de dueño (`report`, `preofertas`, `auctions`, `flyer`, `logo`, `leads`, `videos`) con sesión ya no cuentan para ese límite, también en GET; cada handler exige sesión y dueño (`lib/rutas-dueno.ts` + test).
+- **Cargar resultado**, en tres pasos: elegir el remate de la lista (o "otro"), una línea por categoría (categoría, cabezas, peso, $/kg) y listo. Los totales (cabezas vendidas y promedio ponderado) se calculan solos y se muestran en vivo; lo opcional (ofrecidas, mínimo, máximo, notas) va plegado.
+- **Mi ficha**: logo primero, WhatsApp, teléfono, email, web y "quiénes son, en dos líneas"; el CUIT, plegado.
+- Calendario: el remate televisado de Reggi del 23/10 figuraba en Mercedes, **Buenos Aires** (así lo publica su web), con los lotes en Mercedes, Corrientes: se corrigió como remate de la firma (`reemplaza_clave`).
+
+## [1.231.0] — 2026-10-18
+
+### Panel de la firma v2: simple, pensado para usar, y las consultas donde está el productor
+
+Rehecho a partir de la devolución de José: usuarios no técnicos, nada de formularios largos, estilo de producto moderno (sin los marcos con manijas de la versión anterior). Probado en local contra la base real con Reggi (escritorio y 390 px, sin errores ni desborde).
+
+**Ordenado por utilidad.** Siete secciones: Inicio, Remates, Consultas, Resultados, Estadísticas, Mi ficha, Mi plan (las claves viejas de `?tab=` siguen andando, y ahora cambian la sección aunque el panel ya esté abierto).
+- **Inicio** abre con **"Para hoy"**: el panel mira los datos y propone la próxima acción con su botón (compartir el remate que viene, abrir pre-ofertas, contestar una consulta, completar la ficha). Después **"Tu alcance"** con número real (apariciones en Google, visitas, productores que reciben sus remates en el mail semanal, visitas desde IAs), los próximos remates con "Compartir" y las consultas.
+- **Consultas = lista**, no pipeline: quién escribió, cuándo, por dónde y el botón para contestar (WhatsApp, llamar, email).
+
+**Remates**: una tarjeta por remate (propios y del calendario) con **Compartir · Pre-ofertas · Editar**. La carga va en una hoja lateral con el **flyer primero** y sólo nombre, fecha, hora, lugar y provincia a la vista; el resto, plegado.
+
+**Pre-ofertas por remate**: se abren desde el remate (sin volver a escribir título, fecha ni lugar; columna `preofertas_firma.remate_clave`, migración `20261019_preofertas_remate`). Cada lote se carga en una línea: cabezas, categoría, peso y link del video; el título se arma solo. Publicar, compartir y ver las ofertas por lote, en la misma hoja.
+
+**Compartir y QR**: el QR se genera en el navegador (antes, un servicio externo a 140 px). Botón **Compartir** del celular con una **tarjeta 1080×1350** (firma, remate, QR) para el estado de WhatsApp o Instagram, **descargar tarjeta**, **descargar QR** en alta y copiar link, todo con UTM.
+
+**"Consultar a la firma por este remate"** en la ficha de cada remate próximo: sin login, nombre + WhatsApp + mensaje ya escrito, va a `/api/leads` con `source: remate` y le llega a la firma por mail y a su panel. Hasta hoy el único formulario estaba en el perfil (y sólo para firmas sin contacto público): la ficha del remate, adonde llegan el calendario, el mail y Google, no tenía cómo consultar.
+
+## [1.230.0] — 2026-10-18
+
+### El panel de la firma, rediseñado como CRM
+
+Mismo lenguaje que la landing (lienzo con grilla de puntos, frames con su nombre y manijas de selección) y estructura de CRM: barra lateral con las secciones y sus contadores (Inicio, Consultas, Remates, Resultados, Pre-ofertas, Audiencia, Mercado, Perfil, Mi plan). Probado en local contra la base real con Reggi y Cía. y con una firma sin datos (Casa Lago, "ver como" FREE y PRO), en escritorio y celular.
+
+**Todo es dato real.** Se sacaron las muestras de ejemplo que veía una firma FREE (`MuestraPro` con cartera, benchmark, origen de visitas, etc. inventados): ahora ve el número real que le corresponde y, donde el dato es PRO, qué trae PRO, sin cifras de ejemplo. Una cuenta nueva ve todo en cero con estados vacíos que dicen qué va a aparecer y cómo llega.
+
+**Inicio**: los cinco indicadores de 30 días (vistas, consultas, clics en WhatsApp, seguidores, marcas en remates) con el cambio contra el mes anterior, el pipeline de consultas, los próximos remates (propios y del calendario), vistas por día (PRO), lo pendiente (la bandeja), el avance de la ficha campo por campo y los últimos resultados.
+
+**Consultas = pipeline.** Cada consulta pasa por Nueva → Contactada → Ganada / Descartada y lleva notas de la firma. Se guarda en `consignataria_leads` (columnas nuevas `notes`, `updated_at`, `contacted_at`; migración `20261019_leads_seguimiento`) con `PATCH /api/consignatarias/<slug>/leads/<id>` (sólo el dueño). Muestra tiempo de respuesta (mediana) y consultas ganadas sobre cerradas. Hasta hoy el estado de una consulta no se podía cambiar desde ningún lado. En FREE el contacto sigue sin llegar al navegador.
+
+**Audiencia** (mes contra mes, origen de las visitas, búsquedas de Google, distribución) y **Mercado** (agenda regional, bloques de Cañuelas, pulso del MAG, seguir a otras casas) pasan a secciones propias. El QR, el link y el widget van a Perfil; el reporte PDF y el canje de puntos, a Mi plan.
+
+**Arreglo de contenido**: `/remates/expo-rural-mercedes` decía "primera del interior" fijo; con el scrape del 18-10 Río Cuarto empata a 6 firmas. El título ahora sale del dato ("a la par de Río Cuarto en el interior" si hay empate) y el test fija que ninguna plaza del interior la supere.
+
+## [1.229.0] — 2026-10-18
+
+### Panel de la firma: sus remates, su flyer y sus resultados, de punta a punta
+
+Probado en producción con la cuenta de Reggi y Cía. (usuario y contraseña) y de punta a punta en local contra la base real: corregir un remate del calendario, subir flyer, crear/editar/borrar un remate, cargar/editar/borrar un resultado.
+
+**Remates**
+- Los remates que el sitio encuentra solo ya no son de sólo lectura: **Editar** precarga el formulario y lo que la firma guarda reemplaza a ese remate (columna `reemplaza_clave` = fecha|localidad original, porque los ids de `remates.json` se renumeran en cada scrape).
+- **Flyer**: subida desde el formulario (`POST /api/consignatarias/<slug>/flyer`, JPG/PNG/WebP hasta 5 MB, bucket `consignataria-assets/flyers/<slug>/`). Se muestra en la ficha del remate. La API sólo acepta flyers de ese bucket y de esa firma (`lib/remates-firma.ts` + test).
+- Lo que carga la firma llega al **calendario general, la ficha del remate y el mail semanal**: `scripts/remates-de-firmas.ts` lo une en `remates.json` (idempotente: saca lo de la corrida anterior y vuelve a poner), en el scrape diario y en `remates-de-firmas.yml` cada hora de 8 a 22 (commitea sólo si cambió). Hasta hoy un remate cargado desde el panel sólo se veía en el perfil, el widget y el iCal.
+- Provincia con desplegable (antes texto libre, que no matcheaba los filtros del calendario). Los enlaces de catálogo y video tienen que ser https.
+
+**Resultados**
+- Se pueden **editar y borrar** (`/dashboard/resultados/<id>`, `PATCH`/`DELETE /api/auction-results/<id>`): un promedio mal tipeado quedaba para siempre en "Tu precio contra el mercado" y en el reporte mensual.
+- Al cargar uno, el formulario ofrece los remates de la firma de los últimos 90 días sin resultado: elegir uno completa fecha, título y lugar.
+
+**Arreglos**
+- Las escrituras del panel (`/api/consignatarias/<slug>/…` con sesión) heredaban el límite **anónimo de 1 pedido por minuto**: subir el flyer y guardar el remate ya daba 429.
+- Ese 429 trae `error` como objeto y el panel lo ponía directo en pantalla: se caía entero ("Algo falló"). `lib/ui/mensaje-error.ts` (+ test) en el panel y el formulario de resultados.
+- El ranking provincial tomaba la provincia del primer remate del archivo: Reggi (Corrientes) figuraba "#47 en BUENOS AIRES". Ahora es la provincia donde más remata ("#4 en Corrientes").
+- Las rutas de remates comparan el mail del dueño sin distinguir mayúsculas.
+
+**Propuesta PRO**
+- Diapositiva nueva "Sus remates, cargados y corregidos por usted" (captura de ejemplo `capturas/remates.png`).
+- Capturas **reales** del panel de una firma: `scripts/propuesta-capturas-firma.mjs <base> <slug> <email> <clave>` las guarda en `private/capturas-firmas/<slug>/` (fuera de git: llevan sus datos) y la propuesta las usa en vez de las de ejemplo, sin el rótulo "datos de ejemplo", más una diapositiva "Su panel, hoy". En producción no existen y sale la versión de ejemplo.
+
+---
+
+## [1.228.0] — 2026-10-17
+
+### PRO Consignataria: cada promesa, verificada contra el código
+
+Auditoría de lo que vende PRO (landing, /planes, /para-consignatarias, /activar, mails, MCP) contra lo que el código hace. Estado de la base al auditar: 0 suscripciones pagas, 4 firmas PRO por destaque manual (ninguna con la ficha reclamada) y 1 firma reclamada (FREE).
+
+**El panel de la firma**
+- El plan lo decide el server (`getConsignatariaPlanStatus`) y el cliente lo recibe: antes el panel armaba su propio "PRO" con la fila de suscripción y el canje de puntos. Una firma con destaque manual veía el panel FREE con muestras de ejemplo teniendo los datos reales, y un canje de puntos vencido decía PRO para siempre con los bloques vacíos.
+- "Mi plan" distingue PRO sin cargo (destaque), cancelada en gracia ("PRO hasta el X") y cobro rechazado. Fuera el contador de "lugares fundador": contaba suscripciones de otro producto contra un cupo que no existe (`/api/stats/pro-spots` borrado).
+- Bloque nuevo **Quién te mira** (`lib/reports/origen-visitas.ts` + test): vistas por día, desde dónde llegan (buscadores, IAs, redes, directo/QR, y qué sección del sitio) y las visitas que llegaron a la ficha desde ChatGPT/Copilot/Gemini (`ai_referrals`). Sólo PRO; FREE ve la forma con datos de ejemplo.
+- `profile_views.referrer` ahora guarda el `document.referrer` real: hasta hoy guardaba el header del POST, que era la propia ficha (los 1.800 registros previos no tienen origen y se muestran como "sin dato").
+- Remates, ranking provincial y reporte mensual cuentan por slug canónico (antes `includes` y comparación cruda: una firma con slug variante leía "ningún remate este mes").
+- Textos corregidos: el aviso de clics de WhatsApp ya no dice "activá la captura de leads"; los seguidores ya no "reciben avisos cuando publicás" (el workflow de recordatorios está apagado); lista de beneficios única en `lib/pro-consignataria-beneficios.ts` para la bienvenida, "Mi plan" y `/api/planes`.
+
+**Cobros**
+- Cobrar ya no prende `consignatarias.featured` (webhook Rebill y x402): `featured` es el destaque manual y significa PRO permanente, así que un solo pago dejaba a la firma PRO para siempre. Cancelar tampoco lo apaga (borraba un destaque manual previo).
+- Quien paga sin tener la ficha reclamada queda con un **reclamo pendiente** a su nombre (`lib/claims/reclamo-por-pago.ts`): antes pagaba y no podía abrir el panel. Pagar no da la ficha; se aprueba como cualquier reclamo.
+- La conciliación contra Rebill (`rebill-reconciliar`) cubre también las suscripciones PRO: si el webhook falla, la firma igual pasa a PRO.
+
+**Visibilidad que se vendía y no existía**
+- Directorio por provincia: PRO primero y con sello. Muro de la portada: una firma PRO entra aunque no tenga logo curado.
+- Fichas de remate: marca "Consignataria PRO". Calendario: resaltado PRO también en hoy, mañana, semana, fin de semana, mes, anteriores, en vivo y provincias (antes sólo `/remates`, y las provincias leían un flag viejo del JSON). `RematesClient` dejaba de mostrar un verificado inventado.
+- Newsletter semanal: usa `getFeaturedSlugs` y el slug canónico (antes su propia regla y slugs crudos: los PRO casi nunca coincidían) y registra la campaña con el slug que lee el panel.
+- MCP `find_livestock_broker`: PRO primero, marcadas `★ PRO`. `subscribe_broker_pro` describe sólo lo que existe.
+- Una firma PRO no queda en noindex ni fuera del sitemap por tener pocos remates. El webhook revalida directorio y portada al activar, cancelar o fallar un cobro.
+- `getFeaturedSlugs` se memoriza un minuto sólo durante el build (~1.000 páginas lo leen).
+- `ai-citations` ya no cuenta `bing-organico` como IA.
+
+**Pre-oferta operada por la firma, propuesta por firma, alta y "ver como"**
+- Pre-oferta como función PRO real: la firma arma el remate, carga lotes con video (YouTube/Vimeo/Drive), publica y cierra desde la pestaña "Pre-ofertas" del panel; el interesado deja oferta y contacto en `/preofertas/f/[id]` y le llega a la firma por mail (y queda en el panel). Migración `20261017_preofertas_firma` (aplicada): `preofertas_firma`, `preofertas_firma_lotes`, columnas nuevas en `preoferta_bids`. El registro estático de El Tigre sigue igual.
+- Propuesta formal por firma: `/admin/propuesta` arma el link firmado (`/propuesta/<firma>?t=…`, noindex, con "Para" y nota opcionales) y la página se imprime como PDF A4 con los datos reales de la firma y del sitio.
+- `/admin/ver-como` (FIRMAS): abre el panel de cualquier firma como lo vería su dueño, con PRO, sin PRO o con su plan real (`/dashboard?como=…&vista=…`, sólo lectura), y da de alta una firma a un mail con método de verificación y mail de acceso (`/api/admin/firmas/alta`). El admin ya no se redirige desde el layout del panel sino desde la página.
+- **Propuesta a pedido**: en `/consignatarias/<firma>/activar` la firma deja su mail y recibe la propuesta PRO con la marca, sus números y el link a la versión imprimible (`/api/propuesta/pedir`, `sendPropuestaPro`, copia oculta a LEAD_ALERT_TO). `PROPUESTA_SECRET` cargado en Vercel. El formulario de activación usa la lista verificada de beneficios.
+- **La propuesta pasa a ser una presentación**: sección "Lo que va a ver y usar" con una función por hoja y su captura armada con los componentes reales (el calendario con los remates de la firma resaltados, el mail semanal tal como sale con su remate primero, el directorio y la respuesta del MCP, la pre-oferta, las consultas, "Quién te mira" con sus datos, Cañuelas si opera ahí, widget y QR, reporte mensual). Lo que lleva datos de terceros va con datos de ejemplo rotulados (`lib/propuesta/funciones.ts`, `propuesta/[slug]/Funciones.tsx`). El mail de la propuesta lleva a esa presentación.
+- **La presentación PRO es un PDF de verdad** (`lib/pdf/propuesta`, `@react-pdf/renderer`): diapositivas A4 apaisadas con Inter embebida, generadas en el servidor (`/api/propuesta/<firma>/pdf`), iguales en cualquier máquina. Lo de la firma se dibuja con sus datos (calendario, mail semanal, directorio, QR con `qrcode`, cifras); lo del panel va como captura con datos de ejemplo (`/propuesta/capturas` + `scripts/propuesta-capturas.mjs`). Se adjunta al mail que pide la firma y lo bajan el botón de la página y `/admin/propuesta`. Reemplaza al "imprimir la página".
+- **Lo que buscan en Google sobre su firma**: búsquedas de Search Console por ficha (28 y 90 días) en `gsc_fichas` (migración aplicada), cargadas por el cron semanal `gsc-fichas` (requiere `GSC_SERVICE_ACCOUNT_JSON`, ver `docs/GSC-SERVICE-ACCOUNT.md`) o por `scripts/gsc-fichas-local.mjs`. Bloque PRO en el panel, línea en el reporte mensual y diapositiva en el PDF con las búsquedas reales de la firma.
+- **Tu precio contra el mercado** (casas del interior, sin dato del MAG): la firma carga los promedios de su remate por categoría del VR (con peso opcional) y el panel los compara con la banda P10/mediana/P90 de esa semana (`lib/reports/resultado-vs-mercado.ts`). También en el PDF y en la lista de beneficios.
+- Fichas de firmas con canal de YouTube: el título dice "Remates en Vivo" (la gente busca "remate <marca> en vivo").
+- La presentación sale también en **16:9** (`?formato=169`, para pantalla y WhatsApp); el mail de la propuesta adjunta las dos versiones.
+- **Ingreso con usuario y contraseña** en `/login` (además de Google y el enlace por mail) para cuentas provisorias de firmas, y **cambiar contraseña** en "Mi plan". Primera cuenta provisoria: Reggi y Cía.
+- Newsletter semanal de remates: los suscriptores de El Corredor también lo reciben (`TAMBIEN_SEMANAL`), y el envío sale en dos tandas (lunes y martes) para respetar los 100 mails/día de Resend, sin repetir destinatarios (`outreach_log` con la clave del lunes).
+- Datos: la ficha de Colombo y Magliano, reclamada por Jose como prueba el 10-03, quedó liberada.
+- Reporte mensual a la firma rehecho (vistas, visitas desde IA, consultas, envíos del newsletter, seguidores; `count` por firma en vez de leer sin paginar) y su workflow reactivado (1° de cada mes).
+- Panel: los cuatro bloques del MAG comparten una lectura de lotes por request con páginas en paralelo, y los bloques independientes corren a la vez (de ~20 s a ~6 s medido en local).
+
+**Copy**
+- Landing (`BeneficiosPro`): ocho beneficios verdaderos; fuera la pre-oferta (piloto cerrado, operado a mano), "perfil verificado" como beneficio pago, los 6 canales de difusión (sólo el newsletter envía) y "las IAs nombran a las firmas con ficha completa". Cañuelas se ofrece "si operás ahí".
+- /planes, /para-consignatarias, /para-empresas, /activar, `ActivarProForm`, JSON-LD de /planes, `/api/planes`, x402 PRO y mails (bienvenida PRO, outreach de visitas: "visitas", no "productores"): fuera "a toda la base", "No es una demo", "Pronto, tu CRM", "soporte prioritario", "hasta 50 remates/mes".
+- Pre-ofertas sale del menú (la página dice que no hay ninguna abierta).
+
+---
+
+## [1.227.0] — 2026-10-17
+
+### Seguridad de reclamos y datos, mails que no se pierden y un solo menú
+
+Revisión del 17-10-2026 (código, prolijidad del repo y navegabilidad). El repo sigue
+público por decisión de Jose; la guía paga no se toca.
+
+**Reclamos de ficha** (admin de consignatarias, admin de frigoríficos y auto-aprobación,
+todo en `src/lib/claims/aprobar.ts`):
+- El rol de dueño **nunca baja a un admin**; la búsqueda del usuario existente pagina
+  (antes, más allá de los primeros 50, no lo encontraba).
+- Mails normalizados al guardar (validador) y comparados con `mismoEmail` en las 8 rutas
+  del dueño: un reclamo con mayúsculas dejaba al dueño afuera de su ficha.
+- Orden: primero la ficha (revisando el error), después el reclamo aprobado. Una ficha
+  con otro titular no se pisa (409).
+- Aprobar a mano **exige indicar cómo se verificó la identidad** (selector en /admin y la API).
+- El sello público "VERIFICADO" de un frigorífico exige además **SENASA vigente**: Riestra
+  ya no muestra el sello al lado de "habilitación no encontrada", sin tocar su acceso.
+
+**Datos:**
+- La edición de ficha devuelve solo los campos públicos (no `notas_internas`, `email_ruteo`).
+- `mi_consignataria()` (RPC) para el panel en el navegador; `claimed_by_email` deja de ser
+  legible con la clave pública (migraciones 20261017_*).
+- Constancias de habilitación a un bucket **privado** con nombre no adivinable.
+- Baja del newsletter firmada con HMAC (`lib/newsletter/baja.ts`); sin token se acepta y
+  se marca `sin_token` hasta que los mails viejos dejen de circular.
+- `docs/strategy/` sale del índice (el `.gitignore` ya lo pedía); se redacta el mail de un
+  cliente de la API en docs.
+
+**Mails:** todo `emails.send` pasa por `waitUntil` y registra el rechazo en `ops_events`
+(de 62 envíos, 19 no esperaban respuesta y Vercel podía cortarlos).
+
+**Navegación:** `src/lib/nav.ts` es el único menú — Precios · Vender y comprar · Remates ·
+Directorio · Campos · Para empresas — para la portada, el terminal y el teléfono (antes eran
+tres menús distintos). Nueva `/para-empresas` (firma · datos/API · institucional). Guías,
+glosario y El Corredor en el footer. El desplegable abre con clic (el `onFocus` lo cerraba).
+
+**Build:** sin avisos — estrella del OG en SVG (la fuente no tenía el glifo), config de
+`twitter-image` escrita en el archivo, variables sin uso fuera. `/api/consignatarias/[slug]/videos`
+pedía una columna que no existía.
+
+**Limpieza (rama limpieza-y-producto):** fuera las carpetas `debug-*`, `geo-audit-*`,
+`traffic-audit-*`, `skills/` y 15 componentes sin uso; 12 workflows pasan a pnpm; los e2e
+vuelven a correr (`@playwright/test`); `/vender-ahora` redirige a `/mercado/vender-ahora`;
+`/frigorificos` dice "866 de 1.119" y "Ciclo" en todos lados; `/lotes` sin contradicción.
+
+---
+
+## [1.226.0] — 2026-10-17
+
+### Landing nueva: PRO Consignataria como producto principal, en un lienzo estilo Figma
+
+Decisión de Jose: la home vende PRO Consignataria primero y reparte hacia todo el sitio.
+Contexto: la home recibe ~4 % de las sesiones (297 entradas en 30 días, GA4); el tráfico
+entra por arrendamiento, frigoríficos y guías. La home es vidriera para las firmas y mapa.
+
+- **Lenguaje "lienzo"** (globals.css, sección LIENZO): grilla de puntos, frames con su
+  nombre y manijas de selección al pasar el mouse, cursores multijugador en el hero.
+  Todo con tokens, en los dos temas, con `prefers-reduced-motion`.
+- **Hero PRO** (`landing/lienzo/HeroPro`): la promesa + cómo se ve la firma en Google, en
+  el directorio y en la respuesta de una IA ("Tu Consignataria" es un marcador).
+- **Alcance** (`AlcanceGoogle`): 1.078.731 impresiones en Google (6-mar → 14-oct-2026,
+  Search Console) con la serie mensual; clics, visitas 30 días (GA4) y visitas desde IAs.
+  El dato vive en `src/lib/data/alcance-google.ts` (se actualiza a mano con gsc-historico).
+- **Beneficios PRO** (`BeneficiosPro`): siete frames — directorio, remates destacados,
+  difusión auditada (canales de lib/promotion), IAs (firmas citadas reales, ai_referrals),
+  pre-oferta, analytics, landing + QR — y debajo **el CTA de PRO grande y centrado**
+  (precio, lo que incluye, Activar PRO / Reservar reunión), no un cuadrito al costado.
+- Hero: el primer botón es **Acceder al Terminal** (/overview); "Ver los beneficios" segundo.
+- **Todo el sitio** (`MapaDelSitio`): 31 secciones en 6 páginas tipo Figma, con su dato del
+  día. Todas las rutas verificadas; los paneles ocultos quedan en el HTML (enlazado interno).
+- Se conservan: cinta de mercado, valuador del productor (#valuar), buscador + mapa, guía
+  paga, calendario sanitario, muro de logos, FAQ (+ pregunta PRO) y newsletter.
+- Salen: hero del productor (LiveHero), "Cómo funciona", bloques MCP y El Corredor, "Qué hay
+  adentro" y el CTA a /overview (todos quedan como frames del mapa del sitio).
+- El `title`/`description` de la home no cambian (SEO de "precio de la hacienda").
+
+---
+
+## [1.225.0] — 2026-10-17
+
+### Landing: la Res. 201/2026 en el calendario sanitario y el tema claro legible
+
+**Sanidad en la home.** La banda `CalendarioSanitario` suma, arriba del calendario, el
+cambio 2027: desde el 1/1/2027 el productor elige el veterinario que vacuna (Res. SENASA
+201/2026), con el plazo de la Disp. DNSA 27/2026 (15/10–15/12/2026) y enlace a
+`/sanidad#vacunador-2027`.
+
+**Tema claro.** Barrido visual de la landing (captura de página completa en los dos temas):
+- Muro de consignatarias: los logos se forzaban a blanco con `filter` sobre tiles que en
+  claro son blancos — eran invisibles. En claro van en tinta (`brightness(0)`), los que
+  traen fondo propio con `mix-blend-multiply`, tiles en panel blanco y grilla visible.
+- Mapa de cobertura: las provincias sin remates eran negras macizas; ahora gris claro, y
+  el contorno de la activa en el azul de acento (no el ámbar del oscuro).
+- "¿Querés estar acá?", bloque MCP, El Corredor, botón del nav: celestes del oscuro
+  (`sky-300/400`, texto blanco sobre celeste) pasan al acento azul con contraste.
+- Semáforo de venta: el color de zona va inline; en claro baja a emerald/amber-700.
+- Calendario mensual (también en `/sanidad`): verdes `-200/-300` ilegibles → `-700/-800`.
+- Chips de ícono `bg-zinc-100` (hueso en oscuro, negro en claro) → panel con borde.
+- `ProBadge`: celeste pálido → acento en claro.
+
+Todo con la variante `claro:` — el tema oscuro queda igual, sin hex nuevos.
+
+---
+
+## [1.224.0] — 2026-10-17
+
+### /sanidad: la Res. SENASA 201/2026 y su reglamentación (Disp. DNSA 27/2026)
+
+La 201/2026 figuraba como "anunciada para 2027, verificar vigencia" con un link genérico al
+digesto. Ahora está citada con su texto oficial (B.O. 13/03/2026, rige desde el 1/1/2027,
+deroga la Res. 368/2011) y con la Disp. DNSA 27/2026 (B.O. 15/10/2026), que fija el plazo.
+
+- Bloque nuevo `#vacunador-2027` (`VACUNADOR_2027` en `src/lib/data/senasa-sanidad.ts`):
+  el plazo para elegir veterinario de la 1ra campaña 2027 (15/10–15/12/2026, ambos
+  inclusive), qué pasa si no se elige (sigue el Ente Sanitario), cómo se elige
+  (SIGTrámites, el VPA acepta), qué exige al veterinario (acreditación aftosa +
+  brucelosis, cadena de frío, carga en SIGSA a 7 días), cómo se cambia, y los
+  depósitos de frío (inscripción, reserva del 10 %, retiro 24 h antes).
+- Fichas de aftosa y brucelosis actualizadas; fuente nueva `aftosa_2027_reglamento`.
+- Dos preguntas frecuentes nuevas (van al FAQ visible y al JSON-LD).
+- El MCP (`animal_health_plan`) toma el texto nuevo de la ficha sin cambios de tool.
+
+---
+
 ## [1.223.0] — 2026-10-03
 
 ### De-gateo: el MCP deja de cobrar la consulta y pasa a cobrar la descarga
@@ -2477,7 +2736,7 @@ Antes solo teníamos el conteo diario (`api_usage_daily`) y el route a secas en 
 - **Tabla `api_request_log`** (method · path · query · user_agent · referer · ip · ts) escrita vía `after()` en `authenticate()` — best-effort, no bloquea la respuesta, cubre todos los endpoints auth-gated desde un solo lugar.
 - **Vista `api_consumers_summary`**: por key → dueño, volumen, paths+queries, user-agents, IPs, referers, en una query.
 - **`docs/API-CONSUMERS.md`**: las consultas listas y cómo leerlas para el caso Muu/Apesteguía (si `queries` incluye `?detallado=true` → arma el board con nuestra data; si no → scrapea el MAG por su cuenta).
-- Contexto: `changa` (mapesteguia@gmail.com) pega SOLO `/api/precios`, 1.236 req 200 desde el 14-may; falta capturar qué variante — el logging nuevo lo revela en el próximo día de uso.
+- Contexto: `changa` (<email-del-cliente>) pega SOLO `/api/precios`, 1.236 req 200 desde el 14-may; falta capturar qué variante — el logging nuevo lo revela en el próximo día de uso.
 
 ## [1.130.0] — 2026-07-07
 

@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
-import { createServiceClient } from '@/lib/supabase'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -10,23 +9,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
     redirect('/login')
   }
 
-  // Check if user has any role
-  const service = createServiceClient()
-  if (!service) {
-    // Supabase not available - let them through, page will handle
-    return <>{children}</>
-  }
-  
-  const { data: role } = await service
-    .from('user_roles')
-    .select('role')
-    .eq('user_id', user.id)
-    .single()
-
-  // Admin users go to admin panel
-  if (role?.role === 'admin') {
-    redirect('/admin')
-  }
+  // El admin que entra a /dashboard sin "ver como" va al panel de admin. Esa decisión
+  // la toma page.tsx, que sí lee ?como= (un layout no recibe los searchParams).
 
   return <>{children}</>
 }

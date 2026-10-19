@@ -44,10 +44,10 @@ const PRICING_PLANS = [
   },
   {
     name: 'Consignataria (alcance)',
-    description: 'Promoción de remates a la base de productores + perfil verificado y destacado. Facturación mensual en ARS.',
+    description: 'Tu firma primera en el directorio con el sello ★ PRO, tus remates primeros en el newsletter semanal y las consultas con nombre y contacto. Facturación mensual en ARS.',
     price: 45000,
     currency: 'ARS',
-    features: ['Promoción de remates por email', 'Módulo de pre-oferta: lotes con video + captura de leads', 'Perfil verificado y destacado', 'Analytics de perfil', 'Landing propia + QR'],
+    features: ['Sello ★ PRO y primera en el directorio y en el muro de la portada', 'Remates resaltados en el calendario y primeros en el newsletter semanal', 'Primera en el directorio que consultan las IAs', 'Leads con nombre y contacto', 'Panel de quién te mira', 'Widget de remates y página con QR', 'Cruce contra el Mercado de Cañuelas, si operás ahí'],
   },
 ]
 

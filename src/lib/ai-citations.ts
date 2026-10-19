@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { createAdminClient } from '@/lib/supabase-server'
+import { esMotorIA } from '@/lib/reports/origen-visitas'
 
 const WINDOW_DAYS = 30
 
@@ -25,7 +26,11 @@ export async function getAiCitationStats(): Promise<{
   const since = new Date(Date.now() - WINDOW_DAYS * 86400000).toISOString()
 
   const { data } = await db.from('ai_referrals').select('engine, path').gte('created_at', since).limit(5000)
-  const rows = (data || []) as Array<{ engine: string | null; path: string | null }>
+  // `bing-organico` comparte la tabla pero es búsqueda, no una IA: contarlo inflaba
+  // "las IAs ya nombraron" con visitas de Bing (296 de 1.349 en 90 días).
+  const rows = ((data || []) as Array<{ engine: string | null; path: string | null }>).filter((r) =>
+    esMotorIA(r.engine),
+  )
   const aiRefsMes = rows.length
 
   const bySlug = new Map<string, { refs: number; engines: Set<string> }>()

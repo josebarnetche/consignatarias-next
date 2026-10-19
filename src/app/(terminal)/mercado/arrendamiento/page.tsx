@@ -46,36 +46,6 @@ const rematesUpcomingSnapshot = rematesData
   .filter((r) => r.date >= TODAY && r.status === 'scheduled')
   .map((r) => ({ date: r.date }))
 
-// Calculate monthly averages
-function getMonthlyAverages(data: typeof series) {
-  const monthlyData: Record<string, { sum: number; count: number; values: number[] }> = {}
-  
-  data.forEach(point => {
-    const date = new Date(point.date)
-    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
-    
-    if (!monthlyData[monthKey]) {
-      monthlyData[monthKey] = { sum: 0, count: 0, values: [] }
-    }
-    monthlyData[monthKey].sum += point.value
-    monthlyData[monthKey].count++
-    monthlyData[monthKey].values.push(point.value)
-  })
-  
-  return Object.entries(monthlyData)
-    .map(([month, data]) => ({
-      month,
-      avg: data.sum / data.count,
-      min: Math.min(...data.values),
-      max: Math.max(...data.values),
-      count: data.count
-    }))
-    .sort((a, b) => b.month.localeCompare(a.month))
-    .slice(0, 12) // Last 12 months
-}
-
-const monthlyAverages = getMonthlyAverages(series)
-
 // Antes force-dynamic: la página no lee cookies, headers ni searchParams. Lo único vivo
 // son los cierres mensuales de Supabase, que cambian una vez por mes — ISR alcanza y la
 // página deja de renderizarse en cada visita (es de las que más tráfico orgánico traen).
@@ -227,12 +197,6 @@ function fmt(n: number): string {
 function fmtFecha(iso: string): string {
   const [y, m, d] = iso.split('-').map(Number)
   return `${d} ${MESES[m - 1]} ${y}`
-}
-
-function formatMonth(monthKey: string): string {
-  const [year, month] = monthKey.split('-')
-  const date = new Date(parseInt(year), parseInt(month) - 1)
-  return date.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })
 }
 
 export default async function ArrendamientoPage() {

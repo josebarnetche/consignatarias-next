@@ -1,6 +1,9 @@
 import type { Resend } from 'resend'
+import { logEvent, enviarEnSegundoPlano } from './ops'
 import { SEGMENT_SOURCES, PRODUCT_UPDATE_ONLY } from './newsletter-segments'
 import { computeSpread, spreadReading } from './leads/spread'
+import { urlBaja, urlBajaOneClick } from '@/lib/newsletter/baja'
+import { elegirDestacado } from '@/lib/newsletter/remates-semana'
 
 let resendInstance: Resend | null = null
 
@@ -9,8 +12,42 @@ async function getResend(): Promise<Resend | null> {
   if (!key) return null
   if (resendInstance) return resendInstance
   const { Resend: R } = await import('resend')
-  resendInstance = new R(key)
+  resendInstance = conEnvioRegistrado(new R(key))
   return resendInstance
+}
+
+/**
+ * Todo `emails.send` de este archivo pasa por acá (revisión del 17-10-2026: de 62
+ * envíos, 19 se disparaban sin `await` y la mayoría no miraba el `error`).
+ *  · El envío queda registrado con `waitUntil` (enviarEnSegundoPlano): Vercel ya no
+ *    lo corta cuando la ruta devuelve la respuesta antes de que Resend conteste.
+ *  · Si Resend rechaza (`{ error }`, que NO lanza) o la llamada tira, queda un
+ *    evento `error` en ops_events con el asunto y el destinatario: se ve en /admin/ops.
+ * La promesa que se devuelve es la misma de siempre: quien hace `await` sigue
+ * recibiendo `{ data, error }` y `enviarOFallar` sigue fallando como antes.
+ */
+function conEnvioRegistrado(resend: Resend): Resend {
+  const enviar = resend.emails.send.bind(resend.emails)
+  resend.emails.send = ((payload: Parameters<Resend['emails']['send']>[0], opciones?: Parameters<Resend['emails']['send']>[1]) => {
+    const promesa = enviar(payload, opciones)
+    const registrar = (detalle: string) =>
+      logEvent({
+        eventType: 'error',
+        status: 'error',
+        route: 'email',
+        metadata: { tipo: 'email_rechazado', asunto: payload.subject, para: payload.to, detalle },
+      })
+    enviarEnSegundoPlano(
+      promesa.then(
+        (r) => {
+          if (r.error) registrar(`${r.error.name ?? ''} ${r.error.message ?? ''}`.trim())
+        },
+        (e: unknown) => registrar(e instanceof Error ? e.message : String(e)),
+      ),
+    )
+    return promesa
+  }) as Resend['emails']['send']
+  return resend
 }
 
 /**
@@ -140,10 +177,8 @@ ${inner}
  * Es prerrequisito de deliverability del motor warm.
  */
 function listUnsubHeaders(email: string, campaign?: string): Record<string, string> {
-  const safeEmail = encodeURIComponent(email)
-  const camp = campaign ? `&campaign=${encodeURIComponent(campaign)}` : ''
-  const oneClickUrl = `${APP_URL}/api/newsletter/unsubscribe?email=${safeEmail}${camp}`
-  const unsubscribeLink = `${APP_URL}/unsubscribe?email=${safeEmail}`
+  const oneClickUrl = urlBajaOneClick(email, campaign)
+  const unsubscribeLink = urlBaja(email)
   return {
     'List-Unsubscribe': `<${oneClickUrl}>, <${unsubscribeLink}>`,
     'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
@@ -159,7 +194,7 @@ function listUnsubHeaders(email: string, campaign?: string): Record<string, stri
  * para concatenar en el footer del cuerpo.
  */
 function legalIdentificationHtml(email: string): string {
-  const unsubscribeLink = `${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}`
+  const unsubscribeLink = `${urlBaja(email)}`
   return `
     <p style="color:#52525b;font-size:10px;line-height:1.6;margin:16px 0 0">
       Memola Medios SAS — consignatarias.com.ar. Obtuvimos su email del registro
@@ -222,6 +257,9 @@ export async function sendPreofertaAlert(opts: {
   }).catch(() => {})
 }
 
+// Copy de PRO verificado contra el código el 17-10-2026: sello ★ PRO (no "verificado",
+// eso sale de reclamar el perfil), primera en directorio/muro, remates resaltados,
+// primera en el newsletter semanal, leads con nombre y contacto, panel de quién te mira.
 export async function sendConsignatariaProWelcome(email: string, displayName: string, slug: string) {
   const resend = await getResend()
   if (!resend) return
@@ -233,7 +271,7 @@ export async function sendConsignatariaProWelcome(email: string, displayName: st
     html: darkEmailShell(`
       <p style="color:#fbbf24;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">&#9733; Consignataria PRO</p>
       <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 12px">Bienvenida a PRO</h2>
-      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 16px">El perfil de <strong style="color:#fafafa">${safeName}</strong> en consignatarias.com.ar quedó <strong style="color:#fafafa">activo como PRO</strong>: aparecés con prioridad (destacado) ante los productores que buscan consignataria, con tu historial de remates, tu calendario y la analítica de tu perfil.</p>
+      <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 16px">El perfil de <strong style="color:#fafafa">${safeName}</strong> en consignatarias.com.ar quedó <strong style="color:#fafafa">activo como PRO</strong>: tu firma va primera en el directorio y en el muro de la portada, con el sello &#9733; PRO; tus remates van resaltados en el calendario y primeros en el newsletter semanal; las consultas de productores te llegan con nombre y contacto, y en tu panel ves quién te mira.</p>
       <p style="margin:0 0 20px"><a href="${APP_URL}/consignatarias/${slug}" style="color:#38bdf8">Ver tu perfil</a> &middot; <a href="${APP_URL}/dashboard" style="color:#38bdf8">Ir a tu panel</a></p>
       <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">Consignatarias.com.ar — la referencia del mercado ganadero</p>
     `),
@@ -262,11 +300,11 @@ export async function sendConsignatariaViewsOutreach(opts: {
       // List-Unsubscribe RFC 8058 (warm outreach): prerrequisito de deliverability.
       // Mismo bloque de headers que el digest / sendRemateResultsToProducer.
       headers: listUnsubHeaders(opts.to, 'views_outreach'),
-      subject: `Tu perfil en consignatarias.com.ar fue visto ${opts.views} veces este mes`,
+      subject: `Tu perfil en consignatarias.com.ar recibió ${opts.views} visitas en los últimos 30 días`,
       html: darkEmailShell(`
         <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Hola, equipo de <strong style="color:#fafafa">${safeName}</strong>:</p>
-        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Tu perfil en consignatarias.com.ar fue visto <strong style="color:#fafafa">${opts.views} veces</strong> en los últimos 30 días por productores que buscan dónde y con quién operar.</p>
-        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Con <strong style="color:#fbbf24">PRO</strong> aparecés con prioridad (destacado), con tu badge verificado, tu calendario y la analítica de tu perfil — para que esas visitas se vuelvan consultas.</p>
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Tu perfil en consignatarias.com.ar recibió <strong style="color:#fafafa">${opts.views} visitas</strong> en los últimos 30 días.</p>
+        <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">Con <strong style="color:#fbbf24">PRO</strong> tu firma va primera en el directorio con el sello &#9733; PRO, tus remates van resaltados en el calendario y primeros en el newsletter semanal, y las consultas te llegan con nombre y contacto — para que esas visitas se vuelvan consultas.</p>
         <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 16px"><a href="${APP_URL}/consignatarias/${opts.slug}/activar" style="color:#38bdf8">Activá PRO acá</a> — ARS 45.000/mes, cancelás cuando quieras.</p>
         <p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 4px">Saludos,<br>José — consignatarias.com.ar</p>
         ${legalIdentificationHtml(opts.to)}
@@ -569,7 +607,7 @@ export async function sendClaimApproved(email: string, displayName: string, prof
   const resend = await getResend()
   if (!resend) return
   const safeName = escapeHtml(displayName)
-  resend.emails.send({
+  return resend.emails.send({
     from: FROM,
     to: email,
     subject: `Perfil aprobado — ${displayName}`,
@@ -711,57 +749,73 @@ export async function sendFrigorificoRfqConfirmation(buyerEmail: string, frigori
 /*  MONTHLY METRICS                                                    */
 /* ------------------------------------------------------------------ */
 
+/** Lo que el reporte mensual le cuenta a la firma. Cada número sale de una tabla. */
+export interface ReporteMensualFirma {
+  vistas: number
+  visitasIA: number
+  consultas: number
+  /** Envíos del newsletter que llevaron sus remates (promotion_campaigns). */
+  envios: number
+  salidas: number
+  seguidores: number
+  esPro: boolean
+  /** Search Console, últimos 28 días (gsc_fichas). null = sin dato. */
+  google?: { impresiones: number; top: string[] } | null
+}
+
+/**
+ * Reporte mensual a la firma (reescrito el 17-10-2026). Antes decía sólo las vistas y
+ * las calificaba ("Excelente visibilidad"); ahora son los números del mes, sin
+ * adjetivos, con lo que PRO promete medir: vistas, visitas desde IAs, consultas y a
+ * cuántos les llegaron sus remates por el newsletter.
+ */
 export async function sendMonthlyMetrics(
   email: string,
   displayName: string,
   slug: string,
-  views: number,
+  datos: ReporteMensualFirma,
   monthName: string,
 ) {
   const resend = await getResend()
   if (!resend) return
   const safeName = escapeHtml(displayName)
-  const viewsFormatted = views.toLocaleString('es-AR')
-  resend.emails.send({
+  const n = (x: number) => x.toLocaleString('es-AR')
+  const fila = (label: string, valor: string, bajada: string) => `
+        <tr>
+          <td style="padding:10px 0;border-bottom:1px solid #27272a;color:#a1a1aa;font-size:13px">${label}<br><span style="color:#52525b;font-size:11px">${bajada}</span></td>
+          <td style="padding:10px 0;border-bottom:1px solid #27272a;color:#fafafa;font-size:20px;font-weight:700;text-align:right">${valor}</td>
+        </tr>`
+  return resend.emails.send({
     from: FROM,
     to: email,
-    subject: `Resumen ${monthName} — ${displayName}`,
+    subject: `Tu mes en consignatarias.com.ar — ${monthName}`,
     html: darkEmailShell(`
-        <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Resumen mensual</p>
-        <p style="color:#71717a;font-size:12px;margin:0 0 20px">${safeName} — ${escapeHtml(monthName)}</p>
-
-        <div style="background:#18181b;border:1px solid #27272a;border-radius:2px;padding:16px;text-align:center;margin-bottom:16px">
-          <p style="color:#71717a;font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:.12em">Vistas del perfil</p>
-          <p style="color:#38bdf8;font-size:32px;font-weight:bold;margin:0">${viewsFormatted}</p>
-          <p style="color:#71717a;font-size:11px;margin:4px 0 0">productores vieron tu perfil este mes</p>
-        </div>
-
-        ${views > 0 ? `
-        <p style="color:#a1a1aa;font-size:12px;line-height:1.5">
-          Tu perfil de <strong style="color:#fafafa">${safeName}</strong> recibio ${viewsFormatted} visitas en ${escapeHtml(monthName)}.
-          ${views >= 50 ? 'Excelente visibilidad.' : views >= 20 ? 'Buen alcance.' : 'Completa tu perfil para mejorar tu visibilidad.'}
+        <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Reporte mensual</p>
+        <p style="color:#71717a;font-size:12px;margin:0 0 18px">${safeName} — ${escapeHtml(monthName)}</p>
+        <table role="presentation" style="width:100%;border-collapse:collapse;margin:0 0 18px">
+          ${fila('Vistas de tu perfil', n(datos.vistas), 'sin contar robots ni buscadores que rastrean')}
+          ${fila('Visitas desde asistentes de IA', n(datos.visitasIA), 'ChatGPT, Copilot, Gemini… que llegaron a tu ficha')}
+          ${fila('Consultas recibidas', n(datos.consultas), 'productores que dejaron sus datos en tu perfil o tu página')}
+          ${fila('Envíos con tus remates', n(datos.envios), datos.salidas > 0 ? `newsletter semanal, en ${datos.salidas} ${datos.salidas === 1 ? 'salida' : 'salidas'}` : 'newsletter semanal')}
+          ${fila('Productores que siguen tu casa', n(datos.seguidores), 'total a fin de mes')}
+          ${datos.google ? fila('Veces que tu ficha apareció en Google', n(datos.google.impresiones), datos.google.top.length ? `buscaron: ${datos.google.top.map((q) => escapeHtml(q)).join(' · ')}` : 'últimos 28 días · Search Console') : ''}
+        </table>
+        <p style="color:#71717a;font-size:12px;line-height:1.6;margin:0 0 18px">
+          ${datos.esPro
+            ? 'En tu panel tenés el detalle: de dónde llegan las visitas, las consultas con su contacto y cada envío.'
+            : 'En tu panel tenés el detalle. Con PRO ves además el contacto de cada consulta y de dónde llegan las visitas.'}
         </p>
-        ` : `
-        <p style="color:#a1a1aa;font-size:12px;line-height:1.5">
-          Tu perfil aun no recibio visitas este mes. Completa tus datos de contacto y descripcion para mejorar tu posicionamiento.
-        </p>
-        `}
-
         <div style="margin:20px 0;text-align:center">
           <a href="${APP_URL}/dashboard" style="background:#38bdf8;color:#09090b;padding:11px 26px;text-decoration:none;border-radius:2px;display:inline-block;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Ver mi panel</a>
         </div>
-
         <div style="border-top:1px solid #27272a;padding-top:12px;margin-top:20px">
           <p style="color:#71717a;font-size:11px;margin:0">
-            <a href="${APP_URL}/consignatarias/${slug}" style="color:#71717a">Ver perfil publico</a>
-            &nbsp;&middot;&nbsp;
-            <a href="${APP_URL}/planes" style="color:#71717a">Mejorar mi plan</a>
+            <a href="${APP_URL}/consignatarias/${slug}" style="color:#71717a">Ver perfil público</a>
           </p>
         </div>
-
         <p style="color:#52525b;font-size:10px;margin:16px 0 0">consignatarias.com — el precio de referencia del ganado argentino</p>
     `),
-  }).catch(() => {})
+  })
 }
 
 /* ------------------------------------------------------------------ */
@@ -859,7 +913,7 @@ export async function sendMonthlyClose(
           <p style="color:#52525b;font-size:10px;margin:12px 0 0">
             Consignatarias.com.ar
             &nbsp;&middot;&nbsp;
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#52525b">Desuscribirme</a>
+            <a href="${urlBaja(email)}" style="color:#52525b">Desuscribirme</a>
           </p>
       `),
     })
@@ -915,7 +969,7 @@ export async function sendSellZoneAlertConfirm(
           </p>
           <p style="color:#52525b;font-size:10px;margin:12px 0 0">
             Consignatarias.com.ar &nbsp;&middot;&nbsp;
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#52525b">Desuscribirme</a>
+            <a href="${urlBaja(email)}" style="color:#52525b">Desuscribirme</a>
           </p>
       `),
     })
@@ -978,7 +1032,7 @@ export async function sendSellZoneAlert(
           </p>
           <p style="color:#52525b;font-size:10px;margin:12px 0 0">
             Consignatarias.com.ar &nbsp;&middot;&nbsp;
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#52525b">Desuscribirme</a>
+            <a href="${urlBaja(email)}" style="color:#52525b">Desuscribirme</a>
           </p>
       `),
     })
@@ -1027,7 +1081,7 @@ export async function sendPriceAlertConfirm(
           </div>
           <p style="color:#52525b;font-size:10px;margin:12px 0 0">
             Consignatarias.com.ar &nbsp;&middot;&nbsp;
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#52525b">Desuscribirme</a>
+            <a href="${urlBaja(email)}" style="color:#52525b">Desuscribirme</a>
           </p>
       `),
     })
@@ -1071,7 +1125,7 @@ export async function sendPriceThresholdAlert(
           </p>
           <p style="color:#52525b;font-size:10px;margin:12px 0 0">
             Consignatarias.com.ar &nbsp;&middot;&nbsp;
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#52525b">Desuscribirme</a>
+            <a href="${urlBaja(email)}" style="color:#52525b">Desuscribirme</a>
           </p>
       `),
     })
@@ -1094,6 +1148,9 @@ interface FeaturedRemate {
   slug: string
   heads: number | null
   isPro: boolean
+  description?: string | null
+  /** Ruta de la ficha del remate (/remates/…). */
+  path?: string
 }
 
 export async function sendWeeklyNewsletter(
@@ -1141,7 +1198,31 @@ export function buildWeeklyNewsletterHtml(
     return `${d}/${m}`
   }
 
-  const rematesHtml = featuredRemates.map(r => `
+  // Cada remate lleva a su ficha, con UTM: así la firma ve en su panel las visitas que
+  // le mandó el mail (antes el mail no tenía un solo enlace por remate).
+  const utm = 'utm_source=newsletter&utm_medium=email&utm_campaign=remates-semana'
+  const enlace = (path?: string) => `${APP_URL}${path ?? '/remates'}?${utm}`
+
+  // DESTACADO DE LA SEMANA (18-10-2026): el remate PRO que más dice de sí mismo va
+  // arriba, grande, con lo que remata y un botón a la ficha y otro a la firma.
+  const destacado = elegirDestacado(featuredRemates.map((r) => ({ ...r, path: r.path ?? '/remates' })))
+  const resto = destacado ? featuredRemates.filter((r) => !(r.title === destacado.title && r.date === destacado.date && r.slug === destacado.slug)) : featuredRemates
+  const fechaLarga = (d: string) =>
+    new Date(d + 'T12:00:00').toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' })
+  const destacadoHtml = destacado ? `
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#18181b;border:1px solid rgba(251,191,36,.55);border-radius:2px;margin-bottom:18px">
+      <tr><td style="padding:18px 18px 20px">
+        <p style="font-family:${MONO};color:#fbbf24;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 10px;font-weight:700">&#9733; Destacado de la semana</p>
+        <p style="font-family:${MONO};color:#fafafa;font-size:17px;font-weight:700;margin:0 0 6px;line-height:1.3">${escapeHtml(destacado.title)}</p>
+        <p style="font-family:${MONO};color:#a1a1aa;font-size:12px;margin:0 0 12px">${escapeHtml(destacado.consignataria)} &middot; ${escapeHtml(fechaLarga(destacado.date))}${destacado.time ? ` &middot; ${destacado.time} hs` : ''}<br>${escapeHtml(destacado.location)}</p>
+        ${destacado.description ? `<p style="font-family:${MONO};color:#d4d4d8;font-size:12px;margin:0 0 16px;line-height:1.55">${escapeHtml(destacado.description)}</p>` : ''}
+        <a href="${enlace(destacado.path)}" style="font-family:${MONO};background:#fbbf24;color:#09090b;padding:10px 18px;text-decoration:none;border-radius:2px;display:inline-block;font-size:12px;font-weight:700;margin:0 6px 6px 0">Ver el remate &rarr;</a>
+        <a href="${APP_URL}/go/${encodeURIComponent(destacado.slug)}?${utm}" style="font-family:${MONO};border:1px solid #3f3f46;color:#fafafa;padding:9px 16px;text-decoration:none;border-radius:2px;display:inline-block;font-size:12px;margin:0 0 6px">Consultar a ${escapeHtml(destacado.consignataria)}</a>
+      </td></tr>
+    </table>` : ''
+
+  const rematesHtml = resto.map(r => `
+    <a href="${enlace(r.path)}" style="text-decoration:none;display:block">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#18181b;border:1px solid ${r.isPro ? 'rgba(251,191,36,.5)' : '#27272a'};${r.isPro ? 'border-left:3px solid #fbbf24;' : ''}border-radius:2px;margin-bottom:8px">
       <tr><td style="padding:12px 14px">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
@@ -1152,6 +1233,7 @@ export function buildWeeklyNewsletterHtml(
         <p style="font-family:${MONO};color:#71717a;font-size:11px;margin:0">${escapeHtml(r.location)}${r.heads ? ` &middot; ${r.heads.toLocaleString('es-AR')} cab` : ''}</p>
       </td></tr>
     </table>
+    </a>
   `).join('')
 
   return `
@@ -1170,15 +1252,15 @@ export function buildWeeklyNewsletterHtml(
       <p style="font-family:${MONO};color:#71717a;font-size:12px;margin:0 0 18px">${escapeHtml(weekRange)} &middot; ${totalRemates} remates programados en el pa&iacute;s</p>
     </td></tr>
 
-    <tr><td>${rematesHtml}</td></tr>
+    <tr><td>${destacadoHtml}${rematesHtml}</td></tr>
 
     <tr><td align="center" style="padding:20px 0">
-      <a href="${APP_URL}/remates" style="font-family:${MONO};background:#38bdf8;color:#09090b;padding:11px 26px;text-decoration:none;border-radius:2px;display:inline-block;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Ver todos los remates &rarr;</a>
+      <a href="${APP_URL}/remates?${utm}" style="font-family:${MONO};background:#38bdf8;color:#09090b;padding:11px 26px;text-decoration:none;border-radius:2px;display:inline-block;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase">Ver todos los remates &rarr;</a>
     </td></tr>
 
     <tr><td style="background:#18181b;border:1px solid rgba(251,191,36,.4);border-radius:2px;padding:12px 14px;text-align:center">
       <p style="font-family:${MONO};color:#fbbf24;font-size:11px;margin:0 0 4px;font-weight:700;letter-spacing:.08em">&#9733; CONSIGNATARIAS PRO</p>
-      <p style="font-family:${MONO};color:#a1a1aa;font-size:11px;margin:0;line-height:1.5">Los remates destacados son de consignatarias PRO verificadas. <a href="${APP_URL}/planes" style="color:#fbbf24">Conoc&eacute; los beneficios &rarr;</a></p>
+      <p style="font-family:${MONO};color:#a1a1aa;font-size:11px;margin:0;line-height:1.5">Los remates destacados son de consignatarias PRO. <a href="${APP_URL}/planes" style="color:#fbbf24">Conoc&eacute; los beneficios &rarr;</a></p>
     </td></tr>
 
     <tr><td style="border-top:1px solid #27272a;padding:14px 0 0;margin-top:18px">
@@ -1191,7 +1273,7 @@ export function buildWeeklyNewsletterHtml(
       <p style="font-family:${MONO};color:#52525b;font-size:10px;margin:14px 0 0;line-height:1.6">
         consignatarias<span style="color:#38bdf8">.</span>com &mdash; el precio de referencia del ganado argentino.<br>
         Recib&iacute;s este email porque te suscribiste.
-        <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color:#52525b">Desuscribirme</a>
+        <a href="${urlBaja(email)}" style="color:#52525b">Desuscribirme</a>
       </p>
     </td></tr>
 
@@ -1239,7 +1321,7 @@ export async function sendClaimRejected(email: string, displayName: string, reas
   const resend = await getResend()
   if (!resend) return
   const safeName = escapeHtml(displayName)
-  resend.emails.send({
+  return resend.emails.send({
     from: FROM,
     to: email,
     subject: `Verificación rechazada — ${displayName}`,
@@ -1412,7 +1494,7 @@ export async function sendRemateConfirmRequest({
       replyTo: 'agro@memola.com.ar',
       // List-Unsubscribe en cold outreach: mitigación AUP. /unsubscribe ya existe.
       headers: {
-        'List-Unsubscribe': `<${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}>`,
+        'List-Unsubscribe': `<${urlBaja(to)}>`,
         'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
       },
       subject: `¿Me confirmás el horario del remate del ${fechaLegible}?`,
@@ -1535,7 +1617,7 @@ export async function sendFaenaNewsletter({
           <p style="color:#52525b;font-size:10px;margin:16px 0 0">
             Recibís este email porque te suscribiste al reporte de faena.
             <br>
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#52525b">Desuscribirme</a>
+            <a href="${urlBaja(to)}" style="color:#52525b">Desuscribirme</a>
           </p>
       `),
     })
@@ -1672,7 +1754,7 @@ export async function sendDteUploadReminder({ to, userName, daysSinceSignup }: D
           <p style="color:#52525b;font-size:10px;margin:24px 0 0">
             consignatarias.com — el precio de referencia del ganado argentino
             <br>
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#52525b">Desuscribirme</a>
+            <a href="${urlBaja(to)}" style="color:#52525b">Desuscribirme</a>
           </p>
       `),
     })
@@ -1834,7 +1916,7 @@ export async function sendDteRetentionReminder({
           <p style="color:#52525b;font-size:10px;margin:24px 0 0">
             consignatarias.com — el precio de referencia del ganado argentino
             <br>
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#52525b">Desuscribirme</a>
+            <a href="${urlBaja(to)}" style="color:#52525b">Desuscribirme</a>
           </p>
       `),
     })
@@ -2051,7 +2133,7 @@ export async function sendRemateResultsToProducer({
       from: FROM,
       to,
       headers: {
-        'List-Unsubscribe': `<${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}>`,
+        'List-Unsubscribe': `<${urlBaja(to)}>`,
         'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
       },
       subject: `Así cerró el remate de ${consignataria}`,
@@ -2078,7 +2160,7 @@ export async function sendRemateResultsToProducer({
           <p style="color:#52525b;font-size:10px;margin:24px 0 0">
             Recibís este email porque seguís a ${safeConsig} en consignatarias.com.ar
             <br>
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#52525b">Desuscribirme</a>
+            <a href="${urlBaja(to)}" style="color:#52525b">Desuscribirme</a>
           </p>
       `),
     })
@@ -2201,7 +2283,7 @@ export async function sendNewsletterWelcome({ to, source }: NewsletterWelcomePar
           <p style="color:#52525b;font-size:10px;margin:24px 0 0">
             consignatarias.com — el precio de referencia del ganado argentino
             <br>
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}" style="color:#52525b">Desuscribirme</a>
+            <a href="${urlBaja(to)}" style="color:#52525b">Desuscribirme</a>
           </p>
       `),
     })
@@ -2295,7 +2377,7 @@ export async function sendElCorredorDelivery(email: string, edition: string, pdf
 
           <p style="font-size: 12px; line-height: 1.6; color: #a1a1aa; margin: 0 0 12px 0;">
             La próxima edición sale el primer día hábil del mes que viene. Si no la querés recibir,
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color: #71717a;">desuscribite acá</a>.
+            <a href="${urlBaja(email)}" style="color: #71717a;">desuscribite acá</a>.
           </p>
           <p style="font-size: 11px; color: #71717a; margin: 16px 0 0 0;">
             Mesa de mercado &middot; consignatarias.com
@@ -2366,7 +2448,7 @@ export async function sendElCorredorCorreccion(email: string, edition: string, p
 
           <p style="font-size: 12px; line-height: 1.6; color: #a1a1aa; margin: 0 0 12px 0;">
             La próxima edición sale el primer día hábil del mes que viene. Si no la querés recibir,
-            <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}" style="color: #71717a;">desuscribite acá</a>.
+            <a href="${urlBaja(email)}" style="color: #71717a;">desuscribite acá</a>.
           </p>
           <p style="font-size: 11px; color: #71717a; margin: 16px 0 0 0;">
             Mesa de mercado &middot; consignatarias.com
@@ -2422,7 +2504,7 @@ export async function sendElCorredorInvitacion(email: string, source: string | n
       to: email,
       replyTo: 'agro@memola.com.ar',
       headers: {
-        'List-Unsubscribe': `<${APP_URL}/unsubscribe?email=${encodeURIComponent(email)}>`,
+        'List-Unsubscribe': `<${urlBaja(email)}>`,
         'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
       },
       subject: '¿Te sirve un resumen del mercado, una vez por mes?',
@@ -2515,7 +2597,7 @@ export async function sendConsultaLeadAConsignataria(opts: {
       to: opts.to,
       replyTo: 'agro@memola.com.ar',
       headers: {
-        'List-Unsubscribe': `<${APP_URL}/unsubscribe?email=${encodeURIComponent(opts.to)}>`,
+        'List-Unsubscribe': `<${urlBaja(opts.to)}>`,
         'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
       },
       subject: `Un productor de ${opts.zona} — ¿lo pueden atender?`,
@@ -3018,7 +3100,7 @@ export async function sendArrendamientoCierre(opts: {
         <p style="margin:24px 0 8px"><a href="${APP_URL}/mercado/arrendamiento" style="display:inline-block;background:#38bdf8;color:#09090b;padding:12px 22px;text-decoration:none;font-weight:600;font-size:13px;border-radius:2px">Ver el detalle y la serie &rarr;</a></p>
         <p style="font-size:13px;color:#a1a1aa;margin:0 0 8px;line-height:1.6">¿Querés que te ayudemos con el contrato o tenés alguna consulta? <a href="mailto:agro@memola.com.ar?subject=Consulta%20arrendamiento%20${encodeURIComponent(opts.mesLabel)}" style="color:#38bdf8;text-decoration:none;white-space:nowrap">Escribinos a agro@memola.com.ar &rarr;</a></p>
         <p style="font-size:12px;color:#a1a1aa;margin:0">Es el mismo número que publica el MAG. Un mail por mes, al cierre.</p>
-        <p style="font-family:${EMAIL_MONO};color:#52525b;font-size:10px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px;line-height:1.6">consignatarias<span style="color:#38bdf8">.</span>com &mdash; el precio de referencia del ganado argentino &middot; <a href="${APP_URL}" style="color:#71717a">consignatarias.com.ar</a> &middot; <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(opts.to)}" style="color:#52525b">Desuscribirme</a></p>
+        <p style="font-family:${EMAIL_MONO};color:#52525b;font-size:10px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px;line-height:1.6">consignatarias<span style="color:#38bdf8">.</span>com &mdash; el precio de referencia del ganado argentino &middot; <a href="${APP_URL}" style="color:#71717a">consignatarias.com.ar</a> &middot; <a href="${urlBaja(opts.to)}" style="color:#52525b">Desuscribirme</a></p>
       `),
     })
     if (error) return { success: false, error: error.message }
@@ -3797,7 +3879,7 @@ export function buildExpoMercedesAvisoHtml(opts: ExpoMercedesAvisoOpts): string 
               padding-top:16px;border-top:1px solid #27272a">
       Te llega porque estás suscripto a El Corredor o al resumen de remates. Es un aviso
       puntual por la Expo; el boletín mensual sigue saliendo el día 1 como siempre.
-      <a href="${APP_URL}/unsubscribe?email=${encodeURIComponent(to)}"
+      <a href="${urlBaja(to)}"
          style="color:#71717a;text-decoration:underline">Darte de baja</a>.
     </p>
   `
@@ -3821,4 +3903,154 @@ export async function sendExpoMercedesAviso(opts: ExpoMercedesAvisoOpts) {
   } catch (error) {
     return { success: false, error: error instanceof Error ? error.message : 'unknown' }
   }
+}
+
+/* ------------------------------------------------------------------ */
+/*  PRE-OFERTA DE LA FIRMA — la oferta le llega a la consignataria      */
+/*  (17-10-2026)                                                       */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Aviso de oferta nueva sobre un lote que cargó la firma. Va al `claimed_by_email` de
+ * la firma con replyTo al interesado (si dejó mail), y en BCC a LEAD_ALERT_TO como
+ * cualquier lead. Si la firma no tiene dueño (no debería pasar: publicar exige panel),
+ * cae directo a LEAD_ALERT_TO para que el contacto no se pierda.
+ *
+ * Transaccional 1:1 disparado por una acción del interesado, igual que el RFQ de
+ * frigoríficos y la consulta a proveedores: sin List-Unsubscribe, como esos.
+ */
+export async function sendPreofertaFirmaOferta(opts: {
+  firmaEmail: string | null
+  firmaNombre: string
+  remate: string
+  fechaRemate: string
+  lote: string
+  nombre: string
+  telefono: string | null
+  email: string | null
+  monto: number | null
+  mensaje: string | null
+  fichaUrl: string
+}) {
+  const resend = await getResend()
+  if (!resend) return
+  const e = escapeHtml
+  const fmt = (n: number) => '$ ' + n.toLocaleString('es-AR')
+  const filas: [string, string | null][] = [
+    ['Interesado', opts.nombre],
+    ['Teléfono', opts.telefono],
+    ['Email', opts.email],
+    ['Ofrece', opts.monto != null ? fmt(opts.monto) : 'Sin monto — quiere que lo contacten'],
+    ['Mensaje', opts.mensaje],
+  ]
+  const tabla = filas
+    .filter(([, v]) => v)
+    .map(([k, v]) => `<tr><td style="color:#71717a;font-size:12px;padding:4px 14px 4px 0;vertical-align:top;white-space:nowrap">${e(k)}</td><td style="color:#fafafa;font-size:13px;padding:4px 0">${e(String(v))}</td></tr>`)
+    .join('')
+  const to = opts.firmaEmail ? [opts.firmaEmail] : LEAD_ALERT_TO
+  try {
+    await resend.emails.send({
+      from: FROM,
+      to,
+      ...(opts.firmaEmail ? { bcc: LEAD_ALERT_TO } : {}),
+      ...(opts.email ? { replyTo: opts.email } : {}),
+      subject: `Pre-oferta — ${opts.lote} · ${opts.remate}`,
+      html: darkEmailShell(`
+      <p style="color:#38bdf8;font-size:10px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 6px">Nueva pre-oferta</p>
+      <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 4px">${e(opts.lote)}</h2>
+      <p style="color:#a1a1aa;font-size:13px;margin:0 0 16px">${e(opts.remate)} &middot; remate del ${e(opts.fechaRemate)} &middot; ${e(opts.firmaNombre)}</p>
+      <table style="border-collapse:collapse;margin:0 0 18px">${tabla}</table>
+      <p style="color:#a1a1aa;font-size:12px;line-height:1.7;margin:0 0 8px">La oferta no es vinculante: es un interesado que quiere hablar antes del remate. Contactalo directo${opts.email ? ' — si respondés este mail, le llega a él' : ''}.</p>
+      <p style="margin:16px 0 0"><a href="${APP_URL}/dashboard" style="color:#38bdf8">Ver todas las ofertas en tu panel &rarr;</a></p>
+      <p style="margin:6px 0 0"><a href="${e(opts.fichaUrl)}" style="color:#38bdf8">Ver la pre-oferta publicada &rarr;</a></p>
+      <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">consignatarias.com — el contacto del interesado no se publica: solo lo ves vos.</p>
+    `),
+    })
+  } catch {
+    /* el envío queda registrado como error en ops_events por conEnvioRegistrado */
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  PROPUESTA PRO A PEDIDO                                             */
+/* ------------------------------------------------------------------ */
+
+export interface PropuestaMail {
+  firma: string
+  slug: string
+  linkPropuesta: string
+  /** Líneas "dato · contexto" de la firma, ya redactadas y verificadas. */
+  datosFirma: { valor: string; texto: string }[]
+  beneficios: readonly string[]
+  sitio: { impresiones: string; desde: string; ia90: number | null }
+  /** La presentación en PDF (lib/pdf/propuesta), adjunta: A4 para imprimir y 16:9 para pantalla. */
+  pdf?: Buffer
+  pdf169?: Buffer
+}
+
+/**
+ * La propuesta PRO que la firma pide desde el checkout (17-10-2026). Va en claro,
+ * institucional, con la marca: es el documento que la firma reenvía a su socio. El
+ * cuerpo resume; el detalle completo (imprimible a PDF) está en el link.
+ */
+export async function sendPropuestaPro(to: string, p: PropuestaMail) {
+  const resend = await getResend()
+  if (!resend) return null
+  const e = escapeHtml
+  const ink = '#18181b', gris = '#52525b', borde = '#e4e4e7', acento = '#1d4ed8'
+  const sans = "Inter,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif"
+  const datos = p.datosFirma.length
+    ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px">${p.datosFirma
+        .map(
+          (d) => `<tr><td style="padding:9px 0;border-bottom:1px solid ${borde};font-size:20px;font-weight:700;color:${ink};width:90px;vertical-align:top">${e(d.valor)}</td><td style="padding:11px 0 9px 12px;border-bottom:1px solid ${borde};font-size:13px;color:${gris};line-height:1.5">${e(d.texto)}</td></tr>`,
+        )
+        .join('')}</table>`
+    : ''
+  const html = `
+  <body style="margin:0;padding:0;background:#f4f4f5">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5"><tr><td align="center" style="padding:28px 12px">
+  <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border:1px solid ${borde};border-radius:10px">
+    <tr><td style="padding:26px 32px 18px;border-bottom:1px solid ${borde}">
+      <img src="${APP_URL}/marca/email/isotipo-cielo.png" width="24" height="24" alt="" style="vertical-align:middle;border:0">
+      <span style="font-family:${sans};font-size:14px;font-weight:600;color:${ink};vertical-align:middle;margin-left:8px">consignatarias.com.ar</span>
+    </td></tr>
+    <tr><td style="padding:28px 32px 8px;font-family:${sans}">
+      <p style="margin:0 0 6px;font-size:12px;font-weight:600;color:${acento}">Propuesta comercial</p>
+      <h1 style="margin:0 0 6px;font-size:26px;line-height:1.2;color:${ink}">PRO Consignataria</h1>
+      <p style="margin:0 0 24px;font-size:15px;color:${gris}">Para ${e(p.firma)}</p>
+      ${datos ? `<p style="margin:0 0 8px;font-size:12px;font-weight:600;color:${ink};text-transform:uppercase;letter-spacing:.06em">Su firma hoy en el sitio</p>${datos}` : ''}
+      <p style="margin:0 0 14px;font-size:14px;color:${ink};line-height:1.6">${p.pdf || p.pdf169 ? 'Le adjuntamos la presentación en PDF, en versión para pantalla y para imprimir. Ahí' : `En la <a href="${p.linkPropuesta}" style="color:${acento};font-weight:600">presentación completa</a>`} está cada función con la captura de cómo queda dentro del sitio: sus remates destacados en el calendario, el mail semanal con su remate primero, la pre-oferta con video, las consultas y el panel de visitas.</p>
+      <p style="margin:0 0 8px;font-size:12px;font-weight:600;color:${ink};text-transform:uppercase;letter-spacing:.06em">Qué incluye</p>
+      <ul style="margin:0 0 24px;padding:0 0 0 18px;font-size:14px;line-height:1.7;color:${ink}">${p.beneficios.map((b) => `<li>${e(b)}</li>`).join('')}</ul>
+      <p style="margin:0 0 6px;font-size:13px;color:${gris};line-height:1.6">El sitio tuvo ${e(p.sitio.impresiones)} impresiones en Google desde ${e(p.sitio.desde)}${p.sitio.ia90 ? `, y ${p.sitio.ia90.toLocaleString('es-AR')} visitas llegaron desde asistentes de IA en los últimos 90 días` : ''}.</p>
+      <p style="margin:18px 0 4px;font-size:30px;font-weight:700;color:${ink}">ARS 45.000<span style="font-size:15px;font-weight:400;color:${gris}">/mes</span></p>
+      <p style="margin:0 0 24px;font-size:13px;color:${gris}">Facturación mensual en pesos · sin permanencia · se cancela desde el panel</p>
+      <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 12px"><tr>
+        <td style="background:${acento};border-radius:6px"><a href="${APP_URL}/consignatarias/${p.slug}/activar" style="display:inline-block;padding:13px 26px;font-family:${sans};font-size:14px;font-weight:600;color:#ffffff;text-decoration:none">Activar PRO</a></td>
+        <td style="padding-left:14px"><a href="${p.linkPropuesta}" style="font-family:${sans};font-size:14px;color:${acento}">Ver la propuesta en línea</a></td>
+      </tr></table>
+      <p style="margin:18px 0 26px;font-size:13px;color:${gris};line-height:1.6">¿Preferís hablarlo? <a href="https://calendar.app.google/gr2BXY1ooDMki8TK7" style="color:${acento}">Reservá una reunión</a> o respondé este mail.</p>
+    </td></tr>
+    <tr><td style="padding:16px 32px;border-top:1px solid ${borde};font-family:${sans};font-size:11px;color:#71717a">
+      Memola Medios SAS · consignatarias.com.ar · agro@memola.com.ar<br>Recibís este mail porque lo pediste desde la página de activación de ${e(p.firma)}.
+    </td></tr>
+  </table>
+  </td></tr></table>
+  </body>`
+  return resend.emails.send({
+    from: FROM_PERSONAL,
+    to,
+    bcc: LEAD_ALERT_TO,
+    replyTo: 'agro@memola.com.ar',
+    subject: `Propuesta PRO Consignataria — ${p.firma}`,
+    html,
+    ...(p.pdf || p.pdf169
+      ? {
+          attachments: [
+            ...(p.pdf169 ? [{ filename: `Propuesta-PRO-${p.slug}-pantalla.pdf`, content: p.pdf169 }] : []),
+            ...(p.pdf ? [{ filename: `Propuesta-PRO-${p.slug}-A4.pdf`, content: p.pdf }] : []),
+          ],
+        }
+      : {}),
+  })
 }

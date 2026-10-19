@@ -219,7 +219,7 @@ function Tile({ item, nameIndex }: { item: ShowcaseItem; nameIndex: number }) {
       <Link
         href={`/consignatarias/${item.slug}`}
         title={item.name}
-        className="group relative grid place-items-center overflow-hidden px-4 py-6 min-h-[104px] isolate bg-zinc-950 transition-shadow duration-300 hover:z-[2] hover:[box-shadow:0_8px_28px_-10px_var(--brand)]"
+        className="group relative grid place-items-center overflow-hidden px-4 py-6 min-h-[104px] isolate bg-zinc-950 claro:bg-terminal-panel transition-shadow duration-300 hover:z-[2] hover:[box-shadow:0_8px_28px_-10px_var(--brand)]"
         style={{ ["--brand" as string]: color }}
       >
         <PixelCanvas colors={brandShimmer(color)} />
@@ -234,23 +234,25 @@ function Tile({ item, nameIndex }: { item: ShowcaseItem; nameIndex: number }) {
             (item.keepColor
               ? ""
               : item.solidLogo
-                ? "[filter:grayscale(1)_invert(1)_brightness(1.4)] mix-blend-screen"
-                : "[filter:brightness(0)_invert(1)]")
+                ? "[filter:grayscale(1)_invert(1)_brightness(1.4)] mix-blend-screen claro:[filter:grayscale(1)_contrast(1.15)] claro:mix-blend-multiply"
+                : "[filter:brightness(0)_invert(1)] claro:[filter:brightness(0)] claro:opacity-75 claro:group-hover:opacity-100")
           }
         />
       </Link>
     );
   }
 
-  // Plain name tile (no logo yet).
+  // Plain name tile (no logo yet). También es el lugar de una PRO sin marca
+  // curada en logo-map: entra igual al muro (17-10-2026), con el nombre más
+  // legible que el de una baldosa común para que el sello no quede solo.
   return (
     <Link
       href={`/consignatarias/${item.slug}`}
-      className="group relative grid place-items-center overflow-hidden bg-zinc-950 px-4 py-6 min-h-[104px] isolate transition-shadow duration-300 hover:z-[2] hover:shadow-[0_8px_24px_-8px_rgba(0,112,240,0.25)]"
+      className="group relative grid place-items-center overflow-hidden bg-zinc-950 claro:bg-terminal-panel px-4 py-6 min-h-[104px] isolate transition-shadow duration-300 hover:z-[2] hover:shadow-[0_8px_24px_-8px_rgba(0,112,240,0.25)]"
     >
       <PixelCanvas colors={NAME_PALETTES[nameIndex % NAME_PALETTES.length]} />
       {item.isPro && <ProBadge size="sm" className="absolute top-2 right-2 z-[2]" />}
-      <span className="relative z-[1] text-center text-xs font-medium leading-tight text-zinc-500 transition-colors duration-300 group-hover:text-zinc-100">
+      <span className={`relative z-[1] text-center text-xs font-medium leading-tight transition-colors duration-300 group-hover:text-zinc-100 ${item.isPro ? "text-zinc-300" : "text-zinc-500"}`}>
         {item.name}
       </span>
     </Link>
@@ -263,7 +265,7 @@ export default function ConsignatariasShowcase({ items }: { items: ShowcaseItem[
     <section id="consignatarias" className="relative max-w-7xl mx-auto px-6 py-24">
       <div className="text-center mb-10">
         <div className="flex items-center justify-center gap-2.5">
-          <span className="inline-flex w-8 h-8 rounded bg-zinc-100 items-center justify-center select-none shrink-0" aria-hidden="true">
+          <span className="inline-flex w-8 h-8 rounded bg-zinc-100 claro:bg-terminal-panel claro:border claro:border-zinc-800 items-center justify-center select-none shrink-0" aria-hidden="true">
                         <ImagenTema src="/marca/iconos-color/casa-remates.png" alt="" className="w-5 h-5" />
           </span>
           <span className="inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-zinc-900 border border-ink/10 text-zinc-400">
@@ -274,12 +276,12 @@ export default function ConsignatariasShowcase({ items }: { items: ShowcaseItem[
           Las consignatarias más activas del mercado
         </h2>
         <p className="mt-2 text-sm text-zinc-500 max-w-xl mx-auto">
-          Casas de remate con actividad reciente. No son clientes — es el directorio.
+          Casas de remate con actividad reciente: es el directorio. Las marcadas ★ PRO van primero.
           Pasá el mouse y tocá cualquiera para ver su calendario y perfil.
         </p>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-px bg-white/5 border border-ink/5 rounded-lg overflow-hidden">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-px bg-white/5 claro:bg-zinc-900 border border-ink/5 claro:border-zinc-800 rounded-lg overflow-hidden">
         {items.map((item, i) => (
           <Tile key={item.slug} item={item} nameIndex={i} />
         ))}

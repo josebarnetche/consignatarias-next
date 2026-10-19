@@ -5,6 +5,7 @@ import { normalizeUrl } from '@/lib/utils/url'
 import { CAT_LABELS, getCity, nombrePropio, provinciaNombre } from '@/lib/ui/tokens'
 import { remateAnchor, remateHref, tipoNombre } from '@/lib/remates-enlaces'
 import type { Auction } from '@/lib/db/schema'
+import ProBadge from '@/components/badges/ProBadge'
 
 export interface RemateCardData {
   id: number
@@ -43,11 +44,18 @@ export function RemateCardSimple({
   remate,
   fecha,
   etiquetaVivo = 'Ver en vivo',
+  pro = false,
 }: {
   remate: RemateCardData
   /** Fecha visible ("Sábado 4 de octubre"); se omite en los listados de un solo día. */
   fecha?: string
   etiquetaVivo?: string
+  /**
+   * La firma es PRO (la página lo calcula con `esRematePro`, lib/remates-pro).
+   * Mismo resaltado que la fila PRO de RematesClient: barra de acento, tinte y
+   * sello (17-10-2026).
+   */
+  pro?: boolean
 }) {
   const ficha = remateHref(remate)
   const perfil = consignatariaProfilePath(remate.consignatariaSlug)
@@ -62,17 +70,25 @@ export function RemateCardSimple({
     : null
 
   return (
-    <article className="relative bg-zinc-900/50 border border-zinc-800 rounded-lg p-4 hover:border-zinc-700 focus-within:border-accent/50 transition-colors">
+    <article
+      className={`relative overflow-hidden border rounded-lg p-4 hover:border-zinc-700 focus-within:border-accent/50 transition-colors ${
+        pro ? 'bg-accent/[0.04] border-accent/30' : 'bg-zinc-900/50 border-zinc-800'
+      }`}
+    >
+      {pro && <span aria-hidden className="absolute inset-y-0 left-0 w-1 bg-accent" />}
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex-1 min-w-0">
-          <Link
-            href={href}
-            aria-label={anchor}
-            title={anchor}
-            className="text-lg font-medium text-zinc-100 hover:text-accent transition-colors line-clamp-1 after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"
-          >
-            {nombrePropio(remate.consignatariaName)}
-          </Link>
+          <div className="flex min-w-0 items-center gap-2">
+            <Link
+              href={href}
+              aria-label={anchor}
+              title={anchor}
+              className="text-lg font-medium text-zinc-100 hover:text-accent transition-colors line-clamp-1 after:absolute after:inset-0 after:content-[''] focus-visible:outline-none"
+            >
+              {nombrePropio(remate.consignatariaName)}
+            </Link>
+            {pro && <ProBadge size="sm" className="relative flex-shrink-0" />}
+          </div>
           {lugar && (
             <div className="flex items-center gap-2 mt-1 text-sm text-zinc-500">
               <MapPin className="w-3.5 h-3.5" aria-hidden />

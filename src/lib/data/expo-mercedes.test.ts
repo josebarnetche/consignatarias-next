@@ -89,7 +89,7 @@ describe('el dato que sostiene el destacado', () => {
     expect(intrusas).toHaveLength(0)
   })
 
-  it('la siguiente plaza del interior junta bastantes menos', () => {
+  it('ninguna plaza del interior junta más firmas que Mercedes', () => {
     // Cañuelas no cuenta: es el mercado concentrador, opera todas las semanas y junta
     // firmas por mecánica propia, no porque haya una muestra. El 10-sep-2026 llegó a 6
     // —las mismas que la rueda— y hacía fallar este test comparando cosas distintas.
@@ -99,8 +99,10 @@ describe('el dato que sostiene el destacado', () => {
         !/mercedes/i.test(p.sede) &&
         !esConcentradorPermanente(p.sede),
     )
+    // Puede empatar (Río Cuarto, 18-10-2026): la página lo dice ("a la par de …") en
+    // vez de afirmar el primer puesto. Lo que no puede pasar es que una la supere.
     expect(siguiente).toBeDefined()
-    expect(siguiente!.firmas).toBeLessThan(pos.firmas)
+    expect(siguiente!.firmas).toBeLessThanOrEqual(pos.firmas)
   })
 
   it('no se compara contra Mercedes misma', () => {

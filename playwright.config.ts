@@ -1,10 +1,11 @@
 import { defineConfig, devices } from '@playwright/test'
 
 /**
- * Config de verificación de tracking (Fase C). Requiere un install de una vez:
- *   npm i -D @playwright/test && npx playwright install chromium
- * Correr:  npx playwright test         (levanta `pnpm dev` solo si hace falta)
- *          E2E_BASE_URL=https://... npx playwright test   (contra un deploy)
+ * Config de verificación de tracking (Fase C). @playwright/test ya es devDependency;
+ * falta solo bajar el navegador una vez:
+ *   pnpm exec playwright install chromium
+ * Correr:  pnpm exec playwright test   (levanta `pnpm dev` solo si hace falta)
+ *          E2E_BASE_URL=https://... pnpm exec playwright test   (contra un deploy)
  */
 export default defineConfig({
   testDir: './e2e',

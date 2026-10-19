@@ -110,6 +110,11 @@ const FRIG_GSC_PRIORITY: Record<string, number> = {
 /* ------------------------------------------------------------------ */
 /*  STAGE HELPERS                                                      */
 /* ------------------------------------------------------------------ */
+/** Rótulo visible del ciclo SENASA (el dato sigue siendo `stage` 1/2/3). */
+function cicloRomano(stage: number): string {
+  return ['', 'I', 'II', 'III'][stage] ?? String(stage)
+}
+
 function stageColor(stage: number): string {
   if (stage === 1) return 'val-positive'
   if (stage === 2) return 'val-warning'
@@ -384,10 +389,10 @@ export default function FrigorificosPage({
               onChange={(e) => { setFilterStage(e.target.value); if (e.target.value) trackFilterApply('type', e.target.value) }}
               className="terminal-input"
             >
-              <option value="">Todas las etapas</option>
-              <option value="1">Etapa 1</option>
-              <option value="2">Etapa 2</option>
-              <option value="3">Etapa 3</option>
+              <option value="">Todos los ciclos</option>
+              <option value="1">Ciclo I</option>
+              <option value="2">Ciclo II</option>
+              <option value="3">Ciclo III</option>
             </select>
           </div>
 
@@ -452,15 +457,15 @@ export default function FrigorificosPage({
             {/* -- STAGE DISTRIBUTION -------------------------------- */}
             <div className="border-b md:border-b-0 md:border-r border-terminal-border">
               <h2 className="terminal-panel-header">
-                DISTRIBUCIÓN DE FRIGORÍFICOS POR ETAPA
+                DISTRIBUCIÓN DE FRIGORÍFICOS POR CICLO
               </h2>
               <div className="terminal-panel-body space-y-1.5">
                 {stages.map(({ stage, count }) => {
                   const pct = stageTotal > 0 ? ((count / stageTotal) * 100).toFixed(0) : '0'
                   return (
                     <div key={stage} className="flex items-center gap-2 text-data font-terminal">
-                      <span className={`w-16 ${stageColor(stage)} tabular-nums`}>
-                        ETAPA {stage}
+                      <span className={`w-20 ${stageColor(stage)} tabular-nums`}>
+                        CICLO {cicloRomano(stage)}
                       </span>
                       <div className="gradient-bar flex-1 h-3">
                         <div
@@ -478,13 +483,13 @@ export default function FrigorificosPage({
                 <div className="terminal-divider-dashed" />
                 <div className="flex gap-4 text-xxs text-zinc-500 font-terminal">
                   <span>
-                    <span className="val-positive">E1</span> Faena + desposte
+                    <span className="val-positive">I</span> Faena + desposte
                   </span>
                   <span>
-                    <span className="val-warning">E2</span> Desposte
+                    <span className="val-warning">II</span> Desposte
                   </span>
                   <span>
-                    <span className="val-negative">E3</span> Deposito
+                    <span className="val-negative">III</span> Depósito
                   </span>
                 </div>
               </div>
@@ -560,7 +565,7 @@ export default function FrigorificosPage({
                     className="w-16"
                   />
                   <SortHeader
-                    label="ETAPA"
+                    label="CICLO"
                     field="stage"
                     currentField={sortField}
                     currentDir={sortDir}
@@ -624,7 +629,7 @@ export default function FrigorificosPage({
                         {abbr(f.province)}
                       </td>
                       <td className={`text-center tabular-nums ${stageColor(f.stage)}`}>
-                        {f.stage}
+                        {cicloRomano(f.stage)}
                       </td>
                       <td className="text-right">
                         <Link
@@ -666,11 +671,11 @@ export default function FrigorificosPage({
               </span>
               <span className="text-terminal-border">|</span>
               <span>
-                E1:{' '}
+                CICLO I:{' '}
                 <span className="val-positive tabular-nums">{summary.byStage['1']}</span>
-                {' '}E2:{' '}
+                {' '}II:{' '}
                 <span className="val-warning tabular-nums">{summary.byStage['2']}</span>
-                {' '}E3:{' '}
+                {' '}III:{' '}
                 <span className="val-negative tabular-nums">{summary.byStage['3']}</span>
               </span>
             </div>
