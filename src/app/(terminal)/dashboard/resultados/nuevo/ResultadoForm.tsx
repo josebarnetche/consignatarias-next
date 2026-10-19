@@ -81,20 +81,31 @@ export default function ResultadoForm({ consignatariaSlug, consignatariaName, in
   const [maxPrice, setMaxPrice] = useState(txt(inicial?.max_price))
   const [notes, setNotes] = useState(inicial?.notes ?? '')
   const [categories, setCategories] = useState<CategoryRow[]>(
-    (inicial?.category_results ?? []).map((c) => ({
+    inicial?.category_results?.length ? inicial.category_results.map((c) => ({
       categoria_vr: c.categoria_vr || OTRA,
       category: c.categoria_vr ? '' : c.category,
       heads: txt(c.heads),
       peso_kg: txt(c.peso_kg),
       avg_price: txt(c.avg_price),
       max_price: txt(c.max_price),
-    })),
+    })) : [{ ...EMPTY_CATEGORY }],
   )
+  // Si eligió un remate de la lista, no hace falta mostrar fecha/título/lugar.
+  const [aMano, setAMano] = useState(!!inicial || sugeridos.length === 0)
+  const [masDatos, setMasDatos] = useState(!!(inicial && (inicial.total_heads_offered || inicial.min_price || inicial.max_price || inicial.notes)))
   const [borrando, setBorrando] = useState(false)
 
   function elegirRemate(i: string) {
+    if (i === 'otro') {
+      setAMano(true)
+      setAuctionDate('')
+      setAuctionTitle('')
+      setLocation('')
+      return
+    }
     const r = sugeridos[Number(i)]
     if (!r) return
+    setAMano(false)
     setAuctionDate(r.date)
     setAuctionTitle(r.title)
     setLocation(r.location)
@@ -148,15 +159,29 @@ export default function ResultadoForm({ consignatariaSlug, consignatariaName, in
         max_price: c.max_price ? parseFloat(c.max_price) : undefined,
       }))
 
+    // Los totales salen solos del desglose si la firma no los cargó aparte: cabezas
+    // vendidas = suma; precio promedio = promedio ponderado por cabezas.
+    const conCabezas = categoryResults.filter((c) => c.heads)
+    const sumaCabezas = conCabezas.reduce((t, c) => t + (c.heads ?? 0), 0)
+    const conPrecio = conCabezas.filter((c) => c.avg_price)
+    const pesoPrecio = conPrecio.reduce((t, c) => t + (c.heads ?? 0), 0)
+    const promedioCalc = pesoPrecio ? conPrecio.reduce((t, c) => t + (c.avg_price ?? 0) * (c.heads ?? 0), 0) / pesoPrecio : null
+
+    if (!auctionDate || !auctionTitle.trim()) {
+      setError('Elegí el remate (o completá fecha y nombre).')
+      setSubmitting(false)
+      return
+    }
+
     const body = {
       consignataria_slug: consignatariaSlug,
       auction_date: auctionDate,
       auction_title: auctionTitle.trim(),
       location: location.trim() || undefined,
       total_heads_offered: headsOffered ? parseInt(headsOffered) : null,
-      total_heads_sold: headsSold ? parseInt(headsSold) : null,
+      total_heads_sold: headsSold ? parseInt(headsSold) : sumaCabezas || null,
       min_price: minPrice ? parseFloat(minPrice) : null,
-      average_price: avgPrice ? parseFloat(avgPrice) : null,
+      average_price: avgPrice ? parseFloat(avgPrice) : promedioCalc != null ? Math.round(promedioCalc) : null,
       max_price: maxPrice ? parseFloat(maxPrice) : null,
       category_results: categoryResults.length > 0 ? categoryResults : null,
       notes: notes.trim() || undefined,
@@ -184,305 +209,150 @@ export default function ResultadoForm({ consignatariaSlug, consignatariaName, in
     }
   }
 
-  const inputClass = 'w-full bg-zinc-900 border border-terminal-border rounded-terminal px-2 py-1.5 text-data font-terminal text-zinc-200 placeholder:text-zinc-700 focus:outline-none focus:border-accent'
-  const labelClass = 'text-xxs font-terminal text-zinc-500 uppercase tracking-wider'
+  const CAMPO = 'mt-1.5 block w-full rounded-xl border border-terminal-border bg-terminal-bg/60 px-3.5 py-2.5 text-[0.9375rem] text-ink placeholder:text-zinc-600 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20'
+  const ETIQUETA = 'block text-sm font-medium text-zinc-300'
+  const TARJETA = 'rounded-2xl border border-terminal-border bg-terminal-panel p-5 sm:p-6'
+
+  // Resumen en vivo de lo cargado en el desglose.
+  const filas = categories.filter((c) => c.heads)
+  const totalCab = filas.reduce((t, c) => t + (parseInt(c.heads) || 0), 0)
+  const conPrecioVivo = filas.filter((c) => c.avg_price)
+  const pesoVivo = conPrecioVivo.reduce((t, c) => t + (parseInt(c.heads) || 0), 0)
+  const promVivo = pesoVivo ? Math.round(conPrecioVivo.reduce((t, c) => t + (parseFloat(c.avg_price) || 0) * (parseInt(c.heads) || 0), 0) / pesoVivo) : null
 
   return (
-    <div className="max-w-2xl mx-auto px-2 sm:px-4 py-4">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Header */}
-        <div className="terminal-panel">
-          <div className="terminal-panel-header">
-            <span className="text-zinc-200 text-label tracking-widest">{inicial ? 'EDITAR RESULTADO' : 'CARGAR RESULTADO'}</span>
-          </div>
-          <div className="px-panel py-3">
-            <span className="text-data font-terminal text-zinc-300">{consignatariaName}</span>
-          </div>
-        </div>
+    <div className="mx-auto max-w-2xl px-4 py-8">
+      <Link href="/dashboard?tab=resultados" className="text-sm text-zinc-500 hover:text-ink">← Volver a Resultados</Link>
+      <h1 className="mt-3 text-[1.75rem] font-semibold tracking-tight text-ink">{inicial ? 'Editar resultado' : 'Cargar resultado'}</h1>
+      <p className="mt-1 text-[0.9375rem] text-zinc-500">{consignatariaName} · cabezas y precio por categoría. Lleva un minuto.</p>
 
-        {/* Basic info */}
-        <div className="terminal-panel">
-          <div className="terminal-panel-header">
-            <span className="text-zinc-200 text-label tracking-widest">DATOS DEL REMATE</span>
-          </div>
-          <div className="px-panel py-3 space-y-3">
-            {!inicial && sugeridos.length > 0 && (
-              <div>
-                <label className={labelClass}>¿De qué remate?</label>
-                <select defaultValue="" onChange={e => elegirRemate(e.target.value)} className={inputClass}>
-                  <option value="">Elegí uno de tus remates o completá a mano</option>
-                  {sugeridos.map((r, i) => (
-                    <option key={`${r.date}-${i}`} value={i}>{r.date.split('-').reverse().join('/')} · {r.title}</option>
-                  ))}
-                </select>
+      <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+        {/* 1. El remate */}
+        <section className={TARJETA}>
+          <p className="text-base font-semibold text-ink">¿De qué remate?</p>
+          {!inicial && sugeridos.length > 0 && (
+            <select defaultValue="" onChange={(e) => elegirRemate(e.target.value)} className={CAMPO} aria-label="Remate">
+              <option value="" disabled>Elegí uno de tus remates</option>
+              {sugeridos.map((r, i) => (
+                <option key={`${r.date}-${i}`} value={i}>{r.date.split('-').reverse().join('/')} · {r.title}</option>
+              ))}
+              <option value="otro">Otro remate (lo escribo yo)</option>
+            </select>
+          )}
+          {!aMano && auctionTitle && (
+            <p className="mt-3 text-sm text-zinc-400">{auctionDate.split('-').reverse().join('/')} · {auctionTitle}{location ? ` · ${location}` : ''}</p>
+          )}
+          {aMano && (
+            <div className="mt-4 space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <label className={ETIQUETA}>
+                  Fecha
+                  <input type="date" required value={auctionDate} onChange={(e) => setAuctionDate(e.target.value)} className={CAMPO} />
+                </label>
+                <label className={ETIQUETA}>
+                  Lugar
+                  <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Ej. Mercedes" className={CAMPO} />
+                </label>
               </div>
-            )}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label className={labelClass}>Fecha *</label>
-                <input
-                  type="date"
-                  required
-                  value={auctionDate}
-                  onChange={e => setAuctionDate(e.target.value)}
-                  className={inputClass}
-                />
-              </div>
-              <div>
-                <label className={labelClass}>Ubicación</label>
-                <input
-                  type="text"
-                  value={location}
-                  onChange={e => setLocation(e.target.value)}
-                  placeholder="Ciudad, Provincia"
-                  className={inputClass}
-                />
-              </div>
+              <label className={ETIQUETA}>
+                Nombre del remate
+                <input required value={auctionTitle} onChange={(e) => setAuctionTitle(e.target.value)} placeholder="Ej. Remate de invernada" className={CAMPO} />
+              </label>
             </div>
-            <div>
-              <label className={labelClass}>Título *</label>
-              <input
-                type="text"
-                required
-                value={auctionTitle}
-                onChange={e => setAuctionTitle(e.target.value)}
-                placeholder="Ej: Remate especial de invernada"
-                className={inputClass}
-              />
-            </div>
-          </div>
-        </div>
+          )}
+        </section>
 
-        {/* Heads & Prices */}
-        <div className="terminal-panel">
-          <div className="terminal-panel-header">
-            <span className="text-zinc-200 text-label tracking-widest">CABEZAS Y PRECIOS</span>
-          </div>
-          <div className="px-panel py-3 space-y-3">
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className={labelClass}>Cabezas ofrecidas</label>
-                <input
-                  type="number"
-                  min="0"
-                  value={headsOffered}
-                  onChange={e => setHeadsOffered(e.target.value)}
-                  className={inputClass}
-                />
-              </div>
-              <div>
-                <label className={labelClass}>Cabezas vendidas</label>
-                <input
-                  type="number"
-                  min="0"
-                  value={headsSold}
-                  onChange={e => setHeadsSold(e.target.value)}
-                  className={inputClass}
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-3 gap-3">
-              <div>
-                <label className={labelClass}>Precio mín. ($/kg vivo)</label>
-                <input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={minPrice}
-                  onChange={e => setMinPrice(e.target.value)}
-                  className={inputClass}
-                />
-              </div>
-              <div>
-                <label className={labelClass}>Precio prom. ($/kg vivo)</label>
-                <input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={avgPrice}
-                  onChange={e => setAvgPrice(e.target.value)}
-                  className={inputClass}
-                />
-              </div>
-              <div>
-                <label className={labelClass}>Precio máx. ($/kg vivo)</label>
-                <input
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  value={maxPrice}
-                  onChange={e => setMaxPrice(e.target.value)}
-                  className={inputClass}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Category breakdown */}
-        <div className="terminal-panel">
-          <div className="terminal-panel-header flex items-center justify-between">
-            <span className="text-zinc-200 text-label tracking-widest">DESGLOSE POR CATEGORÍA</span>
-            <button
-              type="button"
-              onClick={addCategory}
-              className="text-xxs font-terminal text-accent hover:underline"
-            >
-              + Agregar
-            </button>
-          </div>
-          {categories.length > 0 && (
-            <div className="divide-y divide-terminal-border">
-              {categories.map((cat, i) => (
-                <div key={i} className="px-panel py-2 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <select
-                      value={cat.categoria_vr}
-                      onChange={e => updateCategory(i, 'categoria_vr', e.target.value)}
-                      aria-label="Categoría"
-                      className={`${inputClass} flex-1`}
-                    >
-                      <option value="" disabled>Elegí la categoría</option>
-                      {CATEGORIAS_RESULTADO.map(c => (
-                        <option key={c.slug} value={c.slug}>{c.etiqueta}</option>
-                      ))}
+        {/* 2. Cómo se vendió */}
+        <section className={TARJETA}>
+          <p className="text-base font-semibold text-ink">¿Cómo se vendió?</p>
+          <p className="mt-0.5 text-sm text-zinc-500">Una línea por categoría. Precio en pesos por kilo vivo.</p>
+          <div className="mt-4 space-y-3">
+            {categories.map((cat, idx) => (
+              <div key={idx} className="rounded-xl bg-zinc-800/30 p-3">
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-[1.4fr_1fr_1fr_1fr]">
+                  <label className="col-span-2 text-xs text-zinc-400 sm:col-span-1">
+                    Categoría
+                    <select value={cat.categoria_vr} onChange={(e) => updateCategory(idx, 'categoria_vr', e.target.value)} className={CAMPO}>
+                      <option value="">Elegí</option>
+                      {CATEGORIAS_RESULTADO.map((c) => <option key={c.slug} value={c.slug}>{c.etiqueta}</option>)}
                       <option value={OTRA}>Otra</option>
                     </select>
-                    <button
-                      type="button"
-                      onClick={() => removeCategory(i)}
-                      className="text-xxs font-terminal text-negative hover:underline flex-shrink-0"
-                    >
-                      Quitar
-                    </button>
-                  </div>
-                  {cat.categoria_vr === OTRA && (
-                    <input
-                      type="text"
-                      value={cat.category}
-                      onChange={e => updateCategory(i, 'category', e.target.value)}
-                      placeholder="Ej: Vaca con cría, Vientres preñados"
-                      aria-label="Nombre de la categoría"
-                      className={inputClass}
-                    />
-                  )}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                    <div>
-                      <label className={labelClass}>Cabezas</label>
-                      <input
-                        type="number"
-                        min="0"
-                        value={cat.heads}
-                        onChange={e => updateCategory(i, 'heads', e.target.value)}
-                        className={inputClass}
-                      />
-                    </div>
-                    <div>
-                      <label className={labelClass}>Peso prom. (kg)</label>
-                      <input
-                        type="number"
-                        min="0"
-                        max="1500"
-                        step="1"
-                        value={cat.peso_kg}
-                        onChange={e => updateCategory(i, 'peso_kg', e.target.value)}
-                        placeholder="Opcional"
-                        className={inputClass}
-                      />
-                    </div>
-                    <div>
-                      <label className={labelClass}>Prom. ($/kg vivo)</label>
-                      <input
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        value={cat.avg_price}
-                        onChange={e => updateCategory(i, 'avg_price', e.target.value)}
-                        className={inputClass}
-                      />
-                    </div>
-                    <div>
-                      <label className={labelClass}>Máx. ($/kg vivo)</label>
-                      <input
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        value={cat.max_price}
-                        onChange={e => updateCategory(i, 'max_price', e.target.value)}
-                        className={inputClass}
-                      />
-                    </div>
-                  </div>
+                  </label>
+                  <label className="text-xs text-zinc-400">
+                    Cabezas
+                    <input type="number" min={1} inputMode="numeric" value={cat.heads} onChange={(e) => updateCategory(idx, 'heads', e.target.value)} className={CAMPO} />
+                  </label>
+                  <label className="text-xs text-zinc-400">
+                    Peso (kg)
+                    <input type="number" min={1} max={1500} inputMode="numeric" value={cat.peso_kg} onChange={(e) => updateCategory(idx, 'peso_kg', e.target.value)} placeholder="Opcional" className={CAMPO} />
+                  </label>
+                  <label className="col-span-2 text-xs text-zinc-400 sm:col-span-1">
+                    $/kg promedio
+                    <input type="number" min={1} step="any" inputMode="decimal" value={cat.avg_price} onChange={(e) => updateCategory(idx, 'avg_price', e.target.value)} className={CAMPO} />
+                  </label>
                 </div>
-              ))}
-              <div className="px-panel py-2">
-                <span className="text-xxs font-terminal text-zinc-500">
-                  Precios en $ por kg vivo, como los mide el{' '}
-                  <Link href="/metodologia/vr" className="text-accent hover:underline">Valor de Referencia</Link>.
-                  Con el peso promedio por cabeza, tu precio se compara contra los lotes de ese mismo peso.
-                  Si vendiste por cabeza, dejá el precio vacío y anotalo en observaciones.
-                </span>
+                {cat.categoria_vr === OTRA && (
+                  <input value={cat.category} onChange={(e) => updateCategory(idx, 'category', e.target.value)} placeholder="¿Qué categoría? Ej. Vaca con cría" aria-label="Nombre de la categoría" className={CAMPO} />
+                )}
+                {categories.length > 1 && (
+                  <button type="button" onClick={() => removeCategory(idx)} className="mt-2 text-xs text-zinc-500 hover:text-negative">Quitar</button>
+                )}
               </div>
-            </div>
+            ))}
+          </div>
+          <button type="button" onClick={addCategory} className="mt-3 text-sm font-medium text-accent">+ Otra categoría</button>
+          {totalCab > 0 && (
+            <p className="mt-4 rounded-xl bg-accent/[0.06] px-4 py-3 text-sm text-zinc-300">
+              Total: <strong className="text-ink">{totalCab.toLocaleString('es-AR')} cabezas</strong>
+              {promVivo != null && <> · promedio <strong className="text-ink">${promVivo.toLocaleString('es-AR')}/kg</strong></>}
+            </p>
           )}
-          {categories.length === 0 && (
-            <div className="px-panel py-3">
-              <span className="text-xxs font-terminal text-zinc-500">
-                Opcional — agregá categorías para ver, en tu panel, cómo quedó cada una contra el Valor de Referencia.
-              </span>
-            </div>
-          )}
-        </div>
+        </section>
 
-        {/* Notes */}
-        <div className="terminal-panel">
-          <div className="terminal-panel-header">
-            <span className="text-zinc-200 text-label tracking-widest">OBSERVACIONES</span>
-          </div>
-          <div className="px-panel py-3">
-            <textarea
-              value={notes}
-              onChange={e => setNotes(e.target.value)}
-              placeholder="Notas adicionales sobre el remate..."
-              rows={3}
-              className={`${inputClass} resize-none`}
-            />
-          </div>
-        </div>
-
-        {/* Error */}
-        {error && (
-          <div className="terminal-panel border-negative/30">
-            <div className="px-panel py-2">
-              <span className="text-xxs font-terminal text-negative">{error}</span>
+        {/* 3. Lo opcional, plegado */}
+        <button type="button" onClick={() => setMasDatos(!masDatos)} className="text-sm font-medium text-accent" aria-expanded={masDatos}>
+          {masDatos ? '− Menos datos' : '+ Más datos (cabezas ofrecidas, precios mínimo y máximo, notas)'}
+        </button>
+        {masDatos && (
+          <section className={`${TARJETA} space-y-4`}>
+            <div className="grid grid-cols-2 gap-3">
+              <label className={ETIQUETA}>
+                Cabezas ofrecidas
+                <input type="number" min={0} value={headsOffered} onChange={(e) => setHeadsOffered(e.target.value)} className={CAMPO} />
+              </label>
+              <label className={ETIQUETA}>
+                Cabezas vendidas
+                <input type="number" min={0} value={headsSold} onChange={(e) => setHeadsSold(e.target.value)} placeholder={totalCab ? String(totalCab) : ''} className={CAMPO} />
+              </label>
+              <label className={ETIQUETA}>
+                $/kg mínimo
+                <input type="number" min={0} step="any" value={minPrice} onChange={(e) => setMinPrice(e.target.value)} className={CAMPO} />
+              </label>
+              <label className={ETIQUETA}>
+                $/kg máximo
+                <input type="number" min={0} step="any" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} className={CAMPO} />
+              </label>
             </div>
-          </div>
+            <label className={ETIQUETA}>
+              $/kg promedio general
+              <input type="number" min={0} step="any" value={avgPrice} onChange={(e) => setAvgPrice(e.target.value)} placeholder={promVivo != null ? String(promVivo) : ''} className={CAMPO} />
+            </label>
+            <label className={ETIQUETA}>
+              Notas
+              <textarea rows={3} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Algo que quieras recordar de este remate" className={CAMPO} />
+            </label>
+          </section>
         )}
 
-        {/* Actions */}
-        <div className="flex items-center gap-3">
-          <button
-            type="submit"
-            disabled={submitting}
-            className="px-4 py-2 bg-accent text-black text-data font-terminal rounded-terminal hover:bg-accent/90 disabled:opacity-50"
-          >
-            {submitting ? 'Guardando...' : inicial ? 'Guardar cambios' : 'Cargar resultado'}
-          </button>
-          <button
-            type="button"
-            onClick={() => router.push('/dashboard?tab=resultados')}
-            className="px-4 py-2 border border-terminal-border text-zinc-400 text-data font-terminal rounded-terminal hover:border-zinc-500"
-          >
-            Cancelar
+        {error && <p className="rounded-xl bg-negative/10 px-4 py-3 text-sm text-negative" role="alert">{error}</p>}
+
+        <div className="flex flex-wrap items-center gap-3 pt-1">
+          <button type="submit" disabled={submitting} className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-white oscuro:text-zinc-950 hover:bg-accent-bright disabled:opacity-50">
+            {submitting ? 'Guardando…' : inicial ? 'Guardar cambios' : 'Guardar resultado'}
           </button>
           {inicial && (
-            <button
-              type="button"
-              onClick={borrar}
-              disabled={borrando}
-              className="ml-auto px-4 py-2 text-negative text-data font-terminal hover:underline disabled:opacity-50"
-            >
-              {borrando ? 'Borrando...' : 'Borrar resultado'}
+            <button type="button" onClick={borrar} disabled={borrando} className="ml-auto text-sm text-zinc-500 hover:text-negative disabled:opacity-50">
+              {borrando ? 'Borrando…' : 'Borrar resultado'}
             </button>
           )}
         </div>

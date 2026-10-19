@@ -1382,7 +1382,7 @@ function ProfileEditForm({ slug, initial, logoUrl: initialLogoUrl }: ProfileEdit
         setFeedback({ type: 'err', msg: mensajeError(data, 'Error al guardar') })
         return
       }
-      setFeedback({ type: 'ok', msg: 'Perfil actualizado. Los cambios se reflejan en tu perfil publico.' })
+      setFeedback({ type: 'ok', msg: 'Listo, ya se ve en tu perfil.' })
     } catch {
       setFeedback({ type: 'err', msg: 'Error de conexion' })
     } finally {
@@ -1414,69 +1414,69 @@ function ProfileEditForm({ slug, initial, logoUrl: initialLogoUrl }: ProfileEdit
     }
   }
 
-  const inputClass = 'w-full bg-terminal-bg border border-terminal-border text-zinc-200 text-xxs font-terminal px-2 py-1.5 rounded-terminal focus:outline-none focus:border-accent transition-colors'
+  const CAMPO = 'mt-1.5 block w-full rounded-xl border border-terminal-border bg-terminal-bg/60 px-3.5 py-2.5 text-[0.9375rem] text-ink placeholder:text-zinc-600 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20'
+  const ETIQUETA = 'block text-sm font-medium text-zinc-300'
+  const set = (k: keyof typeof form) => (e: { target: { value: string } }) => setForm((f) => ({ ...f, [k]: e.target.value }))
 
   return (
-    <div className="terminal-panel">
-      <div className="terminal-panel-header"><span className="text-zinc-200 text-label tracking-widest">EDITAR PERFIL</span></div>
-      <form onSubmit={handleSubmit} className="px-panel py-3 space-y-3">
-        <p className="text-xxs font-terminal text-zinc-500">Los datos que completes se muestran en tu perfil publico.</p>
+    <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl border border-terminal-border bg-terminal-panel p-5 sm:p-6">
+      <div>
+        <p className="text-base font-semibold text-ink">Datos de tu ficha</p>
+        <p className="mt-0.5 text-sm text-zinc-500">Lo que completes se ve en tu perfil público.</p>
+      </div>
 
-        {/* Logo upload */}
-        <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-terminal border border-terminal-border bg-terminal-bg flex items-center justify-center overflow-hidden flex-shrink-0 relative">
-            {logoUrl ? (
-              <Image src={logoUrl} alt="Logo" className="object-contain" fill unoptimized />
-            ) : (
-              <span className="text-zinc-700 text-xxs font-terminal">LOGO</span>
-            )}
-          </div>
-          <div className="flex-1 space-y-1">
-            <label className="text-xxs text-zinc-500 uppercase font-terminal block">Logo</label>
-            <label className={`inline-block px-3 py-1 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors ${logoUploading ? 'opacity-50 pointer-events-none' : 'cursor-pointer'}`}>
-              {logoUploading ? 'Subiendo...' : 'Subir imagen'}
-              <input type="file" accept="image/jpeg,image/png,image/webp,image/svg+xml" onChange={handleLogoUpload} className="hidden" disabled={logoUploading} />
-            </label>
-            <p className="text-[10px] text-zinc-700 font-terminal">JPG, PNG, WebP o SVG. Max 2 MB.</p>
-            {logoFeedback && <span className={`text-xxs font-terminal ${logoFeedback.type === 'ok' ? 'text-positive' : 'text-negative'}`}>{logoFeedback.msg}</span>}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Telefono</label>
-            <input type="text" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} className={inputClass} placeholder="+54 11 1234-5678" />
-          </div>
-          <div>
-            <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Email</label>
-            <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} className={inputClass} placeholder="contacto@ejemplo.com" />
-          </div>
-          <div>
-            <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Sitio web</label>
-            <input type="text" value={form.website} onChange={e => setForm(f => ({ ...f, website: e.target.value }))} className={inputClass} placeholder="https://ejemplo.com" />
-          </div>
-          <div>
-            <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">WhatsApp</label>
-            <input type="text" value={form.whatsapp} onChange={e => setForm(f => ({ ...f, whatsapp: e.target.value }))} className={inputClass} placeholder="+54 11 1234-5678" />
-          </div>
-          <div>
-            <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">CUIT</label>
-            <input type="text" value={form.cuit} onChange={e => setForm(f => ({ ...f, cuit: e.target.value }))} className={inputClass} placeholder="20-12345678-9" />
-          </div>
-        </div>
+      {/* Logo */}
+      <div className="flex items-center gap-4">
+        <span className="relative grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-2xl bg-zinc-100 ring-1 ring-inset ring-terminal-border">
+          {logoUrl ? <Image src={logoUrl} alt="Logo" className="object-contain p-1.5" fill unoptimized /> : <span className="text-xs text-zinc-500">Logo</span>}
+        </span>
         <div>
-          <label className="text-xxs text-zinc-500 uppercase font-terminal block mb-1">Descripcion</label>
-          <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} className={`${inputClass} resize-none`} rows={3} maxLength={1000} placeholder="Breve descripcion de la consignataria..." />
-          <span className="text-[10px] text-zinc-700 font-terminal">{form.description.length}/1000</span>
+          <label className={`inline-flex cursor-pointer items-center rounded-full bg-zinc-800/70 px-4 py-2 text-sm font-medium text-ink hover:bg-zinc-700/70 ${logoUploading ? 'pointer-events-none opacity-50' : ''}`}>
+            {logoUploading ? 'Subiendo…' : logoUrl ? 'Cambiar logo' : 'Subir logo'}
+            <input type="file" accept="image/jpeg,image/png,image/webp,image/svg+xml" onChange={handleLogoUpload} className="sr-only" disabled={logoUploading} />
+          </label>
+          <p className="mt-1.5 text-xs text-zinc-500">JPG, PNG, WebP o SVG, hasta 2 MB.</p>
+          {logoFeedback && <p className={`mt-1 text-xs ${logoFeedback.type === 'ok' ? 'text-positive' : 'text-negative'}`}>{logoFeedback.msg}</p>}
         </div>
-        <div className="flex items-center gap-3">
-          <button type="submit" disabled={saving} className="px-4 py-1.5 bg-accent/10 border border-accent/30 text-accent text-xxs font-terminal uppercase tracking-wider hover:bg-accent/20 transition-colors disabled:opacity-50">
-            {saving ? 'Guardando...' : 'Guardar cambios'}
-          </button>
-          {feedback && <span className={`text-xxs font-terminal ${feedback.type === 'ok' ? 'text-positive' : 'text-negative'}`}>{feedback.msg}</span>}
-        </div>
-      </form>
-    </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <label className={ETIQUETA}>
+          WhatsApp
+          <input type="tel" value={form.whatsapp} onChange={set('whatsapp')} placeholder="Ej. 3794 123456" className={CAMPO} />
+        </label>
+        <label className={ETIQUETA}>
+          Teléfono
+          <input type="tel" value={form.phone} onChange={set('phone')} placeholder="Ej. 3774 42-1234" className={CAMPO} />
+        </label>
+        <label className={ETIQUETA}>
+          Email de contacto
+          <input type="email" value={form.email} onChange={set('email')} placeholder="contacto@tufirma.com" className={CAMPO} />
+        </label>
+        <label className={ETIQUETA}>
+          Sitio web
+          <input value={form.website} onChange={set('website')} placeholder="tufirma.com" className={CAMPO} />
+        </label>
+      </div>
+      <label className={ETIQUETA}>
+        Quiénes son, en dos líneas
+        <textarea value={form.description} onChange={set('description')} rows={3} maxLength={1000} placeholder="Ej. Consignataria de Curuzú Cuatiá. Remates de invernada y cría en el sur de Corrientes desde 1960." className={`${CAMPO} resize-none`} />
+      </label>
+      <details className="text-sm">
+        <summary className="cursor-pointer font-medium text-accent">Más datos (CUIT)</summary>
+        <label className={`${ETIQUETA} mt-3`}>
+          CUIT
+          <input value={form.cuit} onChange={set('cuit')} placeholder="30-12345678-9" className={CAMPO} />
+        </label>
+      </details>
+
+      <div className="flex flex-wrap items-center gap-3">
+        <button type="submit" disabled={saving} className="rounded-full bg-accent px-6 py-2.5 text-sm font-semibold text-white oscuro:text-zinc-950 hover:bg-accent-bright disabled:opacity-50">
+          {saving ? 'Guardando…' : 'Guardar'}
+        </button>
+        {feedback && <span className={`text-sm ${feedback.type === 'ok' ? 'text-positive' : 'text-negative'}`}>{feedback.msg}</span>}
+      </div>
+    </form>
   )
 }
 
