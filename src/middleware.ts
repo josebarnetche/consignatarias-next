@@ -2,6 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import { checkRateLimit, getClientId, addRateLimitHeaders } from '@/lib/rate-limit'
 import { getVariantSlugRedirects, getCanonicalSlug } from '@/lib/data/consignataria-slugs'
+import { esRutaDeDueno } from '@/lib/rutas-dueno'
 
 // Build variant→canonical map once at module load (edge cold start)
 const VARIANT_TO_CANONICAL = new Map<string, string>(getVariantSlugRedirects())
@@ -99,10 +100,15 @@ export async function middleware(request: NextRequest) {
     // límite ANÓNIMO de 1 req/min: subir el flyer y guardar el remate ya daba 429, y el
     // panel se caía. Esas rutas exigen sesión y dueño en el handler; el límite está para
     // la lectura masiva anónima, que es GET. Con sesión y método de escritura no se aplica.
-    const escrituraConSesion = request.method !== 'GET' && request.method !== 'HEAD'
-      && request.cookies.getAll().some((c) => c.name.startsWith('sb-') && c.name.includes('auth-token'))
+    const conSesion = request.cookies.getAll().some((c) => c.name.startsWith('sb-') && c.name.includes('auth-token'))
+    const escrituraConSesion = request.method !== 'GET' && request.method !== 'HEAD' && conSesion
+    // Las rutas de DUEÑO (reporte PDF, pre-ofertas, remates, flyer, logo, consultas)
+    // tampoco cuentan, aunque sean GET: el reporte mensual daba 429 si antes la firma
+    // había abierto Estadísticas (18-10-2026). Cada una exige sesión y dueño en su
+    // handler, así que una cookie inventada no saca nada de acá.
+    const rutaDeDueno = conSesion && esRutaDeDueno(pathname)
 
-    if (!hasBearer && !escrituraConSesion) {
+    if (!hasBearer && !escrituraConSesion && !rutaDeDueno) {
       const clientId = getClientId(request)
       const result = checkRateLimit(clientId, 'free')
 

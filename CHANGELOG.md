@@ -7,6 +7,15 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.232.0] — 2026-10-18
+
+### Formularios simples y el reporte mensual que no bajaba
+
+- **Reporte mensual**: "Descargar reporte" devolvía `RATE_LIMIT_EXCEEDED` (límite anónimo de 1 pedido por minuto) si la firma había abierto antes Estadísticas, que consulta la misma API. Las rutas de dueño (`report`, `preofertas`, `auctions`, `flyer`, `logo`, `leads`, `videos`) con sesión ya no cuentan para ese límite, también en GET; cada handler exige sesión y dueño (`lib/rutas-dueno.ts` + test).
+- **Cargar resultado**, en tres pasos: elegir el remate de la lista (o "otro"), una línea por categoría (categoría, cabezas, peso, $/kg) y listo. Los totales (cabezas vendidas y promedio ponderado) se calculan solos y se muestran en vivo; lo opcional (ofrecidas, mínimo, máximo, notas) va plegado.
+- **Mi ficha**: logo primero, WhatsApp, teléfono, email, web y "quiénes son, en dos líneas"; el CUIT, plegado.
+- Calendario: el remate televisado de Reggi del 23/10 figuraba en Mercedes, **Buenos Aires** (así lo publica su web), con los lotes en Mercedes, Corrientes: se corrigió como remate de la firma (`reemplaza_clave`).
+
 ## [1.231.0] — 2026-10-18
 
 ### Panel de la firma v2: simple, pensado para usar, y las consultas donde está el productor
