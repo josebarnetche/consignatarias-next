@@ -1,57 +1,58 @@
-# Reporte SEO/Tráfico — 2026-W41
+# Reporte SEO/Tráfico — 2026-W42
 
-GSC: 2026-10-03 → 2026-10-09. Generado 2026-10-12.
+GSC: 2026-10-10 → 2026-10-16. Generado 2026-10-19.
 
 ## Search Console
-- Clicks: 1.301 (2.4%)
-- Impresiones: 73.944 (-1%)
-- CTR: 1.76% · Posición: 6.0
+- Clicks: 1.188 (-8.7%)
+- Impresiones: 67.727 (-8.4%)
+- CTR: 1.75% · Posición: 6.1
 
 ### Top queries
-- precio novillo arrendamiento mercado de liniers — 14 clicks, pos 6.4
-- precio novillo arrendamiento mercado de cañuelas — 13 clicks, pos 5.7
-- precio novillo para arrendamiento hoy — 13 clicks, pos 5.2
-- precio novillo para arrendamiento hoy canal rural — 12 clicks, pos 5.0
-- indice novillo arrendamiento mercado de cañuelas — 7 clicks, pos 5.2
-- precio novillo arrendamiento — 6 clicks, pos 7.6
-- precio novillo arrendamiento mensual — 6 clicks, pos 5.1
-- indice de arrendamiento mercado de cañuelas — 5 clicks, pos 5.5
-- indice novillo arrendamiento — 5 clicks, pos 7.1
-- precio novillo arrendamiento mercado de liniers hoy — 5 clicks, pos 5.4
-- mercado de liniers arrendamiento — 4 clicks, pos 5.2
-- precio del kg de novillo para arrendamiento diario la nacion — 4 clicks, pos 6.1
+- rosgan catálogo — 18 clicks, pos 4.7
+- indice novillo arrendamiento mercado de cañuelas — 10 clicks, pos 5.2
+- indice novillo arrendamiento — 9 clicks, pos 6.9
+- precio novillo arrendamiento mercado de cañuelas — 8 clicks, pos 6.3
+- precio novillo para arrendamiento hoy canal rural — 8 clicks, pos 4.4
+- precio novillo arrendamiento mercado de liniers — 7 clicks, pos 6.0
+- novillo arrendamiento — 6 clicks, pos 6.1
+- rosgan catalogo — 6 clicks, pos 4.9
+- sivero y cia — 6 clicks, pos 4.9
+- agroindustrias quilmes — 4 clicks, pos 1.9
+- indice novillo arrendamiento mensual — 4 clicks, pos 8.5
+- precio novillo arrendamiento — 4 clicks, pos 7.9
 
 ### Top páginas
-- /mercado/arrendamiento — 218 clicks
-- /mercado/arrendamiento/liniers — 67 clicks
-- /mercado/arrendamiento/canuelas — 33 clicks
-- /cuanto-cuesta-el-flete-de-hacienda — 30 clicks
-- /frigorificos — 18 clicks
-- /mercado/arrendamiento/mensual — 17 clicks
-- /cuanto-pesa-una-media-res — 16 clicks
+- /mercado/arrendamiento — 104 clicks
+- /mercado/arrendamiento/canuelas — 48 clicks
+- /consignatarias/rosgan — 46 clicks
+- /mercado/arrendamiento/liniers — 44 clicks
+- /frigorificos — 24 clicks
+- /cuanto-cuesta-el-flete-de-hacienda — 22 clicks
+- /frigorificos/santa-fe — 17 clicks
 - /cuanto-vale-una-vaca — 16 clicks
-- /consignatarias — 14 clicks
-- /como-se-calcula-el-canon-de-arrendamiento — 13 clicks
+- /frigorificos/buenos-aires — 14 clicks
+- /mercado/toros — 14 clicks
 
 ## Tráfico (últimos 7 días)
-- Visitantes: 1.759 · Desde IA: 13 · Vistas de perfil: 175
+- Visitantes: 2.149 · Desde IA: 19 · Vistas de perfil: 268
 
 ### Motores de IA
-- chatgpt: 11
+- chatgpt: 14
+- gemini: 3
 - copilot: 1
-- gemini: 1
+- perplexity: 1
 
 ### Perfiles más visitados
-- rosgan — 29
-- lanusse-santillan — 18
-- reggi — 14
-- saenz-valiente-bullrich — 9
-- ganaderos-de-ceres — 6
-- ildarraz-hnos — 6
+- rosgan — 50
+- sivero — 23
+- reggi — 10
+- travaglia — 9
+- colombo-y-magliano — 8
+- ofarrell — 8
+- vicar-ganadera — 8
+- saenz-valiente-bullrich — 8
+- etchevehere-rural — 7
+- hasenkamp — 7
 - lalor — 6
-- cooperativa-guillermo-lehmann — 5
-- etchevehere-rural — 5
-- hasenkamp — 5
-- ofarrell — 5
-- pedro-noel-irey — 5
+- ferias-rauch — 6
 
