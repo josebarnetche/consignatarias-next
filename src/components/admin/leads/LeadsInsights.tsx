@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { familyLabel, intentLabel, nf, ars, origenLabel, sourceFamily, provinciaLead, type Lead } from './model'
+import { familyLabel, intentLabel, nf, ars, origenDe, sourceFamily, provinciaLead, type Lead } from './model'
 
 /**
  * Paneles secundarios de la bandeja, plegados por defecto: de dónde vienen los
@@ -52,7 +52,7 @@ export function PorOrigen({
       const f = sourceFamily(l.source)
       const e = map.get(f) ?? { n: 0, detalle: new Map() }
       e.n++
-      const d = origenLabel(l.source)
+      const d = origenDe(l)
       e.detalle.set(d, (e.detalle.get(d) || 0) + 1)
       map.set(f, e)
     }

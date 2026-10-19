@@ -83,7 +83,17 @@ export async function POST(req: NextRequest) {
     let sent = 0
     const errors: string[] = []
 
-    for (const sub of toSend) {
+    // Tope de tiempo propio, por debajo del maxDuration (300s en vercel.json): con El
+    // Corredor la tanda pasa de 100 mails a ~1s c/u. Si se corta acá, los que faltan
+    // quedan para la próxima corrida (outreach_log evita duplicados); si lo mata
+    // Vercel, el run queda en error y sin registrar campañas.
+    const inicio = Date.now()
+    let cortadoPorTiempo = 0
+    for (const [i, sub] of toSend.entries()) {
+      if (Date.now() - inicio > 240_000) {
+        cortadoPorTiempo = toSend.length - i
+        break
+      }
       try {
         const res = await sendWeeklyNewsletter(sub.email, featuredRemates, upcomingAuctions.length, weekRange)
         if (res.success) {
@@ -122,10 +132,11 @@ export async function POST(req: NextRequest) {
     }
 
     const body = {
-      message: `Newsletter enviado: ${sent} (ya lo tenían ${recibieron.size}, quedan ${skipped}) de ${subscribers.length}`,
+      message: `Newsletter enviado: ${sent} (ya lo tenían ${recibieron.size}, quedan ${skipped + cortadoPorTiempo}) de ${subscribers.length}`,
       sent,
       total: subscribers.length,
-      skipped,
+      skipped: skipped + cortadoPorTiempo,
+      cortadoPorTiempo,
       weekRange,
       featuredCount: featuredRemates.length,
       proCount,
@@ -135,7 +146,7 @@ export async function POST(req: NextRequest) {
     return {
       status: errors.length > 0 && sent === 0 ? 'error' : 'ok',
       message: body.message,
-      metadata: { sent, total: subscribers.length, skipped, errors: errors.length },
+      metadata: { sent, total: subscribers.length, skipped: skipped + cortadoPorTiempo, cortadoPorTiempo, errors: errors.length },
     }
   })
 

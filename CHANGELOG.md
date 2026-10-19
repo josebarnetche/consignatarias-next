@@ -7,6 +7,47 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.235.0] — 2026-10-19
+
+### El agente de operaciones: los leads de hacienda se trabajan solos hasta el cierre
+
+José: «necesito que puedas cerrar operaciones por tu cuenta, no puedo supervisarlas». El digest
+diario decía qué lead llevaba más días esperando, pero nadie lo trabajaba. Ahora lo hace un agente
+(`src/lib/agente/`) que corre cada 15 minutos (`.github/workflows/agente.yml` → `/api/cron/agente`)
+con su propia casilla, `agente@consignatarias.com`.
+
+- **Qué hace:** toma los leads de vender/comprar, descarta los que no son hacienda bovina (spam,
+  proveedores, consultas académicas, cabras), pide al productor los datos que faltan, ofrece la
+  hacienda en tandas de 3 a leads que compran, frigoríficos de la base relevada y firmas PRO,
+  presenta a las partes cuando una acepta y hace seguimiento hasta que informan el cierre.
+- **Reglas de José:** comisión del 1% del bruto a cargo de quien recibe el contacto; el contacto
+  del productor se entrega SOLO después de un "ACEPTO" por escrito (queda guardado como
+  constancia en `agente_ofertas.aceptacion`); el agente nunca acuerda precio ni firma.
+- **Límites:** máximo 20 contactos nuevos por día, en días hábiles de 8 a 19; a nadie se le
+  escribe dos veces el mismo día; un "BAJA" se respeta para siempre (`agente_bajas`). Un
+  frigorífico solo recibe hacienda de faena, nunca si SENASA dice que no faena bovinos o la base
+  lo marca como porcino, caprino o cerrado. Las contrapartes se buscan en la misma provincia y
+  las limítrofes.
+- **El modelo solo lee** (AI Gateway, `anthropic/claude-sonnet-5.5`): clasifica las respuestas
+  y saca datos de texto libre. Los correos salen de plantillas fijas, y un guardia frena
+  cualquier texto a una contraparte que lleve el mail, el teléfono o el apellido del productor.
+- **A José le escribe solo** cuando hay un cierre (hay que facturar la comisión) o algo que no
+  debe resolver solo (enojo, tema legal, negociar la comisión, un correo que no entiende).
+- Tablas nuevas `agente_casos`, `agente_ofertas`, `agente_mensajes`, `agente_bajas`; todo
+  también queda en la bitácora del lead (`/admin/leads`). El digest diario ya no lista los
+  leads que trabaja el agente.
+- **Encendido:** sin `AGENTE_IMAP_PASSWORD` corre en seco y no manda nada. La casilla se crea
+  con `scripts/agente/crear-casilla.sh` (genera la clave, la guarda en el Llavero y en Vercel
+  sin mostrarla).
+
+## [1.234.0] — 2026-10-19
+
+### Leads: a qué frigorífico le escribió cada productor
+
+- **/admin/leads** mostraba el origen como clave cruda (`frigorifico:30718669592:otra-consulta`) y no había forma de saber a qué planta le quería vender cada productor. Ahora cada lead dice "Escribió en la ficha de Frigorífico Ovechas (Chaco)", con enlace a la ficha. Campos y arrendamiento también se leen en palabras (`lib/leads/origen-admin.ts` + test, resuelto en el server contra el padrón de 1.100 plantas).
+- **Por origen** agrupa por tipo (Frigorífico, Campos, Arrendamiento, Herramientas) en vez de 33 claves sueltas. Tocar un grupo filtra la lista.
+- **Corrección**: las consultas de "otra consulta" (`frigorifico:<cuit>:otra-consulta`) buscaban la planta con el sufijo pegado al CUIT y nunca se le avisaban. Ahora el aviso sale igual que en las demás consultas, cuando la planta tiene un mail donde recibirlo.
+
 ## [1.233.0] — 2026-10-19
 
 ### Cargar un remate: se completa solo
@@ -265,6 +306,48 @@ deroga la Res. 368/2011) y con la Disp. DNSA 27/2026 (B.O. 15/10/2026), que fija
 - El MCP (`animal_health_plan`) toma el texto nuevo de la ficha sin cambios de tool.
 
 ---
+
+## [Sin versión] — 2026-10-04 → 2026-10-16
+
+### Lo que entró a main sin entrada propia (reconstruido del historial el 19-10-2026)
+
+Entre la 1.223.0 y la 1.224.0 se mergearon ~50 commits directo a main sin subir la versión. Se documentan acá, agrupados, para que el CHANGELOG vuelva a ser el historial completo. El detalle de cada cambio está en el mensaje de su commit.
+
+**Lotes de hacienda (`/lotes`)**
+- Vidriera con los lotes que deCampoaCampo publica en sus dos páginas públicas (JSON-LD `Product`, catálogo acumulativo, sin recorrer el rango de sku) y una referencia propia por lote: la mediana del VR por categoría y peso (`A_CATEGORIA_VR`; vaca preñada → VACA, terneros sin referencia a propósito).
+- Oferta por lote con + y − desde la referencia; las fotos reales se sirven desde el aviso (apagables con `MOSTRAR_FOTOS`), con el glifo de marca de respaldo.
+- La vidriera arranca con la oferta propia: `producer_leads` de venta anonimizados (`scripts/lotes-propios.mjs`, sin nombre, contacto ni precio pedido), con un piso de 10 cabezas.
+
+**Leads y frigoríficos**
+- Calificación comercial (menos de 40 cabezas = chico, 40+ se trabaja, 300+ pro; sin cabezas = sin datos, se pregunta) y digest diario de lo que quedó sin responder.
+- CUIT (con dígito verificador) y razón social obligatorios para ofrecer hacienda; la consulta a la planta queda separada de la operación (`contactar_frigorifico`).
+- Contacto relevado de las plantas en `email_ruteo` / `telefono_ruteo` / `notas_internas`, nunca en los campos que se publican. Se suman los contactos declarados en SENASA APS2 (104 de 132 plantas).
+- Estado de habilitación por rubro (APS2), con reintento por razón social cuando el número no identifica: 60 → 132 plantas verificadas y cero cruces errados. Las plantas que no operan o no faenan bovinos no muestran el formulario de venta ni reciben derivaciones (Vicentin Faenas, cerrada desde 2017).
+
+**Pagos y mails**
+- El webhook de Rebill rechazaba todas las firmas desde que existe: nadie que pagó recibió lo comprado. Ahora se prueban los esquemas de firma conocidos y corre una **reconciliación contra la API de Rebill cada 10 minutos**.
+- `resend.emails.send()` no lanza cuando la API rechaza: 38 de 45 envíos ignoraban el `error`, incluidos los de entrega de compras. Corregido.
+- Las respuestas a `hola@consignatarias.com` (sin buzón) ahora van a `agro@memola.com.ar` (`REPLY_TO`).
+
+**El Corredor**
+- Generador nuevo y reemplazo de la edición de septiembre: el indicador de hembras sumaba 2 de las 8 categorías del MAG (32 % contra 60,1 % real) y recomendaba "retener vientres" en plena liquidación. El pipeline mensual ya publica el generador nuevo y no sigue si el PDF falla.
+- Página de lo que se pagó fuera de Cañuelas (SIO Carnes, agregado oficial, no microdato).
+- **El Corredor Semanal** pasa a US$ 33/mes, anclado en dólares y cobrado en pesos al blue (ARS 51.000/mes; el anual de US$ 340 todavía no tiene camino de cobro propio).
+
+**MCP (v1.6 → v1.7)**
+- v1.6: `price_seasonality` (estacionalidad del INMAG en dólares) y `farmland_yield` (renta del campo, también agrícola). v1.7: `international_price_gap` (novillo contra EE. UU., Uruguay y Australia en US$/kg vivo).
+- `consignatarias_band`: la Banda Consignatarias (P10–P90 de la semana) con nombre propio.
+- Nombres de tools en inglés con descripciones bilingües, y los nombres viejos en castellano como alias.
+- `serverInfo` con título y `websiteUrl`.
+- Enumeración del directorio abierta: quien barría era MCP-Bench. La consulta por provincia sola ya es válida.
+- `farmland_yield` usaba la producción y no el canon: el rendimiento salía unas 3 veces inflado.
+- **Citabilidad**: cada respuesta cierra con la cita ya redactada, y el Dataset de `/mercado/inmag` lleva `citation`, `creditText` y `usageInfo`.
+
+**Rendimiento y mantenimiento**
+- `/remates` deja de mandar al navegador los remates pasados (First Load JS de 250 a 197 kB). Cuatro arreglos del informe de PageSpeed: badge PRO compuesto en GPU y `browserslist`, entre otros.
+- Next 15.5.24 → 15.5.27; overrides de pnpm para dependencias transitivas vulnerables (quedan 5 sin parche disponible).
+- Vercel construye menos: no construye por `reports/**` ni `.github/**`, el refresco se dispara una vez por día y no hay previews de dependabot.
+- El link "Ver tu perfil" en la aprobación de reclamos de frigoríficos llevaba a un 404.
 
 ## [1.223.0] — 2026-10-03
 

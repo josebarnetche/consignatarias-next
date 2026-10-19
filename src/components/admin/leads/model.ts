@@ -8,6 +8,7 @@
 
 import type { BadgeTone } from '@/components/ui/Badge'
 import { provinciaNombre } from '@/lib/ui/tokens'
+import type { OrigenLead } from '@/lib/leads/origen-admin'
 
 export interface Lead {
   id: number
@@ -24,6 +25,8 @@ export interface Lead {
   email: string | null
   message: string | null
   source: string | null
+  /** `source` en palabras, resuelto por la API (la planta con nombre, no el CUIT). */
+  origen?: OrigenLead
   estimated_value_ars: number | null
   fee_pct: number
   fee_ars: number | null
@@ -197,6 +200,11 @@ export function sourceDetail(source: string | null): string {
     .filter((p) => p && !/^\d+$/.test(p) && !/^[0-9a-f-]{20,}$/i.test(p))
     .map((p) => p.replace(/[-_]+/g, ' '))
     .join(' · ')
+}
+
+/** Origen para leer: el que resolvió la API si vino; si no, el derivado del `source`. */
+export function origenDe(l: Pick<Lead, 'source' | 'origen'>): string {
+  return l.origen && l.origen.grupo !== 'Sin origen' ? l.origen.etiqueta : origenLabel(l.source)
 }
 
 export function origenLabel(source: string | null): string {

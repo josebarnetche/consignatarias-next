@@ -180,7 +180,8 @@ export async function POST(req: NextRequest) {
     // productor GATEADO. Para avanzar responde el mail → cae en agro@ y conectamos
     // (queda la comisión). Menos intervención manual. No bloquea.
     if (d.source.startsWith('frigorifico:')) {
-      const cuit = d.source.slice('frigorifico:'.length)
+      // `frigorifico:<cuit>:otra-consulta` también es de la planta: el sufijo no es parte del CUIT.
+      const cuit = d.source.split(':')[1] ?? ''
       getFrigorificoProfile(cuit)
         .then((prof) => {
           // Orden: el mail del dueño que reclamó la ficha, después el que la planta

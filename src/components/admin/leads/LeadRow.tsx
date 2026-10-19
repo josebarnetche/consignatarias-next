@@ -4,7 +4,7 @@ import { forwardRef } from 'react'
 import { X } from 'lucide-react'
 import Badge from '@/components/ui/Badge'
 import { computeSpread } from '@/lib/leads/spread'
-import { STATUS_META, arsCorto, ars, fmtFecha, hace, intentLabel, origenLabel, pareceTest, provinciaLead, queBits, type Lead } from './model'
+import { STATUS_META, arsCorto, ars, fmtFecha, hace, intentLabel, origenDe, pareceTest, provinciaLead, queBits, type Lead } from './model'
 
 /**
  * Una fila de la bandeja: cuándo, qué quiere, quién, qué ofrece, de dónde vino y
@@ -64,7 +64,7 @@ const LeadRow = forwardRef<
               {saving && <span className="text-xxs text-zinc-500">guardando…</span>}
             </span>
             <span className="mt-0.5 block truncate text-xxs text-zinc-500">
-              {[bits.join(' · ') || null, prov || null, origenLabel(l.source)].filter(Boolean).join('  ·  ')}
+              {[bits.join(' · ') || null, prov || null, origenDe(l)].filter(Boolean).join('  ·  ')}
               {sp && (
                 <span
                   className={`ml-2 tabular-nums ${sp.spreadPct > 3 ? 'text-warning' : 'text-positive'}`}

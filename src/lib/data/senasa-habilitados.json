@@ -1,13 +1,13 @@
 {
-  "scrapedAt": "2026-10-12T16:49:06.380Z",
+  "scrapedAt": "2026-10-19T14:45:06.400Z",
   "source": "https://aps2.senasa.gov.ar/registros/faces/publico/establecimientos/tc_frigorificospublico.jsp",
   "ciclos": [
     "CICLO I - MAT.FRIG.",
     "CICLO II - ELABORADOR",
     "CICLO III - DADOR DE FRIO"
   ],
-  "totalRowsScraped": 1004,
-  "distinctCuits": 866,
+  "totalRowsScraped": 1006,
+  "distinctCuits": 868,
   "unparsableCuits": 0,
   "byCuit": {
     "30707283250": {
@@ -157,8 +157,8 @@
         "II - 5. SOLO ELABORACIÓN MORCILLAS",
         "XXX -  DEPOSITO PRODUCTOS CARNEOS",
         "LI D - 7. ELABORACION DE MILANESAS ENFRIADAS Y CONGELADAS DE PROPIA FAENA",
-        "LI E - 10. MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS COCIDAS",
-        "LI H - 24. ELABORACION DE HARINA DE VISCERAS DE CERDO Y ACEITES DE CERDO"
+        "LI H - 24. ELABORACION DE HARINA DE VISCERAS DE CERDO Y ACEITES DE CERDO",
+        "LI E - 10. MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS COCIDAS"
       ],
       "ciclos": [
         "CICLO I - MAT.FRIG."
@@ -1130,9 +1130,13 @@
         "I C - CABEZA DE OVINO FAENADO",
         "I G - CABEZA DE CABRITO FAENADO",
         "XXVIII - DEPOSITO / BARRACA P/CUEROS",
+        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
         "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
         "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
-        "I G - 3. FAENA DE CORDERITOS"
+        "I G - 3. FAENA DE CORDERITOS",
+        "LI A - 10. MATADERO Y FRIGORIFICO C/FAENA, C/ELABORACION DE CARNE MECANICAMENTE SEPARADA",
+        "XIX - 25. MATERIA PRIMA P/ELAB. ALIMENTOS P/MASCOTAS",
+        "LI H - 20. MATERIA PRIMA P/ELAB. ALIMENTOS P/MASCOTAS"
       ],
       "ciclos": [
         "CICLO I - MAT.FRIG."
@@ -1710,10 +1714,10 @@
         "I G - 3. FAENA DE CORDERITOS",
         "II - 11. ELABORACIÓN DE CHACINADOS CRUDOS, SECOS, COCIDOS Y HAMBURGUESAS",
         "XII - 2. DESPOSTADA BOVINA Y PORCINA",
-        "I C - 1. CABEZA DE CABRA ADULTA FAENADA",
         "II - 19. ELABORACION DE MILANESAS ENFRIADAS Y CONGELADAS",
         "II - 23. ELABORACION DE CHACINADOS COCIDOS Y SALAZONES COCIDAS",
-        "XII - 15. ELABORACION DE CARNE PICADA"
+        "XII - 15. ELABORACION DE CARNE PICADA",
+        "I C - 1. CABEZA DE CABRA ADULTA FAENADA"
       ],
       "ciclos": [
         "CICLO I - MAT.FRIG."
@@ -4290,7 +4294,6 @@
       "localidad": "ROSARIO",
       "nroOficial": "4588",
       "actividades": [
-        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
         "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC."
       ],
       "ciclos": [
@@ -4479,7 +4482,7 @@
     "30710189052": {
       "cuit": "30710189052",
       "tipo": "CICLO II - ELABORADOR",
-      "propietario": "ALDO CALLIERI  S.A.",
+      "propietario": "ALDO CALLIERI S.A.S.",
       "nombre": "ALDO CALLIERI S.A.",
       "provincia": "RIO NEGRO",
       "partido": "GENERAL ROCA",
@@ -4855,8 +4858,13 @@
       "provincia": "BUENOS AIRES",
       "partido": "FLORENCIO VARELA",
       "localidad": "FLORENCIO VARELA",
-      "nroOficial": "3096",
+      "nroOficial": "366",
       "actividades": [
+        "II - FABRICA DE CHACINADOS Y AFINES",
+        "IX - CARNES SALADAS Y/O CURADAS",
+        "XII - CARNES EN TROZOS O CORTES",
+        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+        "LXIV - IMPORTACION DE CARNE PORCINA",
         "XXX -  DEPOSITO PRODUCTOS CARNEOS"
       ],
       "ciclos": [
@@ -4881,6 +4889,23 @@
         "XII - 2. DESPOSTADA BOVINA Y PORCINA",
         "II - 19. ELABORACION DE MILANESAS ENFRIADAS Y CONGELADAS",
         "II - 20. ELABORACION DE HAMBURGUESAS DE CARNE DE AVES, BOVINA Y PORCINA"
+      ],
+      "ciclos": [
+        "CICLO II - ELABORADOR"
+      ]
+    },
+    "30718755650": {
+      "cuit": "30718755650",
+      "tipo": "CICLO II - ELABORADOR",
+      "propietario": "BOSTON S. R. L.",
+      "nombre": "BOSTON  S.R.L.",
+      "provincia": "SANTA FE",
+      "partido": "LA CAPITAL",
+      "localidad": "SANTA FE",
+      "nroOficial": "1249",
+      "actividades": [
+        "II - FABRICA DE CHACINADOS Y AFINES",
+        "XII - CARNES EN TROZOS O CORTES"
       ],
       "ciclos": [
         "CICLO II - ELABORADOR"
@@ -5661,7 +5686,9 @@
       "localidad": "NOGOYA",
       "nroOficial": "5620",
       "actividades": [
-        "XII - 4. DESPOSTADA BOVINA"
+        "XII - 4. DESPOSTADA BOVINA",
+        "XII - 3. DESPOSTADA PORCINA",
+        "XII - 15. ELABORACION DE CARNE PICADA"
       ],
       "ciclos": [
         "CICLO II - ELABORADOR"
@@ -9193,23 +9220,6 @@
         "CICLO II - ELABORADOR"
       ]
     },
-    "30714404365": {
-      "cuit": "30714404365",
-      "tipo": "CICLO II - ELABORADOR",
-      "propietario": "JOSE LUIS PICCIONI S.R.L.",
-      "nombre": "JOSE LUIS PICCIONI S.R.L.",
-      "provincia": "SANTA FE",
-      "partido": "LA CAPITAL",
-      "localidad": "SANTA FE",
-      "nroOficial": "1249",
-      "actividades": [
-        "II - FABRICA DE CHACINADOS Y AFINES",
-        "XII - CARNES EN TROZOS O CORTES"
-      ],
-      "ciclos": [
-        "CICLO II - ELABORADOR"
-      ]
-    },
     "33502593469": {
       "cuit": "33502593469",
       "tipo": "CICLO II - ELABORADOR",
@@ -9536,6 +9546,22 @@
       "nroOficial": "3353",
       "actividades": [
         "II - FABRICA DE CHACINADOS Y AFINES"
+      ],
+      "ciclos": [
+        "CICLO II - ELABORADOR"
+      ]
+    },
+    "30715508946": {
+      "cuit": "30715508946",
+      "tipo": "CICLO II - ELABORADOR",
+      "propietario": "LEANDRO RAUL FUSTER Y MIRTA SUSANA ANAYA SS",
+      "nombre": "LEANDRO RAUL FUSTER Y MIRTA SUSANA ANAYA SS",
+      "provincia": "BUENOS AIRES",
+      "partido": "AVELLANEDA",
+      "localidad": "AVELLANEDA",
+      "nroOficial": "5537",
+      "actividades": [
+        "XXVIII - 3. DEPÓSITO/BARRACA DE CUERO/SALADERO"
       ],
       "ciclos": [
         "CICLO II - ELABORADOR"
@@ -14267,6 +14293,24 @@
         "CICLO III - DADOR DE FRIO"
       ]
     },
+    "30709254584": {
+      "cuit": "30709254584",
+      "tipo": "CICLO III - DADOR DE FRIO",
+      "propietario": "EL PORTUGUES LOGISTICA Y DISTRIBUCION SA",
+      "nombre": "EL PORTUGUES LOGISTICA Y DISTRIBUCION SA",
+      "provincia": "BUENOS AIRES",
+      "partido": "MORENO",
+      "localidad": "MORENO",
+      "nroOficial": "5490",
+      "actividades": [
+        "L - LOCAL HABILITADO P/DEPOSITO CONSERVA DE PESCADO",
+        "LXIII - IMPORTACION PRODUCTOS DE LA PESCA EN CONSERVAS",
+        "XXX -  DEPOSITO PRODUCTOS CARNEOS"
+      ],
+      "ciclos": [
+        "CICLO III - DADOR DE FRIO"
+      ]
+    },
     "30716849968": {
       "cuit": "30716849968",
       "tipo": "CICLO III - DADOR DE FRIO",
@@ -15531,12 +15575,14 @@
       "tipo": "CICLO III - DADOR DE FRIO",
       "propietario": "MATTINA HNOS S.A.C.I.A.N.",
       "nombre": "MATTINA HERMANOS SOCIEDAD ANONIMA COMERCIAL",
-      "provincia": "SANTA CRUZ",
-      "partido": "DESEADO",
-      "localidad": "PUERTO DESEADO",
-      "nroOficial": "4041",
+      "provincia": "CIUDAD AUTONOMA DE BUENOS AIRES",
+      "partido": "CIUDAD AUTONOMA DE BUENOS AIRES",
+      "localidad": "ARAOZ DE LAMADRID 101/1200",
+      "nroOficial": "4691",
       "actividades": [
-        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC."
+        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+        "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
+        "L - LOCAL HABILITADO P/DEPOSITO CONSERVA DE PESCADO"
       ],
       "ciclos": [
         "CICLO III - DADOR DE FRIO"
@@ -15658,7 +15704,7 @@
       "provincia": "SANTA FE",
       "partido": "ROSARIO",
       "localidad": "ROSARIO",
-      "nroOficial": "4952",
+      "nroOficial": "5591",
       "actividades": [
         "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC."
       ],

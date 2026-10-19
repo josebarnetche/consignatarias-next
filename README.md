@@ -5,8 +5,8 @@
 El precio de referencia del ganado argentino, hecho dato: la **familia de índices** (INMAG diario
 desde 2015, en pesos y en dólares, panel de categorías, arrendamiento, spread maíz-novillo e
 **Índice de Liquidación** = % hembras), el **directorio**
-de 107 consignatarias en 12 provincias y 1.110 frigoríficos cruzados contra SENASA, el **calendario**
-de remates, una **API pública** y un **servidor MCP** para agentes IA (registry oficial:
+de 107 consignatarias en 12 provincias y 1.119 frigoríficos cruzados contra SENASA (habilitación por
+rubro del registro APS2), el **calendario** de remates, la vidriera de **lotes de hacienda**, una **API pública** y un **servidor MCP** para agentes IA (registry oficial:
 `ar.com.consignatarias/cattle-market`). Datos abiertos y citables; **gratis para el productor**;
 PRO Consignataria para operadores y Enterprise API/MCP para integradores.
 Live: **[www.consignatarias.com.ar](https://www.consignatarias.com.ar)**.
@@ -91,20 +91,34 @@ Lo que desbloqueás reclamando el perfil:
 
 ---
 
+### El panel de la firma (`/dashboard`)
+
+Pensado para una firma que no quiere llenar formularios (v1.231 → v1.233). Siete secciones por
+utilidad: **Inicio** (qué hacer hoy, tu alcance, próximos remates, últimas consultas), **Remates**,
+**Consultas**, **Resultados**, **Estadísticas**, **Mi ficha** y **Mi plan**.
+
+- **Cargar un remate se completa solo**: los remates que el sitio ya encontró en tu web se eligen con
+  un toque; tus lugares habituales completan lugar y provincia; el nombre es opcional; antes de
+  guardar ves cuántos días faltan y en qué mail semanal sale, y a cuántos productores le llega.
+- **Compartir**: tarjeta 1080×1350 y QR generados en el navegador, listos para WhatsApp, estados o
+  imprimir, con UTM para medir lo que trae cada uno.
+- **Pre-ofertas por remate**: se abren desde el remate y cada lote se carga en una línea.
+- **Consultas** como lista, con WhatsApp y llamada a un toque. El productor también consulta desde
+  la ficha de cada remate.
+- **Resultados** en tres pasos (remate, una línea por categoría, listo), con los totales calculados.
+- Solo dato real: una cuenta nueva arranca en cero.
+
 ### PRO Consignataria
 
-La versión paga para consignatarias que quieren capturar más demanda (precio vigente en
-[`/planes`](https://www.consignatarias.com.ar/planes)). Incluye:
+La versión paga (**ARS 45.000/mes**, vigente en [`/planes`](https://www.consignatarias.com.ar/planes)):
 
-- **Badge dorado** y tratamiento visual destacado en cada remate listado
-- **Listing destacado** en el directorio (perfil expandido con logo grande, alianza visual)
-- **Leads directos**: cuando un productor deja una consulta en tu perfil, te llega el contacto al toque por email (PRO ve el contacto completo; sin PRO, enmascarado con opción de activar). Prioridad en el ruteo de leads de tu zona
-- **Promoción por email** de cada remate publicado a +500 productores suscriptos
-- **Analytics**: cuántas visitas, qué provincias, qué tipo de productor mira tu perfil
-- **Landing personalizada** con tu branding (`/go/<tu-slug>`)
-- **QR para catálogos** que linkean al perfil
-- **Calendario sincronizable** (.ics) para tus clientes
-- **Prioridad de soporte**: cualquier cambio editorial se hace en 24h
+- **Badge PRO** y tratamiento destacado en cada remate listado y en el directorio
+- **Contacto completo de cada consulta** (sin PRO se ve la consulta con el contacto enmascarado)
+- **Primero en el mail semanal**: tus remates encabezan el envío de los lunes, y el más completo de
+  la semana sale como **"Destacado"**
+- **Estadísticas**: visitas mes contra mes, de dónde vienen, qué buscan en Google sobre tu firma
+  (Search Console por ficha) y tu precio contra la banda del mercado
+- **Reporte mensual en PDF** y landing propia (`/go/<tu-slug>`)
 
 Activación en [`/planes`](https://www.consignatarias.com.ar/planes). Pago en pesos vía Rebill. Sin contrato anual.
 
@@ -140,7 +154,8 @@ Si lo que querés es comprar o vender hacienda:
 - [`/calendario-exportar`](https://www.consignatarias.com.ar/calendario-exportar) · exportá a tu calendario (`.ics`) los remates de **varias localidades a la vez** (checkboxes por provincia)
 - [`/remates`](https://www.consignatarias.com.ar/remates) · el calendario completo, agrupado por día: hora, firma, lugar, tipo y cabezas, con botones para ver la transmisión, el catálogo o compartir por WhatsApp
 - [`/consignatarias`](https://www.consignatarias.com.ar/consignatarias) · el directorio: buscador por nombre o provincia, y cada firma con sus provincias y cuántos remates tiene por delante
-- [`/frigorificos`](https://www.consignatarias.com.ar/frigorificos) · 1.110 plantas con badge SENASA · vigente / sin verificación
+- [`/frigorificos`](https://www.consignatarias.com.ar/frigorificos) · 1.119 plantas con su habilitación SENASA por rubro (las que no faenan bovinos no reciben ofertas de hacienda)
+- [`/lotes`](https://www.consignatarias.com.ar/lotes) · lotes de hacienda publicados, con la referencia de lo que se pagó por esa categoría y peso, y oferta por lote
 
 **Pensado para el que entra desde el celular.** El sitio abre en un **tema claro** (blanco, letra
 legible, botones grandes) y tiene un botón para pasar al **terminal oscuro** de siempre; la elección
@@ -184,9 +199,12 @@ Planes:
 Facturación mensual en ARS vía Rebill (anual –15%; exterior: transferencia o USDT al equivalente).
 
 También como **servidor MCP** para agentes IA: endpoint `https://www.consignatarias.com.ar/api/mcp`
-(**24 tools**; listado en el registry oficial como `ar.com.consignatarias/cattle-market` v1.4.0, y en
-Glama — quality A — y Forge). Demo animada con los datos del día en [`/mcp`](https://www.consignatarias.com.ar/mcp).
-Cubre mercado (INMAG, precios por categoría, macro, **Índice de Liquidación** = % hembras), remates,
+(**28 tools** con nombres en inglés y descripciones bilingües, los nombres viejos siguen como alias;
+registry oficial `ar.com.consignatarias/cattle-market` **v1.7.0**, Glama, Smithery y Forge). Gratis y
+sin cupo para consultar; se cobra la descarga masiva (x402 / Enterprise) y la redistribución.
+Cada respuesta cierra con la cita ya redactada. Demo animada con los datos del día en [`/mcp`](https://www.consignatarias.com.ar/mcp).
+Cubre mercado (INMAG, precios por categoría, macro, **Índice de Liquidación** = % hembras, **Banda
+Consignatarias**, estacionalidad, brecha contra EE. UU./Uruguay/Australia, renta del campo), remates,
 directorio de consignatarias y frigoríficos, **valuaciones** (hacienda, arrendamiento y **valor de la
 hectárea por provincia y zona**), **sanidad SENASA** (calendario de vacunación, requisitos de movimiento,
 RENSPA, DT-e) y **Buenas Prácticas Ganaderas** — todo con la fuente citada.
@@ -250,4 +268,4 @@ Operadores comerciales que construyen infraestructura propietaria — no agencia
 
 ---
 
-v1.221.0 · 2026-10-03 · [www.consignatarias.com.ar](https://www.consignatarias.com.ar) · [CHANGELOG](CHANGELOG.md) · API contract v1.0.0
+v1.234.0 · 2026-10-19 · [www.consignatarias.com.ar](https://www.consignatarias.com.ar) · [CHANGELOG](CHANGELOG.md) · API contract v1.0.0

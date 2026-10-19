@@ -13,7 +13,7 @@ import {
   ars,
   fmtFecha,
   intentLabel,
-  origenLabel,
+  origenDe,
   pareceTest,
   queBits,
   ubicacion,
@@ -86,7 +86,14 @@ export default function LeadDetail({
           </div>
           <h2 className="mt-1.5 text-lg font-terminal leading-tight text-ink">{l.name}</h2>
           <p className="text-xxs text-zinc-500 tabular-nums">
-            #{l.id} · {fmtFecha(l.created_at)} · {origenLabel(l.source)}
+            #{l.id} · {fmtFecha(l.created_at)} ·{' '}
+            {l.origen?.href ? (
+              <a href={l.origen.href} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">
+                {origenDe(l)}
+              </a>
+            ) : (
+              origenDe(l)
+            )}
           </p>
         </div>
         <button type="button" onClick={onClose} className="p-1 text-zinc-500 hover:text-ink" aria-label="Cerrar detalle" title="Cerrar (Esc)">

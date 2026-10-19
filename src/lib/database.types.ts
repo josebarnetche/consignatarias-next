@@ -14,6 +14,159 @@ export type Database = {
   }
   public: {
     Tables: {
+      agente_bajas: {
+        Row: {
+          creado_at: string
+          email: string
+          motivo: string | null
+        }
+        Insert: {
+          creado_at?: string
+          email: string
+          motivo?: string | null
+        }
+        Update: {
+          creado_at?: string
+          email?: string
+          motivo?: string | null
+        }
+        Relationships: []
+      }
+      agente_casos: {
+        Row: {
+          actualizado_at: string
+          creado_at: string
+          datos: Json
+          estado: string
+          lado: string
+          lead_id: number
+          motivo: string | null
+          proximo_at: string
+          recordatorios: number
+          tandas: number
+        }
+        Insert: {
+          actualizado_at?: string
+          creado_at?: string
+          datos?: Json
+          estado?: string
+          lado: string
+          lead_id: number
+          motivo?: string | null
+          proximo_at?: string
+          recordatorios?: number
+          tandas?: number
+        }
+        Update: {
+          actualizado_at?: string
+          creado_at?: string
+          datos?: Json
+          estado?: string
+          lado?: string
+          lead_id?: number
+          motivo?: string | null
+          proximo_at?: string
+          recordatorios?: number
+          tandas?: number
+        }
+        Relationships: []
+      }
+      agente_mensajes: {
+        Row: {
+          asunto: string | null
+          clasificacion: Json | null
+          creado_at: string
+          cuerpo: string | null
+          de: string | null
+          dir: string
+          id: number
+          in_reply_to: string | null
+          lead_id: number | null
+          message_id: string | null
+          oferta_id: number | null
+          para: string | null
+        }
+        Insert: {
+          asunto?: string | null
+          clasificacion?: Json | null
+          creado_at?: string
+          cuerpo?: string | null
+          de?: string | null
+          dir: string
+          id?: number
+          in_reply_to?: string | null
+          lead_id?: number | null
+          message_id?: string | null
+          oferta_id?: number | null
+          para?: string | null
+        }
+        Update: {
+          asunto?: string | null
+          clasificacion?: Json | null
+          creado_at?: string
+          cuerpo?: string | null
+          de?: string | null
+          dir?: string
+          id?: number
+          in_reply_to?: string | null
+          lead_id?: number | null
+          message_id?: string | null
+          oferta_id?: number | null
+          para?: string | null
+        }
+        Relationships: []
+      }
+      agente_ofertas: {
+        Row: {
+          aceptacion: string | null
+          cierre: Json | null
+          email: string
+          enviada_at: string
+          estado: string
+          id: number
+          lead_id: number
+          nombre: string
+          presentada_at: string | null
+          proximo_at: string | null
+          ref: string
+          respondida_at: string | null
+          seguimientos: number
+          tipo: string
+        }
+        Insert: {
+          aceptacion?: string | null
+          cierre?: Json | null
+          email: string
+          enviada_at?: string
+          estado?: string
+          id?: number
+          lead_id: number
+          nombre: string
+          presentada_at?: string | null
+          proximo_at?: string | null
+          ref: string
+          respondida_at?: string | null
+          seguimientos?: number
+          tipo: string
+        }
+        Update: {
+          aceptacion?: string | null
+          cierre?: Json | null
+          email?: string
+          enviada_at?: string
+          estado?: string
+          id?: number
+          lead_id?: number
+          nombre?: string
+          presentada_at?: string | null
+          proximo_at?: string | null
+          ref?: string
+          respondida_at?: string | null
+          seguimientos?: number
+          tipo?: string
+        }
+        Relationships: []
+      }
       ai_referrals: {
         Row: {
           created_at: string
