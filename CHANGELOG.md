@@ -7,7 +7,25 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
-## [1.230.0] — 2026-10-19
+## [1.231.0] — 2026-10-18
+
+### Panel de la firma v2: simple, pensado para usar, y las consultas donde está el productor
+
+Rehecho a partir de la devolución de José: usuarios no técnicos, nada de formularios largos, estilo de producto moderno (sin los marcos con manijas de la versión anterior). Probado en local contra la base real con Reggi (escritorio y 390 px, sin errores ni desborde).
+
+**Ordenado por utilidad.** Siete secciones: Inicio, Remates, Consultas, Resultados, Estadísticas, Mi ficha, Mi plan (las claves viejas de `?tab=` siguen andando, y ahora cambian la sección aunque el panel ya esté abierto).
+- **Inicio** abre con **"Para hoy"**: el panel mira los datos y propone la próxima acción con su botón (compartir el remate que viene, abrir pre-ofertas, contestar una consulta, completar la ficha). Después **"Tu alcance"** con número real (apariciones en Google, visitas, productores que reciben sus remates en el mail semanal, visitas desde IAs), los próximos remates con "Compartir" y las consultas.
+- **Consultas = lista**, no pipeline: quién escribió, cuándo, por dónde y el botón para contestar (WhatsApp, llamar, email).
+
+**Remates**: una tarjeta por remate (propios y del calendario) con **Compartir · Pre-ofertas · Editar**. La carga va en una hoja lateral con el **flyer primero** y sólo nombre, fecha, hora, lugar y provincia a la vista; el resto, plegado.
+
+**Pre-ofertas por remate**: se abren desde el remate (sin volver a escribir título, fecha ni lugar; columna `preofertas_firma.remate_clave`, migración `20261019_preofertas_remate`). Cada lote se carga en una línea: cabezas, categoría, peso y link del video; el título se arma solo. Publicar, compartir y ver las ofertas por lote, en la misma hoja.
+
+**Compartir y QR**: el QR se genera en el navegador (antes, un servicio externo a 140 px). Botón **Compartir** del celular con una **tarjeta 1080×1350** (firma, remate, QR) para el estado de WhatsApp o Instagram, **descargar tarjeta**, **descargar QR** en alta y copiar link, todo con UTM.
+
+**"Consultar a la firma por este remate"** en la ficha de cada remate próximo: sin login, nombre + WhatsApp + mensaje ya escrito, va a `/api/leads` con `source: remate` y le llega a la firma por mail y a su panel. Hasta hoy el único formulario estaba en el perfil (y sólo para firmas sin contacto público): la ficha del remate, adonde llegan el calendario, el mail y Google, no tenía cómo consultar.
+
+## [1.230.0] — 2026-10-18
 
 ### El panel de la firma, rediseñado como CRM
 

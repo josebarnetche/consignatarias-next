@@ -7,7 +7,7 @@ import { esEtapa, NOTAS_MAX } from '@/lib/leads/pipeline'
 type Props = { params: Promise<{ slug: string; id: string }> }
 
 /**
- * Mover una consulta de etapa o anotarla (19-10-2026). Sólo el dueño de la ficha.
+ * Mover una consulta de etapa o anotarla (18-10-2026). Sólo el dueño de la ficha.
  * No requiere PRO: una firma FREE ve que la consulta existe y puede ordenar su
  * pipeline; lo que se paga es el contacto, que ni siquiera viaja al panel.
  */

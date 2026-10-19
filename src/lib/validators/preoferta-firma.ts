@@ -127,6 +127,8 @@ const camposPreoferta = {
   lugar: textoOpcional(160),
   cierre: z.string().refine((v) => !Number.isNaN(Date.parse(v)), 'Fecha de cierre inválida'),
   condiciones: textoOpcional(4000),
+  /** "AAAA-MM-DD|LOCALIDAD" del remate del panel al que pertenece (18-10-2026). */
+  remate_clave: z.preprocess(vacioANull, z.string().regex(/^\d{4}-\d{2}-\d{2}\|/, 'Remate inválido').max(200).nullable().optional()),
 }
 
 export const preofertaCrearSchema = z

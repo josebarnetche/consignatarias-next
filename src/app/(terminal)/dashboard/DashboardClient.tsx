@@ -8,8 +8,7 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import ProfileProgressTracker from '@/components/onboarding/ProfileProgressTracker'
 import { ProActivatedModule, type NextStep } from '@/components/welcome'
 import { WhatsAppIconButton } from '@/components/share/WhatsAppShare'
-import { LayoutDashboard, CalendarDays, Pencil, BarChart3, CreditCard, Building2, Inbox, Package, Eye, TrendingUp } from 'lucide-react'
-import QRCode from '@/components/QRCode'
+import { LayoutDashboard, CalendarDays, Pencil, BarChart3, CreditCard, Building2, Inbox, Package, TrendingUp } from 'lucide-react'
 import { UpgradeConfirmTracker } from '@/components/UpgradeConfirmTracker'
 import MarketIntelPanel from '@/components/MarketIntelPanel'
 import MagPulse from '@/components/MagPulse'
@@ -33,7 +32,7 @@ import type { Performance } from '@/lib/reports/performance'
 import type { ConsignatariaPlanStatus } from '@/lib/features'
 import { BENEFICIOS_PRO_CONSIGNATARIA } from '@/lib/pro-consignataria-beneficios'
 import OrigenVisitas from '@/components/dashboard/OrigenVisitas'
-import PreofertasManager, { type PreofertaFirma, type OfertaRecibida } from '@/components/dashboard/PreofertasManager'
+import type { PreofertaFirma, OfertaRecibida } from '@/components/dashboard/PreofertasManager'
 import ResultadoVsMercado from '@/components/dashboard/ResultadoVsMercado'
 import BusquedasGoogle from '@/components/dashboard/BusquedasGoogle'
 import CambiarContrasena from '@/components/dashboard/CambiarContrasena'
@@ -42,9 +41,10 @@ import type { ResultadoVsMercado as ResultadoVsMercadoDatos } from '@/lib/report
 import type { OrigenVisitas as OrigenVisitasDatos } from '@/lib/reports/origen-visitas'
 import { provinciaNombre } from '@/lib/ui/tokens'
 import { mensajeError } from '@/lib/ui/mensaje-error'
-import { Marco, Kpi, Vacio, SoloPro, BotonPrimario, BotonSecundario, fmt } from '@/components/panel/PanelUi'
-import ConsultasCRM from '@/components/panel/ConsultasCRM'
-import { ETAPAS, ETAPA_LABEL, etapaDe, origenConsulta, type Etapa } from '@/lib/leads/pipeline'
+import { Tarjeta, Numero, Vacio, SoloPro, BotonPrimario, BotonSecundario, Hoja, BloqueFecha, fmt } from '@/components/panel/PanelUi'
+import ConsultasLista from '@/components/panel/ConsultasLista'
+import RematesPanel, { hoyAr } from '@/components/panel/RematesPanel'
+import CompartirRemate from '@/components/panel/CompartirRemate'
 
 interface Consignataria {
   display_name: string
@@ -83,6 +83,8 @@ interface ScrapedAuction {
   description?: string
   catalog_url?: string | null
   youtube_url?: string | null
+  /** Ficha pública del remate (/remates/…). */
+  path?: string | null
 }
 
 interface OwnerAuction {
@@ -101,6 +103,7 @@ interface OwnerAuction {
   flyer_url?: string | null
   reemplaza_clave?: string | null
   status: string
+  path?: string | null
 }
 
 interface AuctionResult {
@@ -248,6 +251,8 @@ interface Props {
   frigoIsPro?: boolean
   dteCount?: number
   alreadyRedeemed?: boolean
+  /** Productores que reciben el mail semanal de remates. */
+  alcanceMail?: number
 }
 
 /** "Ver como" de admin: el panel de una firma, con el plan forzado o el real. */
@@ -264,13 +269,13 @@ function formatDate(d: string) {
   return `${parts[2]}/${parts[1]}`
 }
 
-type TabKey = 'resumen' | 'leads' | 'remates' | 'preofertas' | 'editar' | 'resultados' | 'audiencia' | 'mercado' | 'plan' | 'frigorifico' | 'catalogo' | 'pedidos'
+type TabKey = 'resumen' | 'leads' | 'remates' | 'preofertas' | 'editar' | 'resultados' | 'estadisticas' | 'audiencia' | 'mercado' | 'plan' | 'frigorifico' | 'catalogo' | 'pedidos'
 
 export default function DashboardClient({
   email, consignataria, claims, scrapedAuctions, ownerAuctions: initialOwnerAuctions,
-  auctionResults, viewCount, whatsappClicks, leadsCount, followersCount = 0, marksCount = 0, leads = [], totalWatchers, provincialRank, completedFields, subscription, plan = PLAN_FREE, origenVisitas = null, vistaAdmin = null, preofertasFirma = [], ofertasFirma = [], resultadosVR = null, busquedasGoogle = null, frigorifico, frigoClaims = [],
+  auctionResults, viewCount, whatsappClicks, leadsCount, followersCount = 0, leads = [], provincialRank, completedFields, subscription, plan = PLAN_FREE, origenVisitas = null, vistaAdmin = null, preofertasFirma = [], ofertasFirma = [], resultadosVR = null, busquedasGoogle = null, frigorifico, frigoClaims = [],
   frigoProducts = [], frigoRfqs = [], frigoIsPro = false,
-  dteCount = 0, alreadyRedeemed = false, performance = null, distribucion = null, benchmark = null, cartera = null, territorio = null, territorioTitular = '', participacion = null, bandeja = null, hayDatosMag = false, agenda = null,
+  dteCount = 0, alreadyRedeemed = false, alcanceMail = 0, performance = null, distribucion = null, benchmark = null, cartera = null, territorio = null, territorioTitular = '', participacion = null, hayDatosMag = false, agenda = null,
 }: Props) {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -280,7 +285,15 @@ export default function DashboardClient({
   const [upgradeConfirmed, setUpgradeConfirmed] = useState(false)
   const [upgradePollCount, setUpgradePollCount] = useState(0)
   const [activeTab, setActiveTab] = useState<TabKey>(tabParam || 'resumen')
-  const [ownerAuctions, setOwnerAuctions] = useState(initialOwnerAuctions)
+  // Viene del server: la hoja de remates hace router.refresh() al guardar.
+  const ownerAuctions = initialOwnerAuctions
+  // "Cargar remate" desde Inicio abre la hoja de carga al llegar a Remates.
+  const [abrirCarga, setAbrirCarga] = useState(false)
+  // Los enlaces internos (?tab=…, p. ej. desde la bandeja o los mails) cambian la
+  // sección aunque el panel ya esté abierto.
+  useEffect(() => {
+    if (tabParam) setActiveTab(tabParam)
+  }, [tabParam])
 
 
 
@@ -370,38 +383,40 @@ export default function DashboardClient({
     return () => clearTimeout(timer)
   }, [justUpgraded, plan.isPro, upgradeConfirmed, upgradePollCount, router])
 
-  // NAVEGACIÓN DEL CRM (19-10-2026). Las claves viejas se mantienen (`leads`,
-  // `editar`) porque hay enlaces y redirecciones que las usan (?tab=resultados).
-  const hoy = new Date().toISOString().slice(0, 10)
+  // NAVEGACIÓN (v2, 18-10-2026): siete lugares, ordenados por lo que la firma hace.
+  // Las claves viejas siguen andando (?tab=leads, ?tab=editar, ?tab=preofertas…)
+  // porque hay enlaces en mails y en la bandeja que las usan.
+  const hoy = hoyAr()
   const proximos = [
-    ...ownerAuctions.map((a) => ({ date: a.date, time: a.time, title: a.title, location: a.location, propio: true })),
-    ...scrapedAuctions.map((a) => ({ date: a.date, time: a.time, title: a.title, location: a.location, propio: false })),
+    ...ownerAuctions.map((a) => ({ date: a.date, time: a.time, title: a.title, location: a.location ?? '', path: a.path ?? null })),
+    ...scrapedAuctions.map((a) => ({ date: a.date, time: a.time, title: a.title, location: a.location, path: a.path ?? null })),
   ]
     .filter((a) => a.date >= hoy)
     .sort((a, b) => a.date.localeCompare(b.date) || (a.time ?? '').localeCompare(b.time ?? ''))
-  const consultasNuevas = leads.filter((l) => (l.status ?? 'new') === 'new').length
   const esPro = tierLabel !== 'FREE'
+  const consultasRecientes = leads.filter((l) => Date.now() - new Date(l.created_at).getTime() < 7 * 86_400_000).length
+  const [compartirInicio, setCompartirInicio] = useState<null | (typeof proximos)[number] | 'firma'>(null)
 
   const tabs: { key: TabKey; label: string; count?: number; icon: React.ReactNode }[] = [
-    { key: 'resumen', label: 'Inicio', icon: <LayoutDashboard className="h-4 w-4" /> },
+    { key: 'resumen', label: 'Inicio', icon: <LayoutDashboard className="h-[18px] w-[18px]" /> },
   ]
   if (consignataria?.verified) {
-    tabs.push({ key: 'leads', label: 'Consultas', count: consultasNuevas, icon: <Inbox className="h-4 w-4" /> })
-    tabs.push({ key: 'remates', label: 'Remates', count: proximos.length, icon: <CalendarDays className="h-4 w-4" /> })
-    tabs.push({ key: 'resultados', label: 'Resultados', count: auctionResults.length, icon: <BarChart3 className="h-4 w-4" /> })
-    tabs.push({ key: 'preofertas', label: 'Pre-ofertas', count: ofertasFirma.length, icon: <Package className="h-4 w-4" /> })
-    tabs.push({ key: 'audiencia', label: 'Audiencia', icon: <Eye className="h-4 w-4" /> })
-    tabs.push({ key: 'mercado', label: 'Mercado', icon: <TrendingUp className="h-4 w-4" /> })
-    tabs.push({ key: 'editar', label: 'Perfil', icon: <Pencil className="h-4 w-4" /> })
+    tabs.push({ key: 'remates', label: 'Remates', count: proximos.length, icon: <CalendarDays className="h-[18px] w-[18px]" /> })
+    tabs.push({ key: 'leads', label: 'Consultas', count: consultasRecientes, icon: <Inbox className="h-[18px] w-[18px]" /> })
+    tabs.push({ key: 'resultados', label: 'Resultados', icon: <BarChart3 className="h-[18px] w-[18px]" /> })
+    tabs.push({ key: 'estadisticas', label: 'Estadísticas', icon: <TrendingUp className="h-[18px] w-[18px]" /> })
+    tabs.push({ key: 'editar', label: 'Mi ficha', icon: <Pencil className="h-[18px] w-[18px]" /> })
   }
-  tabs.push({ key: 'plan', label: 'Mi plan', icon: <CreditCard className="h-4 w-4" /> })
+  tabs.push({ key: 'plan', label: 'Mi plan', icon: <CreditCard className="h-[18px] w-[18px]" /> })
   if (frigorifico) {
-    tabs.push({ key: 'frigorifico', label: 'Frigorífico', icon: <Building2 className="h-4 w-4" /> })
+    tabs.push({ key: 'frigorifico', label: 'Frigorífico', icon: <Building2 className="h-[18px] w-[18px]" /> })
     if (frigorifico.verified) {
-      tabs.push({ key: 'catalogo', label: 'Catálogo', count: frigoProducts.length, icon: <Package className="h-4 w-4" /> })
-      tabs.push({ key: 'pedidos', label: 'Pedidos', count: frigoRfqs.length, icon: <Inbox className="h-4 w-4" /> })
+      tabs.push({ key: 'catalogo', label: 'Catálogo', count: frigoProducts.length, icon: <Package className="h-[18px] w-[18px]" /> })
+      tabs.push({ key: 'pedidos', label: 'Pedidos', count: frigoRfqs.length, icon: <Inbox className="h-[18px] w-[18px]" /> })
     }
   }
+  // Claves viejas → la sección nueva que las contiene.
+  const seccion: TabKey = activeTab === 'preofertas' ? 'remates' : activeTab === 'audiencia' || activeTab === 'mercado' ? 'estadisticas' : activeTab
 
   const hasPendingClaim = claims.some(c => c.status === 'pending') || frigoClaims.some(c => c.status === 'pending')
   const hasVerified = consignataria?.verified || frigorifico?.verified
@@ -416,43 +431,64 @@ export default function DashboardClient({
         { campo: 'Logo', listo: !!consignataria.logo_url },
         { campo: 'WhatsApp', listo: !!consignataria.whatsapp },
         { campo: 'Teléfono', listo: !!consignataria.phone },
-        { campo: 'Email de contacto', listo: !!consignataria.email },
+        { campo: 'Email', listo: !!consignataria.email },
         { campo: 'Sitio web', listo: !!consignataria.website },
         { campo: 'Descripción', listo: !!consignataria.description },
       ]
     : []
-  const fichaLista = ficha.filter((f) => f.listo).length
-  const linkGo = consignataria ? `https://consignatarias.com.ar/go/${consignataria.canonical_slug}` : ''
+  const faltaEnFicha = ficha.filter((f) => !f.listo).map((f) => f.campo.toLowerCase())
+  const sitio = 'https://www.consignatarias.com.ar'
 
-  const encabezado = (kicker: string, titulo: string, sub?: React.ReactNode, acciones?: React.ReactNode) => (
+  // SUGERENCIAS DEL DÍA: el panel mira lo que hay y propone la próxima acción, una por
+  // línea y con su botón. Es lo primero que ve la firma: qué hacer hoy, no un tablero.
+  const prox = proximos[0]
+  const diasAlProx = prox ? Math.round((new Date(prox.date + 'T12:00:00').getTime() - new Date(hoy + 'T12:00:00').getTime()) / 86_400_000) : null
+  const cuandoProx = prox
+    ? diasAlProx === 0 ? 'hoy' : diasAlProx === 1 ? 'mañana' : `el ${new Date(prox.date + 'T12:00:00').toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric' })}`
+    : ''
+  const sugerencias: { id: string; texto: React.ReactNode; boton: string; accion: () => void }[] = []
+  if (consignataria?.verified) {
+    const nuevas = leads.filter((l) => (l.status ?? 'new') === 'new' && Date.now() - new Date(l.created_at).getTime() < 14 * 86_400_000).length
+    if (nuevas > 0) sugerencias.push({ id: 'consultas', texto: <><strong className="text-ink">{nuevas === 1 ? 'Tenés una consulta nueva.' : `Tenés ${nuevas} consultas nuevas.`}</strong> Contestá rápido: el productor suele escribirle a varias casas.</>, boton: 'Ver consultas', accion: () => irA('leads') })
+    if (prox && diasAlProx != null && diasAlProx <= 14) {
+      sugerencias.push({
+        id: 'compartir',
+        texto: <><strong className="text-ink">Tu remate es {cuandoProx}.</strong> {esPro && alcanceMail > 0 ? `Sale primero en el mail semanal a ${fmt(alcanceMail)} productores. ` : ''}Compartilo por WhatsApp con tus clientes: la tarjeta y el QR ya están armados.</>,
+        boton: 'Compartir',
+        accion: () => setCompartirInicio(prox),
+      })
+      if (esPro && !preofertasFirma.some((p) => p.fecha_remate === prox.date)) {
+        sugerencias.push({ id: 'preofertas', texto: <><strong className="text-ink">Abrí pre-ofertas para {prox.title}.</strong> Cargá los lotes con su video y recibí ofertas antes del martillo.</>, boton: 'Abrir', accion: () => irA('remates') })
+      }
+    }
+    if (!prox) sugerencias.push({ id: 'cargar', texto: <><strong className="text-ink">No tenés remates próximos publicados.</strong> Subí el flyer del próximo y lo distribuimos en el calendario y el mail semanal.</>, boton: 'Cargar remate', accion: () => { setAbrirCarga(true); irA('remates') } })
+    if (faltaEnFicha.length > 0 && sugerencias.length < 3) sugerencias.push({ id: 'ficha', texto: <><strong className="text-ink">A tu ficha le falta {faltaEnFicha.slice(0, 2).join(' y ')}.</strong> Las fichas completas reciben más consultas.</>, boton: 'Completar', accion: () => irA('editar') })
+  }
+
+  const saludo = consignataria?.display_name ?? frigorifico?.display_name ?? 'tu panel'
+  const encabezado = (titulo: string, sub?: React.ReactNode, acciones?: React.ReactNode) => (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div className="min-w-0">
-        <p className="text-xxs font-medium text-accent">{kicker}</p>
-        <h1 className="mt-1.5 text-3xl font-semibold tracking-tight text-ink text-balance">{titulo}</h1>
-        {sub && <p className="mt-1.5 max-w-2xl text-sm text-zinc-400">{sub}</p>}
+        <h1 className="text-[1.75rem] font-semibold leading-tight tracking-tight text-ink sm:text-[2rem]">{titulo}</h1>
+        {sub && <p className="mt-1.5 max-w-2xl text-[0.9375rem] text-zinc-500">{sub}</p>}
       </div>
       {acciones && <div className="flex shrink-0 flex-wrap gap-2">{acciones}</div>}
     </div>
   )
 
   return (
-    <div className="relative">
-      <div className="lienzo-puntos pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
-      <div className="panel-crm relative mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:py-10">
+    <div className="relative min-h-[80vh] bg-gradient-to-b from-accent/[0.035] via-transparent to-transparent">
+      <div className="panel-crm relative mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:py-10">
       {vistaAdmin && (
-        <div className="mb-6 rounded-xl border border-warning/40 bg-warning/10 px-4 py-3">
-          <p className="text-sm text-zinc-100">
+        <div className="mb-6 rounded-2xl bg-warning/10 px-5 py-4 ring-1 ring-inset ring-warning/30">
+          <p className="text-sm text-ink">
             Estás viendo el panel de <strong>{consignataria?.display_name ?? vistaAdmin.slug}</strong> como lo vería
             su dueño{vistaAdmin.vista === 'pro' ? ' con PRO' : vistaAdmin.vista === 'free' ? ' sin PRO' : ', con su plan real'}.
             Es de sólo lectura: los cambios no se guardan.
           </p>
           <div className="mt-2 flex flex-wrap gap-3 text-xs">
             {(['pro', 'free', 'real'] as const).map((v) => (
-              <a
-                key={v}
-                href={`/dashboard?como=${vistaAdmin.slug}&vista=${v}`}
-                className={vistaAdmin.vista === v ? 'font-semibold text-ink underline' : 'text-accent hover:underline'}
-              >
+              <a key={v} href={`/dashboard?como=${vistaAdmin.slug}&vista=${v}`} className={vistaAdmin.vista === v ? 'font-semibold text-ink underline' : 'text-accent hover:underline'}>
                 {v === 'pro' ? 'Vista PRO' : v === 'free' ? 'Vista FREE' : 'Plan real'}
               </a>
             ))}
@@ -482,52 +518,46 @@ export default function DashboardClient({
         </div>
       )}
 
-      <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[232px_minmax(0,1fr)]">
-        {/* ── Barra lateral: la firma y las secciones ── */}
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-12">
+        {/* ── Barra lateral ── */}
         <aside className="min-w-0 lg:sticky lg:top-20 lg:self-start">
           <div className="flex items-center gap-3">
             <span
-              className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-lg border border-terminal-border bg-zinc-100"
+              className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-xl bg-zinc-100 ring-1 ring-inset ring-terminal-border"
               style={consignataria?.logo_fondo ? { backgroundColor: consignataria.logo_fondo } : undefined}
             >
               {consignataria?.logo_url ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
                 <img src={consignataria.logo_url} alt={consignataria.display_name} className="h-full w-full object-contain p-1" />
               ) : (
-                <ImagenTema src="/marca/iconos-color/casa-remates.png" alt="" className="h-7 w-7" />
+                <ImagenTema src="/marca/iconos-color/casa-remates.png" alt="" className="h-6 w-6" />
               )}
             </span>
             <div className="min-w-0">
-              <p className="truncate text-sm font-semibold text-ink">
-                {consignataria?.display_name ?? frigorifico?.display_name ?? 'Mi panel'}
-              </p>
-              <p className="mt-0.5 flex items-center gap-1.5 text-[0.625rem]">
-                {(consignataria?.verified || frigorifico?.verified) && <span className="text-positive">Verificada</span>}
-                <span className={esPro ? 'font-bold text-accent' : 'text-zinc-500'}>{esPro ? `★ ${tierLabel}` : 'Plan FREE'}</span>
+              <p className="truncate text-sm font-semibold text-ink">{saludo}</p>
+              <p className="mt-0.5 text-xs">
+                <span className={esPro ? 'font-semibold text-accent' : 'text-zinc-500'}>{esPro ? `★ ${tierLabel}` : 'Plan gratis'}</span>
               </p>
             </div>
           </div>
-          <p className="mt-2 truncate text-[0.625rem] text-zinc-500">{email}</p>
 
           {(consignataria || frigorifico) && (
-            <nav className="-mx-4 mt-5 flex gap-1 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0" aria-label="Secciones del panel">
+            <nav className="-mx-4 mt-6 flex gap-1 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-col lg:overflow-visible lg:px-0" aria-label="Secciones del panel">
               {tabs.map((tab) => {
-                const activo = activeTab === tab.key
+                const activo = seccion === tab.key
                 return (
                   <button
                     key={tab.key}
                     onClick={() => irA(tab.key)}
                     aria-current={activo ? 'page' : undefined}
-                    className={`flex shrink-0 items-center gap-2.5 rounded-lg px-3 py-2 text-sm transition-colors ${
-                      activo ? 'bg-accent/[0.09] font-medium text-accent' : 'text-zinc-400 hover:bg-zinc-800/60 hover:text-ink'
+                    className={`flex shrink-0 items-center gap-3 rounded-full px-4 py-2.5 text-[0.9375rem] transition-colors lg:rounded-xl ${
+                      activo ? 'bg-accent text-white oscuro:text-zinc-950 font-medium shadow-sm' : 'text-zinc-400 hover:bg-zinc-800/60 hover:text-ink'
                     }`}
                   >
                     {tab.icon}
                     <span className="whitespace-nowrap lg:flex-1 lg:text-left">{tab.label}</span>
                     {tab.count != null && tab.count > 0 && (
-                      <span className={`rounded-full px-1.5 text-[0.625rem] tabular-nums ${activo ? 'bg-accent/15 text-accent' : 'bg-zinc-800 text-zinc-400'}`}>
-                        {tab.count}
-                      </span>
+                      <span className={`rounded-full px-2 text-xs tabular-nums ${activo ? 'bg-white/20' : 'bg-zinc-800 text-zinc-400'}`}>{tab.count}</span>
                     )}
                   </button>
                 )
@@ -536,453 +566,279 @@ export default function DashboardClient({
           )}
 
           {consignataria && (
-            <div className="mt-5 hidden space-y-1.5 border-t border-terminal-border pt-4 text-xs lg:block">
-              <Link href={`/consignatarias/${consignataria.canonical_slug}`} className="block text-zinc-400 hover:text-accent">
-                Ver tu perfil público ↗
-              </Link>
-              <a href={`/go/${consignataria.canonical_slug}`} target="_blank" rel="noopener noreferrer" className="block text-zinc-400 hover:text-accent">
-                Tu página con QR ↗
-              </a>
+            <div className="mt-6 hidden space-y-2 text-sm lg:block">
+              <Link href={`/consignatarias/${consignataria.canonical_slug}`} className="block text-zinc-500 hover:text-accent">Ver mi perfil público ↗</Link>
+              <button type="button" onClick={() => setCompartirInicio('firma')} className="block text-zinc-500 hover:text-accent">Compartir mi página ↗</button>
             </div>
           )}
         </aside>
 
         {/* ── Contenido ── */}
-        <main key={activeTab} className="page-transition min-w-0 space-y-12">
+        <main key={seccion} className="page-transition min-w-0 space-y-8">
       {/* ============ INICIO ============ */}
-      {activeTab === 'resumen' && consignataria?.verified && (
+      {seccion === 'resumen' && consignataria?.verified && (
         <>
-          {encabezado(
-            'Inicio',
-            consignataria.display_name,
-            proximos[0]
-              ? <>Próximo remate: <span className="text-zinc-200">{new Date(proximos[0].date + 'T12:00:00').toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' })}</span>{proximos[0].location ? ` · ${proximos[0].location}` : ''}</>
-              : 'No hay remates próximos tuyos en el calendario.',
-            <>
-              <BotonPrimario onClick={() => irA('remates')}>+ Cargar remate</BotonPrimario>
-              <BotonSecundario href="/dashboard/resultados/nuevo">Cargar resultado</BotonSecundario>
-            </>,
-          )}
+          {encabezado(`Hola, ${saludo}`, new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }))}
 
-          {/* Indicadores: todos de la base, en cero si no hubo nada. */}
-          <Marco nombre="Últimos 30 días" cuerpo="p-0">
-            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 [&>*]:border-terminal-border [&>*]:border-b sm:[&>*]:border-r">
-              <Kpi
-                etiqueta="Vistas de tu perfil"
-                valor={viewCount}
-                cambio={performance ? { delta: performance.cambios.vistas.delta } : null}
-                detalle={provincialRank.position > 0 ? `#${provincialRank.position} en ${provincialRank.province} por remates` : undefined}
-              />
-              <Kpi
-                etiqueta="Consultas recibidas"
-                valor={leadsCount}
-                cambio={performance ? { delta: performance.cambios.leads.delta } : null}
-                detalle={consultasNuevas > 0 ? `${consultasNuevas} sin responder` : 'Ninguna pendiente'}
-                onClick={() => irA('leads')}
-              />
-              <Kpi etiqueta="Clics en tu WhatsApp" valor={whatsappClicks} detalle="Desde tu perfil" />
-              <Kpi etiqueta="Productores que te siguen" valor={followersCount} detalle="Reciben tus remates" />
-              <Kpi etiqueta="Marcas en tus remates" valor={marksCount + totalWatchers} detalle="Agendaron un remate tuyo" />
-            </div>
-          </Marco>
-
-          <div className="grid grid-cols-[minmax(0,1fr)] gap-x-5 gap-y-12 xl:grid-cols-3">
-            {/* Pipeline */}
-            <Marco
-              nombre="Consultas"
-              titulo="Pipeline de consultas"
-              accion={<button onClick={() => irA('leads')} className="text-accent hover:underline">Ver todas →</button>}
-              className="xl:col-span-2"
-            >
-              {leads.length === 0 ? (
-                <Vacio
-                  titulo="Todavía no recibiste consultas."
-                  texto="Entran desde el formulario de tu perfil, tu página con QR y la ficha de cada remate. Te avisamos por mail y quedan acá para que las sigas."
-                  accion={<BotonSecundario onClick={() => { navigator.clipboard.writeText(linkGo); trackEvent('referral_link_copy', { consignataria_slug: consignataria.canonical_slug, surface: 'panel_inicio' }) }}>Copiar el link de tu página</BotonSecundario>}
-                />
-              ) : (
-                <>
-                  <div className="flex h-2 overflow-hidden rounded-full bg-zinc-800" aria-hidden="true">
-                    {ETAPAS.map((e) => {
-                      const n = leads.filter((l) => etapaDe(l.status) === e).length
-                      return n ? <span key={e} className={TONO_ETAPA_BARRA[e]} style={{ width: `${(n / leads.length) * 100}%` }} /> : null
-                    })}
-                  </div>
-                  <dl className="mt-3 grid grid-cols-4 gap-2">
-                    {ETAPAS.map((e) => (
-                      <div key={e}>
-                        <dt className="text-[0.625rem] text-zinc-500">{ETAPA_LABEL[e]}</dt>
-                        <dd className="text-lg font-semibold tabular-nums text-ink">{leads.filter((l) => etapaDe(l.status) === e).length}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                  <ul className="mt-4 divide-y divide-terminal-border border-t border-terminal-border">
-                    {leads.slice(0, 5).map((l) => (
-                      <li key={l.id}>
-                        <button onClick={() => irA('leads')} className="flex w-full items-center gap-3 py-2.5 text-left hover:text-accent">
-                          <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${TONO_ETAPA_BARRA[etapaDe(l.status)]}`} aria-hidden="true" />
-                          <span className="w-28 shrink-0 truncate text-sm text-ink">{esPro ? l.name : l.name.split(' ')[0]}</span>
-                          <span className="min-w-0 flex-1 truncate text-xs text-zinc-500">{l.message || origenConsulta(l.source)}</span>
-                          <span className="shrink-0 text-[0.625rem] tabular-nums text-zinc-500">
-                            {new Date(l.created_at).toLocaleDateString('es-AR', { day: '2-digit', month: 'short' })}
-                          </span>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </>
-              )}
-            </Marco>
-
-            {/* Próximos remates */}
-            <Marco
-              nombre="Remates"
-              titulo="Próximos remates"
-              accion={<button onClick={() => irA('remates')} className="text-accent hover:underline">Gestionar →</button>}
-            >
-              {proximos.length === 0 ? (
-                <Vacio
-                  titulo="Sin remates próximos."
-                  texto="Cargá tu próximo remate y sale en el calendario, en tu perfil y en el mail semanal."
-                  accion={<BotonPrimario onClick={() => irA('remates')}>+ Cargar remate</BotonPrimario>}
-                />
-              ) : (
-                <ul className="space-y-3">
-                  {proximos.slice(0, 5).map((a, i) => {
-                    const d = new Date(a.date + 'T12:00:00')
-                    return (
-                      <li key={`${a.date}-${i}`} className="flex gap-3">
-                        <span className="grid w-11 shrink-0 place-items-center rounded-lg border border-terminal-border py-1.5 text-center leading-none">
-                          <span className="text-[0.625rem] uppercase text-zinc-500">{d.toLocaleDateString('es-AR', { month: 'short' }).replace('.', '')}</span>
-                          <span className="mt-0.5 text-lg font-semibold tabular-nums text-ink">{d.getDate()}</span>
-                        </span>
-                        <span className="min-w-0">
-                          <span className="block truncate text-sm text-ink">{a.title}</span>
-                          <span className="block truncate text-xxs text-zinc-500">
-                            {[a.time, a.location].filter(Boolean).join(' · ') || 'Sin lugar cargado'}
-                            {!a.propio && ' · del calendario'}
-                          </span>
-                        </span>
-                      </li>
-                    )
-                  })}
-                </ul>
-              )}
-            </Marco>
-
-            {/* Vistas por día (PRO) */}
-            <Marco nombre="Audiencia" titulo="Vistas de tu perfil por día" className="xl:col-span-2"
-              accion={esPro ? <button onClick={() => irA('audiencia')} className="text-accent hover:underline">Ver de dónde llegan →</button> : undefined}
-            >
-              {esPro ? (
-                origenVisitas ? (
-                  <BarrasDiarias datos={origenVisitas.porDia} />
-                ) : (
-                  <Vacio titulo="Todavía no hay vistas registradas." texto="Cada visita a tu perfil se cuenta acá, día por día." />
-                )
-              ) : (
-                <SoloPro
-                  titulo="Quién te mira, día por día"
-                  beneficio={`Este mes tu perfil tuvo ${fmt(viewCount)} ${viewCount === 1 ? 'vista' : 'vistas'}. Con PRO las ves día por día y sabés si llegan desde Google, el calendario o una IA.`}
-                  desde="panel_inicio"
-                />
-              )}
-            </Marco>
-
-            {/* Para hacer */}
-            <Marco nombre="Pendientes" titulo="Para hacer">
-              {bandeja && bandeja.entradas.length > 0 ? (
-                <ul className="space-y-3">
-                  {bandeja.entradas.slice(0, 6).map((e) => (
-                    <li key={e.id} className="flex gap-2.5">
-                      <span className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${URGENCIA_TONO[e.urgencia]}`} aria-hidden="true" />
-                      <span className="min-w-0">
-                        <span className="block text-sm text-ink">{e.titulo}</span>
-                        <span className="block text-xxs text-zinc-500">{e.detalle}</span>
-                        {e.href && e.accion && <Link href={e.href} className="text-xxs text-accent hover:underline">{e.accion} →</Link>}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <Vacio titulo="Nada pendiente." texto="Acá aparecen las consultas sin responder, los remates de la semana y lo que le falta a tu ficha." />
-              )}
-            </Marco>
-
-            {/* Ficha */}
-            <Marco nombre="Ficha" titulo={`Tu ficha · ${fichaLista} de ${ficha.length}`}
-              accion={<button onClick={() => irA('editar')} className="text-accent hover:underline">Completar →</button>}
-            >
-              <div className="h-1.5 overflow-hidden rounded-full bg-zinc-800" aria-hidden="true">
-                <span className="block h-full rounded-full bg-accent transition-all" style={{ width: `${(fichaLista / ficha.length) * 100}%` }} />
-              </div>
-              <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2">
-                {ficha.map((f) => (
-                  <li key={f.campo} className={`flex items-center gap-2 text-xs ${f.listo ? 'text-zinc-300' : 'text-zinc-500'}`}>
-                    <span className={f.listo ? 'text-positive' : 'text-zinc-600'} aria-hidden="true">{f.listo ? '✓' : '○'}</span>
-                    {f.campo}
+          {/* Sugerencias del día */}
+          {sugerencias.length > 0 && (
+            <section className="overflow-hidden rounded-3xl bg-gradient-to-br from-accent/[0.10] via-accent/[0.04] to-transparent ring-1 ring-inset ring-accent/15">
+              <p className="flex items-center gap-2 px-6 pt-5 text-sm font-semibold text-accent">
+                <span className="relative flex h-2 w-2" aria-hidden="true">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60 motion-reduce:hidden" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
+                </span>
+                Para hoy
+              </p>
+              <ul className="divide-y divide-accent/10 px-6 pb-2">
+                {sugerencias.slice(0, 3).map((s) => (
+                  <li key={s.id} className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center">
+                    <p className="min-w-0 flex-1 text-[0.9375rem] leading-relaxed text-zinc-400">{s.texto}</p>
+                    <BotonPrimario onClick={s.accion}>{s.boton}</BotonPrimario>
                   </li>
                 ))}
               </ul>
-            </Marco>
+            </section>
+          )}
 
-            {/* Resultados */}
-            <Marco nombre="Resultados" titulo="Tus últimos resultados" className="xl:col-span-2"
-              accion={<Link href="/dashboard/resultados/nuevo" className="text-accent hover:underline">+ Cargar resultado</Link>}
-            >
-              {auctionResults.length === 0 ? (
-                <Vacio
-                  titulo="Todavía no cargaste resultados."
-                  texto="Cargá los promedios de cada remate: arman tu historial de precios y, con PRO, se comparan contra el Valor de Referencia de esa semana."
-                />
+          {/* Alcance: lo que la plataforma hizo por la firma, con número real. */}
+          <Tarjeta titulo="Tu alcance" bajada="Lo que movimos por tu firma en los últimos 30 días.">
+            <div className="grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-4">
+              {esPro && busquedasGoogle?.d28 ? (
+                <Numero etiqueta="Veces que apareciste en Google" valor={busquedasGoogle.d28.impresiones} detalle={`${fmt(busquedasGoogle.d28.clics)} entraron a tu ficha`} tono="accent" />
+              ) : null}
+              <Numero etiqueta="Visitas a tu perfil" valor={viewCount} detalle={provincialRank.position > 0 ? `#${provincialRank.position} en ${provincialRank.province} por remates` : undefined} />
+              {esPro ? (
+                <Numero etiqueta="Productores que reciben tus remates" valor={alcanceMail} detalle="En el mail semanal, primero" />
               ) : (
-                <ul className="divide-y divide-terminal-border">
-                  {auctionResults.slice(0, 5).map((r) => (
-                    <li key={r.id} className="flex items-center gap-4 py-2.5 text-sm">
-                      <span className="w-14 shrink-0 text-xxs tabular-nums text-zinc-500">{formatDate(r.auction_date)}</span>
-                      <span className="min-w-0 flex-1 truncate text-ink">{r.auction_title}</span>
-                      {r.total_heads_sold != null && <span className="hidden text-xxs tabular-nums text-zinc-500 sm:inline">{fmt(r.total_heads_sold)} cab.</span>}
-                      {r.average_price != null && <span className="text-xs tabular-nums text-ink">${Number(r.average_price).toLocaleString('es-AR')}</span>}
+                <Numero etiqueta="Productores que te siguen" valor={followersCount} detalle="Reciben tus remates" />
+              )}
+              {esPro && origenVisitas && origenVisitas.iasTotal > 0 ? (
+                <Numero etiqueta="Visitas desde una IA" valor={origenVisitas.iasTotal} detalle="ChatGPT, Gemini y otras · 90 días" />
+              ) : (
+                <Numero etiqueta="Consultas" valor={leadsCount} detalle={leadsCount ? 'En los últimos 30 días' : 'Todavía ninguna este mes'} />
+              )}
+            </div>
+            {!esPro && (
+              <p className="mt-5 border-t border-terminal-border pt-4 text-sm text-zinc-500">
+                Con PRO tus remates salen primeros en el mail semanal a {fmt(alcanceMail)} productores y ves cuántas veces te mostró Google.{' '}
+                <Link href="/planes?audience=consignataria&from=alcance" className="font-semibold text-accent hover:underline">Ver PRO →</Link>
+              </p>
+            )}
+          </Tarjeta>
+
+          <div className="grid grid-cols-[minmax(0,1fr)] gap-6 xl:grid-cols-5">
+            <Tarjeta titulo="Próximos remates" accion={<button onClick={() => irA('remates')} className="font-medium text-accent hover:underline">Ver todos</button>} className="xl:col-span-3">
+              {proximos.length === 0 ? (
+                <Vacio titulo="No hay remates próximos." texto="Subí el flyer del próximo y lo distribuimos." accion={<BotonPrimario onClick={() => { setAbrirCarga(true); irA('remates') }}>Cargar remate</BotonPrimario>} />
+              ) : (
+                <ul className="space-y-4">
+                  {proximos.slice(0, 3).map((a, i) => (
+                    <li key={`${a.date}-${i}`} className="flex items-center gap-4">
+                      <BloqueFecha fecha={a.date} />
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-[0.9375rem] font-medium text-ink">{a.title}</p>
+                        <p className="truncate text-sm text-zinc-500">{[a.time ? `${a.time} hs` : null, a.location].filter(Boolean).join(' · ')}</p>
+                      </div>
+                      <button type="button" onClick={() => setCompartirInicio(a)} className="shrink-0 rounded-full bg-accent/10 px-3.5 py-1.5 text-sm font-semibold text-accent hover:bg-accent/20">
+                        Compartir
+                      </button>
                     </li>
                   ))}
                 </ul>
               )}
-            </Marco>
+            </Tarjeta>
+            <Tarjeta titulo="Consultas" accion={leads.length > 0 ? <button onClick={() => irA('leads')} className="font-medium text-accent hover:underline">Ver todas</button> : undefined} className="xl:col-span-2">
+              <ConsultasLista consultas={leads} esPro={esPro} max={3} />
+            </Tarjeta>
           </div>
         </>
       )}
 
       {/* Inicio de una cuenta sin firma verificada (claims, frigorífico, nueva) */}
-      {activeTab === 'resumen' && !consignataria?.verified && (
+      {seccion === 'resumen' && !consignataria?.verified && (
         <>
-          {encabezado('Inicio', frigorifico?.display_name ?? 'Tu panel', email)}
+          {encabezado(`Hola`, email)}
           {claims.length > 0 && (
-            <Marco nombre="Solicitudes" titulo="Mis solicitudes" cuerpo="p-0">
+            <Tarjeta titulo="Mis solicitudes" cuerpo="px-5 pb-4 sm:px-6">
               <ul className="divide-y divide-terminal-border">
                 {claims.map(claim => (
-                  <li key={claim.id} className="flex items-center gap-4 px-5 py-3">
+                  <li key={claim.id} className="flex items-center gap-4 py-3">
                     <span className="flex-1 text-sm text-ink">{claim.consignatarias?.display_name || claim.consignataria_slug}</span>
-                    <span className={`rounded-sm border px-1.5 py-0.5 text-[0.625rem] font-semibold ${
-                      claim.status === 'pending' ? 'border-warning/40 text-warning'
-                        : claim.status === 'approved' ? 'border-positive/40 text-positive'
-                        : 'border-negative/40 text-negative'
+                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                      claim.status === 'pending' ? 'bg-warning/10 text-warning'
+                        : claim.status === 'approved' ? 'bg-positive/10 text-positive'
+                        : 'bg-negative/10 text-negative'
                     }`}>
                       {claim.status === 'pending' ? 'Pendiente' : claim.status === 'approved' ? 'Aprobada' : 'Rechazada'}
                     </span>
                   </li>
                 ))}
               </ul>
-            </Marco>
+            </Tarjeta>
           )}
           {!hasVerified && hasPendingClaim && <ClaimEnEspera claims={claims} />}
           {!consignataria && !frigorifico && claims.length === 0 && frigoClaims.length === 0 && (
-            <Marco nombre="Primeros pasos" titulo="Reclamá tu firma">
-              <p className="max-w-xl text-sm text-zinc-400">
-                Buscá tu consignataria o tu frigorífico y reclamá el perfil. Cuando lo verifiquemos, este panel se abre con tus remates, tus consultas y tus números.
-              </p>
-              <div className="mt-5 flex flex-wrap gap-2">
-                <BotonPrimario href="/consignatarias">Buscar mi consignataria →</BotonPrimario>
+            <Tarjeta titulo="Reclamá tu firma" bajada="Cuando la verifiquemos, este panel se abre con tus remates, tus consultas y tus números.">
+              <div className="flex flex-wrap gap-2">
+                <BotonPrimario href="/consignatarias">Buscar mi consignataria</BotonPrimario>
                 <BotonSecundario href="/frigorificos">Buscar mi frigorífico</BotonSecundario>
               </div>
-            </Marco>
+            </Tarjeta>
           )}
           {frigorifico && (
-            <Marco nombre="Frigorífico" titulo={frigorifico.display_name}
-              accion={<button onClick={() => irA('frigorifico')} className="text-accent hover:underline">Abrir →</button>}
-            >
-              <dl className="grid grid-cols-2 gap-4">
-                <div><dt className="text-xxs text-zinc-500">Productos en catálogo</dt><dd className="text-2xl font-semibold tabular-nums text-ink">{fmt(frigoProducts.length)}</dd></div>
-                <div><dt className="text-xxs text-zinc-500">Pedidos recibidos</dt><dd className="text-2xl font-semibold tabular-nums text-ink">{fmt(frigoRfqs.length)}</dd></div>
-              </dl>
-            </Marco>
+            <Tarjeta titulo={frigorifico.display_name} accion={<button onClick={() => irA('frigorifico')} className="font-medium text-accent hover:underline">Abrir</button>}>
+              <div className="grid grid-cols-2 gap-6">
+                <Numero etiqueta="Productos en catálogo" valor={frigoProducts.length} />
+                <Numero etiqueta="Pedidos recibidos" valor={frigoRfqs.length} />
+              </div>
+            </Tarjeta>
           )}
         </>
       )}
 
-      {/* ============ CONSULTAS ============ */}
-      {activeTab === 'leads' && consignataria?.verified && (
+      {/* ============ REMATES (con sus pre-ofertas) ============ */}
+      {seccion === 'remates' && consignataria?.verified && (
         <>
-          {encabezado(
-            'Consultas',
-            'Quién te buscó',
-            'Cada consulta entra como “Nueva”. Movela de etapa cuando le escribas y anotá lo que hablaron: queda guardado en tu cuenta.',
-          )}
-          <ConsultasCRM slug={consignataria.canonical_slug} inicial={leads} esPro={esPro} soloLectura={!!vistaAdmin} />
-        </>
-      )}
-
-      {/* ============ REMATES ============ */}
-      {activeTab === 'remates' && consignataria?.verified && (
-        <>
-          {encabezado(
-            'Remates',
-            'Tus remates',
-            'Cargá los nuevos y corregí los que el sitio encontró solo. Lo que cargás se ve al instante en tu perfil y en menos de una hora en el calendario y el mail semanal.',
-          )}
-          <AuctionManager
+          {encabezado('Remates', 'Cargá, compartí y abrí pre-ofertas para cada remate.')}
+          <RematesPanel
             slug={consignataria.canonical_slug}
-            displayName={consignataria.display_name}
-            ownerAuctions={ownerAuctions}
-            scrapedAuctions={scrapedAuctions}
-            onAuctionsChange={setOwnerAuctions}
+            firma={consignataria.display_name}
+            esPro={esPro}
+            propios={ownerAuctions}
+            calendario={scrapedAuctions}
+            preofertas={preofertasFirma}
+            ofertas={ofertasFirma}
+            soloLectura={!!vistaAdmin}
+            abrirNuevo={abrirCarga}
           />
         </>
       )}
 
-      {/* ============ RESULTADOS ============ */}
-      {activeTab === 'resultados' && consignataria && (
+      {/* ============ CONSULTAS ============ */}
+      {seccion === 'leads' && consignataria?.verified && (
         <>
-          {encabezado(
-            'Resultados',
-            'Promedios de tus remates',
-            'Cabezas vendidas y precio por categoría de cada remate. Es tu historial de precios.',
-            <BotonPrimario href="/dashboard/resultados/nuevo">+ Cargar resultado</BotonPrimario>,
+          {encabezado('Consultas', 'Productores que te escribieron desde tu perfil, la ficha de un remate o una pre-oferta. También te llegan por mail.')}
+          <Tarjeta>
+            <ConsultasLista consultas={leads} esPro={esPro} />
+          </Tarjeta>
+          {ofertasFirma.length > 0 && (
+            <Tarjeta titulo="Ofertas en tus pre-ofertas" bajada="Cada oferta trae el contacto del interesado." accion={<button onClick={() => irA('remates')} className="font-medium text-accent hover:underline">Ver por remate</button>}>
+              <ul className="divide-y divide-terminal-border">
+                {ofertasFirma.slice(0, 10).map((o) => (
+                  <li key={o.id} className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-3 text-sm">
+                    <span className="font-medium text-ink">{o.nombre ?? 'Sin nombre'}</span>
+                    <span className="text-zinc-500">{o.lote_titulo}</span>
+                    <span className="tabular-nums text-ink">{o.monto != null ? `$ ${fmt(o.monto)}` : 'Sin monto'}</span>
+                  </li>
+                ))}
+              </ul>
+            </Tarjeta>
           )}
-          <Marco nombre="Resultados" cuerpo="p-0">
+        </>
+      )}
+
+      {/* ============ RESULTADOS ============ */}
+      {seccion === 'resultados' && consignataria && (
+        <>
+          {encabezado('Resultados', 'Cabezas y precio por categoría de cada remate: tu historial de precios.', <BotonPrimario href="/dashboard/resultados/nuevo">Cargar resultado</BotonPrimario>)}
+          <Tarjeta cuerpo="p-0">
             {auctionResults.length > 0 ? (
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-terminal-border text-left text-xxs text-zinc-500">
-                    <th className="px-5 py-2.5 font-normal">Fecha</th>
-                    <th className="px-2 py-2.5 font-normal">Remate</th>
-                    <th className="hidden px-2 py-2.5 text-right font-normal sm:table-cell">Cabezas</th>
-                    <th className="px-2 py-2.5 text-right font-normal">Promedio</th>
-                    <th className="px-5 py-2.5" />
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-terminal-border">
-                  {auctionResults.map(r => (
-                    <tr key={r.id}>
-                      <td className="px-5 py-3 text-xxs tabular-nums text-zinc-500">{formatDate(r.auction_date)}</td>
-                      <td className="max-w-0 truncate px-2 py-3 text-ink">{r.auction_title}</td>
-                      <td className="hidden px-2 py-3 text-right tabular-nums text-zinc-400 sm:table-cell">{r.total_heads_sold != null ? fmt(r.total_heads_sold) : '—'}</td>
-                      <td className="px-2 py-3 text-right tabular-nums text-ink">{r.average_price != null ? `$${Number(r.average_price).toLocaleString('es-AR')}` : '—'}</td>
-                      <td className="px-5 py-3 text-right"><Link href={`/dashboard/resultados/${r.id}`} className="text-xs text-accent hover:underline">Editar</Link></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <ul className="divide-y divide-terminal-border">
+                {auctionResults.map(r => (
+                  <li key={r.id} className="flex items-center gap-4 px-5 py-4 sm:px-6">
+                    <span className="w-14 shrink-0 text-sm tabular-nums text-zinc-500">{formatDate(r.auction_date)}</span>
+                    <span className="min-w-0 flex-1 truncate text-[0.9375rem] text-ink">{r.auction_title}</span>
+                    {r.total_heads_sold != null && <span className="hidden text-sm tabular-nums text-zinc-500 sm:inline">{fmt(r.total_heads_sold)} cab.</span>}
+                    <span className="text-sm tabular-nums text-ink">{r.average_price != null ? `$${Number(r.average_price).toLocaleString('es-AR')}` : '—'}</span>
+                    <Link href={`/dashboard/resultados/${r.id}`} className="text-sm text-accent hover:underline">Editar</Link>
+                  </li>
+                ))}
+              </ul>
             ) : (
-              <div className="p-5">
+              <div className="p-5 sm:p-6">
                 <Vacio
                   titulo="Todavía no cargaste resultados."
-                  texto="Elegí el remate, cargá las cabezas y el precio por categoría. Te sugerimos los remates de los últimos 90 días que todavía no tienen resultado."
-                  accion={<BotonPrimario href="/dashboard/resultados/nuevo">+ Cargar el primero</BotonPrimario>}
+                  texto="Elegí el remate y cargá cabezas y precio por categoría. Te sugerimos los de los últimos 90 días."
+                  accion={<BotonPrimario href="/dashboard/resultados/nuevo">Cargar el primero</BotonPrimario>}
                 />
               </div>
             )}
-          </Marco>
-          <Marco nombre="Contra el mercado" titulo={esPro && resultadosVR && resultadosVR.length > 0 ? undefined : 'Tu precio contra el Valor de Referencia'} incrustado={!!(esPro && resultadosVR && resultadosVR.length > 0)}>
+          </Tarjeta>
+          <Tarjeta titulo={esPro && resultadosVR?.length ? undefined : 'Tu precio contra el mercado'} incrustado={!!(esPro && resultadosVR?.length)}>
             {esPro ? (
-              resultadosVR && resultadosVR.length > 0 ? (
-                <ResultadoVsMercado resultados={resultadosVR} />
-              ) : (
-                <Vacio titulo="Sin resultados para comparar." texto="Cuando cargues un resultado con precio por categoría, aparece acá contra el Valor de Referencia de esa semana." />
-              )
+              resultadosVR && resultadosVR.length > 0 ? <ResultadoVsMercado resultados={resultadosVR} /> : <Vacio titulo="Sin resultados para comparar." texto="Cuando cargues un resultado con precio por categoría, aparece acá contra el Valor de Referencia de esa semana." />
             ) : (
               <SoloPro titulo="Tu precio contra el mercado" beneficio="Cada categoría de tu remate contra el Valor de Referencia de esa semana. El número para pelear una consignación." desde="resultados" />
             )}
-          </Marco>
+          </Tarjeta>
         </>
       )}
 
-      {/* ============ PRE-OFERTAS ============ */}
-      {activeTab === 'preofertas' && consignataria?.verified && (
+      {/* ============ ESTADÍSTICAS ============ */}
+      {seccion === 'estadisticas' && consignataria?.verified && (
         <>
-          {encabezado('Pre-ofertas', 'Lotes y ofertas', 'Publicá un lote antes del remate y recibí ofertas de compradores.')}
-          <PreofertasManager slug={consignataria.canonical_slug} esPro={plan.isPro} inicial={preofertasFirma} ofertas={ofertasFirma} />
-        </>
-      )}
-
-      {/* ============ AUDIENCIA ============ */}
-      {activeTab === 'audiencia' && consignataria?.verified && (
-        <>
-          {encabezado('Audiencia', 'Quién te mira', 'Las visitas a tu perfil, de dónde llegan y qué buscan en Google cuando aparece tu ficha.')}
+          {encabezado('Estadísticas', 'Quién te mira, de dónde llega y cómo estás en el mercado.')}
           {esPro ? (
             <>
-              {performance && (
-                <Marco nombre="Mes contra mes" incrustado>
-                  <PerformanceMes perf={performance} />
-                </Marco>
-              )}
-              <Marco nombre="Origen de las visitas" incrustado={!!origenVisitas}>
+              {performance && <Tarjeta incrustado><PerformanceMes perf={performance} /></Tarjeta>}
+              <Tarjeta incrustado={!!origenVisitas} titulo={origenVisitas ? undefined : 'De dónde llegan'}>
                 {origenVisitas ? <OrigenVisitas d={origenVisitas} /> : <Vacio titulo="Todavía no hay visitas registradas." />}
-              </Marco>
-              <Marco nombre="Google" titulo={busquedasGoogle ? undefined : 'Lo que buscan en Google'} incrustado={!!busquedasGoogle}>
-                {busquedasGoogle ? (
-                  <BusquedasGoogle d={busquedasGoogle} />
-                ) : (
-                  <Vacio titulo="Todavía sin búsquedas." texto="Search Console se actualiza una vez por semana. Cuando tu ficha aparezca en Google, ves acá qué escribió la gente." />
-                )}
-              </Marco>
-              <Marco nombre="Distribución" titulo={distribucion ? undefined : 'A cuántos les llegaron tus remates'} incrustado={!!distribucion}>
-                {distribucion ? (
-                  <Distribucion dist={distribucion} />
-                ) : (
-                  <Vacio titulo="Tus remates todavía no salieron en el mail semanal." texto="Cada envío queda registrado con la cantidad de productores a los que les llegó." />
-                )}
-              </Marco>
+              </Tarjeta>
+              <Tarjeta incrustado={!!busquedasGoogle} titulo={busquedasGoogle ? undefined : 'Lo que buscan en Google'}>
+                {busquedasGoogle ? <BusquedasGoogle d={busquedasGoogle} /> : <Vacio titulo="Todavía sin búsquedas." texto="Search Console se actualiza una vez por semana." />}
+              </Tarjeta>
+              <Tarjeta incrustado={!!distribucion} titulo={distribucion ? undefined : 'A cuántos les llegaron tus remates'}>
+                {distribucion ? <Distribucion dist={distribucion} /> : <Vacio titulo="Tus remates todavía no salieron en el mail semanal." texto={`El próximo envío es el lunes, a ${fmt(alcanceMail)} productores.`} />}
+              </Tarjeta>
             </>
           ) : (
             <>
-              <Marco nombre="Este mes" cuerpo="p-0">
-                <div className="grid grid-cols-2 sm:grid-cols-3 [&>*]:border-terminal-border [&>*]:border-b sm:[&>*]:border-r">
-                  <Kpi etiqueta="Vistas de tu perfil" valor={viewCount} />
-                  <Kpi etiqueta="Clics en tu WhatsApp" valor={whatsappClicks} />
-                  <Kpi etiqueta="Productores que te siguen" valor={followersCount} />
+              <Tarjeta>
+                <div className="grid grid-cols-2 gap-6 sm:grid-cols-3">
+                  <Numero etiqueta="Visitas a tu perfil" valor={viewCount} />
+                  <Numero etiqueta="Clics en tu WhatsApp" valor={whatsappClicks} />
+                  <Numero etiqueta="Productores que te siguen" valor={followersCount} />
                 </div>
-              </Marco>
-              <SoloPro
-                titulo="Audiencia completa"
-                beneficio="Tus vistas día por día, si llegan desde Google, el calendario o una IA, qué escriben en Google cuando aparece tu ficha y a cuántos productores les llegó cada remate en el mail semanal."
-                desde="audiencia"
-              />
+              </Tarjeta>
+              <SoloPro titulo="Estadísticas completas" beneficio="Tus visitas día por día, si llegan desde Google, el calendario o una IA, qué escriben en Google cuando aparece tu ficha y a cuántos productores les llegó cada remate." desde="estadisticas" />
             </>
           )}
-        </>
-      )}
-
-      {/* ============ MERCADO ============ */}
-      {activeTab === 'mercado' && consignataria?.verified && (
-        <>
-          {encabezado('Mercado', 'Tu firma en el mercado', 'Con quién compartís fecha en tu provincia y cómo se mueve el Mercado de Cañuelas.')}
-          <Marco nombre="Agenda regional" titulo={agenda ? undefined : 'Tu agenda contra la de tu provincia'} incrustado={!!agenda}>
+          <Tarjeta incrustado={!!agenda} titulo={agenda ? undefined : 'Tu agenda contra la de tu provincia'}>
             {agenda ? <AgendaRegionalPanel a={agenda} /> : <Vacio titulo="Sin remates en tu provincia para comparar." />}
-          </Marco>
-          {hayDatosMag && (
-            esPro ? (
-              <>
-                {territorio && <Marco nombre="Territorio" incrustado><TerritorioPanel t={territorio} titular={territorioTitular} /></Marco>}
-                {cartera && <Marco nombre="Cartera" incrustado><CarteraPanel c={cartera} /></Marco>}
-                {benchmark && <Marco nombre="Precio" incrustado><BenchmarkMercado b={benchmark} /></Marco>}
-                {participacion && <Marco nombre="Participación" incrustado><ParticipacionMercado p={participacion} /></Marco>}
-              </>
-            ) : (
-              <SoloPro
-                titulo="Tu negocio en Cañuelas"
-                beneficio="Tu cartera de remitentes (quién dejó de consignarte y a quién le ganaste un cliente), tu precio contra el promedio de las 22 casas, tu cuota y en qué partidos no tenés remitentes."
-                desde="mercado"
-              />
-            )
-          )}
-          <Marco nombre="Cañuelas" incrustado>
-            <MagPulse />
-          </Marco>
-          <Marco nombre="Competencia" incrustado>
-            <MarketIntelPanel />
-          </Marco>
+          </Tarjeta>
+          {hayDatosMag && (esPro ? (
+            <>
+              {territorio && <Tarjeta incrustado><TerritorioPanel t={territorio} titular={territorioTitular} /></Tarjeta>}
+              {cartera && <Tarjeta incrustado><CarteraPanel c={cartera} /></Tarjeta>}
+              {benchmark && <Tarjeta incrustado><BenchmarkMercado b={benchmark} /></Tarjeta>}
+              {participacion && <Tarjeta incrustado><ParticipacionMercado p={participacion} /></Tarjeta>}
+            </>
+          ) : (
+            <SoloPro titulo="Tu negocio en Cañuelas" beneficio="Tu cartera de remitentes, tu precio contra el promedio de las 22 casas, tu cuota y en qué partidos no tenés remitentes." desde="mercado" />
+          ))}
+          <Tarjeta incrustado><MagPulse /></Tarjeta>
+          <Tarjeta incrustado><MarketIntelPanel /></Tarjeta>
         </>
       )}
 
-      {/* ============ PERFIL ============ */}
-      {activeTab === 'editar' && consignataria?.verified && (
+      {/* ============ MI FICHA ============ */}
+      {seccion === 'editar' && consignataria?.verified && (
         <>
-          {encabezado(
-            'Perfil',
-            'Tu ficha pública',
-            'Lo que ve el productor cuando entra a tu perfil.',
-            <BotonSecundario href={`/consignatarias/${consignataria.canonical_slug}`}>Ver tu perfil ↗</BotonSecundario>,
-          )}
+          {encabezado('Mi ficha', 'Lo que ve el productor cuando entra a tu perfil.', <BotonSecundario href={`/consignatarias/${consignataria.canonical_slug}`}>Ver mi perfil ↗</BotonSecundario>)}
+          <Tarjeta titulo="Tu página con QR" bajada="Tu página con tus próximos remates y un botón para consultarte. Ideal para catálogos, tarjetas y carteles.">
+            <CompartirRemate
+              q={{
+                url: `${sitio}/go/${consignataria.canonical_slug}`,
+                firma: consignataria.display_name,
+                rotulo: 'Mis remates',
+                titulo: consignataria.display_name,
+                detalle: prox ? `Próximo remate: ${new Date(prox.date + 'T12:00:00').toLocaleDateString('es-AR', { day: 'numeric', month: 'long' })}${prox.location ? ` · ${prox.location}` : ''}` : undefined,
+                archivo: `${consignataria.canonical_slug}-pagina`,
+                slugFirma: consignataria.canonical_slug,
+              }}
+            />
+          </Tarjeta>
           <ProfileEditForm
             slug={consignataria.canonical_slug}
             initial={{
@@ -995,46 +851,28 @@ export default function DashboardClient({
             }}
             logoUrl={consignataria.logo_url}
           />
-          <Marco nombre="Link y QR" titulo="Tu página con QR">
-            <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
-              <QRCode url={`${linkGo}?utm_source=qr`} size={140} showDownload={true} />
-              <div className="flex-1 space-y-3">
-                <p className="text-sm text-zinc-400">
-                  Usalo en catálogos, tarjetas y carteles: el que lo escanea ve tu próximo remate y te puede consultar.
-                </p>
-                <p className="break-all rounded-md border border-terminal-border bg-terminal-bg/40 px-3 py-2 font-mono text-xs text-zinc-300">{linkGo}</p>
-                <div className="flex flex-wrap gap-2">
-                  <BotonSecundario onClick={() => { navigator.clipboard.writeText(linkGo); trackEvent('referral_link_copy', { consignataria_slug: consignataria.canonical_slug, surface: 'dashboard_qr' }) }}>Copiar link</BotonSecundario>
-                  <BotonSecundario href={`https://wa.me/?text=${encodeURIComponent(`Mirá mis próximos remates: ${linkGo}`)}`} externo>Compartir por WhatsApp</BotonSecundario>
-                  <BotonSecundario href={`/api/calendario/${consignataria.canonical_slug}`}>Agregar al calendario</BotonSecundario>
-                </div>
-              </div>
-            </div>
-          </Marco>
-          <Marco nombre="Widget" titulo="Tus remates en tu web">
+          <Tarjeta titulo="Tus remates en tu web" bajada="Un código que se pega una vez y se actualiza solo.">
             {esPro ? (
               <div className="space-y-3">
-                <p className="text-sm text-zinc-400">Copiá este código y pegalo en tu sitio. Se actualiza solo con tus remates.</p>
-                <pre className="overflow-x-auto rounded-md border border-terminal-border bg-terminal-bg/40 p-3 font-mono text-[0.6875rem] text-zinc-300">
-                  {`<iframe src="https://consignatarias.com.ar/api/widget/${consignataria.canonical_slug}" width="400" height="300" frameborder="0"></iframe>`}
+                <pre className="overflow-x-auto rounded-xl bg-terminal-bg/60 p-4 font-mono text-xs text-zinc-300">
+                  {`<iframe src="${sitio}/api/widget/${consignataria.canonical_slug}" width="400" height="300" frameborder="0"></iframe>`}
                 </pre>
                 <div className="flex flex-wrap gap-2">
-                  <BotonSecundario onClick={() => { navigator.clipboard.writeText(`<iframe src="https://consignatarias.com.ar/api/widget/${consignataria.canonical_slug}" width="400" height="300" frameborder="0"></iframe>`); trackEvent('widget_code_copy', { consignataria_slug: consignataria.canonical_slug }) }}>Copiar código</BotonSecundario>
-                  <BotonSecundario href={`/api/widget/${consignataria.canonical_slug}?theme=light`} externo>Ver tema claro</BotonSecundario>
-                  <BotonSecundario href={`/api/widget/${consignataria.canonical_slug}?theme=dark`} externo>Ver tema oscuro</BotonSecundario>
+                  <BotonSecundario onClick={() => { navigator.clipboard.writeText(`<iframe src="${sitio}/api/widget/${consignataria.canonical_slug}" width="400" height="300" frameborder="0"></iframe>`); trackEvent('widget_code_copy', { consignataria_slug: consignataria.canonical_slug }) }}>Copiar código</BotonSecundario>
+                  <BotonSecundario href={`/api/widget/${consignataria.canonical_slug}?theme=light`} externo>Ver cómo queda</BotonSecundario>
                 </div>
               </div>
             ) : (
-              <SoloPro titulo="Widget de remates" beneficio="Tus próximos remates en tu propia web, con un código que se pega una vez y se actualiza solo." desde="widget" />
+              <SoloPro titulo="Widget de remates" beneficio="Tus próximos remates en tu propia web, siempre al día." desde="widget" />
             )}
-          </Marco>
+          </Tarjeta>
         </>
       )}
 
       {/* ============ MI PLAN ============ */}
-      {activeTab === 'plan' && (
+      {seccion === 'plan' && (
         <>
-          {encabezado('Mi plan', esPro ? `PRO Consignataria` : 'Plan FREE', esPro && subscription?.current_period_end ? `Activo hasta el ${new Date(subscription.current_period_end).toLocaleDateString('es-AR')}.` : undefined)}
+          {encabezado('Mi plan', esPro ? 'PRO Consignataria' : 'Plan gratis', undefined)}
           <SubscriptionPanel tier={tierLabel} subscription={subscription} plan={plan} />
           {consignataria?.verified && !esPro && (
             <div>
@@ -1054,24 +892,23 @@ export default function DashboardClient({
                 alreadyRedeemed={hasRedeemed}
                 onRedeem={handleRedeemPoints}
               />
-              {redeemError && <p className="mt-2 text-xs text-negative">{redeemError}</p>}
-              {isRedeeming && <p className="mt-2 text-xs text-warning">Canjeando puntos…</p>}
+              {redeemError && <p className="mt-2 text-sm text-negative">{redeemError}</p>}
+              {isRedeeming && <p className="mt-2 text-sm text-warning">Canjeando puntos…</p>}
             </div>
           )}
           {esPro && consignataria && (
-            <Marco nombre="Reporte" titulo="Reporte mensual en PDF">
-              <p className="text-sm text-zinc-400">Tus vistas, consultas y remates del mes, listo para compartir.</p>
-              <div className="mt-4"><BotonSecundario href={`/api/consignatarias/${consignataria.canonical_slug}/report`}>Descargar reporte</BotonSecundario></div>
-            </Marco>
+            <Tarjeta titulo="Reporte mensual en PDF" bajada="Tus visitas, consultas y remates del mes, listo para compartir.">
+              <BotonSecundario href={`/api/consignatarias/${consignataria.canonical_slug}/report`}>Descargar reporte</BotonSecundario>
+            </Tarjeta>
           )}
           {!vistaAdmin && <CambiarContrasena />}
         </>
       )}
 
       {/* ============ FRIGORÍFICO ============ */}
-      {activeTab === 'frigorifico' && frigorifico && (
+      {seccion === 'frigorifico' && frigorifico && (
         <>
-          {encabezado('Frigorífico', frigorifico.display_name, undefined, <BotonSecundario href={`/frigorificos/${frigorifico.cuit}`}>Ver perfil público ↗</BotonSecundario>)}
+          {encabezado(frigorifico.display_name, undefined, <BotonSecundario href={`/frigorificos/${frigorifico.cuit}`}>Ver perfil público ↗</BotonSecundario>)}
           {frigorifico.verified && <FrigoProCTA cuit={frigorifico.cuit} email={email} isPro={frigoIsPro} />}
           {frigorifico.verified && (
             <>
@@ -1081,64 +918,40 @@ export default function DashboardClient({
           )}
         </>
       )}
-      {activeTab === 'catalogo' && frigorifico && (
+      {seccion === 'catalogo' && frigorifico && (
         <>
-          {encabezado('Catálogo', 'Productos de carne')}
+          {encabezado('Catálogo', 'Tus productos de carne.')}
           <FrigoProductManager cuit={frigorifico.cuit} initial={frigoProducts} />
         </>
       )}
-      {activeTab === 'pedidos' && frigorifico && (
+      {seccion === 'pedidos' && frigorifico && (
         <>
-          {encabezado('Pedidos', 'Pedidos mayoristas')}
+          {encabezado('Pedidos', 'Pedidos mayoristas que te llegaron.')}
           <FrigoPedidos rfqs={frigoRfqs} />
         </>
       )}
         </main>
       </div>
       </div>
-    </div>
-  )
-}
 
-const TONO_ETAPA_BARRA: Record<Etapa, string> = {
-  new: 'bg-accent',
-  contacted: 'bg-warning',
-  converted: 'bg-positive',
-  archived: 'bg-zinc-600',
-}
-
-const URGENCIA_TONO: Record<'urgente' | 'atencion' | 'buena' | 'info', string> = {
-  urgente: 'bg-negative',
-  atencion: 'bg-warning',
-  buena: 'bg-positive',
-  info: 'bg-zinc-500',
-}
-
-/** Barras de vistas por día (30 días). Un día sin vistas es una raya en cero, no un hueco. */
-function BarrasDiarias({ datos }: { datos: { dia: string; vistas: number }[] }) {
-  const max = Math.max(1, ...datos.map((d) => d.vistas))
-  const total = datos.reduce((s, d) => s + d.vistas, 0)
-  const corto = (iso: string) => new Date(iso + 'T12:00:00').toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })
-  return (
-    <div>
-      <p className="text-xxs text-zinc-500">
-        <strong className="text-2xl font-semibold tabular-nums text-ink">{fmt(total)}</strong> vistas en 30 días
-      </p>
-      <div className="mt-4 flex h-36 items-end gap-[3px]" role="img" aria-label={`Vistas por día, ${fmt(total)} en total`}>
-        {datos.map((d) => (
-          <span
-            key={d.dia}
-            title={`${corto(d.dia)}: ${d.vistas}`}
-            className={`flex-1 rounded-t-sm ${d.vistas ? 'bg-accent' : 'bg-zinc-800'}`}
-            style={{ height: d.vistas ? `${Math.max(4, (d.vistas / max) * 100)}%` : '2px' }}
-          />
-        ))}
-      </div>
-      {datos.length > 0 && (
-        <div className="mt-2 flex justify-between text-[0.625rem] text-zinc-500">
-          <span>{corto(datos[0].dia)}</span>
-          <span>{corto(datos[datos.length - 1].dia)}</span>
-        </div>
+      {consignataria && (
+        <Hoja abierta={compartirInicio != null} titulo={compartirInicio === 'firma' ? 'Compartir mi página' : 'Compartir remate'} bajada="Mandalo por WhatsApp, subí la tarjeta a tu estado o imprimí el QR." onCerrar={() => setCompartirInicio(null)}>
+          {compartirInicio != null && (
+            <CompartirRemate
+              q={compartirInicio === 'firma'
+                ? { url: `${sitio}/go/${consignataria.canonical_slug}`, firma: consignataria.display_name, rotulo: 'Mis remates', titulo: consignataria.display_name, archivo: `${consignataria.canonical_slug}-pagina`, slugFirma: consignataria.canonical_slug }
+                : {
+                    url: compartirInicio.path ? `${sitio}${compartirInicio.path}` : `${sitio}/go/${consignataria.canonical_slug}`,
+                    firma: consignataria.display_name,
+                    rotulo: 'Próximo remate',
+                    titulo: compartirInicio.title,
+                    detalle: [new Date(compartirInicio.date + 'T12:00:00').toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }), compartirInicio.time ? `${compartirInicio.time} hs` : null, compartirInicio.location || null].filter(Boolean).join(' · '),
+                    archivo: `remate-${compartirInicio.date}`,
+                    slugFirma: consignataria.canonical_slug,
+                  }}
+            />
+          )}
+        </Hoja>
       )}
     </div>
   )

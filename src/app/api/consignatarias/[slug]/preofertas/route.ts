@@ -42,6 +42,7 @@ export async function POST(req: NextRequest, { params }: Props) {
       lugar: d.lugar ?? null,
       cierre: new Date(d.cierre).toISOString(),
       condiciones: d.condiciones ?? null,
+      remate_clave: d.remate_clave ?? null,
       estado: 'borrador',
     })
     .select('id')

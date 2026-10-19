@@ -62,7 +62,7 @@ export function armarRematesNewsletter(
 }
 
 /**
- * El remate que encabeza el mail (19-10-2026): uno PRO, el que más dice de sí mismo.
+ * El remate que encabeza el mail (18-10-2026): uno PRO, el que más dice de sí mismo.
  * Primero el que tiene descripción cargada (la firma contó qué remata), después el de
  * más cabezas, después el más próximo. Sin PRO en la semana, no hay destacado.
  */
