@@ -162,6 +162,13 @@ export function esAutomatica(asunto: string, texto: string, headers: Record<stri
   return /(respuesta autom[aá]tica|fuera de (la )?oficina|out of office|automatic reply|auto(-| )?reply|vacaciones hasta|delivery status notification|undeliverable|no se pudo entregar|mail delivery failed)/.test(s)
 }
 
+/** Remitentes de sistemas (bienvenidas, notificaciones, rebotes): no son personas, no se escalan. */
+export function esRemitenteSistema(de: string): boolean {
+  const [local = '', dominio = ''] = de.toLowerCase().split('@')
+  if (/^(no-?reply|do-?not-?reply|mailer-daemon|postmaster|notifications?|notificaciones|news(letter)?|marketing|bounce[s]?)([.+_-].*)?$/.test(local)) return true
+  return /(^|\.)(hostinger\.com|email\.hostinger\.com|resend\.(com|dev)|amazonses\.com|google\.com|vercel\.com|github\.com)$/.test(dominio)
+}
+
 /** Lo que el productor escribió encima, sin la cita del correo anterior. */
 export function sinCita(texto: string): string {
   const lineas = texto.replace(/\r\n/g, '\n').split('\n')

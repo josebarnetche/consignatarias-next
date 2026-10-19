@@ -25,6 +25,14 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 - **Ops** abre con crons en rojo y errores; Mi Ganado plegado al fondo. **Directorio** con editor en panel lateral y lista paginada. **Suscriptores** con buscador y CSV. Campos, Reseñas, Productos, Pre-ofertas, Propuestas y Calculadora con el mismo kit (`src/components/admin/kit.tsx`, `kit-client.tsx`).
 - Sin cambios de URL ni de API: siguen los enlaces de los mails, el digest de leads y `?slug=`. `/admin/overview` baja de 2 hex a 0 (baseline del ratchet).
 
+## [1.235.2] — 2026-10-19
+
+### Agente: los mails de sistemas no se le escalan a José
+
+El primer correo que recibió la casilla fue la bienvenida de Hostinger, y el agente se la escaló
+a José como "correo sin caso". Ahora un correo sin caso que viene de un sistema (no-reply,
+notificaciones, rebotes, Hostinger, Resend, Google...) se registra y no se escala.
+
 ## [1.235.1] — 2026-10-19
 
 ### Agente: debajo de 40 cabezas no se ofrece

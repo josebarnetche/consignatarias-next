@@ -5,6 +5,7 @@ import {
   comprometePrecio,
   debeEscalar,
   esAutomatica,
+  esRemitenteSistema,
   faltantes,
   filtraContacto,
   horarioHabil,
@@ -69,6 +70,13 @@ describe('reglas', () => {
     expect(esAutomatica('Respuesta automática: fuera de la oficina', '')).toBe(true)
     expect(esAutomatica('Re: Hacienda', 'ok', { 'auto-submitted': 'auto-replied' })).toBe(true)
     expect(esAutomatica('Re: Hacienda', 'ACEPTO')).toBe(false)
+  })
+
+  it('reconoce remitentes de sistemas', () => {
+    expect(esRemitenteSistema('team@email.hostinger.com')).toBe(true)
+    expect(esRemitenteSistema('no-reply@algo.com')).toBe(true)
+    expect(esRemitenteSistema('hacienda@frigorifico.com.ar')).toBe(false)
+    expect(esRemitenteSistema('juanpg@gmail.com')).toBe(false)
   })
 
   it('separa lo escrito de la cita', () => {
