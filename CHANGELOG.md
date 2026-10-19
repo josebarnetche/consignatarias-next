@@ -7,6 +7,17 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.233.0] — 2026-10-19
+
+### Cargar un remate: se completa solo
+
+Pensado para la firma que recién entra (Reggi): poner fecha y lugar alcanza, el resto lo calcula el panel (`lib/panel/remate-auto.ts` + test).
+
+- **"¿Es uno de estos?"**: arriba de la carga aparecen los próximos remates que el sitio ya encontró en su web y la firma no completó. Con un toque se llenan fecha, hora, lugar, provincia, tipo y descripción, y solo falta subir el flyer.
+- **Donde ya rematás**: botones con los lugares que la firma usó antes. Un toque completa lugar y provincia, y si escribe un lugar conocido la provincia se completa sola. Lo que viene de su web como "EA. Aguay, CORRIENTES" queda en "EA. Aguay" y la provincia en su campo.
+- **El nombre es opcional**: si queda vacío se arma con el tipo y el lugar ("Remate de invernada en Mercedes") y se muestra antes de guardar.
+- **Qué pasa al guardar**, calculado de la fecha: cuántos días faltan, que sale en el perfil y el calendario, y en qué mail semanal entra y a cuántos productores. En PRO va primero; en FREE entra si queda lugar. Si ya no llega a ningún envío, se dice.
+
 ## [1.232.0] — 2026-10-18
 
 ### Formularios simples y el reporte mensual que no bajaba

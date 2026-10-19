@@ -8,6 +8,7 @@ import { mensajeError } from '@/lib/ui/mensaje-error'
 import { provinciaNombre } from '@/lib/ui/tokens'
 import type { OfertaRecibida, PreofertaFirma } from '@/lib/preofertas-firma'
 import { videoDelLote } from '@/lib/validators/preoferta-firma'
+import { diasHasta, lugaresHabituales, lunesDelMail, sinProvincia, tituloSugerido } from '@/lib/panel/remate-auto'
 import CompartirRemate from './CompartirRemate'
 import { BloqueFecha, BotonPrimario, BotonSecundario, Hoja, SoloPro, Vacio, fmt } from './PanelUi'
 
@@ -123,6 +124,7 @@ export default function RematesPanel({
   ofertas,
   soloLectura = false,
   abrirNuevo = false,
+  alcanceMail = 0,
 }: {
   slug: string
   firma: string
@@ -134,6 +136,8 @@ export default function RematesPanel({
   soloLectura?: boolean
   /** Abre la hoja de carga al entrar (desde "Cargar remate" en Inicio). */
   abrirNuevo?: boolean
+  /** Productores que reciben el mail semanal: lo muestra la carga como resultado. */
+  alcanceMail?: number
 }) {
   const [propios, setPropios] = useState(propiosIniciales)
   const [preofertas, setPreofertas] = useState(preofertasIniciales)
@@ -177,6 +181,9 @@ export default function RematesPanel({
   }, [propios, calendario, corregidas])
 
   const proximos = items.filter((i) => i.date >= hoy)
+  /** Los que el sitio encontró en su web y la firma todavía no completó: cargar uno es elegirlo. */
+  const sinCompletar = proximos.filter((i) => !i.propio)
+  const lugares = useMemo(() => lugaresHabituales(items), [items])
   const anteriores = items.filter((i) => i.date < hoy).reverse()
   const preofertaDe = (i: Item) =>
     preofertas.find((p) => p.remate_clave === i.clave) ?? preofertas.find((p) => !p.remate_clave && p.fecha_remate === i.date && p.titulo === i.title) ?? null
@@ -257,8 +264,14 @@ export default function RematesPanel({
       >
         {hoja?.tipo === 'editar' && (
           <FormRemate
+            key={hoja.item?.key ?? 'nuevo'}
             slug={slug}
             item={hoja.item}
+            esPro={esPro}
+            alcanceMail={alcanceMail}
+            sugeridos={hoja.item ? [] : sinCompletar}
+            lugares={lugares}
+            onElegir={(i) => setHoja({ tipo: 'editar', item: i })}
             onListo={(guardado, borradoId) => {
               if (borradoId != null) setPropios((ps) => ps.filter((x) => x.id !== borradoId))
               else if (guardado) setPropios((ps) => (ps.some((x) => x.id === guardado.id) ? ps.map((x) => (x.id === guardado.id ? { ...x, ...guardado } : x)) : [...ps, guardado]))
@@ -306,14 +319,33 @@ export default function RematesPanel({
 /*  Cargar / editar                                                     */
 /* ------------------------------------------------------------------ */
 
-function FormRemate({ slug, item, onListo }: { slug: string; item: Item | null; onListo: (guardado: RematePropio | null, borradoId?: number) => void }) {
+function FormRemate({
+  slug,
+  item,
+  esPro,
+  alcanceMail,
+  sugeridos,
+  lugares,
+  onElegir,
+  onListo,
+}: {
+  slug: string
+  item: Item | null
+  esPro: boolean
+  alcanceMail: number
+  sugeridos: Item[]
+  lugares: { location: string; province: string | null }[]
+  onElegir: (i: Item) => void
+  onListo: (guardado: RematePropio | null, borradoId?: number) => void
+}) {
   const router = useRouter()
   const base = item?.propio ?? item?.calendario ?? null
   const [f, setF] = useState({
     title: base?.title ?? '',
     date: base?.date ?? '',
     time: base?.time ?? '',
-    location: base?.location ?? '',
+    // Del calendario viene "EA. Aguay, CORRIENTES": la provincia ya va en su campo.
+    location: item?.calendario && !item.propio ? sinProvincia(base?.location ?? '', base?.province) : base?.location ?? '',
     province: base?.province ?? '',
     type: base?.type ?? 'general',
     main_category: base?.main_category ?? 'mixto',
@@ -328,6 +360,13 @@ function FormRemate({ slug, item, onListo }: { slug: string; item: Item | null; 
   const [subiendo, setSubiendo] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const set = (k: keyof typeof f) => (e: { target: { value: string } }) => setF((x) => ({ ...x, [k]: e.target.value }))
+  const nombreSolo = tituloSugerido(f)
+  /** Escribir un lugar donde ya remató completa la provincia. */
+  const setLugar = (location: string) =>
+    setF((x) => {
+      const conocido = lugares.find((l) => l.location.toLowerCase() === location.trim().toLowerCase())
+      return { ...x, location, province: x.province || conocido?.province || '' }
+    })
 
   async function subirFlyer(file: File) {
     setSubiendo(true)
@@ -352,6 +391,7 @@ function FormRemate({ slug, item, onListo }: { slug: string; item: Item | null; 
     setError(null)
     const payload = {
       ...f,
+      title: f.title.trim() || nombreSolo,
       estimated_heads: f.estimated_heads ? parseInt(f.estimated_heads, 10) : null,
       time: f.time || null,
       location: f.location || null,
@@ -379,6 +419,30 @@ function FormRemate({ slug, item, onListo }: { slug: string; item: Item | null; 
 
   return (
     <form onSubmit={guardar} className="space-y-5">
+      {sugeridos.length > 0 && (
+        <div className="rounded-2xl bg-accent/[0.06] p-4">
+          <p className="text-sm font-semibold text-ink">¿Es uno de estos? Ya los encontramos en tu web.</p>
+          <p className="mt-0.5 text-xs text-zinc-500">Tocalo y se completa solo; vos sumás el flyer.</p>
+          <ul className="mt-3 space-y-1.5">
+            {sugeridos.slice(0, 4).map((s) => (
+              <li key={s.key}>
+                <button
+                  type="button"
+                  onClick={() => onElegir(s)}
+                  className="flex w-full items-center gap-3 rounded-xl bg-terminal-panel px-3 py-2.5 text-left transition-colors hover:bg-zinc-800/60"
+                >
+                  <span className="shrink-0 text-xs font-semibold tabular-nums text-accent">
+                    {new Date(s.date + 'T12:00:00').toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })}
+                  </span>
+                  <span className="min-w-0 flex-1 truncate text-sm text-ink">{s.title}</span>
+                  <span className="shrink-0 text-xs text-zinc-500">Usar →</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {/* El flyer primero: es lo que la firma ya tiene hecho. */}
       <label className={`relative flex cursor-pointer flex-col items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed ${f.flyer_url ? 'border-transparent' : 'border-zinc-700 hover:border-accent'} bg-terminal-bg/60 text-center transition-colors ${f.flyer_url ? 'aspect-[4/5] max-h-80' : 'py-8'}`}>
         <input type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" disabled={subiendo} onChange={(e) => e.target.files?.[0] && subirFlyer(e.target.files[0])} />
@@ -402,10 +466,6 @@ function FormRemate({ slug, item, onListo }: { slug: string; item: Item | null; 
         </button>
       )}
 
-      <label className={ETIQUETA}>
-        Nombre del remate
-        <input required value={f.title} onChange={set('title')} placeholder="Ej. Remate de invernada en la Sociedad Rural" className={CAMPO} />
-      </label>
       <div className="grid grid-cols-2 gap-3">
         <label className={ETIQUETA}>
           Fecha
@@ -419,7 +479,7 @@ function FormRemate({ slug, item, onListo }: { slug: string; item: Item | null; 
       <div className="grid grid-cols-2 gap-3">
         <label className={ETIQUETA}>
           Lugar
-          <input value={f.location} onChange={set('location')} placeholder="Ej. Mercedes" className={CAMPO} />
+          <input value={f.location} onChange={(e) => setLugar(e.target.value)} placeholder="Ej. Mercedes" className={CAMPO} />
         </label>
         <label className={ETIQUETA}>
           Provincia
@@ -431,6 +491,27 @@ function FormRemate({ slug, item, onListo }: { slug: string; item: Item | null; 
           </select>
         </label>
       </div>
+      {lugares.length > 0 && (
+        <div className="-mt-2 flex flex-wrap items-center gap-1.5">
+          <span className="text-xs text-zinc-500">Donde ya rematás:</span>
+          {lugares.map((l) => (
+            <button
+              key={l.location}
+              type="button"
+              onClick={() => setF((x) => ({ ...x, location: l.location, province: l.province ?? x.province }))}
+              className={`rounded-full px-3 py-1 text-xs transition-colors ${f.location.trim().toLowerCase() === l.location.toLowerCase() ? 'bg-accent text-white oscuro:text-zinc-950' : 'bg-zinc-800/70 text-zinc-300 hover:bg-zinc-700/70'}`}
+            >
+              {lugarConProvincia(l.location, l.province)}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <label className={ETIQUETA}>
+        Nombre del remate <span className="font-normal text-zinc-500">(opcional)</span>
+        <input value={f.title} onChange={set('title')} placeholder={nombreSolo || 'Ej. Remate de invernada en la Sociedad Rural'} className={CAMPO} />
+        {!f.title.trim() && nombreSolo && <span className="mt-1 block text-xs font-normal text-zinc-500">Si no le ponés nombre, sale como «{nombreSolo}».</span>}
+      </label>
 
       <button type="button" onClick={() => setMasDatos(!masDatos)} className="text-sm font-medium text-accent" aria-expanded={masDatos}>
         {masDatos ? '− Menos datos' : '+ Más datos (cabezas, catálogo, video…)'}
@@ -470,6 +551,8 @@ function FormRemate({ slug, item, onListo }: { slug: string; item: Item | null; 
         </div>
       )}
 
+      {f.date && <QuePasa fecha={f.date} esPro={esPro} alcanceMail={alcanceMail} />}
+
       {error && <p className="rounded-xl bg-negative/10 px-4 py-3 text-sm text-negative" role="alert">{error}</p>}
       <div className="flex flex-wrap items-center gap-3 pt-1">
         <BotonPrimario type="submit" disabled={guardando || subiendo}>{guardando ? 'Guardando…' : 'Guardar remate'}</BotonPrimario>
@@ -478,6 +561,39 @@ function FormRemate({ slug, item, onListo }: { slug: string; item: Item | null; 
         )}
       </div>
     </form>
+  )
+}
+
+/** Lo que pasa con el remate apenas se guarda, calculado de la fecha. */
+function QuePasa({ fecha, esPro, alcanceMail }: { fecha: string; esPro: boolean; alcanceMail: number }) {
+  const hoy = hoyAr()
+  const dias = diasHasta(fecha, hoy)
+  const dia = new Date(fecha + 'T12:00:00').toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' })
+  if (dias < 0) {
+    return <p className="rounded-2xl bg-zinc-800/40 px-4 py-3 text-sm text-zinc-400">Esa fecha ya pasó ({dia}). Queda en tus remates anteriores.</p>
+  }
+  const cuando = dias === 0 ? 'Es hoy' : dias === 1 ? 'Es mañana' : `Faltan ${dias} días`
+  const lunes = lunesDelMail(fecha, hoy, new Date(Date.now() - 3 * 3_600_000).getUTCHours())
+  const lunesTxt = lunes ? new Date(lunes + 'T12:00:00').toLocaleDateString('es-AR', { day: 'numeric', month: 'numeric' }) : null
+  return (
+    <div className="rounded-2xl bg-zinc-800/40 p-4 text-sm">
+      <p className="font-semibold text-ink">
+        {cuando} <span className="font-normal text-zinc-500">· {dia}</span>
+      </p>
+      <ul className="mt-2 space-y-1 text-zinc-400">
+        <li>✓ Sale en tu perfil al guardar y en el calendario en menos de una hora.</li>
+        {alcanceMail > 0 && (
+          <li>
+            {lunesTxt
+              ? esPro
+                ? `✓ Va primero en el mail del lunes ${lunesTxt} a ${fmt(alcanceMail)} productores.`
+                : `✓ Entra en el mail del lunes ${lunesTxt} a ${fmt(alcanceMail)} productores si queda lugar (los PRO van primero).`
+              : '· Ya no llega al mail semanal: compartilo por WhatsApp con la tarjeta y el QR.'}
+          </li>
+        )}
+        <li>✓ Después lo compartís y le abrís pre-ofertas desde la tarjeta.</li>
+      </ul>
+    </div>
   )
 }
 

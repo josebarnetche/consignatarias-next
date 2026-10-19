@@ -711,6 +711,7 @@ export default function DashboardClient({
             ofertas={ofertasFirma}
             soloLectura={!!vistaAdmin}
             abrirNuevo={abrirCarga}
+            alcanceMail={alcanceMail}
           />
         </>
       )}
