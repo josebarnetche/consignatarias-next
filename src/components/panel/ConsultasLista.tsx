@@ -27,7 +27,7 @@ function hace(iso: string): string {
   if (dias <= 0) return 'hoy'
   if (dias === 1) return 'ayer'
   if (dias < 30) return `hace ${dias} días`
-  return new Date(iso).toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })
+  return new Date(iso).toLocaleDateString('es-AR', { day: 'numeric', month: 'short', timeZone: 'America/Argentina/Buenos_Aires' })
 }
 
 /**

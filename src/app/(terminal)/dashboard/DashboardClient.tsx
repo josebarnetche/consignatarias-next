@@ -578,7 +578,7 @@ export default function DashboardClient({
       {/* ============ INICIO ============ */}
       {seccion === 'resumen' && consignataria?.verified && (
         <>
-          {encabezado(`Hola, ${saludo}`, new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' }))}
+          {encabezado(`Hola, ${saludo}`, new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'America/Argentina/Buenos_Aires' }))}
 
           {/* Sugerencias del día */}
           {sugerencias.length > 0 && (
