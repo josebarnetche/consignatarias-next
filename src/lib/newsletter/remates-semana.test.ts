@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import type { Auction } from '@/lib/db/schema'
 import { getAllProfiles } from '@/lib/data/consignataria-slugs'
-import { armarRematesNewsletter, NEWSLETTER_CAP } from './remates-semana'
+import { armarRematesNewsletter, elegirDestacado, NEWSLETTER_CAP, type RemateNewsletter } from './remates-semana'
 
 // Una firma real con un slug VARIANTE distinto del canónico (el caso que la
 // regla vieja perdía: comparaba el slug crudo del remate contra el set canónico).
@@ -53,5 +53,24 @@ describe('armarRematesNewsletter', () => {
     )
     expect(proCount).toBe(1)
     expect(remates.map((r) => r.title)).toEqual(['Remate 3', 'Remate 1', 'Remate 2'])
+  })
+})
+
+describe('elegirDestacado', () => {
+  const r = (o: Partial<RemateNewsletter>): RemateNewsletter => ({
+    title: 't', date: '2026-10-20', time: null, location: '', consignataria: 'F', slug: 'f', heads: null, isPro: true, path: '/remates/x', ...o,
+  })
+  it('sin PRO no hay destacado', () => {
+    expect(elegirDestacado([r({ isPro: false })])).toBeNull()
+  })
+  it('prefiere el PRO con descripción, después el de más cabezas', () => {
+    const a = r({ title: 'sin desc', heads: 500 })
+    const b = r({ title: 'con desc', heads: 100, description: '50 toros', date: '2026-10-23' })
+    expect(elegirDestacado([a, b])?.title).toBe('con desc')
+    expect(elegirDestacado([r({ title: 'chico', heads: 10 }), r({ title: 'grande', heads: 90 })])?.title).toBe('grande')
+  })
+  it('la ficha sale del slug del remate', () => {
+    const { remates } = armarRematesNewsletter([remate(1, 'otra-firma-x')], new Set())
+    expect(remates[0].path).toBe('/remates/otra-firma-x-general-corrientes-2026-10-11')
   })
 })
