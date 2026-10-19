@@ -7,6 +7,39 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.235.0] — 2026-10-19
+
+### El agente de operaciones: los leads de hacienda se trabajan solos hasta el cierre
+
+José: «necesito que puedas cerrar operaciones por tu cuenta, no puedo supervisarlas». El digest
+diario decía qué lead llevaba más días esperando, pero nadie lo trabajaba. Ahora lo hace un agente
+(`src/lib/agente/`) que corre cada 15 minutos (`.github/workflows/agente.yml` → `/api/cron/agente`)
+con su propia casilla, `agente@consignatarias.com`.
+
+- **Qué hace:** toma los leads de vender/comprar, descarta los que no son hacienda bovina (spam,
+  proveedores, consultas académicas, cabras), pide al productor los datos que faltan, ofrece la
+  hacienda en tandas de 3 a leads que compran, frigoríficos de la base relevada y firmas PRO,
+  presenta a las partes cuando una acepta y hace seguimiento hasta que informan el cierre.
+- **Reglas de José:** comisión del 1% del bruto a cargo de quien recibe el contacto; el contacto
+  del productor se entrega SOLO después de un "ACEPTO" por escrito (queda guardado como
+  constancia en `agente_ofertas.aceptacion`); el agente nunca acuerda precio ni firma.
+- **Límites:** máximo 20 contactos nuevos por día, en días hábiles de 8 a 19; a nadie se le
+  escribe dos veces el mismo día; un "BAJA" se respeta para siempre (`agente_bajas`). Un
+  frigorífico solo recibe hacienda de faena, nunca si SENASA dice que no faena bovinos o la base
+  lo marca como porcino, caprino o cerrado. Las contrapartes se buscan en la misma provincia y
+  las limítrofes.
+- **El modelo solo lee** (AI Gateway, `anthropic/claude-sonnet-5.5`): clasifica las respuestas
+  y saca datos de texto libre. Los correos salen de plantillas fijas, y un guardia frena
+  cualquier texto a una contraparte que lleve el mail, el teléfono o el apellido del productor.
+- **A José le escribe solo** cuando hay un cierre (hay que facturar la comisión) o algo que no
+  debe resolver solo (enojo, tema legal, negociar la comisión, un correo que no entiende).
+- Tablas nuevas `agente_casos`, `agente_ofertas`, `agente_mensajes`, `agente_bajas`; todo
+  también queda en la bitácora del lead (`/admin/leads`). El digest diario ya no lista los
+  leads que trabaja el agente.
+- **Encendido:** sin `AGENTE_IMAP_PASSWORD` corre en seco y no manda nada. La casilla se crea
+  con `scripts/agente/crear-casilla.sh` (genera la clave, la guarda en el Llavero y en Vercel
+  sin mostrarla).
+
 ## [1.234.0] — 2026-10-19
 
 ### Leads: a qué frigorífico le escribió cada productor
