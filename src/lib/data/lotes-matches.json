@@ -1,5 +1,5 @@
 {
-  "generado": "2026-10-19T21:21:47.499Z",
+  "generado": "2026-10-19T22:51:53.044Z",
   "leads_de_compra": 7,
   "matches": [
     {
@@ -339,6 +339,17 @@
           "url": "https://www.decampoacampo.com/__dcac/325-Terneros-y-Terneras-210kg-invernada-34121"
         },
         {
+          "sku": "34263",
+          "titulo": "65 Terneros y Terneras Aberdeen Angus Negro y Colorado de 245kg",
+          "score": 35,
+          "motivos": [
+            "el lead no declaró categoría",
+            "otra provincia (La Pampa)",
+            "cantidad compatible"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/65-Terneros-y-Terneras-245kg-invernada-34263"
+        },
+        {
           "sku": "34252",
           "titulo": "95 Novillitos Careta de 345kg",
           "score": 35,
@@ -348,17 +359,6 @@
             "cantidad compatible"
           ],
           "url": "https://www.decampoacampo.com/__dcac/95-Novillitos-345kg-invernada-34252"
-        },
-        {
-          "sku": "34246",
-          "titulo": "70 Terneros y Terneras Brangus Negro y Colorado de 200kg",
-          "score": 35,
-          "motivos": [
-            "el lead no declaró categoría",
-            "otra provincia (Entre Ríos)",
-            "cantidad compatible"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/70-Terneros-y-Terneras-200kg-invernada-34246"
         }
       ]
     },
