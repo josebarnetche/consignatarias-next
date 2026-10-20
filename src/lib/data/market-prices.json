@@ -1908,9 +1908,9 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-10-19",
+  "lastUpdate": "2026-10-20",
   "provinceEntry": {
-    "date": "2026-10-19",
+    "date": "2026-10-20",
     "totalCabezas": 38,
     "provinces": [
       {
@@ -2060,188 +2060,20 @@
     ]
   },
   "auctionDayEntries": {
-    "date": "2026-10-16",
+    "date": "2026-10-20",
     "consignatarias": {
       "colombo-y-magliano": {
         "magId": "165",
-        "totalCabezas": 680,
+        "totalCabezas": 38,
         "entries": [
           {
-            "remitente": "AMHERDT FRANCO",
-            "localidad": "SAN JERONIMO",
-            "provincia": "SFE",
-            "cabezas": 30
-          },
-          {
-            "remitente": "AURORA SUR S.A.",
-            "localidad": "MARCOS JUAREZ",
-            "provincia": "CBA",
-            "cabezas": 2
-          },
-          {
-            "remitente": "AURORA SUR S.A.",
-            "localidad": "MARCOS JUAREZ",
-            "provincia": "CBA",
-            "cabezas": 28
-          },
-          {
-            "remitente": "AURORA SUR S.A.",
-            "localidad": "MARCOS JUAREZ",
-            "provincia": "CBA",
-            "cabezas": 19
-          },
-          {
-            "remitente": "AURORA SUR S.A.",
-            "localidad": "ALEJO LEDESMA",
-            "provincia": "CBA",
-            "cabezas": 9
-          },
-          {
-            "remitente": "BRAVO JORGE OSCAR",
-            "localidad": "RIVADAVIA         B",
+            "remitente": "CLAUDIO JOSE VALLIER",
+            "localidad": "ESCOBAR",
             "provincia": "BUE",
-            "cabezas": 43
-          },
-          {
-            "remitente": "CIMERO S.A",
-            "localidad": "GRAL. VILLEGAS",
-            "provincia": "BUE",
-            "cabezas": 32
-          },
-          {
-            "remitente": "CIMERO S.A",
-            "localidad": "GRAL. VILLEGAS",
-            "provincia": "BUE",
-            "cabezas": 12
-          },
-          {
-            "remitente": "COLOMBO Y MAGLIANO SA AGRICOLA",
-            "localidad": "MORENO     (SGO. DEL",
-            "provincia": "SDE",
-            "cabezas": 60
-          },
-          {
-            "remitente": "COLOMBO Y MAGLIANO SA AGRICOLA",
-            "localidad": "IRIONDO",
-            "provincia": "SFE",
-            "cabezas": 40
-          },
-          {
-            "remitente": "COLOMBO Y MAGLIANO SA AGRICOLA",
-            "localidad": "TIO PUGIO     CBA.",
-            "provincia": "CBA",
-            "cabezas": 70
-          },
-          {
-            "remitente": "EL RECADO S.A.",
-            "localidad": "RIVADAVIA         B",
-            "provincia": "BUE",
-            "cabezas": 80
-          },
-          {
-            "remitente": "GILARDI LAURO HORACIO",
-            "localidad": "CHIVILCOY",
-            "provincia": "BUE",
-            "cabezas": 10
-          },
-          {
-            "remitente": "GILARDI LAURO HORACIO",
-            "localidad": "CHIVILCOY",
-            "provincia": "BUE",
-            "cabezas": 32
-          },
-          {
-            "remitente": "GOLE SILVANA MARIA CATALINA",
-            "localidad": "MERCEDES",
-            "provincia": "BUE",
-            "cabezas": 15
-          },
-          {
-            "remitente": "LA ESTELITA S.A.",
-            "localidad": "GRAL. VILLEGAS",
-            "provincia": "BUE",
-            "cabezas": 1
-          },
-          {
-            "remitente": "LA ESTELITA S.A.",
-            "localidad": "MARACO",
-            "provincia": "LPA",
-            "cabezas": 4
-          },
-          {
-            "remitente": "LA ESTELITA S.A.",
-            "localidad": "GRAL. VILLEGAS",
-            "provincia": "BUE",
-            "cabezas": 5
-          },
-          {
-            "remitente": "LACTAGRO S.A.",
-            "localidad": "SUIPACHA",
-            "provincia": "BUE",
-            "cabezas": 10
-          },
-          {
-            "remitente": "MAURY JUAN CARLOS",
-            "localidad": "LOBERIA",
-            "provincia": "BUE",
-            "cabezas": 10
-          },
-          {
-            "remitente": "MAURY JUAN CARLOS",
-            "localidad": "LOBERIA",
-            "provincia": "BUE",
-            "cabezas": 25
-          },
-          {
-            "remitente": "MONTANARI JUAN CARLOS",
-            "localidad": "GRAL. LOPEZ",
-            "provincia": "SFE",
-            "cabezas": 13
-          },
-          {
-            "remitente": "REATAS S.A.",
-            "localidad": "AYACUCHO           B",
-            "provincia": "BUE",
-            "cabezas": 37
-          },
-          {
-            "remitente": "SAUCEDOS JULIO CESAR",
-            "localidad": "OLAVARRIA",
-            "provincia": "BUE",
-            "cabezas": 25
-          },
-          {
-            "remitente": "SERRAGO RODRIGO Y FELIPE S.H.",
-            "localidad": "TRENQUE LAUQUEN",
-            "provincia": "BUE",
-            "cabezas": 19
-          },
-          {
-            "remitente": "SURANGUS S.A.",
-            "localidad": "ROQUE PEREZ",
-            "provincia": "BUE",
-            "cabezas": 10
-          },
-          {
-            "remitente": "VIEJO ROBLE S.A.",
-            "localidad": "GRAL. LOPEZ",
-            "provincia": "SFE",
-            "cabezas": 31
-          },
-          {
-            "remitente": "WEIL Y ASOCIADOS S.R.L.",
-            "localidad": "GRAL. LOPEZ",
-            "provincia": "SFE",
-            "cabezas": 4
-          },
-          {
-            "remitente": "ZIVERRA ANGEL PASCUAL",
-            "localidad": "SUIPACHA",
-            "provincia": "BUE",
-            "cabezas": 4
+            "cabezas": 38
           }
         ],
-        "period": "16/09/2026 - 16/10/2026"
+        "period": "20/09/2026 - 20/10/2026"
       }
     }
   },
