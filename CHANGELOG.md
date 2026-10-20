@@ -7,6 +7,14 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.236.2] — 2026-10-20
+
+### Agente: los casos escalados quedan en manos de José
+
+- Si un caso está `escalado` (lo lleva José a mano, como el #48 de faena kosher), el agente ya no clasifica ni contesta lo que entra: lo registra y se lo reenvía a José con responder-a quien escribió. Antes una respuesta de una planta podía leerse como ACEPTO y disparar una presentación.
+
+---
+
 ## [1.236.1] — 2026-10-19
 
 ### Admin: retoques tras la revisión en producción
