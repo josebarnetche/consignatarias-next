@@ -1,5 +1,5 @@
 {
-  "generado": "2026-10-20T22:12:02.665Z",
+  "generado": "2026-10-20T23:44:50.665Z",
   "leads_de_compra": 9,
   "matches": [
     {
@@ -286,6 +286,16 @@
           "url": "https://www.decampoacampo.com/__dcac/100-Vacas-con-cria-440kg-invernada-34273"
         },
         {
+          "sku": "34264",
+          "titulo": "95 Terneros y Terneras Aberdeen Angus Negro y Colorado de 225kg",
+          "score": 50,
+          "motivos": [
+            "el lead no declaró categoría",
+            "misma provincia"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/95-Terneros-y-Terneras-225kg-invernada-34264"
+        },
+        {
           "sku": "34260",
           "titulo": "35 Vaquillonas Preñadas Aberdeen Angus Negro y Colorado de 420kg",
           "score": 50,
@@ -304,16 +314,6 @@
             "misma provincia"
           ],
           "url": "https://www.decampoacampo.com/__dcac/95-Novillitos-345kg-invernada-34252"
-        },
-        {
-          "sku": "34249",
-          "titulo": "50 Terneros y Terneras Aberdeen Angus Negro y Colorado de 180kg",
-          "score": 50,
-          "motivos": [
-            "el lead no declaró categoría",
-            "misma provincia"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/50-Terneros-y-Terneras-180kg-invernada-34249"
         }
       ]
     },
