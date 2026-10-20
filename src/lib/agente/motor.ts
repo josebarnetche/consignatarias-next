@@ -271,6 +271,19 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
       return
     }
 
+    // Un caso escalado lo lleva José a mano (p. ej. el #48, faena kosher): el agente no
+    // contesta ni presenta a nadie, solo le reenvía lo que entra con responder-a quien escribió.
+    if (caso.estado === 'escalado') {
+      await registrar({ tipo: 'caso_manual' })
+      await escalar(
+        `${m.de} respondió en el caso #${lead.id} (lo llevás vos)`,
+        `De: ${m.de}\nAsunto: ${m.asunto}\n\n${texto}\n\nSi respondés este correo, le llega directo a ${m.de}.`,
+        m.de,
+      )
+      await bitacora(lead.id, `Respuesta de ${m.de} reenviada a José (caso manual)`, 'contesto')
+      return
+    }
+
     const { data: ofRow } = ofertaId ? await db.from('agente_ofertas').select('*').eq('id', ofertaId).maybeSingle() : { data: null }
     const of = (ofRow as Oferta | null) ?? null
     const esProductor = !!lead.email && lead.email.toLowerCase() === m.de
