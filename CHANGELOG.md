@@ -7,6 +7,40 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.239.0] — 2026-10-21
+
+### SEO de plantillas: cada búsqueda a su página, y del precio al formulario que convierte
+
+Search Console, 28 días del 19-09 al 16-10-2026 (`reports/gsc/consulta-pagina-28d.csv` y
+`historico-por-pagina.csv`). Sin guías nuevas: todo es plantilla, enlazado y metadata con dato de la base.
+
+- **Fichas de consignataria: el próximo remate en el snippet.** 72 fichas con impresiones, 14.186 impr,
+  CTR 1,64 %, posición 7,0, casi todo búsqueda de marca con cero clics ("pedro noel irey" 402,
+  "jauregui lorda" 324, "gananor pujol" 257, "mondino remates" 226). Arriba está el sitio de la firma; lo
+  que nosotros tenemos y ese resultado no muestra es cuándo y dónde rematan. Si la firma tiene un remate
+  programado, el título pasa a "Mondino: próximo remate 28 de octubre en Olavarría" y la description
+  arranca con "Próximo remate: …". Sale de `remates.json` (el scrape diario redeploya), helper
+  `src/lib/consignatarias/proximo-remate.ts` con tests; sin remate programado queda el título de siempre.
+  No se tocan las firmas con canal de YouTube (título "en vivo" del 17-10) ni las de `profile-seo.ts`.
+- **`PuenteHacienda`** (`src/components/PuenteHacienda.tsx`, server, sin JS): vender (formulario "Buscame
+  comprador" de `/mercado/vender-ahora`, que alimenta al agente), comprar (`/quiero-comprar`) y lotes en
+  venta (`/lotes`), con anchors exactos. Va en `/precios/[categoria]` (14.861 impr, CTR 0,42 %) y
+  `/precios/[categoria]/[provincia]` (4.955 impr), `/mercado/arrendamiento` (44.506 impr, la página #1),
+  `/mercado`, `/cuanto-vale-una-vaca` (9.749) y `/cuanto-vale-un-toro` (1.676). Ninguna de esas
+  plantillas enlazaba a un formulario de venta o compra. No enlaza a `/mercado/[categoria]` aunque tenga el
+  mismo formulario: compite con `/precios/[categoria]` por "precio del X hoy".
+- **`/mercado` deriva cada búsqueda a su página.** El hub (8.731 impr, CTR 0,70 %, pos 7,3) recibía
+  "inmag" (198, pos 9,7), "precio ternero hoy" (156), "kg de novillo hoy" (97) y "precio del novillo hoy"
+  (75) con cero clics. Fila server-side con el anchor exacto y el número del día hacia `/precios/novillos`,
+  `/precios/vacas`, `/precios/vaquillonas`, `/precios/terneros` (rotulado estimado), `/mercado/inmag` y
+  `/mercado/arrendamiento`.
+- **`/campos/valor-hectarea/[provincia]`**: `BreadcrumbList` (la de zona lo tenía, la de provincia no) y
+  enlace "cuánto vale una hectárea en Argentina" a `/campos/valuar`: esa búsqueda y sus variantes (~300
+  impr, pos 7-8, cero clics) caían en la página de Buenos Aires (1.931 impr, CTR 0,62 %).
+- Línea base para medir a los 28 días, en el cuerpo del PR. Releer por query, no por página.
+
+---
+
 ## [1.238.0] — 2026-10-21
 
 ### Conversión: "vendo / busco hacienda" en las plantillas con tráfico y cero leads

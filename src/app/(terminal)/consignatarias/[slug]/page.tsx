@@ -41,6 +41,7 @@ import LoginGate from '@/components/LoginGate'
 import type { YouTubeChannelData } from './ConsignatariaProfileClient'
 import type { ConsignatariaVideo } from '@/components/video/VideoGallery'
 import { getChannelForSlug } from '@/lib/youtube-live'
+import { proximoRemateMeta } from '@/lib/consignatarias/proximo-remate'
 
 /* ------------------------------------------------------------------ */
 /*  MAG ENTRY DATA from market-prices.json                             */
@@ -266,18 +267,33 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // vivo" (Reggi: 112 apariciones en 90 días por "reggi y cia remate hoy en vivo" y
   // "remate reggi en vivo") y la ficha no lo decía en el título. Si tiene canal, lo dice.
   const tieneCanal = !!getChannelForSlug(canonical)
+
+  // Próximo remate en el snippet (21-10-2026). GSC 19-09 → 16-10: las fichas suman 14.186
+  // impresiones con CTR 1,64 % en posición 7,0, y casi todo es la búsqueda de la marca
+  // ("jauregui lorda" 324 impr, "gananor pujol" 257, "mondino remates" 226, "pedro noel irey"
+  // 402 — todas con CERO clics). Arriba está el sitio de la firma; lo que nosotros tenemos y
+  // ese resultado no muestra es CUÁNDO y DÓNDE es el próximo remate. Sale de remates.json (el
+  // scrape diario que redeploya el sitio), así que la fecha se renueva sola; si la firma no
+  // tiene remate programado, el título queda como estaba.
+  const proximo = proximoRemateMeta(profileAuctions)
+  const tituloProximo = proximo
+    ? `${profile.displayName}: próximo remate ${proximo.fecha}${proximo.lugar && profile.displayName.length <= 24 ? ` en ${proximo.lugar}` : ''}`
+    : null
   const title = customSEO
     ? `${profile.displayName} — ${customSEO.titleSuffix}`
     : tieneCanal
       ? `${profile.displayName}: Remates en Vivo, Fechas y Precios`
-      : `${profile.displayName}: Precios y Remates de Hacienda`
+      : tituloProximo ?? `${profile.displayName}: Precios y Remates de Hacienda`
 
   // CUIT desde el registro MAG (consignatarias.json). Cuando existe, se añade a
   // la description para capturar además la búsqueda por CUIT crudo de la firma.
   const cuit = lookupCuit(profile.displayName)
 
+  const lineaProximo = proximo
+    ? `Próximo remate: ${proximo.fecha}${proximo.lugar ? ` en ${proximo.lugar}` : ''}${proximo.tipo ? ` (${proximo.tipo})` : ''}. `
+    : ''
   const description = customSEO?.description
-    || `${tieneCanal ? 'Remates en vivo por YouTube, fechas y ' : 'Remates y '}precios de hacienda de ${profile.displayName}${geo}. ${profileAuctions.length} remates registrados${upcoming > 0 ? `, ${upcoming} próximos` : ''}. Cotizaciones por categoría actualizadas tras cada remate.${cuit ? ` CUIT ${formatCuit(cuit)}.` : ''}`
+    || `${lineaProximo}${tieneCanal ? 'Remates en vivo por YouTube, fechas y ' : 'Remates y '}precios de hacienda de ${profile.displayName}${geo}. ${profileAuctions.length} remates registrados${upcoming > 0 ? `, ${upcoming} próximos` : ''}. Cotizaciones por categoría actualizadas tras cada remate.${cuit ? ` CUIT ${formatCuit(cuit)}.` : ''}`
 
   // Thin profiles (0–1 remates, no SEO enhancement) have too little unique
   // content to index — keep them crawlable/followable but out of the index.
@@ -287,7 +303,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const thin = profileAuctions.length < 2 && !customSEO && !(await getFeaturedSlugs()).has(canonical)
 
   return {
-    title,
+    // El template agrega " | Consignatarias" (17 caracteres): con el próximo remate el
+    // título puede pasar de ~60 y Google lo cortaría justo en el lugar.
+    title: title.length > 44 ? { absolute: title } : title,
     description,
     keywords: customSEO?.keywords,
     openGraph: {

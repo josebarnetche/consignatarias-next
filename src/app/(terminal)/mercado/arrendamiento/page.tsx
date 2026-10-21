@@ -22,6 +22,7 @@ import { signedTone, SEMANTIC_HEX } from '@/lib/ui/tokens'
 import { MarketHero, type MarketHeroStat } from '@/components/market'
 import rematesData from '@/lib/data/remates.json'
 import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
+import PuenteHacienda from '@/components/PuenteHacienda'
 
 const inmag = marketData.inmag
 const series = inmag.series as Array<{ date: string; value: number; volume?: number }>
@@ -619,6 +620,10 @@ export default async function ArrendamientoPage() {
             queda el próximo-paso para la entrada #1 (57% bounce). */}
         <section className="max-w-6xl mx-auto px-4 pt-4 pb-8">
           <HerramientasCTA />
+          {/* El canon se pacta en kilos de novillo: quien lo calcula suele tener hacienda que
+              vender o comprar. Hasta oct-2026 la página #1 del sitio (44.506 impr/28d) no
+              enlazaba a ningún formulario de venta o compra. */}
+          <PuenteHacienda />
         </section>
 
         {/* Últimas ruedas: la tabla con FECHAS que la búsqueda "…hoy" espera. GSC 20-09-2026: la

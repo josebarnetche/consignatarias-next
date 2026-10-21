@@ -12,6 +12,7 @@ import { INMAG_DATE } from '@/lib/inmag'
 import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { SiguientePaso } from '@/components/seo/SiguientePaso'
+import PuenteHacienda from '@/components/PuenteHacienda'
 
 export const revalidate = 86400 // daily rebuild via Vercel
 
@@ -237,6 +238,7 @@ export default function CuantoValeUnaVacaPage() {
             serie histórica y estacionalidad.
           </p>
         </div>
+        <PuenteHacienda plural="vacas" />
       </article>
     </>
   )
