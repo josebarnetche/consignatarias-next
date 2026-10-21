@@ -77,6 +77,8 @@ export function leadDeDemanda(d: Demanda, propios: string[]): Record<string, unk
   if (!email || d.status !== 'active') return null
   if (propios.includes(email)) return null
   if (/\bdemo\b|prueba|test/i.test(d.notas ?? '')) return null
+  // Dominios reservados (RFC 2606): las demandas de prueba del MCP vienen con example.com/.org/.net.
+  if (/@(.+\.)?(example\.(com|org|net)|[^@]+\.(test|example|invalid|localhost))$/.test(email)) return null
   const categoria = categoriaDemanda(d.categoria)
   const provincia = provinciaDemanda(d.provincia)
   const detalle = [d.cabezas ? `${d.cabezas} cabezas` : null, categoria, provincia ? `en ${provincia}` : null].filter(Boolean).join(' ')
