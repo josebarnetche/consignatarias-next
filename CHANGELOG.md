@@ -17,6 +17,7 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 - **Un recordatorio a la contraparte que no contestó en 2 días**, uno solo y en el mismo hilo, antes de darla por perdida a los 4 (`RECORDATORIO_CONTRAPARTE_DIAS`).
 - **La oferta habla bien en los cruces**: a otro lead le dice "ustedes", y al que compra lo llama comprador (Tradefood no es un productor).
 - **"Para llamar hoy" en el tablero**: productores que no mandaron los datos, ofertas que nadie contestó y presentaciones abiertas, con teléfono y WhatsApp con el mensaje ya escrito.
+- **Interruptor `AGENTE_FIRMAS=todas`** (apagado): con esa variable en Vercel el agente también ofrece a las firmas no PRO que tienen mail. Hoy, para las 200 vacas de Tradefood en Santa Fe no hay ninguna firma PRO cerca; hay 8 firmas con mail en Santa Fe y 13 en Entre Ríos y Córdoba.
 - **El workflow corre cada 10 minutos de verdad.** El cron `*/15` de GitHub corría cada ~3 horas. Ahora cada corrida queda viva casi 6 horas llamando cada 10 minutos y el cron la relanza cada 2 horas.
 
 ---

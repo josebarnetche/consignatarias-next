@@ -544,9 +544,14 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
       const p = padron.get(f.cuit)
       lista.push({ tipo: 'frigorifico', ref: f.cuit, nombre: f.display_name, email, provincia: p?.province ?? null, faenaBovina: puedeFaenarBovinos(p?.matricula ?? null), notas: f.notas_internas, opera: f.opera })
     }
+    // Firmas: solo las PRO (regla de José, 19-10). Con AGENTE_FIRMAS=todas en Vercel
+    // entran todas las que tienen mail, para los pedidos que las PRO no cubren.
     const pro = await getFeaturedSlugs()
-    if (pro.size) {
-      const { data: firmas } = await db.from('consignatarias').select('canonical_slug,display_name,email,province').in('canonical_slug', [...pro])
+    const todasLasFirmas = process.env.AGENTE_FIRMAS === 'todas'
+    if (pro.size || todasLasFirmas) {
+      let q = db.from('consignatarias').select('canonical_slug,display_name,email,province').not('email', 'is', null)
+      if (!todasLasFirmas) q = q.in('canonical_slug', [...pro])
+      const { data: firmas } = await q
       for (const f of firmas ?? []) if (f.email) lista.push({ tipo: 'firma', ref: f.canonical_slug, nombre: f.display_name, email: f.email, provincia: f.province })
     }
     const { data: otros } = await db.from('agente_casos').select('lead_id,lado,datos').in('estado', ['ofreciendo', 'presentado', 'sin_contraparte'])
