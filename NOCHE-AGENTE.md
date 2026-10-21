@@ -1,6 +1,6 @@
 # Noche del agente cerrador — 21-10-2026 (00:22 → 07:00)
 
-Bitácora del loop de 30 min. Rama `feat/agente-v2` (worktree `~/consignatarias-agente`). **Nada va a main ni a producción hasta que José lo revise.**
+Bitácora del loop de 30 min. Rama `feat/agente-v2` (worktree `~/consignatarias-agente-noche`). **Nada va a main ni a producción hasta que José lo revise.**
 
 ## Alcance acordado con José
 - **Sí:** código, tests y build en la rama; generalizar el agente a otros tipos de lead; mejoras de priorización y seguimiento.
@@ -35,6 +35,11 @@ La comisión del 1% está definida **solo para hacienda**. Para arrendamiento y 
   - `valuarLead()` calcula el bruto de referencia (para arrendamiento, el canon anual = ha × kg/ha/mes × 12 × precio del novillo) y la comisión, solo si José la definió.
   - `prioridad()` = comisión × peso del estado, para ordenar qué caso mover primero.
 - Todavía no está conectado al motor: es la base pura.
+
+### #1b — 00:55 (incidente, corregido)
+- `~/consignatarias-agente` **ya existía**: es el worktree de OTRA sesión que trabaja el mismo agente esta noche, en la rama `feat/cerrador-v2` (commits de 00:30 a 00:38: demandas de compra, recordatorio a la contraparte, el interruptor `AGENTE_FIRMAS`, el tablero). El commit #1 cayó en su rama.
+- Lo moví a `feat/agente-v2` y devolví `feat/cerrador-v2` a su commit (`c9272144`, con `reset --keep`). No tenía cambios sin commitear y no se pisó nada suyo. No se había subido nada.
+- Desde ahora el loop trabaja en `~/consignatarias-agente-noche`. En cada vuelta integra `origin/feat/cerrador-v2` y toca lo mínimo de sus archivos.
 
 ## Próximos pasos
 1. Usar `tipoDeIntent` en el motor (`motor.ts` ~l.487) para que tome arrendamiento y tasación con su primer paso. Los tipos sin comisión quedan en "calificar o pedir datos" **solo hacia el propio lead** (el que nos escribió), nunca a contrapartes. Ojo: escribirle al lead que nos escribió también es mandar un mail → queda detrás del mismo encendido, y se deja listo para que José lo prenda.
