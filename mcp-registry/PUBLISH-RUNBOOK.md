@@ -53,10 +53,9 @@ mcp-publisher login dns --domain "${MY_DOMAIN}" --private-key "${PRIVATE_KEY}"
 ## Paso 4 - Publicar
 
 **Se publica `mcp-registry/server.json`, el de ESTA carpeta** — hay que pararse acá.
-Ojo: existe otro `server.json` en la raíz del repo con un `$schema` más nuevo
-(`2025-10-17`, con `repository` en vez de `websiteUrl`). Publicar desde la raíz subiría
-ese otro archivo. Es una divergencia vieja; hasta resolverla, **publicar siempre desde
-`mcp-registry/`**.
+Desde v1.8.0 (2026-10-21) la copia de la raíz es **idéntica** (schema `2025-12-11`, con
+`title`, `websiteUrl`, `repository` e `icons`): la divergencia vieja de `$schema` quedó resuelta.
+Igual, por costumbre, **publicar desde `mcp-registry/`**.
 
 ```bash
 cd <repo>/mcp-registry
@@ -85,13 +84,14 @@ node scripts/check-mcp-manifests.mjs
   de descubrimiento que lee un cliente MCP y admite una descripción larga: en 2026-09 se pisó por
   error con la versión corta de 99 y hubo que restaurarla. No las unifiques.
 
-### Pendiente al 2026-09-22: publicar v1.4.0
+### Pendiente al 2026-10-21: publicar v1.8.0
 
-`v1.4.0` está en el repo y **sin publicar**. Agrega `get_vr_historico` (serie de dispersión de
-precios) y cambia la descripción, porque la anterior —"INMAG, precios, remates, directorio y valor
-de la hectárea"— no cubría ese tipo de dato. Hasta que se corra el publish, el directorio muestra
-la descripción de v1.3.0: el server funciona igual, pero un humano navegando el registry no se
-entera de que existe la banda.
+`v1.8.0` está en el repo y **sin publicar** (el registry tiene v1.7.0 del 07-10). No cambia
+ninguna tool: cambia la FICHA. Agrega `title` (los directorios mostraban el slug), `icons`
+(Smithery y Glama mostraban un ícono genérico), `repository` con su `id`, `websiteUrl` a `/mcp`
+(la página con instalación en un clic) y pasa la descripción a inglés, porque los directorios que
+pullean del registry (PulseMCP, GitHub, VS Code) se buscan en inglés. El resto de los envíos a
+directorios está en `docs/mcp-distribucion.md`.
 
 ```bash
 # 1. login (la clave está en ~/.mcp-keys/)

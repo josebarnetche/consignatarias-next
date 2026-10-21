@@ -64,7 +64,7 @@ export const maxDuration = 60
 const SERVER_INFO = {
   name: 'consignatarias',
   title: 'Consignatarias — Mercado Ganadero Argentino',
-  version: '1.7.0',
+  version: '1.8.0',
   websiteUrl: 'https://www.consignatarias.com.ar/mcp',
 }
 // Versiones del protocolo MCP que soportamos. Somos tools-only + stateless, así que
@@ -115,15 +115,30 @@ const TOOL_TITLES: Record<string, string> = {
   dte_lookup: 'DT-e (número de tropa) — referencia',
   good_farming_practices: 'Buenas Prácticas Ganaderas (BPG)',
   create_price_alert: 'Crear alerta de precio',
+  // Las diez de abajo caían al slug: el directorio de conectores de Claude pide un título humano
+  // por tool, y mcp-superficies.test.ts ahora exige que ninguna quede sin el suyo.
+  price_seasonality: 'Estacionalidad del novillo en dólares',
+  farmland_yield: 'Renta de un campo ganadero en dólares',
+  international_price_gap: 'Brecha del novillo contra EE.UU., Uruguay y Australia',
+  value_cattle_lot: 'Valuar una tropa de hacienda',
+  consignatarias_band: 'Banda Consignatarias (dispersión semanal)',
+  price_dispersion_history: 'Histórico de la dispersión de precios',
+  value_farmland_rent: 'Arrendamiento de un campo al índice oficial',
+  value_farmland: 'Valor de la hectárea por zona',
+  cattle_buying_request: 'Publicar una búsqueda de hacienda para comprar',
+  subscribe_broker_pro: 'PRO Consignataria: cotizar y activar en USDC',
 }
 
 // MCP tool annotations (spec 2025-03-26+): declaran el comportamiento de forma
 // ESTRUCTURADA — es lo que Glama (y otros scorers) esperan para la dimensión
 // "side effects / auth / destructive". Todas las tools son de solo lectura sobre
-// datos de mercado (open-world) salvo create_price_alert, que crea un recurso.
+// datos de mercado (open-world) salvo las dos que crean un recurso: create_price_alert (la
+// alerta) y cattle_buying_request (deja una demanda de compra que el agente de operaciones
+// trabaja). Hasta v1.238.0 la segunda se declaraba readOnly, y el directorio de conectores de
+// Claude revisa justamente eso: una tool que escribe con readOnlyHint=true es motivo de rechazo.
+const TOOLS_QUE_ESCRIBEN = new Set(['create_price_alert', 'cattle_buying_request'])
 function toolAnnotations(t: Tool) {
-  // Única tool de escritura: create_price_alert (ya sin auth obligatoria).
-  const readOnly = t.name !== 'create_price_alert'
+  const readOnly = !TOOLS_QUE_ESCRIBEN.has(t.name)
   return {
     title: TOOL_TITLES[t.name] ?? t.name,
     readOnlyHint: readOnly, // no muta estado del mundo (solo consulta)

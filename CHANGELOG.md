@@ -7,6 +7,23 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.241.0] — 2026-10-22
+
+### MCP: la ficha lista para los directorios (sin publicar nada)
+
+El uso del MCP viene casi todo de escáneres y la palanca es la distribución. Antes de mandar el server a más directorios había que arreglar lo que esos directorios leen, porque mostraban una versión vieja.
+
+- **Server card al día** (`public/.well-known/mcp/server-card.json`): seguía en v1.5.0 con 24 tools y los nombres viejos en castellano, y eso es lo que Smithery tiene escaneado. Ahora declara las 28 tools con su `title`, `inputSchema` y anotaciones, y los 13 prompts. `scripts/check-mcp-manifests.mjs` (en `pnpm check`) exige que la versión coincida con el manifiesto y con `SERVER_INFO` del route, y que las tools sean exactamente las del route.
+- **Manifiesto del registry v1.8.0, sin publicar** (`mcp-registry/server.json` = `server.json`): schema `2025-12-11`, `title` (los directorios mostraban el slug o "MCP-CATTLE-MARKET"), `icons`, `repository` con su id y `websiteUrl` a `/mcp`. La descripción pasa a inglés: los directorios que pullean del registry se buscan en inglés. La copia de la raíz queda idéntica a la que se publica; se terminó la divergencia de `$schema`. `mcp-publisher validate` da OK contra el registry.
+- **`/llms.txt` nombra las 28 tools**: le faltaban `price_seasonality`, `international_price_gap`, `farmland_yield` y `consignatarias_band`, las cuatro que se hicieron para el comprador del exterior. Suma cómo conectarse desde Claude Code, Claude.ai y ChatGPT, que no hace falta autenticación, el nombre en el registry y la línea de cita. El conteo sale de la server card y no se escribe a mano.
+- **`/llms-full.txt`**: el párrafo del MCP nombraba 15 tools y decía a la vez que la serie de dispersión se pagaba pasados 30 días y que iba completa y gratis. Ahora lista las 28 desde la server card y dice una sola cosa: las consultas son gratis y lo que se paga es la descarga masiva y la redistribución.
+- **Página `/mcp`**: dos tools figuraban con su alias viejo (`get_estacionalidad`, `get_renta_campo`); van con el nombre canónico. Suma enlaces a Smithery, al registry y a la server card, y cómo agregarlo como conector en Claude.ai y ChatGPT.
+- **Anotaciones honestas para el directorio de conectores de Claude**, que revisa título y `readOnlyHint` de cada tool. `cattle_buying_request` se declaraba de solo lectura y escribe: deja una demanda que trabaja el agente de operaciones. Ahora va con `readOnlyHint: false`, igual que `create_price_alert` (`TOOLS_QUE_ESCRIBEN` en el route). Además, diez tools no tenían título y mostraban el slug; ahora cada una tiene el suyo.
+- **Server card con `serverInfo`**, que es lo que Smithery lee cuando no puede hacer el handshake.
+- **Test nuevo** `src/app/api/mcp/mcp-superficies.test.ts`: `/llms.txt` y `/mcp` tienen que nombrar cada tool del route, sin alias; cada tool tiene que tener título, y las que escriben no pueden declararse de solo lectura.
+- **`docs/mcp-distribucion.md`**: estado en cada directorio, verificado el 21-10, y el paso a paso de cada envío con el texto en inglés y en castellano. Nada se envió: cada paso espera el OK de José.
+
+---
 ## [1.240.0] — 2026-10-21
 
 ### Prospectos PRO: a qué firma escribirle y qué decirle, con los números de la base

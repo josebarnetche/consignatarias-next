@@ -27,6 +27,11 @@ const VSCODE_DEEPLINK =
   'https://insiders.vscode.dev/redirect/mcp/install?name=consignatarias&config=' +
   encodeURIComponent(JSON.stringify({ type: 'http', url: ENDPOINT }))
 
+// Fichas en los directorios donde ya estamos (docs/mcp-distribucion.md lleva el estado de cada uno).
+const SMITHERY_URL = 'https://smithery.ai/servers/jose-barnetche19/consignatarias-cattle-market'
+const REGISTRY_URL =
+  'https://registry.modelcontextprotocol.io/v0/servers?search=ar.com.consignatarias/cattle-market'
+
 const TOOL_ICONS: Record<string, string> = {
   cattle_price_index: 'indice', inmag_history: 'indice', livestock_prices: 'bascula',
   livestock_prices_detailed: 'bascula', macro_context: 'dolar-billete', upcoming_auctions: 'calendario',
@@ -41,8 +46,8 @@ const TOOLS = [
   { name: 'livestock_prices_detailed', desc: 'Precios por subcategoría con mínimo/promedio/máximo + cabezas', auth: false },
   { name: 'macro_context', desc: 'Dólar blue/oficial, maíz FOB y spread novillo/maíz', auth: false },
   { name: 'herd_liquidation_index', desc: '% de hembras en la faena: liquidación vs retención del rodeo', auth: false },
-  { name: 'get_estacionalidad', desc: 'En qué mes la hacienda está típicamente cara o barata, y dónde está hoy contra esa norma — índice estacional en dólares desde 2015', auth: false },
-  { name: 'get_renta_campo', desc: 'Qué compra y qué renta un dólar en campo ganadero: USD/ha, kilos de novillo por hectárea, canon y años de repago por zona', auth: false },
+  { name: 'price_seasonality', desc: 'En qué mes la hacienda está típicamente cara o barata, y dónde está hoy contra esa norma — índice estacional en dólares desde 2015', auth: false },
+  { name: 'farmland_yield', desc: 'Qué compra y qué renta un dólar en campo ganadero: USD/ha, kilos de novillo por hectárea, canon y años de repago por zona', auth: false },
   { name: 'upcoming_auctions', desc: 'Calendario de remates (filtro por provincia)', auth: false },
   { name: 'find_livestock_broker', desc: 'Directorio de consignatarias/casas de remate por nombre o zona (con CUIT)', auth: false },
   { name: 'broker_activity_ranking', desc: 'Ranking de cabezas y precio promedio por firma en el MAG de referencia (Cañuelas)', auth: false },
@@ -283,13 +288,24 @@ export default function McpPage() {
             >
               Ver en Glama
             </a>
+            <a
+              href={SMITHERY_URL}
+              className="rounded-lg border border-terminal-border bg-black/40 px-3 py-2 text-xs font-terminal uppercase tracking-wider text-zinc-300 hover:border-sky-500/60 hover:text-sky-300 transition-colors"
+            >
+              Ver en Smithery
+            </a>
           </div>
           <p className="text-sm text-zinc-400 mt-4 mb-2">Claude Code, desde la terminal:</p>
           <code className="block bg-black/40 border border-terminal-border rounded-lg px-4 py-3 text-sky-300 font-mono text-xs break-all">
             claude mcp add --transport http consignatarias {ENDPOINT}
           </code>
+          <p className="text-sm text-zinc-400 mt-4 mb-2">ChatGPT y Claude.ai: Configuración → Conectores → agregar un conector personalizado con el endpoint de arriba (sin autenticación).</p>
           <p className="text-xs text-zinc-600 mt-3">
-            Listado en el registry oficial de MCP como <code className="text-zinc-400">ar.com.consignatarias/cattle-market</code>.
+            Listado en el{' '}
+            <a href={REGISTRY_URL} className="underline hover:text-zinc-400">registry oficial de MCP</a>{' '}
+            como <code className="text-zinc-400">ar.com.consignatarias/cattle-market</code>; la ficha
+            para escáneres está en{' '}
+            <a href="/.well-known/mcp/server-card.json" className="underline hover:text-zinc-400">/.well-known/mcp/server-card.json</a>.
           </p>
         </div>
         </div>
