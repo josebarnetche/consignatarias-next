@@ -19903,7 +19903,7 @@
     "province": "BUENOS AIRES",
     "type": "invernada",
     "mainCategory": "mixto",
-    "estimatedHeads": 3500,
+    "estimatedHeads": 3000,
     "description": "Brandsen Especial de Invernada y cria - 14.00hs.",
     "youtubeUrl": null,
     "catalogUrl": null,
@@ -20122,6 +20122,25 @@
     "status": "scheduled"
   },
   {
+    "title": "Televisado - Invernada y Cria",
+    "consignatariaName": "Colombo y Magliano S.A.",
+    "consignatariaSlug": "colombo-y-magliano-s-a",
+    "date": "2026-10-22",
+    "time": null,
+    "location": "Concordia, Entre Rios",
+    "province": "ENTRE RIOS",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Concordia Televisado - Invernada y Cria",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1061,
+    "status": "scheduled"
+  },
+  {
     "title": "Remate por Internet - 9.30hs.",
     "consignatariaName": "Consignataria Vittori",
     "consignatariaSlug": "consignataria-vittori",
@@ -20137,7 +20156,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1061,
+    "id": 1062,
     "status": "scheduled"
   },
   {
@@ -20156,7 +20175,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1062,
+    "id": 1063,
     "status": "scheduled"
   },
   {
@@ -20175,7 +20194,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.edgardovittori.com.ar",
-    "id": 1063,
+    "id": 1064,
     "status": "scheduled"
   },
   {
@@ -20194,7 +20213,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1064,
+    "id": 1065,
     "status": "scheduled"
   },
   {
@@ -20213,7 +20232,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.danielblancosa.com.ar",
-    "id": 1065,
+    "id": 1066,
     "status": "scheduled"
   },
   {
@@ -20232,7 +20251,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1066,
+    "id": 1067,
     "status": "scheduled"
   },
   {
@@ -20251,7 +20270,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/d6524930-4e43-4cb9-bbc2-4c4b3f52a4a6",
-    "id": 1067,
+    "id": 1068,
     "status": "scheduled"
   },
   {
@@ -20270,7 +20289,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.jaureguilorda.com.ar",
-    "id": 1068,
+    "id": 1069,
     "status": "scheduled"
   },
   {
@@ -20289,25 +20308,6 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1069,
-    "status": "scheduled"
-  },
-  {
-    "title": "Televisado - Invernada y Cria - 14.00hs.",
-    "consignatariaName": "Colombo y Magliano S.A.",
-    "consignatariaSlug": "colombo-y-magliano-s-a",
-    "date": "2026-10-22",
-    "time": "14:00",
-    "location": "Concordia, Entre Rios",
-    "province": "ENTRE RIOS",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": 8000,
-    "description": "Concordia Televisado - Invernada y Cria - 14.00hs.",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1070,
     "status": "scheduled"
   },
@@ -20359,7 +20359,7 @@
     "province": "CORDOBA",
     "type": "especial",
     "mainCategory": "mixto",
-    "estimatedHeads": 2500,
+    "estimatedHeads": 2200,
     "description": "Remate Especial de Overos",
     "youtubeUrl": null,
     "catalogUrl": null,
@@ -21776,25 +21776,6 @@
   },
   {
     "title": "Haciendas Generales",
-    "consignatariaName": "Bermejo Y Cia",
-    "consignatariaSlug": "bermejo-y-cia",
-    "date": "2026-11-06",
-    "time": null,
-    "location": "Salliqueló, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Salliqueló Haciendas Generales",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1150,
-    "status": "scheduled"
-  },
-  {
-    "title": "Haciendas Generales",
     "consignatariaName": "Nestor Hugo Fuentes",
     "consignatariaSlug": "nestor-hugo-fuentes",
     "date": "2026-11-06",
@@ -21809,11 +21790,30 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1150,
+    "status": "scheduled"
+  },
+  {
+    "title": "Haciendas Generales",
+    "consignatariaName": "Bermejo Y Cia",
+    "consignatariaSlug": "bermejo-y-cia",
+    "date": "2026-11-06",
+    "time": null,
+    "location": "Salliqueló, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Salliqueló Haciendas Generales",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1151,
     "status": "scheduled"
   },
   {
-    "title": "Haciendas Generales - 14.30hs.",
+    "title": "Haciendas Generales",
     "consignatariaName": "Bermejo Y Cia",
     "consignatariaSlug": "bermejo-y-cia",
     "date": "2026-11-06",
@@ -21823,7 +21823,7 @@
     "type": "general",
     "mainCategory": "mixto",
     "estimatedHeads": 600,
-    "description": "Salliqueló Haciendas Generales - 14.30hs.",
+    "description": "Salliqueló Haciendas Generales",
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
@@ -22098,25 +22098,6 @@
     "status": "scheduled"
   },
   {
-    "title": "REMATE GENERAL",
-    "consignatariaName": "Ivan L. O'Farrell Consignataria",
-    "consignatariaSlug": "ofarrell",
-    "date": "2026-11-12",
-    "time": "14:00",
-    "location": "Formosa, Formosa",
-    "province": "FORMOSA",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Remate presencial y streaming — Sociedad Rural de Comandante Fontana - Formosa",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 1167,
-    "status": "scheduled"
-  },
-  {
     "title": "Faena, I,vernada y Cria - 14.00hs",
     "consignatariaName": "Lanusse Santillan",
     "consignatariaSlug": "lanusse-santillan",
@@ -22132,6 +22113,25 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1167,
+    "status": "scheduled"
+  },
+  {
+    "title": "REMATE GENERAL",
+    "consignatariaName": "Ivan L. O'Farrell Consignataria",
+    "consignatariaSlug": "ofarrell",
+    "date": "2026-11-12",
+    "time": "14:00",
+    "location": "Formosa, Formosa",
+    "province": "FORMOSA",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Remate presencial y streaming — Sociedad Rural de Comandante Fontana - Formosa",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
     "id": 1168,
     "status": "scheduled"
   },
