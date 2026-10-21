@@ -84,10 +84,22 @@ La comisión del 1% está definida **solo para hacienda**. Para arrendamiento y 
 ### #2 — 00:48
 - Arrendamiento ahora tiene comisión: 0,8 de un mes de canon. `enviaAContrapartes('arrendamiento')` = true **en la rama**, sin publicar. 14 tests.
 
+### #3 — 01:20
+- **Sync:** la otra sesión pasó `feat/cerrador-v2` a main como v1.237.0 (#71) y siguió en `feat/conversion-leads`. Mergeé `origin/main` en `feat/agente-v2` sin conflictos. Ya no hay que integrar `cerrador-v2`.
+- `src/lib/agente/mensajes-tipos.ts` + tests (9):
+  - `pedirDatosCampo`: arrendamiento y campo; pide ha, aptitud, zona y plazo.
+  - `calificarTasacion`: "¿vender, arrendar o solo saber cuánto vale?" + link a `/campos/valor-hectarea`. `leerIntencionCampo` lee la respuesta.
+  - `primerCorreo(tipo, lead)`.
+  - `CADENCIA_CONTRAPARTE_DIAS = [0,3,7,14]` y `tocaSeguimiento()`: 1 inicial + 3 seguimientos en 14 días, según el informe de cierre.
+  - `PIE_COMERCIAL` / `conPieComercial()`: Ley 25.326 art. 27, baja visible y aviso de comunicación comercial.
+- Estos correos van **solo al lead que nos escribió**. No hay plantilla de oferta a contrapartes para estos tipos (bloqueo legal o sin comisión).
+- Check 718 tests OK, build OK.
+- **Para José:** la plantilla `oferta()` de hacienda que está en producción tiene BAJA, pero **no tiene la leyenda de "comunicación comercial"** (Disp. 4/2009). Sumarla es cambiar un texto que ya sale: va en el informe como recomendación y no lo toqué.
+
 ## Próximos pasos
 0. (los 3 informes llegaron ✅) Leer los 3 informes de `docs/agente/` y bajar sus reglas a esta lista. Riesgos legales → bloqueos.
 1. Usar `tipoDeIntent` en el motor (`motor.ts` ~l.487) para que tome arrendamiento y tasación con su primer paso. Los tipos sin comisión quedan en "calificar o pedir datos" **solo hacia el propio lead** (el que nos escribió), nunca a contrapartes. Ojo: escribirle al lead que nos escribió también es mandar un mail → queda detrás del mismo encendido, y se deja listo para que José lo prenda.
-2. Plantillas por tipo en un archivo nuevo `mensajes-tipos.ts`:
+2. ✅ (#3) Plantillas por tipo en un archivo nuevo `mensajes-tipos.ts`:
    - arrendamiento: pedir ha, aptitud, zona y fecha; la oferta a la contraparte explica el servicio llave en mano, "0,8 de un mes de canon contra el mes completo del mercado" y que la aceptación es por escrito;
    - tasación: "¿querés venderlo o arrendarlo?".
 3. Ordenar la cola del motor por `prioridad()` en vez de por fecha.
