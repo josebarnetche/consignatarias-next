@@ -125,10 +125,21 @@ La comisión del 1% está definida **solo para hacienda**. Para arrendamiento y 
 - Check 738 tests OK, build OK.
 - **Si José lo prende hoy:** 4 arrendar_busco + 6 tasar = 10 correos a gente que nos escribió, a razón de hasta 5 por corrida, de 7 a 22. Ninguno compromete precio ni comisión.
 
+### #7 — 03:25
+- `src/lib/agente/mensajes-contacto.ts` + tests (6). **BORRADOR sin usar**: `ofertaServicioContacto()`, la oferta de hacienda con el encuadre "servicio de contacto" para el riesgo SIOCAL.
+  - Mismo asunto y referencia que la oferta actual.
+  - Cobra "el servicio de contacto: 1% del bruto si se concreta", en vez de "comisión".
+  - Aclara lo que no hacemos (no negociamos precio, no cobramos ni pagamos por terceros, no emitimos liquidaciones ni DT-e, no garantizamos el pago).
+  - Pide verificar SIOCAL y RENSPA.
+  - Pie comercial con BAJA.
+  - El monto es el mismo que definió José: cambia qué se cobra, no cuánto.
+- **Hallazgo para José:** la `oferta()` que sale hoy incluye **"Precio pretendido: $X/kg" del productor** (`detalle()` en `mensajes.ts`). Es su piso, se lo damos a la contraparte antes de que negocie, y va contra la regla de `/lotes` de no publicar el precio pedido. El borrador no lo incluye. No toqué la plantilla de producción.
+- Check y build OK.
+
 ## Próximos pasos
 - Siguientes candidatos:
   - (a) leyenda "comunicación comercial" como propuesta en `mensajes.ts` hacia contrapartes de hacienda, o dejarla para que José decida;
-  - (b) borrador de plantilla de hacienda con encuadre "venta del contacto" (opción 3 del riesgo SIOCAL), sin activar;
+  - (b) ✅ (#7) borrador de plantilla de hacienda con encuadre "venta del contacto" (opción 3 del riesgo SIOCAL), sin activar;
   - (c) en `/admin/agente`, una sección "Decisiones pendientes de José" que lea `TIPOS`;
   - (d) informe final a las 07:00.
 0. (los 3 informes llegaron ✅) Leer los 3 informes de `docs/agente/` y bajar sus reglas a esta lista. Riesgos legales → bloqueos.
