@@ -225,6 +225,9 @@ La comisión del 1% está definida **solo para hacienda**. Para arrendamiento y 
   - entró 1 (sin caso).
 - **Lectura:** el embudo todavía no tiene a nadie en la etapa en que se cobra. Para que haya comisión, una contraparte tiene que responder ACEPTO, el agente presenta, las partes negocian y cierran, y después informan el cierre. Ese recorrido no entra en un día.
 
+### #11 — 05:50
+- Sin cambios en main. Anotado para el informe: el motor usa su propio `RECORDATORIO_CONTRAPARTE_DIAS` (en `reglas.ts`, de la otra sesión) y no la cadencia 0/3/7/14 de `mensajes-tipos.ts`. Unificarlo cambia lógica que ya corre en producción → queda como decisión.
+
 ## Próximos pasos
 - Siguientes candidatos:
   - (a) leyenda "comunicación comercial" como propuesta en `mensajes.ts` hacia contrapartes de hacienda, o dejarla para que José decida;
