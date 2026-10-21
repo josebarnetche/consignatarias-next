@@ -6,6 +6,7 @@ import { AdminPageHeader, AdminSection, KpiRow, KpiCell, AdminEmpty } from '@/co
 import Stat from '@/components/ui/Stat'
 import Badge, { type BadgeTone } from '@/components/ui/Badge'
 import { resumenHacienda } from '@/lib/agente/mensajes'
+import { whatsappLink } from '@/lib/leads/routing'
 import { COMISION_PCT, type EstadoCaso } from '@/lib/agente/reglas'
 import { armarTablero, proximoPaso, ESTADO_LABEL, ORDEN_ESTADOS, type CasoFila, type OfertaFila } from '@/lib/agente/tablero'
 
@@ -19,8 +20,10 @@ export const metadata: Metadata = { title: 'Agente · Admin' }
  *
  *   1. Plata: comisión potencial, en juego y cerrada (src/lib/agente/tablero.ts)
  *   2. Embudo de casos por estado y respuesta de las contrapartes
- *   3. Casos vivos ordenados por plata, con el próximo paso
- *   4. Últimos correos que entraron y salieron
+ *   3. Para llamar hoy: el productor que no contesta el mail, con WhatsApp en un clic
+ *      (en el campo un llamado cierra más que tres correos)
+ *   4. Casos vivos ordenados por plata, con el próximo paso
+ *   5. Últimos correos que entraron y salieron
  *
  * La bitácora completa de cada caso sigue en /admin/leads?lead=N.
  */
@@ -62,6 +65,26 @@ export default async function AdminAgentePage() {
   const t = armarTablero((casosQ.data ?? []) as CasoFila[], (ofertasQ.data ?? []) as OfertaFila[])
   const mensajes = (mensajesQ.data ?? []) as MensajeFila[]
   const corrida = crons.find((c) => c.workflow_name === 'agente')
+  // Productores de los casos que esperan algo de ellos o de una contraparte que no contesta.
+  const aLlamar = t.vivos.filter((c) => c.estado === 'pidiendo_datos' || (c.estado === 'ofreciendo' && c.respondidas === 0) || c.estado === 'presentado')
+  const { data: tels } = aLlamar.length
+    ? await db.from('producer_leads').select('id,name,phone').in('id', aLlamar.map((c) => c.lead_id))
+    : { data: [] as Array<{ id: number; name: string | null; phone: string | null }> }
+  const tel = new Map((tels ?? []).map((l) => [l.id, l]))
+  const llamar = aLlamar
+    .map((c) => ({ c, l: tel.get(c.lead_id) }))
+    .filter((x) => x.l?.phone)
+    .map(({ c, l }) => {
+      const pila = (l!.name ?? '').trim().split(/\s+/)[0]
+      const saludo = pila && !pila.includes('@') ? `Hola ${pila.charAt(0).toUpperCase()}${pila.slice(1).toLowerCase()}` : 'Hola'
+      const guion =
+        c.estado === 'pidiendo_datos'
+          ? `${saludo}, te escribo de consignatarias.com por la hacienda que cargaste. Para ofrecerla me falta saber cuántas cabezas son, la categoría y la zona. ¿Me lo pasás por acá?`
+          : c.estado === 'presentado'
+            ? `${saludo}, te escribo de consignatarias.com. ¿Pudiste hablar con la contraparte que te presentamos? ¿Avanzaron?`
+            : `${saludo}, te escribo de consignatarias.com. Estamos ofreciendo tu ${c.lado === 'vende' ? 'hacienda' : 'pedido de compra'} (${resumenHacienda(c.datos)}). ¿Sigue en pie? ¿Tenés un precio de referencia o una fecha?`
+      return { c, phone: l!.phone!, wa: whatsappLink(l!.phone, guion), motivo: c.estado === 'pidiendo_datos' ? 'no mandó los datos' : c.estado === 'presentado' ? 'presentado: ¿avanzan?' : 'nadie contestó todavía' }
+    })
   const ofs = t.ofertas
 
   return (
@@ -111,6 +134,30 @@ export default async function AdminAgentePage() {
           ))}
         </div>
       </AdminSection>
+
+      {llamar.length > 0 && (
+        <AdminSection title={`Para llamar hoy · ${llamar.length}`} flush>
+          <ol>
+            {llamar.map(({ c, phone, wa, motivo }) => (
+              <li key={c.lead_id} className="border-b border-terminal-border last:border-b-0 px-panel py-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+                <Link href={`/admin/leads?lead=${c.lead_id}`} className="w-10 text-data font-terminal text-zinc-400 hover:text-accent tabular-nums">
+                  #{c.lead_id}
+                </Link>
+                <span className="min-w-0 flex-1 truncate text-data font-terminal text-ink">{resumenHacienda(c.datos)}</span>
+                <span className="text-xxs font-terminal text-zinc-500">{motivo}</span>
+                <a href={`tel:${phone.replace(/[^\d+]/g, '')}`} className="text-data font-terminal text-zinc-300 hover:text-accent tabular-nums">
+                  {phone}
+                </a>
+                {wa && (
+                  <a href={wa} target="_blank" rel="noopener noreferrer" className="text-xxs font-terminal text-accent hover:underline">
+                    WhatsApp →
+                  </a>
+                )}
+              </li>
+            ))}
+          </ol>
+        </AdminSection>
+      )}
 
       <AdminSection title={`Casos vivos · ${t.vivos.length}`} flush>
         {t.vivos.length === 0 ? (

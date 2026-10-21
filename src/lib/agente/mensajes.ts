@@ -111,13 +111,18 @@ export function oferta(o: { leadId: number; ofertaId: number; lado: Lado; datos:
     texto: [
       'Buenas,',
       '',
-      vende
-        ? `Les escribimos desde consignatarias.com. Un productor nos pidió ayuda para vender hacienda y pensamos que puede interesarle a ${o.contraparte}:`
-        : `Les escribimos desde consignatarias.com. Un productor nos pidió ayuda para comprar hacienda y pensamos que ${o.contraparte} puede tenerla:`,
+      // A otro lead se le habla de "ustedes"; a una firma o planta, por su nombre.
+      o.contraparte === 'ustedes'
+        ? vende
+          ? 'Les escribimos desde consignatarias.com. Un productor nos pidió ayuda para vender hacienda que coincide con lo que ustedes buscan:'
+          : 'Les escribimos desde consignatarias.com. Un comprador nos pidió ayuda para conseguir hacienda como la que ustedes ofrecen:'
+        : vende
+          ? `Les escribimos desde consignatarias.com. Un productor nos pidió ayuda para vender hacienda y pensamos que puede interesarle a ${o.contraparte}:`
+          : `Les escribimos desde consignatarias.com. Un comprador nos pidió ayuda para conseguir hacienda y pensamos que ${o.contraparte} puede tenerla:`,
       '',
       detalle(o.datos),
       '',
-      `Si les interesa, respondan este correo con la palabra ACEPTO y les pasamos el contacto directo del productor para que acuerden entre ustedes. Aceptar significa que, si la operación se concreta, nos corresponde una comisión del ${COMISION_PCT}% sobre el bruto, a cargo de ustedes. Si no se concreta, no hay ningún cargo.`,
+      `Si les interesa, respondan este correo con la palabra ACEPTO y les pasamos el contacto directo del ${vende ? 'productor' : 'comprador'} para que acuerden entre ustedes. Aceptar significa que, si la operación se concreta, nos corresponde una comisión del ${COMISION_PCT}% sobre el bruto, a cargo de ustedes. Si no se concreta, no hay ningún cargo.`,
       '',
       'Si tienen preguntas sobre la hacienda, respondan y se las trasladamos al productor. Si no les interesa este tipo de consultas, respondan BAJA y no les escribimos más.',
       FIRMA,
@@ -151,6 +156,21 @@ export function presentacion(o: {
       'A partir de acá acuerdan precio, plazo y condiciones directamente entre ustedes; nosotros no intervenimos en eso.',
       '',
       'En unos días les escribimos para saber cómo siguió. Si cierran antes, respondan este correo contándonos cuántas cabezas y a qué precio, así lo registramos.',
+      FIRMA,
+    ].join('\n'),
+  }
+}
+
+/** Un solo recordatorio a la contraparte que no contestó la oferta, en el mismo hilo. */
+export function recordatorioOferta(o: { leadId: number; ofertaId: number; lado: Lado; datos: DatosHacienda }): Correo {
+  return {
+    asunto: `Re: ${o.lado === 'vende' ? 'Hacienda disponible' : 'Comprador buscando'}: ${resumenHacienda(o.datos)} · Ref. ${referencia(o.leadId, o.ofertaId)}`,
+    texto: [
+      'Buenas,',
+      '',
+      `Les reenvío la consulta de hace unos días por ${resumenHacienda(o.datos)}: ${o.lado === 'vende' ? 'la hacienda sigue disponible' : 'el comprador sigue buscando'}.`,
+      '',
+      `Si les interesa, respondan ACEPTO y les pasamos el contacto directo (comisión del ${COMISION_PCT}% sobre el bruto solo si la operación se concreta). Si no es para ustedes, con un "no" alcanza y no insistimos.`,
       FIRMA,
     ].join('\n'),
   }

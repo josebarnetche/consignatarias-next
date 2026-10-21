@@ -157,6 +157,21 @@ describe('mensajes', () => {
     expect(comprometePrecio(c.texto)).toBe(false)
   })
 
+  it('en un cruce entre leads le habla a "ustedes" y al comprador lo llama comprador', () => {
+    const c = M.oferta({ leadId: 50, ofertaId: 7, lado: 'compra', datos: { cabezas: 60, categoria: 'terneros', provincia: 'Entre Ríos' }, contraparte: 'ustedes' })
+    expect(c.texto).toMatch(/Un comprador nos pidió ayuda para conseguir hacienda como la que ustedes ofrecen/)
+    expect(c.texto).toMatch(/contacto directo del comprador/)
+    expect(c.texto).not.toMatch(/ustedes puede\b/)
+  })
+
+  it('el recordatorio a la contraparte va en el hilo y no lleva datos del productor', () => {
+    const c = M.recordatorioOferta({ leadId: 12, ofertaId: 34, lado: 'vende', datos })
+    expect(c.asunto).toMatch(/^Re: Hacienda disponible: .*Ref\. C-12-34/)
+    expect(filtraContacto(c.texto, productor)).toBeNull()
+    expect(comprometePrecio(c.texto)).toBe(false)
+    expect(c.texto).toMatch(/ACEPTO/)
+  })
+
   it('la presentación sí lleva el contacto de las dos partes', () => {
     const c = M.presentacion({ leadId: 12, ofertaId: 34, lado: 'vende', datos, productor: { nombre: productor.name, email: productor.email, phone: productor.phone }, contraparte: { nombre: 'Frigorífico X', email: 'hacienda@x.com' } })
     expect(c.texto).toContain(productor.email)

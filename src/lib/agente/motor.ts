@@ -32,6 +32,7 @@ import {
   MAX_RECORDATORIOS,
   MAX_TANDAS,
   OFERTAS_POR_TANDA,
+  RECORDATORIO_CONTRAPARTE_DIAS,
   SEGUIMIENTO_DIAS,
   brutoDeCierre,
   comisionArs,
@@ -612,6 +613,17 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
     const limite = enDias(ahora, -DIAS_ESPERA_CONTRAPARTE).toISOString()
     for (const o of ofertas) if (o.estado === 'enviada' && o.enviada_at < limite) await guardarOferta(o.id, { estado: 'sin_respuesta' })
     const esperando = ofertas.filter((o) => o.estado === 'enviada' && o.enviada_at >= limite)
+
+    // Un recordatorio, uno solo, a quien no contestó en dos días. En el mismo hilo.
+    const corte = enDias(ahora, -RECORDATORIO_CONTRAPARTE_DIAS).toISOString()
+    for (const o of esperando.filter((x) => x.enviada_at < corte && x.seguimientos === 0 && !bajas.has(x.email))) {
+      const { data: orig } = await db.from('agente_mensajes').select('message_id').eq('oferta_id', o.id).eq('dir', 'out').order('creado_at').limit(1)
+      const id = await mandar({ leadId: lead.id, ofertaId: o.id, para: [o.email], correo: M.recordatorioOferta({ leadId: lead.id, ofertaId: o.id, lado: caso.lado, datos: caso.datos }), plantilla: 'recordatorio_oferta', enRespuestaA: orig?.[0]?.message_id ?? null, conBaja: true })
+      if (id) {
+        await guardarOferta(o.id, { seguimientos: 1 })
+        await bitacora(lead.id, `Recordatorio a ${o.nombre}`, 'pendiente', { oferta_id: o.id })
+      }
+    }
 
     const cupo = MAX_CONTACTOS_NUEVOS_DIA - (await enviadasHoy())
     if (cupo <= 0) {
