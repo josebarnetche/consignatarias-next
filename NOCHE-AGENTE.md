@@ -51,6 +51,15 @@ Bitácora del loop de 30 min. Rama `feat/agente-v2` (worktree `~/consignatarias-
   - (c) consultarlo con un abogado antes de cualquier envío.
 - Ajuste de la regla de comisión si se sigue: calcularla sobre el total del contrato con tope por provincia, no en meses fijos.
 
+## ⚠️ RIESGO LEGAL — hacienda, el 1% que YA corre en producción (01:15, informe `docs/agente/investigacion-comisionista-hacienda.md`)
+- **El RUCA ya no existe:** lo reemplazó el SIOCAL (Res. SAGyP 50/2025, anexo vigente en la Res. 103/2026).
+- La inscripción es obligatoria para quien "intervenga en el comercio" de ganados. Sin inscripción: interdicción y sanciones (Leyes 21.453, 21.740 y 25.507).
+- **No hay excepción para quien solo pone en contacto** en hacienda. La figura "vincular oferta y demanda" existe solo para granos (SISA).
+- **El 1% puede no ser cobrable en juicio** si un juez lo ve como corretaje sin matrícula. Los fallos son inmobiliarios: aplicarlos a hacienda es una inferencia y hay que validarla con un abogado.
+- **Encuadre sugerido:** cobrar la **venta del dato o del contacto**, pactada por escrito antes de pasar el contacto, en vez de una "comisión sobre el bruto". Avisar por escrito que no cobramos, no pagamos ni garantizamos el pago. Ningún interés propio en un lote (CCyC art. 1348). Verificar que el comprador esté en el SIOCAL y que el RENSPA sea válido.
+- **Contexto de mercado** (cifras viejas, 2004 y 2018): el consignatario cobra 2-5% al vendedor, más un fondo de garantía. En venta directa a faena el comprador hoy no paga comisión, y nuestro 1% le cae a él.
+- **NO se tocó producción** (fuera del alcance de la noche). En la rama, hacienda sigue saliendo. **Decide José, idealmente con un abogado, antes de las 8, que es cuando el agente vuelve a escribir.**
+
 ## Pendiente de José
 - **Quién paga la comisión de arrendamiento:** el arrendatario, el arrendador o los dos. Supuesto provisorio, por analogía con hacienda: quien recibe el contacto. Confirmar.
 - **Comisión de venta de campo:** sin definir (sigue apagada).
@@ -76,7 +85,7 @@ La comisión del 1% está definida **solo para hacienda**. Para arrendamiento y 
 - Arrendamiento ahora tiene comisión: 0,8 de un mes de canon. `enviaAContrapartes('arrendamiento')` = true **en la rama**, sin publicar. 14 tests.
 
 ## Próximos pasos
-0. (cierre-broker ✅ e inmobiliaria-rural ✅ ya llegaron; falta comisionista-hacienda) Leer los 3 informes de `docs/agente/` y bajar sus reglas a esta lista. Riesgos legales → bloqueos.
+0. (los 3 informes llegaron ✅) Leer los 3 informes de `docs/agente/` y bajar sus reglas a esta lista. Riesgos legales → bloqueos.
 1. Usar `tipoDeIntent` en el motor (`motor.ts` ~l.487) para que tome arrendamiento y tasación con su primer paso. Los tipos sin comisión quedan en "calificar o pedir datos" **solo hacia el propio lead** (el que nos escribió), nunca a contrapartes. Ojo: escribirle al lead que nos escribió también es mandar un mail → queda detrás del mismo encendido, y se deja listo para que José lo prenda.
 2. Plantillas por tipo en un archivo nuevo `mensajes-tipos.ts`:
    - arrendamiento: pedir ha, aptitud, zona y fecha; la oferta a la contraparte explica el servicio llave en mano, "0,8 de un mes de canon contra el mes completo del mercado" y que la aceptación es por escrito;
