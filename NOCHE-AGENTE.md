@@ -146,6 +146,20 @@ La comisión del 1% está definida **solo para hacienda**. Para arrendamiento y 
     - Producto: AGENTE_TIPOS apagado.
 - Check 749 tests OK, build OK.
 
+### #9 — 04:25 (auditoría de envíos del agente de campos)
+- **Hueco corregido:** un caso de campo que llegaba con datos completos pasaba a `escalado` **sin avisarle a José**, así que quedaba olvidado. Ahora `trabajarCampos` recibe `avisar` (el `escalar` del motor) y le manda a José ha, aptitud y zona, con responder-a el lead.
+- **Test de punta a punta con base falsa:**
+  - 3 leads → 3 casos;
+  - correos SOLO a quienes consultaron (2);
+  - 1 aviso a José por el caso completo;
+  - a las 3 AM no hace nada.
+- **Verificado leyendo el código:**
+  - BAJA: `mandar()` filtra `agente_bajas`.
+  - Horario: 7 a 22, el mismo que usa hacienda para escribirle al lead.
+  - Hacienda no toma intents de campo y campo no toma casos de hacienda, así que nadie recibe dos flujos.
+  - Recordatorio cada 3 días, como máximo 2.
+- Check 751 tests OK, build OK.
+
 ## Próximos pasos
 - Siguientes candidatos:
   - (a) leyenda "comunicación comercial" como propuesta en `mensajes.ts` hacia contrapartes de hacienda, o dejarla para que José decida;

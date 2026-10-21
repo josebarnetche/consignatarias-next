@@ -586,7 +586,7 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
   }
 
   // Leads de campo (arrendamiento, tasación): solo con AGENTE_TIPOS=on, y solo al lead que consultó.
-  await trabajarCampos({ db, ahora, dryRun, mandar, bitacora: (id, body) => bitacora(id, body), nota: (n) => inf.notas.push(n) })
+  await trabajarCampos({ db, ahora, dryRun, mandar, bitacora: (id, body) => bitacora(id, body), avisar: escalar, nota: (n) => inf.notas.push(n) })
 
   const { data: vencidos } = await db.from('agente_casos').select('*').in('estado', ['nuevo', 'pidiendo_datos', 'ofreciendo']).lte('proximo_at', ahora.toISOString()).order('proximo_at').limit(30)
   // Los que esperan respuesta o se quedaron sin contraparte también se miran: si

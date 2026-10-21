@@ -126,6 +126,8 @@ export interface Ctx {
   dryRun: boolean
   mandar: (o: { leadId: number; para: string[]; correo: Correo; plantilla: string }) => Promise<string | null>
   bitacora: (leadId: number, body: string) => Promise<unknown>
+  /** Aviso a José (el `escalar` del motor). Un caso que pasa a él sin aviso queda olvidado. */
+  avisar?: (titulo: string, cuerpo: string, responderA?: string) => Promise<unknown>
   nota: (s: string) => void
 }
 
@@ -158,6 +160,19 @@ export async function trabajarCampos(ctx: Ctx, activo = TIPOS_CAMPO_ACTIVOS): Pr
       })
     }
     if (a.correo) await ctx.mandar({ leadId: l.id, para: [l.email!], correo: a.correo, plantilla: `campo_${a.datos.tipo}` })
+    if (a.estado === 'escalado' && ctx.avisar) {
+      const d = a.datos
+      await ctx.avisar(
+        `Caso de ${d.tipo} #${l.id} con datos completos (lo seguís vos)`,
+        [
+          `${l.name ?? 'Sin nombre'} · ${l.intent}`,
+          `${d.hectareas ?? '?'} ha · ${d.aptitud ?? 'aptitud s/d'} · ${[d.zona, d.provincia].filter(Boolean).join(', ') || 'zona s/d'}`,
+          '',
+          'El agente no le ofrece a contrapartes (bloqueo legal o sin comisión, ver src/lib/agente/tipos.ts).',
+        ].join('\n'),
+        l.email ?? undefined,
+      )
+    }
     await ctx.bitacora(l.id, `El agente tomó el caso (${a.datos.tipo}): ${a.motivo}`)
   }
 

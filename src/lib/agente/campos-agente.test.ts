@@ -74,3 +74,63 @@ describe('trabajarCampos', () => {
     expect(tocado).toBe(false)
   })
 })
+
+/** Base falsa mínima: lo justo para las consultas de trabajarCampos. */
+function dbFalsa(tablas: { producer_leads: unknown[]; agente_casos: unknown[] }) {
+  const insertados: unknown[] = []
+  const q = (rows: unknown[]) => {
+    const b: Record<string, unknown> = {}
+    const self = () => b
+    for (const m of ['select', 'in', 'eq', 'order', 'lte', 'limit']) b[m] = self
+    b.then = (r: (v: { data: unknown[] }) => unknown) => r({ data: rows })
+    b.maybeSingle = async () => ({ data: rows[0] ?? null })
+    return b
+  }
+  return {
+    insertados,
+    db: {
+      from: (t: 'producer_leads' | 'agente_casos') => ({
+        ...q(tablas[t]),
+        insert: async (row: unknown) => { insertados.push(row); return { error: null } },
+        update: () => ({ eq: async () => ({ error: null }) }),
+      }),
+    },
+  }
+}
+
+describe('trabajarCampos (prendido)', () => {
+  it('toma los leads, le escribe solo al que consultó y avisa a José el que pasa a él', async () => {
+    const leads = [
+      lead({ id: 1, intent: 'arrendar_busco', category: null }), // faltan datos → correo al lead
+      lead({ id: 2, intent: 'arrendar_busco', category: 'ganadero', email: 'b@x.com' }), // completo → escalado + aviso
+      lead({ id: 3, intent: 'tasar', email: 'c@x.com' }), // califica
+    ]
+    const { db, insertados } = dbFalsa({ producer_leads: leads, agente_casos: [] })
+    const enviados: string[][] = []
+    const avisos: string[] = []
+    await trabajarCampos(
+      {
+        db: db as never,
+        ahora,
+        dryRun: false,
+        mandar: async (o) => { enviados.push(o.para); return 'id' },
+        bitacora: async () => null,
+        avisar: async (t) => { avisos.push(t) },
+        nota: () => {},
+      },
+      true,
+    )
+    expect(insertados).toHaveLength(3)
+    expect(enviados).toEqual([['m@x.com'], ['c@x.com']]) // nadie más que quien consultó
+    expect(avisos).toHaveLength(1)
+    expect(avisos[0]).toMatch(/#2/)
+  })
+  it('fuera de horario (3 de la mañana) no hace nada', async () => {
+    const { db, insertados } = dbFalsa({ producer_leads: [lead({})], agente_casos: [] })
+    await trabajarCampos(
+      { db: db as never, ahora: new Date('2026-10-21T06:00:00Z'), dryRun: false, mandar: async () => 'x', bitacora: async () => null, nota: () => {} },
+      true,
+    )
+    expect(insertados).toHaveLength(0)
+  })
+})
