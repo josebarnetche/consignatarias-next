@@ -1,4 +1,4 @@
-# INFORME PARA JOSÉ — mañana del 21-10-2026
+# INFORME PARA JOSÉ — mañana del 21-10-2026 (cerrado 06:50)
 
 > Rama `feat/agente-v2` (worktree `~/consignatarias-agente-noche`). **Nada publicado, nada mandado a nadie, ninguna variable ni clave tocada.**
 > Contra main: 22 archivos, casi todos nuevos. En `motor.ts` hay 4 cambios chicos y en `page.tsx` de `/admin/agente`, 2 líneas.
@@ -36,6 +36,7 @@
 - Mi rama sale de su trabajo y lo tiene integrado: se publica con un merge común a main, previo `git fetch` y merge de lo último.
 
 ## 5. Decisiones pendientes (también aparecen en el tablero)
+- **Ritmo de seguimiento a contrapartes:** el motor de producción recuerda a los 2 días (`RECORDATORIO_CONTRAPARTE_DIAS`); la investigación recomienda 0/3/7/14. ¿Lo unificamos?
 - **Arrendamiento:**
   - circuito con un corredor matriculado por provincia, cobro por publicación o suscripción, o abogado;
   - quién paga;
@@ -44,7 +45,7 @@
 - **Prender `AGENTE_TIPOS`:** son 10 correos a quienes nos consultaron (4 de arrendamiento, 6 de tasación).
 
 ## 6. Estimación honesta de comisión
-- **Hoy: $0 cobrado y $0 en juego.** Embudo real a las 04:55:
+- **Hoy: $0 cobrado y $0 en juego.** Embudo real a las 06:50, igual que a las 04:55: entre las 00:00 y las 06:50 no entró ni salió ningún correo. Lo esperable: el agente escribe a contrapartes de 8 a 19.
   - 4 ofertas enviadas, 0 respuestas, 0 ACEPTO, 0 presentados.
   - Para cobrar falta una contraparte que acepte, la presentación, que negocien, que cierren y que informen el cierre: **no entra en un día**.
 - **Meta de $100.000 antes del fin del día: no la veo alcanzable** con este embudo, y no la voy a disfrazar.
