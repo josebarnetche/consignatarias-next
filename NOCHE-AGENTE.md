@@ -1,3 +1,60 @@
+# INFORME PARA JOSÉ — mañana del 21-10-2026
+
+> Rama `feat/agente-v2` (worktree `~/consignatarias-agente-noche`). **Nada publicado, nada mandado a nadie, ninguna variable ni clave tocada.**
+> Contra main: 22 archivos, casi todos nuevos. En `motor.ts` hay 4 cambios chicos y en `page.tsx` de `/admin/agente`, 2 líneas.
+
+## 1. Lo que necesita tu decisión ANTES DE LAS 8 (el agente de producción vuelve a escribir)
+1. **Riesgo SIOCAL en hacienda (legal).** El 1% como "comisión", sin estar inscriptos en el SIOCAL, puede no ser cobrable, y además hay riesgo de sanción. Opciones:
+   - (a) seguir y consultar a un abogado hoy;
+   - (b) pausar el agente hasta la consulta. Hoy la única pausa es sacar `AGENTE_IMAP_PASSWORD`, y eso lo hacés vos o me lo pedís;
+   - (c) pasar al encuadre "servicio de contacto". Está en borrador: `src/lib/agente/mensajes-contacto.ts`.
+2. **La oferta que sale hoy le muestra a la contraparte el precio pedido del productor.** Es su piso. Sacarlo es una línea en `mensajes.ts → detalle()`.
+3. **A la oferta le falta el aviso de "comunicación comercial"** (Ley 25.326 art. 27). La BAJA ya está.
+
+## 2. Lo que se hizo esta noche (todo con tests: 751 en verde, build OK)
+- **El agente generalizado por tipo de operación** (`tipos.ts`):
+  - Hacienda: 1%.
+  - Arrendamiento: 0,8 de un mes de canon (tu decisión), con **bloqueo legal**.
+  - Campo: sin comisión.
+  - Tasación: califica.
+- **Leads de campo y tasación** (`campos-agente.ts`): le escribe solo a quien consultó (pedir datos o calificar), le recuerda, lo duerme o te lo pasa con aviso. **Apagado**: se prende con `AGENTE_TIPOS=on`. Nunca escribe a contrapartes.
+- **Cola por plata** (`cola.ts`): el cupo de 20 contactos nuevos por día va primero a lo que más puede dejar.
+- **Correos por tipo y cadencia de seguimiento** 0/3/7/14 días, con pie comercial (`mensajes-tipos.ts`).
+- **Tablero `/admin/agente`:**
+  - "Decisiones pendientes", leídas del código: desaparecen solas al resolverlas.
+  - "Por tipo de operación": plata abierta y qué la frena.
+- **3 informes con fuentes** en `docs/agente/`: comisionista de hacienda, inmobiliaria rural y cierre de operaciones.
+
+## 3. Qué revisar antes de publicar
+- `/admin/agente` con datos reales (preview no sirve: no tiene Supabase. Se mira en producción, como el admin).
+- Los textos de `mensajes-tipos.ts` y `mensajes-contacto.ts`: son la voz de la casa hacia productores.
+- Que la v1.237.0 de la otra sesión siga compatible. Hoy mergea limpio: mi rama tiene `origin/main` integrado y no tiene conflictos.
+- Versión: al publicar, la siguiente libre (hoy main está en v1.237.0 → **v1.238.0**) y su entrada en el CHANGELOG.
+
+## 4. Cómo se junta con lo de la otra sesión
+- La otra sesión ya pasó su `feat/cerrador-v2` a main como v1.237.0 (#71) y ahora trabaja en `feat/conversion-leads`.
+- Mi rama sale de su trabajo y lo tiene integrado: se publica con un merge común a main, previo `git fetch` y merge de lo último.
+
+## 5. Decisiones pendientes (también aparecen en el tablero)
+- **Arrendamiento:**
+  - circuito con un corredor matriculado por provincia, cobro por publicación o suscripción, o abogado;
+  - quién paga;
+  - calcular sobre el total del contrato con el tope provincial (0,8 meses de un contrato de 1 año ≈ 6,7%, por encima del 4% bonaerense).
+- **Venta de campo:** sin comisión definida.
+- **Prender `AGENTE_TIPOS`:** son 10 correos a quienes nos consultaron (4 de arrendamiento, 6 de tasación).
+
+## 6. Estimación honesta de comisión
+- **Hoy: $0 cobrado y $0 en juego.** Embudo real a las 04:55:
+  - 4 ofertas enviadas, 0 respuestas, 0 ACEPTO, 0 presentados.
+  - Para cobrar falta una contraparte que acepte, la presentación, que negocien, que cierren y que informen el cierre: **no entra en un día**.
+- **Meta de $100.000 antes del fin del día: no la veo alcanzable** con este embudo, y no la voy a disfrazar.
+- **Qué la acercaría:**
+  - Una sola operación chica de hacienda supera la meta: 100 novillos de ~400 kg a ~$4.200/kg ≈ $168M de bruto → 1% ≈ **$1,7M**. El cuello no es el tamaño, es conseguir el primer ACEPTO.
+  - **Llamar hoy** a los productores que están en "Para llamar hoy" (el tablero ya trae el WhatsApp con el guion). El informe de cierre dice que la velocidad de respuesta es lo que más pesa.
+  - Arrendamiento: ~$21,7M de comisión de referencia en 4 leads (casi todo el de 1.661 ha de Corrientes), **bloqueado legalmente**. Es el número más grande y también el que más riesgo tiene.
+
+---
+
 # Noche del agente cerrador — 21-10-2026 (00:22 → 07:00)
 
 Bitácora del loop de 30 min. Rama `feat/agente-v2` (worktree `~/consignatarias-agente-noche`). **Nada va a main ni a producción hasta que José lo revise.**
