@@ -20,6 +20,7 @@ import {
 import { distanciaProvincia, elegirContrapartes, type Candidato } from './contrapartes'
 import * as M from './mensajes'
 import { categoriaDemanda, leadDeDemanda, provinciaDemanda } from './demanda'
+import { armarTablero, comisionEstimada, proximoPaso, type CasoFila, type OfertaFila } from './tablero'
 
 const productor = { name: 'Juan Pérez Gorostiaga', email: 'juanpg@gmail.com', phone: '+54 9 2923 445566' }
 const datos = { cabezas: 40, categoria: 'novillos', zona: 'Saavedra', provincia: 'Buenos Aires', peso_kg: 420 }
@@ -206,5 +207,31 @@ describe('demandas de compra', () => {
     const vendedor: Candidato = { tipo: 'lead', ref: '29', nombre: 'un productor de El Rabón', email: 'v@x.com', provincia: 'Santa Fe', categoria: 'terneros', cabezas: 40, lado: 'vende' }
     const r = elegirContrapartes({ lado: 'compra', datos: { cabezas: 60, categoria: 'terneros', provincia: 'Entre Ríos' }, candidatos: [vendedor], yaConsultados: new Set(), bajas: new Set(), cuantos: 3 })
     expect(r.map((c) => c.ref)).toEqual(['29'])
+  })
+})
+
+describe('tablero', () => {
+  const caso = (lead_id: number, estado: CasoFila['estado'], cabezas: number | null): CasoFila => ({ lead_id, lado: 'vende', estado, datos: { cabezas, categoria: 'novillos', provincia: 'Buenos Aires' }, motivo: null, tandas: 0, proximo_at: '2026-10-21T11:00:00Z', actualizado_at: '2026-10-21T00:00:00Z' })
+  const of = (lead_id: number, estado: string, respondida: boolean, comision?: number): OfertaFila => ({ lead_id, tipo: 'firma', nombre: 'F', estado, enviada_at: '2026-10-20T13:00:00Z', respondida_at: respondida ? '2026-10-20T15:00:00Z' : null, cierre: comision ? { comision_ars: comision } : null })
+
+  it('separa potencial, en juego y cerrada, y deja afuera los casos a mano', () => {
+    const t = armarTablero(
+      [caso(1, 'ofreciendo', 50), caso(2, 'presentado', 40), caso(3, 'escalado', 300), caso(4, 'pidiendo_datos', null), caso(5, 'descartado', 10)],
+      [of(1, 'enviada', false), of(2, 'presentada', true), of(9, 'cerrada', true, 739_600)],
+    )
+    expect(t.plata.potencial).toBe(comisionEstimada({ cabezas: 50, categoria: 'novillos' }))
+    expect(t.plata.enJuego).toBe(comisionEstimada({ cabezas: 40, categoria: 'novillos' }))
+    expect(t.plata.cerrada).toBe(739_600)
+    expect(t.plata.sinEstimar).toBe(1)
+    expect(t.vivos.map((v) => v.lead_id)).toEqual([1, 2, 3, 4])
+    expect(t.vivos.find((v) => v.lead_id === 3)?.comision).toBeNull()
+    expect(t.porEstado.descartado).toBe(1)
+    expect(t.ofertas).toMatchObject({ enviadas: 3, respondidas: 2, aceptadas: 2, esperando: 1 })
+  })
+
+  it('dice el próximo paso en palabras', () => {
+    const ahora = new Date('2026-10-21T12:00:00Z')
+    expect(proximoPaso({ estado: 'ofreciendo', proximo_at: '2026-10-24T12:00:00Z' }, ahora)).toMatch(/en 3 días/)
+    expect(proximoPaso({ estado: 'nuevo', proximo_at: '2026-10-21T11:00:00Z' }, ahora)).toBe('arranca en la próxima corrida')
   })
 })
