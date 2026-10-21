@@ -112,9 +112,27 @@ La comisión del 1% está definida **solo para hacienda**. Para arrendamiento y 
   - 6 tasaciones (53 a 20.000 ha): sin comisión. Sirven para calificar si detrás hay una venta o un arrendamiento.
 - Check 727 tests OK, build OK.
 
+### #6 — 02:55
+- `src/lib/agente/campos-agente.ts` + tests (11). El agente con leads de campo (arrendar_busco/ofrezco, busca-campo, tasar):
+  - **Le escribe solo a quien consultó:** le pide ha, aptitud, zona y plazo, o en tasación le pregunta si es para vender o arrendar. Recordatorio a los 3 días, máximo 2, después lo duerme.
+  - **Con los datos completos, o si el lead contesta:** `escalado`, lo sigue José. **Nunca escribe a contrapartes.**
+  - **APAGADO por defecto:** solo corre con `AGENTE_TIPOS=on`. No creé la variable. Prenderla es decisión de José.
+  - Los casos van en `agente_casos` con `datos.tipo`: no hace falta migración, `datos` es jsonb. Los casos viejos sin `tipo` cuentan como hacienda.
+- `motor.ts`, 3 cambios chicos:
+  - la cola de hacienda filtra `esCasoDeHacienda`;
+  - en la bandeja, la respuesta a un caso de campo se reenvía a José, como en un caso escalado;
+  - llamada a `trabajarCampos()`, que no hace nada si está apagado.
+- Check 738 tests OK, build OK.
+- **Si José lo prende hoy:** 4 arrendar_busco + 6 tasar = 10 correos a gente que nos escribió, a razón de hasta 5 por corrida, de 7 a 22. Ninguno compromete precio ni comisión.
+
 ## Próximos pasos
+- Siguientes candidatos:
+  - (a) leyenda "comunicación comercial" como propuesta en `mensajes.ts` hacia contrapartes de hacienda, o dejarla para que José decida;
+  - (b) borrador de plantilla de hacienda con encuadre "venta del contacto" (opción 3 del riesgo SIOCAL), sin activar;
+  - (c) en `/admin/agente`, una sección "Decisiones pendientes de José" que lea `TIPOS`;
+  - (d) informe final a las 07:00.
 0. (los 3 informes llegaron ✅) Leer los 3 informes de `docs/agente/` y bajar sus reglas a esta lista. Riesgos legales → bloqueos.
-1. Usar `tipoDeIntent` en el motor (`motor.ts` ~l.487) para que tome arrendamiento y tasación con su primer paso. Los tipos sin comisión quedan en "calificar o pedir datos" **solo hacia el propio lead** (el que nos escribió), nunca a contrapartes. Ojo: escribirle al lead que nos escribió también es mandar un mail → queda detrás del mismo encendido, y se deja listo para que José lo prenda.
+1. ✅ (#6) Usar `tipoDeIntent` en el motor (`motor.ts` ~l.487) para que tome arrendamiento y tasación con su primer paso. Los tipos sin comisión quedan en "calificar o pedir datos" **solo hacia el propio lead** (el que nos escribió), nunca a contrapartes. Ojo: escribirle al lead que nos escribió también es mandar un mail → queda detrás del mismo encendido, y se deja listo para que José lo prenda.
 2. ✅ (#3) Plantillas por tipo en un archivo nuevo `mensajes-tipos.ts`:
    - arrendamiento: pedir ha, aptitud, zona y fecha; la oferta a la contraparte explica el servicio llave en mano, "0,8 de un mes de canon contra el mes completo del mercado" y que la aceptación es por escrito;
    - tasación: "¿querés venderlo o arrendarlo?".

@@ -27,6 +27,7 @@ import { enviar, leerBandeja, CASILLA, type Entrante } from './correo'
 import { triageLead, leerRespuesta } from './ia'
 import * as M from './mensajes'
 import { ordenarCola } from './cola'
+import { esCasoDeHacienda, trabajarCampos } from './campos-agente'
 import { comisionEstimada } from './tablero'
 import {
   DIAS_ESPERA_CONTRAPARTE,
@@ -285,6 +286,20 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
         m.de,
       )
       await bitacora(lead.id, `Respuesta de ${m.de} reenviada a José (caso manual)`, 'contesto')
+      return
+    }
+
+    // Un caso de campo (arrendamiento, tasación) no lo cierra el agente: lo que contesta
+    // el lead le llega a José, que es quien resuelve el circuito con un corredor (campos-agente.ts).
+    if (!esCasoDeHacienda(caso.datos)) {
+      await registrar({ tipo: 'caso_campo' })
+      await escalar(
+        `${m.de} respondió en el caso de campo #${lead.id}`,
+        `De: ${m.de}\nAsunto: ${m.asunto}\n\n${texto}\n\nSi respondés este correo, le llega directo a ${m.de}.`,
+        m.de,
+      )
+      await guardarCaso(lead.id, { estado: 'escalado', motivo: 'el lead contestó: lo sigue José' })
+      await bitacora(lead.id, `Respuesta de ${m.de} reenviada a José (caso de campo)`, 'contesto')
       return
     }
 
@@ -570,13 +585,18 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
     return lista
   }
 
+  // Leads de campo (arrendamiento, tasación): solo con AGENTE_TIPOS=on, y solo al lead que consultó.
+  await trabajarCampos({ db, ahora, dryRun, mandar, bitacora: (id, body) => bitacora(id, body), nota: (n) => inf.notas.push(n) })
+
   const { data: vencidos } = await db.from('agente_casos').select('*').in('estado', ['nuevo', 'pidiendo_datos', 'ofreciendo']).lte('proximo_at', ahora.toISOString()).order('proximo_at').limit(30)
   // Los que esperan respuesta o se quedaron sin contraparte también se miran: si
   // apareció un lead del otro lado (un cruce real), se le ofrece sin esperar la tanda.
   const { data: enEspera } = await db.from('agente_casos').select('*').in('estado', ['ofreciendo', 'sin_contraparte']).gt('proximo_at', ahora.toISOString()).limit(50)
   const { data: sinContraparte } = await db.from('agente_casos').select('*').eq('estado', 'sin_contraparte').lte('proximo_at', ahora.toISOString()).limit(50)
   const vistos = new Set<number>()
-  const aMirar = [...(vencidos ?? []), ...(enEspera ?? []), ...(sinContraparte ?? [])].filter((c) => (vistos.has(c.lead_id) ? false : (vistos.add(c.lead_id), true)))
+  const aMirar = [...(vencidos ?? []), ...(enEspera ?? []), ...(sinContraparte ?? [])]
+    .filter((c) => esCasoDeHacienda(c.datos)) // los de campo los trabaja campos-agente.ts
+    .filter((c) => (vistos.has(c.lead_id) ? false : (vistos.add(c.lead_id), true)))
   // Por plata esperada primero (cola.ts): el cupo diario de contactos va a lo que más puede dejar.
   for (const caso of ordenarCola(aMirar as Caso[], (c) => comisionEstimada(c.datos))) {
     const lead = await leerLead(caso.lead_id)
