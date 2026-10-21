@@ -160,6 +160,14 @@ La comisión del 1% está definida **solo para hacienda**. Para arrendamiento y 
   - Recordatorio cada 3 días, como máximo 2.
 - Check 751 tests OK, build OK.
 
+### #10 — 04:55 (foto del agente en producción, para el informe)
+- **Casos:** 11 descartados · 5 nuevos · 5 pidiendo datos · 2 ofreciendo · 1 escalado · 1 sin contraparte. **0 presentados, 0 cerrados.**
+- **Ofertas a contrapartes:** 4 enviadas, **0 respuestas, 0 ACEPTO.**
+- **Correos últimos 7 días:**
+  - salieron 14: 5 pedidos de datos, 4 ofertas, 3 avisos de "estamos ofreciendo", 1 manual de José, 1 sin contraparte;
+  - entró 1 (sin caso).
+- **Lectura:** el embudo todavía no tiene a nadie en la etapa en que se cobra. Para que haya comisión, una contraparte tiene que responder ACEPTO, el agente presenta, las partes negocian y cierran, y después informan el cierre. Ese recorrido no entra en un día.
+
 ## Próximos pasos
 - Siguientes candidatos:
   - (a) leyenda "comunicación comercial" como propuesta en `mensajes.ts` hacia contrapartes de hacienda, o dejarla para que José decida;
