@@ -34,6 +34,8 @@ export const MAX_TANDAS = 3
 export const DIAS_ESPERA_CONTRAPARTE = 4
 /** Recordatorios al productor que no completó los datos antes de dormir el caso. */
 export const MAX_RECORDATORIOS = 2
+/** Días sin respuesta tras los que se manda UN recordatorio a la contraparte (antes de darla por perdida). */
+export const RECORDATORIO_CONTRAPARTE_DIAS = 2
 /** Seguimiento de una presentación: días después de presentar en que se pregunta. */
 export const SEGUIMIENTO_DIAS = [4, 10, 21, 35] as const
 /** Tope de correos a contactos NUEVOS (contrapartes que no escribieron) por día. */

@@ -1,36 +1,45 @@
 name: Agente de operaciones
 
-# Cada 15 minutos lee la casilla agente@consignatarias.com y avanza los casos.
-# Los horarios de envío los decide el código (días hábiles 8-19 para contactos
-# nuevos, 7-22 para responder), no este cron. Ver src/lib/agente/motor.ts.
+# Llama al agente cada 10 minutos: lee la casilla agente@consignatarias.com y
+# avanza los casos. Los horarios de envío los decide el código (días hábiles 8-19
+# para contactos nuevos, 7-22 para responder), no este workflow. Ver
+# src/lib/agente/motor.ts.
+#
+# El cron de GitHub con */15 en la práctica corría cada ~3 horas (20/21-10-2026:
+# 13:01, 17:59, 21:32, 00:09 UTC), y una respuesta de "ACEPTO" no puede esperar
+# tres horas. Por eso cada corrida se queda viva casi 6 horas llamando cada 10
+# minutos, y el cron solo la relanza: la nueva cancela a la anterior. El repo es
+# público, así que los minutos de Actions no se cobran.
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '23 */2 * * *'
   workflow_dispatch:
     inputs:
       dry_run:
-        description: 'Calcular sin mandar nada (true/false)'
+        description: 'Una sola corrida, sin mandar nada (true/false)'
         default: 'false'
 
 permissions: {}
 
 concurrency:
   group: agente
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   agente:
     runs-on: ubuntu-latest
-    timeout-minutes: 7
+    timeout-minutes: 355
     steps:
-      - name: Correr el agente
+      - name: Correr el agente cada 10 minutos
         run: |
-          Q=""
-          [ "${{ github.event.inputs.dry_run }}" = "true" ] && Q="?dryRun=1"
-          RESP=$(curl -sS -m 320 -w $'\n%{http_code}' -X POST \
-            "https://www.consignatarias.com.ar/api/cron/agente$Q" \
-            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}")
-          CODE=$(printf '%s' "$RESP" | tail -n1)
-          BODY=$(printf '%s' "$RESP" | sed '$d')
-          echo "HTTP $CODE — $(printf '%s' "$BODY" | head -c 600)"
-          [ "$CODE" = "200" ] || exit 1
+          Q=""; VUELTAS=34
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then Q="?dryRun=1"; VUELTAS=1; fi
+          for i in $(seq 1 $VUELTAS); do
+            RESP=$(curl -sS -m 320 -w $'\n%{http_code}' -X POST \
+              "https://www.consignatarias.com.ar/api/cron/agente$Q" \
+              -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" || printf '\n000')
+            CODE=$(printf '%s' "$RESP" | tail -n1)
+            BODY=$(printf '%s' "$RESP" | sed '$d')
+            echo "$(date -u +%H:%M) vuelta $i · HTTP $CODE — $(printf '%s' "$BODY" | head -c 400)"
+            [ "$i" -lt "$VUELTAS" ] && sleep 600
+          done

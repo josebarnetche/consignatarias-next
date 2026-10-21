@@ -7,6 +7,21 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.237.0] — 2026-10-21
+
+### Agente: más contrapartes reales y corridas cada 10 minutos
+
+- **Las demandas de compra entran al agente.** `demanda_compra` (formulario "busco hacienda" y la tool `cattle_buying_request` del MCP) se copia a `producer_leads` como lead de compra, una vez por demanda (`source = demanda_compra:N`). Había dos esperando que el agente nunca vio: 200 vacas gordas en Santa Fe y 60 terneros en Entre Ríos.
+- **Un cruce con otro lead no espera la tanda.** Si aparece un comprador (o vendedor) real compatible, se le ofrece en la corrida siguiente aunque el caso esté esperando respuestas o haya agotado las tandas. Los casos `sin_contraparte` se reviven si aparece un cruce, y sus leads siguen contando como contraparte.
+- **Tablero `/admin/agente`** (menú: Por decidir → Agente): comisión cerrada, en juego (presentados) y potencial (1% del bruto estimado de los casos vivos), embudo por estado, tasa de respuesta de las contrapartes, casos vivos ordenados por plata con su próximo paso, y los últimos correos. `agente` entra en la salud de crons de /admin/ops (rojo si pasa más de 1 h sin correr).
+- **Un recordatorio a la contraparte que no contestó en 2 días**, uno solo y en el mismo hilo, antes de darla por perdida a los 4 (`RECORDATORIO_CONTRAPARTE_DIAS`).
+- **La oferta habla bien en los cruces**: a otro lead le dice "ustedes", y al que compra lo llama comprador (Tradefood no es un productor).
+- **"Para llamar hoy" en el tablero**: productores que no mandaron los datos, ofertas que nadie contestó y presentaciones abiertas, con teléfono y WhatsApp con el mensaje ya escrito.
+- **Interruptor `AGENTE_FIRMAS=todas`** (apagado): con esa variable en Vercel el agente también ofrece a las firmas no PRO que tienen mail. Hoy, para las 200 vacas de Tradefood en Santa Fe no hay ninguna firma PRO cerca; hay 8 firmas con mail en Santa Fe y 13 en Entre Ríos y Córdoba.
+- **El workflow corre cada 10 minutos de verdad.** El cron `*/15` de GitHub corría cada ~3 horas. Ahora cada corrida queda viva casi 6 horas llamando cada 10 minutos y el cron la relanza cada 2 horas.
+
+---
+
 ## [1.236.2] — 2026-10-20
 
 ### Agente: los casos escalados quedan en manos de José

@@ -22,6 +22,7 @@ import { logActivity, type ActivityOutcome } from '@/lib/leads/activity'
 import { LEAD_ALERT_TO } from '@/lib/email'
 import { CABEZAS_MINIMAS } from '@/lib/leads/calidad'
 import { elegirContrapartes, type Candidato } from './contrapartes'
+import { leadDeDemanda, type Demanda } from './demanda'
 import { enviar, leerBandeja, CASILLA, type Entrante } from './correo'
 import { triageLead, leerRespuesta } from './ia'
 import * as M from './mensajes'
@@ -31,6 +32,7 @@ import {
   MAX_RECORDATORIOS,
   MAX_TANDAS,
   OFERTAS_POR_TANDA,
+  RECORDATORIO_CONTRAPARTE_DIAS,
   SEGUIMIENTO_DIAS,
   brutoDeCierre,
   comisionArs,
@@ -456,6 +458,27 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
 
   /* ---------------- 2. leads nuevos ---------------- */
 
+  // Las demandas de compra entran como leads de compra (una vez cada una).
+  {
+    const { data: demandas } = await db.from('demanda_compra').select('id,categoria,cabezas,provincia,email,origen,status,notas,created_at').eq('status', 'active')
+    if (demandas?.length) {
+      const fuentes = demandas.map((d) => `demanda_compra:${d.id}`)
+      const { data: ya } = await db.from('producer_leads').select('source').in('source', fuentes)
+      const cargadas = new Set((ya ?? []).map((r) => r.source))
+      const propios = LEAD_ALERT_TO.map((e) => e.toLowerCase())
+      for (const d of demandas as Demanda[]) {
+        if (cargadas.has(`demanda_compra:${d.id}`)) continue
+        const fila = leadDeDemanda(d, propios)
+        if (!fila) continue
+        if (dryRun) {
+          inf.notas.push(`[seco] demanda #${d.id} → lead de compra`)
+          continue
+        }
+        await db.from('producer_leads').insert(fila)
+      }
+    }
+  }
+
   {
     const { data: tomados } = await db.from('agente_casos').select('lead_id')
     const yaTomados = new Set((tomados ?? []).map((r) => r.lead_id))
@@ -521,12 +544,17 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
       const p = padron.get(f.cuit)
       lista.push({ tipo: 'frigorifico', ref: f.cuit, nombre: f.display_name, email, provincia: p?.province ?? null, faenaBovina: puedeFaenarBovinos(p?.matricula ?? null), notas: f.notas_internas, opera: f.opera })
     }
+    // Firmas: solo las PRO (regla de José, 19-10). Con AGENTE_FIRMAS=todas en Vercel
+    // entran todas las que tienen mail, para los pedidos que las PRO no cubren.
     const pro = await getFeaturedSlugs()
-    if (pro.size) {
-      const { data: firmas } = await db.from('consignatarias').select('canonical_slug,display_name,email,province').in('canonical_slug', [...pro])
+    const todasLasFirmas = process.env.AGENTE_FIRMAS === 'todas'
+    if (pro.size || todasLasFirmas) {
+      let q = db.from('consignatarias').select('canonical_slug,display_name,email,province').not('email', 'is', null)
+      if (!todasLasFirmas) q = q.in('canonical_slug', [...pro])
+      const { data: firmas } = await q
       for (const f of firmas ?? []) if (f.email) lista.push({ tipo: 'firma', ref: f.canonical_slug, nombre: f.display_name, email: f.email, provincia: f.province })
     }
-    const { data: otros } = await db.from('agente_casos').select('lead_id,lado,datos').in('estado', ['ofreciendo', 'presentado'])
+    const { data: otros } = await db.from('agente_casos').select('lead_id,lado,datos').in('estado', ['ofreciendo', 'presentado', 'sin_contraparte'])
     if (otros?.length) {
       const { data: ls } = await db.from('producer_leads').select('id,email').in('id', otros.map((o) => o.lead_id))
       const mail = new Map((ls ?? []).map((l) => [l.id, l.email]))
@@ -541,10 +569,18 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
   }
 
   const { data: vencidos } = await db.from('agente_casos').select('*').in('estado', ['nuevo', 'pidiendo_datos', 'ofreciendo']).lte('proximo_at', ahora.toISOString()).order('proximo_at').limit(30)
-  for (const caso of (vencidos ?? []) as Caso[]) {
+  // Los que esperan respuesta o se quedaron sin contraparte también se miran: si
+  // apareció un lead del otro lado (un cruce real), se le ofrece sin esperar la tanda.
+  const { data: enEspera } = await db.from('agente_casos').select('*').in('estado', ['ofreciendo', 'sin_contraparte']).gt('proximo_at', ahora.toISOString()).limit(50)
+  const { data: sinContraparte } = await db.from('agente_casos').select('*').eq('estado', 'sin_contraparte').lte('proximo_at', ahora.toISOString()).limit(50)
+  const vistos = new Set<number>()
+  const aMirar = [...(vencidos ?? []), ...(enEspera ?? []), ...(sinContraparte ?? [])].filter((c) => (vistos.has(c.lead_id) ? false : (vistos.add(c.lead_id), true)))
+  for (const caso of aMirar as Caso[]) {
     const lead = await leerLead(caso.lead_id)
     if (!lead?.email) continue
     const falta = faltantes(caso.datos)
+
+    const vencido = new Date(caso.proximo_at) <= ahora && caso.estado !== 'sin_contraparte'
 
     if (caso.estado === 'nuevo' || caso.estado === 'pidiendo_datos') {
       if (!horarioRespuesta(ahora)) continue
@@ -574,19 +610,25 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
       continue
     }
 
-    // ofreciendo
+    // ofreciendo (o sin contraparte, a la espera de un cruce)
     if (!horarioHabil(ahora)) continue
     const { data: ofs } = await db.from('agente_ofertas').select('*').eq('lead_id', lead.id)
     const ofertas = (ofs ?? []) as Oferta[]
+    if (ofertas.some((o) => ['acepto', 'presentada'].includes(o.estado))) continue
     const limite = enDias(ahora, -DIAS_ESPERA_CONTRAPARTE).toISOString()
     for (const o of ofertas) if (o.estado === 'enviada' && o.enviada_at < limite) await guardarOferta(o.id, { estado: 'sin_respuesta' })
     const esperando = ofertas.filter((o) => o.estado === 'enviada' && o.enviada_at >= limite)
-    if (esperando.length) {
-      const primera = esperando.map((o) => o.enviada_at).sort()[0]
-      await guardarCaso(lead.id, { proximo_at: enDias(new Date(primera), DIAS_ESPERA_CONTRAPARTE).toISOString() })
-      continue
+
+    // Un recordatorio, uno solo, a quien no contestó en dos días. En el mismo hilo.
+    const corte = enDias(ahora, -RECORDATORIO_CONTRAPARTE_DIAS).toISOString()
+    for (const o of esperando.filter((x) => x.enviada_at < corte && x.seguimientos === 0 && !bajas.has(x.email))) {
+      const { data: orig } = await db.from('agente_mensajes').select('message_id').eq('oferta_id', o.id).eq('dir', 'out').order('creado_at').limit(1)
+      const id = await mandar({ leadId: lead.id, ofertaId: o.id, para: [o.email], correo: M.recordatorioOferta({ leadId: lead.id, ofertaId: o.id, lado: caso.lado, datos: caso.datos }), plantilla: 'recordatorio_oferta', enRespuestaA: orig?.[0]?.message_id ?? null, conBaja: true })
+      if (id) {
+        await guardarOferta(o.id, { seguimientos: 1 })
+        await bitacora(lead.id, `Recordatorio a ${o.nombre}`, 'pendiente', { oferta_id: o.id })
+      }
     }
-    if (ofertas.some((o) => ['acepto', 'presentada'].includes(o.estado))) continue
 
     const cupo = MAX_CONTACTOS_NUEVOS_DIA - (await enviadasHoy())
     if (cupo <= 0) {
@@ -603,7 +645,22 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
     const bloqueados = new Set([...bajas, ...(recientes ?? []).map((r) => String(r.email).toLowerCase()), lead.email.toLowerCase()])
 
     const todos = (await candidatos()).filter((c) => c.tipo !== 'lead' || c.lado !== caso.lado)
-    const elegidos = caso.tandas >= MAX_TANDAS ? [] : elegirContrapartes({ lado: caso.lado, datos: caso.datos, candidatos: todos, yaConsultados, bajas: bloqueados, cuantos: Math.min(OFERTAS_POR_TANDA, cupo) })
+    // Un cruce con otro lead (comprador ⇄ vendedor reales) es lo que más cierra:
+    // no espera la tanda, ni el límite de tandas.
+    const cruces = elegirContrapartes({ lado: caso.lado, datos: caso.datos, candidatos: todos.filter((c) => c.tipo === 'lead'), yaConsultados, bajas: bloqueados, cuantos: Math.min(OFERTAS_POR_TANDA, cupo) })
+    const tocaTanda = vencido && esperando.length === 0 && caso.estado === 'ofreciendo'
+    if (!tocaTanda && cruces.length === 0) {
+      if (caso.estado === 'ofreciendo' && esperando.length && vencido) {
+        const primera = esperando.map((o) => o.enviada_at).sort()[0]
+        await guardarCaso(lead.id, { proximo_at: enDias(new Date(primera), DIAS_ESPERA_CONTRAPARTE).toISOString() })
+      }
+      continue
+    }
+    const elegidos = !tocaTanda
+      ? cruces
+      : caso.tandas >= MAX_TANDAS
+        ? cruces
+        : elegirContrapartes({ lado: caso.lado, datos: caso.datos, candidatos: todos, yaConsultados, bajas: bloqueados, cuantos: Math.min(OFERTAS_POR_TANDA, cupo) })
 
     if (elegidos.length === 0) {
       const consultadas = ofertas.length
@@ -631,7 +688,12 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
       if (!id) await db.from('agente_ofertas').delete().eq('id', nueva.id)
       else await bitacora(lead.id, `Ofrecido a ${c.nombre} (${c.tipo})`, 'pendiente', { oferta_id: nueva.id })
     }
-    await guardarCaso(lead.id, { tandas: caso.tandas + 1, proximo_at: enDias(ahora, DIAS_ESPERA_CONTRAPARTE).toISOString() })
+    if (caso.estado === 'sin_contraparte') {
+      await guardarCaso(lead.id, { estado: 'ofreciendo', motivo: 'apareció un cruce con otro lead', proximo_at: enDias(ahora, DIAS_ESPERA_CONTRAPARTE).toISOString() })
+      await bitacora(lead.id, 'Apareció una contraparte nueva: vuelvo a ofrecer', 'pendiente')
+    } else if (tocaTanda) {
+      await guardarCaso(lead.id, { tandas: caso.tandas + 1, proximo_at: enDias(ahora, DIAS_ESPERA_CONTRAPARTE).toISOString() })
+    }
   }
 
   /* ---------------- 4. seguimiento de presentaciones ---------------- */

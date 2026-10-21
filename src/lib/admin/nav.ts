@@ -39,6 +39,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
         badge: (p) => sum(p.claimsConsignatarias, p.claimsFrigorificos),
       },
       { href: '/admin/leads', label: 'Leads', badge: (p) => p.leadsSinTrabajar },
+      { href: '/admin/agente', label: 'Agente' },
       { href: '/admin/campos', label: 'Campos', badge: (p) => p.campos },
       { href: '/admin/reviews', label: 'Reseñas', badge: (p) => p.reviews },
       { href: '/admin/preoferta', label: 'Pre-ofertas' },
