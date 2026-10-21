@@ -136,11 +136,21 @@ La comisión del 1% está definida **solo para hacienda**. Para arrendamiento y 
 - **Hallazgo para José:** la `oferta()` que sale hoy incluye **"Precio pretendido: $X/kg" del productor** (`detalle()` en `mensajes.ts`). Es su piso, se lo damos a la contraparte antes de que negocie, y va contra la regla de `/lotes` de no publicar el precio pedido. El borrador no lo incluye. No toqué la plantilla de producción.
 - Check y build OK.
 
+### #8 — 03:55
+- **"Decisiones pendientes" arriba de todo en `/admin/agente`:**
+  - `src/lib/agente/decisiones.ts` + tests (5) y `src/components/admin/agente/Decisiones.tsx`. `page.tsx`: una línea.
+  - La lista se arma **desde el código**: `TIPOS` (bloqueos y comisiones), `AGENTE_TIPOS`, y una oferta de prueba que se genera con la plantilla real para ver si muestra el precio pedido, si lleva el pie comercial y qué encuadre usa. Cuando una decisión se refleja en el código, desaparece sola.
+  - Hoy muestra 7 decisiones:
+    - Legal: SIOCAL, arrendamiento bloqueado, falta el pie comercial.
+    - Plata: comisión de campo, quién paga el arrendamiento y su tope, precio pedido en la oferta.
+    - Producto: AGENTE_TIPOS apagado.
+- Check 749 tests OK, build OK.
+
 ## Próximos pasos
 - Siguientes candidatos:
   - (a) leyenda "comunicación comercial" como propuesta en `mensajes.ts` hacia contrapartes de hacienda, o dejarla para que José decida;
   - (b) ✅ (#7) borrador de plantilla de hacienda con encuadre "venta del contacto" (opción 3 del riesgo SIOCAL), sin activar;
-  - (c) en `/admin/agente`, una sección "Decisiones pendientes de José" que lea `TIPOS`;
+  - (c) ✅ (#8) en `/admin/agente`, una sección "Decisiones pendientes de José" que lea `TIPOS`;
   - (d) informe final a las 07:00.
 0. (los 3 informes llegaron ✅) Leer los 3 informes de `docs/agente/` y bajar sus reglas a esta lista. Riesgos legales → bloqueos.
 1. ✅ (#6) Usar `tipoDeIntent` en el motor (`motor.ts` ~l.487) para que tome arrendamiento y tasación con su primer paso. Los tipos sin comisión quedan en "calificar o pedir datos" **solo hacia el propio lead** (el que nos escribió), nunca a contrapartes. Ojo: escribirle al lead que nos escribió también es mandar un mail → queda detrás del mismo encendido, y se deja listo para que José lo prenda.
