@@ -1,34 +1,26 @@
 {
-  "generado": "2026-10-17T00:52:42.110Z",
+  "generado": "2026-10-21T01:04:46.742Z",
   "ventana_dias": 30,
   "ventana_origen_dias": 90,
   "rango_peso_kg": 50,
-  "fecha_dato_desde": "2026-09-18",
-  "fecha_dato_hasta": "2026-10-16",
+  "fecha_dato_desde": "2026-09-22",
+  "fecha_dato_hasta": "2026-10-20",
   "categorias": {
-    "VACA": {
-      "p10": 2600,
-      "mediana": 3000,
-      "p90": 3650,
-      "amplitud_pct": 40.4,
-      "lotes": 1635,
-      "cabezas": 9586
-    },
-    "NOVILLITO": {
-      "p10": 3890,
-      "mediana": 4600,
-      "p90": 5000,
-      "amplitud_pct": 28.5,
-      "lotes": 499,
-      "cabezas": 5466
-    },
     "VAQUILLONA": {
       "p10": 3400,
-      "mediana": 4350,
-      "p90": 4900,
-      "amplitud_pct": 44.1,
-      "lotes": 759,
-      "cabezas": 8658
+      "mediana": 4300,
+      "p90": 4850,
+      "amplitud_pct": 42.6,
+      "lotes": 824,
+      "cabezas": 9537
+    },
+    "VACA": {
+      "p10": 2600,
+      "mediana": 3020,
+      "p90": 3650,
+      "amplitud_pct": 40.4,
+      "lotes": 1769,
+      "cabezas": 10685
     },
     "MEJ": {
       "p10": 3600,
@@ -36,150 +28,34 @@
       "p90": 4555,
       "amplitud_pct": 26.5,
       "lotes": 100,
-      "cabezas": 604
+      "cabezas": 578
     },
     "TORO": {
-      "p10": 2900,
-      "mediana": 3540,
-      "p90": 3920,
-      "amplitud_pct": 35.2,
-      "lotes": 449,
-      "cabezas": 1062
+      "p10": 2980,
+      "mediana": 3530,
+      "p90": 3900,
+      "amplitud_pct": 30.9,
+      "lotes": 487,
+      "cabezas": 1129
+    },
+    "NOVILLITO": {
+      "p10": 3800,
+      "mediana": 4600,
+      "p90": 5000,
+      "amplitud_pct": 31.6,
+      "lotes": 560,
+      "cabezas": 6296
     },
     "NOVILLO": {
       "p10": 3700,
       "mediana": 4300,
       "p90": 4500,
       "amplitud_pct": 21.6,
-      "lotes": 364,
-      "cabezas": 4055
+      "lotes": 407,
+      "cabezas": 4774
     }
   },
   "por_peso": {
-    "VACA": [
-      {
-        "desde_kg": 300,
-        "hasta_kg": 349,
-        "p10": 2500,
-        "mediana": 2700,
-        "p90": 2900,
-        "amplitud_pct": 16,
-        "lotes": 86,
-        "cabezas": 325
-      },
-      {
-        "desde_kg": 350,
-        "hasta_kg": 399,
-        "p10": 2520,
-        "mediana": 2800,
-        "p90": 3200,
-        "amplitud_pct": 27,
-        "lotes": 163,
-        "cabezas": 901
-      },
-      {
-        "desde_kg": 400,
-        "hasta_kg": 449,
-        "p10": 2600,
-        "mediana": 3000,
-        "p90": 3500,
-        "amplitud_pct": 34.6,
-        "lotes": 294,
-        "cabezas": 1667
-      },
-      {
-        "desde_kg": 450,
-        "hasta_kg": 499,
-        "p10": 2600,
-        "mediana": 3200,
-        "p90": 3602,
-        "amplitud_pct": 38.5,
-        "lotes": 370,
-        "cabezas": 2404
-      },
-      {
-        "desde_kg": 500,
-        "hasta_kg": 549,
-        "p10": 2700,
-        "mediana": 3400,
-        "p90": 3700,
-        "amplitud_pct": 37,
-        "lotes": 309,
-        "cabezas": 2173
-      },
-      {
-        "desde_kg": 550,
-        "hasta_kg": 599,
-        "p10": 2620,
-        "mediana": 3300,
-        "p90": 3700,
-        "amplitud_pct": 41.2,
-        "lotes": 155,
-        "cabezas": 1059
-      },
-      {
-        "desde_kg": 600,
-        "hasta_kg": 649,
-        "p10": 2650,
-        "mediana": 3000,
-        "p90": 3650,
-        "amplitud_pct": 37.7,
-        "lotes": 92,
-        "cabezas": 397
-      },
-      {
-        "desde_kg": 650,
-        "hasta_kg": 699,
-        "p10": 2700,
-        "mediana": 3100,
-        "p90": 3550,
-        "amplitud_pct": 31.5,
-        "lotes": 56,
-        "cabezas": 222
-      },
-      {
-        "desde_kg": 700,
-        "hasta_kg": 749,
-        "p10": 2800,
-        "mediana": 3200,
-        "p90": 3400,
-        "amplitud_pct": 21.4,
-        "lotes": 41,
-        "cabezas": 205
-      }
-    ],
-    "NOVILLITO": [
-      {
-        "desde_kg": 300,
-        "hasta_kg": 349,
-        "p10": 4000,
-        "mediana": 4800,
-        "p90": 5035,
-        "amplitud_pct": 25.9,
-        "lotes": 94,
-        "cabezas": 1111
-      },
-      {
-        "desde_kg": 350,
-        "hasta_kg": 399,
-        "p10": 4000,
-        "mediana": 4700,
-        "p90": 5000,
-        "amplitud_pct": 25,
-        "lotes": 209,
-        "cabezas": 2321
-      },
-      {
-        "desde_kg": 400,
-        "hasta_kg": 449,
-        "p10": 3750,
-        "mediana": 4500,
-        "p90": 4700,
-        "amplitud_pct": 25.3,
-        "lotes": 166,
-        "cabezas": 1796
-      }
-    ],
     "VAQUILLONA": [
       {
         "desde_kg": 250,
@@ -188,18 +64,18 @@
         "mediana": 4800,
         "p90": 5100,
         "amplitud_pct": 27.5,
-        "lotes": 104,
-        "cabezas": 1360
+        "lotes": 105,
+        "cabezas": 1389
       },
       {
         "desde_kg": 300,
         "hasta_kg": 349,
-        "p10": 3850,
+        "p10": 3810,
         "mediana": 4600,
-        "p90": 4920,
-        "amplitud_pct": 27.8,
-        "lotes": 277,
-        "cabezas": 3499
+        "p90": 4900,
+        "amplitud_pct": 28.6,
+        "lotes": 303,
+        "cabezas": 3973
       },
       {
         "desde_kg": 350,
@@ -208,60 +84,152 @@
         "mediana": 4300,
         "p90": 4500,
         "amplitud_pct": 32.4,
-        "lotes": 219,
-        "cabezas": 2417
+        "lotes": 248,
+        "cabezas": 2730
       },
       {
         "desde_kg": 400,
         "hasta_kg": 449,
-        "p10": 3160,
-        "mediana": 3800,
+        "p10": 3100,
+        "mediana": 3900,
         "p90": 4200,
-        "amplitud_pct": 32.9,
-        "lotes": 97,
-        "cabezas": 844
+        "amplitud_pct": 35.5,
+        "lotes": 102,
+        "cabezas": 878
       },
       {
         "desde_kg": 450,
         "hasta_kg": 499,
         "p10": 2700,
-        "mediana": 3500,
-        "p90": 4000,
-        "amplitud_pct": 48.1,
-        "lotes": 46,
+        "mediana": 3550,
+        "p90": 4005,
+        "amplitud_pct": 48.3,
+        "lotes": 50,
+        "cabezas": 464
+      }
+    ],
+    "VACA": [
+      {
+        "desde_kg": 300,
+        "hasta_kg": 349,
+        "p10": 2500,
+        "mediana": 2700,
+        "p90": 2930,
+        "amplitud_pct": 17.2,
+        "lotes": 98,
+        "cabezas": 423
+      },
+      {
+        "desde_kg": 350,
+        "hasta_kg": 399,
+        "p10": 2500,
+        "mediana": 2800,
+        "p90": 3200,
+        "amplitud_pct": 28,
+        "lotes": 179,
+        "cabezas": 1067
+      },
+      {
+        "desde_kg": 400,
+        "hasta_kg": 449,
+        "p10": 2650,
+        "mediana": 3000,
+        "p90": 3590,
+        "amplitud_pct": 35.5,
+        "lotes": 322,
+        "cabezas": 1907
+      },
+      {
+        "desde_kg": 450,
+        "hasta_kg": 499,
+        "p10": 2700,
+        "mediana": 3200,
+        "p90": 3624,
+        "amplitud_pct": 34.2,
+        "lotes": 399,
+        "cabezas": 2633
+      },
+      {
+        "desde_kg": 500,
+        "hasta_kg": 549,
+        "p10": 2700,
+        "mediana": 3400,
+        "p90": 3700,
+        "amplitud_pct": 37,
+        "lotes": 333,
+        "cabezas": 2398
+      },
+      {
+        "desde_kg": 550,
+        "hasta_kg": 599,
+        "p10": 2700,
+        "mediana": 3300,
+        "p90": 3700,
+        "amplitud_pct": 37,
+        "lotes": 171,
+        "cabezas": 1203
+      },
+      {
+        "desde_kg": 600,
+        "hasta_kg": 649,
+        "p10": 2690,
+        "mediana": 3000,
+        "p90": 3660,
+        "amplitud_pct": 36.1,
+        "lotes": 99,
         "cabezas": 435
+      },
+      {
+        "desde_kg": 650,
+        "hasta_kg": 699,
+        "p10": 2780,
+        "mediana": 3100,
+        "p90": 3600,
+        "amplitud_pct": 29.5,
+        "lotes": 59,
+        "cabezas": 214
+      },
+      {
+        "desde_kg": 700,
+        "hasta_kg": 749,
+        "p10": 2800,
+        "mediana": 3200,
+        "p90": 3400,
+        "amplitud_pct": 21.4,
+        "lotes": 37,
+        "cabezas": 165
       }
     ],
     "TORO": [
       {
         "desde_kg": 500,
         "hasta_kg": 549,
-        "p10": 2650,
+        "p10": 2680,
         "mediana": 3300,
-        "p90": 3675,
-        "amplitud_pct": 38.7,
-        "lotes": 46,
-        "cabezas": 95
+        "p90": 3670,
+        "amplitud_pct": 36.9,
+        "lotes": 47,
+        "cabezas": 96
       },
       {
         "desde_kg": 550,
         "hasta_kg": 599,
         "p10": 3000,
         "mediana": 3500,
-        "p90": 3900,
-        "amplitud_pct": 30,
-        "lotes": 54,
-        "cabezas": 124
+        "p90": 3880,
+        "amplitud_pct": 29.3,
+        "lotes": 62,
+        "cabezas": 154
       },
       {
         "desde_kg": 600,
         "hasta_kg": 649,
         "p10": 3000,
-        "mediana": 3545,
+        "mediana": 3550,
         "p90": 3900,
         "amplitud_pct": 30,
-        "lotes": 72,
-        "cabezas": 164
+        "lotes": 78,
+        "cabezas": 172
       },
       {
         "desde_kg": 650,
@@ -271,17 +239,17 @@
         "p90": 3926,
         "amplitud_pct": 36.8,
         "lotes": 48,
-        "cabezas": 170
+        "cabezas": 166
       },
       {
         "desde_kg": 700,
         "hasta_kg": 749,
         "p10": 3200,
         "mediana": 3700,
-        "p90": 3970,
-        "amplitud_pct": 24.1,
-        "lotes": 67,
-        "cabezas": 178
+        "p90": 3945,
+        "amplitud_pct": 23.3,
+        "lotes": 72,
+        "cabezas": 189
       },
       {
         "desde_kg": 750,
@@ -290,8 +258,8 @@
         "mediana": 3700,
         "p90": 4000,
         "amplitud_pct": 26.6,
-        "lotes": 39,
-        "cabezas": 78
+        "lotes": 47,
+        "cabezas": 97
       },
       {
         "desde_kg": 800,
@@ -301,7 +269,39 @@
         "p90": 3900,
         "amplitud_pct": 16.4,
         "lotes": 36,
-        "cabezas": 86
+        "cabezas": 75
+      }
+    ],
+    "NOVILLITO": [
+      {
+        "desde_kg": 300,
+        "hasta_kg": 349,
+        "p10": 4000,
+        "mediana": 4800,
+        "p90": 5050,
+        "amplitud_pct": 26.2,
+        "lotes": 93,
+        "cabezas": 1081
+      },
+      {
+        "desde_kg": 350,
+        "hasta_kg": 399,
+        "p10": 4000,
+        "mediana": 4700,
+        "p90": 5000,
+        "amplitud_pct": 25,
+        "lotes": 253,
+        "cabezas": 2929
+      },
+      {
+        "desde_kg": 400,
+        "hasta_kg": 449,
+        "p10": 3700,
+        "mediana": 4500,
+        "p90": 4700,
+        "amplitud_pct": 27,
+        "lotes": 181,
+        "cabezas": 2046
       }
     ],
     "NOVILLO": [
@@ -312,8 +312,8 @@
         "mediana": 4500,
         "p90": 4600,
         "amplitud_pct": 21.1,
-        "lotes": 77,
-        "cabezas": 914
+        "lotes": 83,
+        "cabezas": 1016
       },
       {
         "desde_kg": 450,
@@ -322,8 +322,8 @@
         "mediana": 4350,
         "p90": 4500,
         "amplitud_pct": 21.6,
-        "lotes": 126,
-        "cabezas": 1415
+        "lotes": 138,
+        "cabezas": 1602
       },
       {
         "desde_kg": 500,
@@ -332,8 +332,8 @@
         "mediana": 4300,
         "p90": 4500,
         "amplitud_pct": 18.4,
-        "lotes": 97,
-        "cabezas": 1132
+        "lotes": 102,
+        "cabezas": 1251
       },
       {
         "desde_kg": 550,
@@ -342,86 +342,27 @@
         "mediana": 4000,
         "p90": 4500,
         "amplitud_pct": 25,
-        "lotes": 35,
-        "cabezas": 378
+        "lotes": 45,
+        "cabezas": 577
       }
     ]
   },
   "origen": {
-    "VACA": [
-      {
-        "provincia": "BUE",
-        "factor": 1,
-        "lotes": 4578
-      },
-      {
-        "provincia": "SFE",
-        "factor": 1.0345,
-        "lotes": 308
-      },
-      {
-        "provincia": "LPA",
-        "factor": 1.069,
-        "lotes": 247
-      },
-      {
-        "provincia": "CBA",
-        "factor": 1.1379,
-        "lotes": 136
-      },
-      {
-        "provincia": "SLU",
-        "factor": 0.9138,
-        "lotes": 63
-      },
-      {
-        "provincia": "ERI",
-        "factor": 1.0345,
-        "lotes": 43
-      }
-    ],
-    "NOVILLITO": [
-      {
-        "provincia": "BUE",
-        "factor": 0.9894,
-        "lotes": 970
-      },
-      {
-        "provincia": "SFE",
-        "factor": 1.0213,
-        "lotes": 263
-      },
-      {
-        "provincia": "LPA",
-        "factor": 0.9574,
-        "lotes": 94
-      },
-      {
-        "provincia": "ERI",
-        "factor": 1,
-        "lotes": 89
-      },
-      {
-        "provincia": "CBA",
-        "factor": 1.0426,
-        "lotes": 68
-      }
-    ],
     "VAQUILLONA": [
       {
         "provincia": "BUE",
-        "factor": 0.9778,
-        "lotes": 1552
+        "factor": 0.9667,
+        "lotes": 1556
       },
       {
         "provincia": "SFE",
-        "factor": 1.0389,
-        "lotes": 342
+        "factor": 1.0222,
+        "lotes": 346
       },
       {
         "provincia": "LPA",
         "factor": 0.9556,
-        "lotes": 151
+        "lotes": 140
       },
       {
         "provincia": "ERI",
@@ -430,8 +371,40 @@
       },
       {
         "provincia": "CBA",
-        "factor": 1,
-        "lotes": 89
+        "factor": 1.0111,
+        "lotes": 91
+      }
+    ],
+    "VACA": [
+      {
+        "provincia": "BUE",
+        "factor": 0.9831,
+        "lotes": 4597
+      },
+      {
+        "provincia": "SFE",
+        "factor": 1.0169,
+        "lotes": 314
+      },
+      {
+        "provincia": "LPA",
+        "factor": 1.0593,
+        "lotes": 242
+      },
+      {
+        "provincia": "CBA",
+        "factor": 1.1186,
+        "lotes": 136
+      },
+      {
+        "provincia": "SLU",
+        "factor": 0.8983,
+        "lotes": 63
+      },
+      {
+        "provincia": "ERI",
+        "factor": 1.0169,
+        "lotes": 54
       }
     ],
     "MEJ": [
@@ -449,55 +422,77 @@
     "TORO": [
       {
         "provincia": "BUE",
-        "factor": 0.9969,
-        "lotes": 1279
+        "factor": 1,
+        "lotes": 1289
       },
       {
         "provincia": "LPA",
-        "factor": 1.0592,
-        "lotes": 83
+        "factor": 1.0303,
+        "lotes": 88
       },
       {
         "provincia": "SFE",
-        "factor": 1.0748,
-        "lotes": 66
+        "factor": 1.0606,
+        "lotes": 69
+      }
+    ],
+    "NOVILLITO": [
+      {
+        "provincia": "BUE",
+        "factor": 0.9787,
+        "lotes": 1003
+      },
+      {
+        "provincia": "SFE",
+        "factor": 1.0213,
+        "lotes": 259
+      },
+      {
+        "provincia": "ERI",
+        "factor": 1,
+        "lotes": 93
+      },
+      {
+        "provincia": "LPA",
+        "factor": 0.9574,
+        "lotes": 93
+      },
+      {
+        "provincia": "CBA",
+        "factor": 1.0319,
+        "lotes": 70
       }
     ],
     "NOVILLO": [
       {
         "provincia": "BUE",
-        "factor": 1,
-        "lotes": 900
+        "factor": 1.0115,
+        "lotes": 895
       },
       {
         "provincia": "LPA",
-        "factor": 0.9545,
-        "lotes": 98
+        "factor": 0.9655,
+        "lotes": 95
       },
       {
         "provincia": "SFE",
-        "factor": 0.9898,
-        "lotes": 72
-      },
-      {
-        "provincia": "CBA",
-        "factor": 1.0227,
-        "lotes": 52
+        "factor": 0.9885,
+        "lotes": 75
       },
       {
         "provincia": "ERI",
-        "factor": 1,
-        "lotes": 48
+        "factor": 1.0115,
+        "lotes": 53
+      },
+      {
+        "provincia": "CBA",
+        "factor": 1.0345,
+        "lotes": 50
       }
     ]
   },
   "tendencia": {
     "VAQUILLONA": [
-      {
-        "date": "2026-09-15",
-        "amplitud": 38.9,
-        "mediana": 4500
-      },
       {
         "date": "2026-09-16",
         "amplitud": 42.9,
@@ -552,14 +547,14 @@
         "date": "2026-10-16",
         "amplitud": 44.1,
         "mediana": 4350
+      },
+      {
+        "date": "2026-10-20",
+        "amplitud": 42.6,
+        "mediana": 4300
       }
     ],
     "VACA": [
-      {
-        "date": "2026-09-15",
-        "amplitud": 46.9,
-        "mediana": 2900
-      },
       {
         "date": "2026-09-16",
         "amplitud": 46.9,
@@ -614,14 +609,14 @@
         "date": "2026-10-16",
         "amplitud": 40.4,
         "mediana": 3000
+      },
+      {
+        "date": "2026-10-20",
+        "amplitud": 40.4,
+        "mediana": 3020
       }
     ],
     "TORO": [
-      {
-        "date": "2026-09-15",
-        "amplitud": 37,
-        "mediana": 3200
-      },
       {
         "date": "2026-09-16",
         "amplitud": 37,
@@ -676,14 +671,14 @@
         "date": "2026-10-16",
         "amplitud": 35.2,
         "mediana": 3540
+      },
+      {
+        "date": "2026-10-20",
+        "amplitud": 30.9,
+        "mediana": 3530
       }
     ],
     "NOVILLO": [
-      {
-        "date": "2026-09-15",
-        "amplitud": 27.8,
-        "mediana": 4330
-      },
       {
         "date": "2026-09-16",
         "amplitud": 27.8,
@@ -738,14 +733,14 @@
         "date": "2026-10-16",
         "amplitud": 21.6,
         "mediana": 4300
+      },
+      {
+        "date": "2026-10-20",
+        "amplitud": 21.6,
+        "mediana": 4300
       }
     ],
     "NOVILLITO": [
-      {
-        "date": "2026-09-15",
-        "amplitud": 36,
-        "mediana": 4700
-      },
       {
         "date": "2026-09-16",
         "amplitud": 36.5,
@@ -800,14 +795,14 @@
         "date": "2026-10-16",
         "amplitud": 28.5,
         "mediana": 4600
+      },
+      {
+        "date": "2026-10-20",
+        "amplitud": 31.6,
+        "mediana": 4600
       }
     ],
     "MEJ": [
-      {
-        "date": "2026-09-15",
-        "amplitud": 55.6,
-        "mediana": 4000
-      },
       {
         "date": "2026-09-16",
         "amplitud": 51.6,
@@ -860,6 +855,11 @@
       },
       {
         "date": "2026-10-16",
+        "amplitud": 26.5,
+        "mediana": 4100
+      },
+      {
+        "date": "2026-10-20",
         "amplitud": 26.5,
         "mediana": 4100
       }
