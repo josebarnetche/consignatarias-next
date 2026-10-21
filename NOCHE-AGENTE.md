@@ -24,7 +24,20 @@ Bitácora del loop de 30 min. Rama `feat/agente-v2` (worktree `~/consignatarias-
 
   → Arrendamiento y tasación no los toca nadie. Ovejero (`src/lib/leads/ovejero.ts`) cruza arrendamientos con campos publicados, pero **no escribe a terceros**: prepara el mensaje y una persona aprieta enviar.
 
-## Hueco de negocio (decide José)
+## Decisiones de José (21-10-2026, 00:45)
+- **Comisión de arrendamiento:** el mercado cobra un mes de canon completo; nosotros ofrecemos **20% off → 0,8 de un mes de canon**. Está en `tipos.ts`: `MESES_CANON_REFERENCIA`, `DESCUENTO_ARRENDAMIENTO`, `comisionArrendamiento()` y `comisionArrendamientoMercado()` (esta última para mostrar el ahorro).
+- **Presentación:** servicio cerrado, "llave en mano", con el software trabajando atrás.
+- **Investigación encargada** (3 agentes en paralelo). Los informes caen en `docs/agente/`:
+  - `investigacion-comisionista-hacienda.md`: cómo trabaja un consignatario/comisionista, RUCA y su límite sin matrícula, comisiones reales y proceso de venta directa.
+  - `investigacion-inmobiliaria-rural.md`: comisiones de arrendamiento y venta, Ley 13.246, **matrícula de corredor** y datos que pide el inmobiliario.
+  - `investigacion-cierre-broker.md`: cadencias de seguimiento, cómo cobrar sin que las partes cierren por fuera, pipeline ponderado para el tablero y cómo comunicar el servicio llave en mano sin engañar.
+  → **La próxima vuelta del loop los lee y convierte sus "reglas accionables" en pasos de la lista.** Si un informe marca un riesgo legal (por ejemplo, que cobrar comisión de arrendamiento exige matrícula de corredor), se anota acá como bloqueo y NO se habilita el envío de ese tipo.
+
+## Pendiente de José
+- **Quién paga la comisión de arrendamiento:** el arrendatario, el arrendador o los dos. Supuesto provisorio, por analogía con hacienda: quien recibe el contacto. Confirmar.
+- **Comisión de venta de campo:** sin definir (sigue apagada).
+
+## Hueco de negocio (decide José) — RESUELTO PARCIAL
 La comisión del 1% está definida **solo para hacienda**. Para arrendamiento y venta de campo no hay porcentaje, ni base, ni quién paga. No lo invento. En el código esos tipos tienen `comisionPct: null`, y `enviaAContrapartes()` da false mientras esté así: se calculan y se muestran, pero no salen.
 
 ## Iteraciones
@@ -41,8 +54,14 @@ La comisión del 1% está definida **solo para hacienda**. Para arrendamiento y 
 - Lo moví a `feat/agente-v2` y devolví `feat/cerrador-v2` a su commit (`c9272144`, con `reset --keep`). No tenía cambios sin commitear y no se pisó nada suyo. No se había subido nada.
 - Desde ahora el loop trabaja en `~/consignatarias-agente-noche`. En cada vuelta integra `origin/feat/cerrador-v2` y toca lo mínimo de sus archivos.
 
+### #2 — 00:48
+- Arrendamiento ahora tiene comisión: 0,8 de un mes de canon. `enviaAContrapartes('arrendamiento')` = true **en la rama**, sin publicar. 14 tests.
+
 ## Próximos pasos
+0. Leer los 3 informes de `docs/agente/` y bajar sus reglas a esta lista. Riesgos legales → bloqueos.
 1. Usar `tipoDeIntent` en el motor (`motor.ts` ~l.487) para que tome arrendamiento y tasación con su primer paso. Los tipos sin comisión quedan en "calificar o pedir datos" **solo hacia el propio lead** (el que nos escribió), nunca a contrapartes. Ojo: escribirle al lead que nos escribió también es mandar un mail → queda detrás del mismo encendido, y se deja listo para que José lo prenda.
-2. Plantillas por tipo en `mensajes.ts` (pedir hectáreas/aptitud; tasación: "¿querés venderlo o arrendarlo?").
+2. Plantillas por tipo en un archivo nuevo `mensajes-tipos.ts`:
+   - arrendamiento: pedir ha, aptitud, zona y fecha; la oferta a la contraparte explica el servicio llave en mano, "0,8 de un mes de canon contra el mes completo del mercado" y que la aceptación es por escrito;
+   - tasación: "¿querés venderlo o arrendarlo?".
 3. Ordenar la cola del motor por `prioridad()` en vez de por fecha.
 4. Sumar al tablero `/admin/agente` (el de main) una fila por tipo con el bruto de referencia y "comisión sin definir".

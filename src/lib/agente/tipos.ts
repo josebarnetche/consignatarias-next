@@ -6,12 +6,14 @@
  * tasaciones. Este registro es la única fuente de qué se puede hacer con cada uno,
  * y es puro (sin red ni base) para que cada regla tenga su test.
  *
- * REGLA DURA: solo un tipo con `comisionPct` definido por José puede salir a
- * contrapartes. La comisión del 1% se definió para HACIENDA (19-10-2026). Para
- * arrendamiento y campos José todavía no fijó cuánto ni quién la paga, así que
- * esos tipos se calculan y se muestran, pero `enviaAContrapartes` es false hasta
- * que él lo decida. Inventar una comisión y mandarla por mail sería comprometer
- * a la empresa con una condición que nadie aprobó.
+ * REGLA DURA: solo sale a contrapartes un tipo cuya comisión definió José.
+ *  · HACIENDA (19-10-2026): 1% del bruto, a cargo de quien recibe el contacto.
+ *  · ARRENDAMIENTO (21-10-2026): un mes de canon completo es la referencia de
+ *    mercado; se ofrece con 20% off → 0,8 de un mes de canon. Se presenta como
+ *    servicio cerrado ("llave en mano"), con el software trabajando atrás.
+ *  · CAMPO (venta) y TASACIÓN: sin comisión definida → se calculan, no salen.
+ * Inventar una comisión y mandarla por mail sería comprometer a la empresa con
+ * una condición que nadie aprobó.
  */
 
 export type TipoOperacion = 'hacienda' | 'arrendamiento' | 'campo' | 'tasacion'
@@ -23,13 +25,20 @@ export interface ConfigTipo {
   datosMinimos: readonly string[]
   /** A quién se le ofrece del otro lado. */
   contrapartes: readonly string[]
-  /** % sobre el bruto de referencia. null = José no lo definió todavía. */
+  /** % sobre el bruto de referencia. null = no se cobra por % del bruto. */
   comisionPct: number | null
+  /** Comisión en meses de canon (arrendamiento), ya con el descuento aplicado. */
+  comisionMesesCanon?: number
   /** Sobre qué se calcula la comisión, en palabras. */
   baseComision: string
   /** El primer paso del agente con un lead nuevo de este tipo. */
   primerPaso: 'pedir_datos' | 'calificar'
 }
+
+/** Lo que cobra el mercado por un arrendamiento: un mes de canon (José, 21-10-2026). */
+export const MESES_CANON_REFERENCIA = 1
+/** Descuento contra esa referencia: es el argumento de venta del servicio cerrado. */
+export const DESCUENTO_ARRENDAMIENTO = 0.2
 
 export const TIPOS: Record<TipoOperacion, ConfigTipo> = {
   hacienda: {
@@ -47,7 +56,8 @@ export const TIPOS: Record<TipoOperacion, ConfigTipo> = {
     datosMinimos: ['hectareas', 'zona', 'aptitud'],
     contrapartes: ['campos publicados en /campos', 'leads que ofrecen campo', 'leads que buscan campo'],
     comisionPct: null,
-    baseComision: 'canon del primer año (ha × kg de novillo/ha/mes × 12)',
+    comisionMesesCanon: MESES_CANON_REFERENCIA * (1 - DESCUENTO_ARRENDAMIENTO),
+    baseComision: 'un mes de canon con 20% off (0,8 meses; canon = ha × kg de novillo/ha/mes × precio)',
     primerPaso: 'pedir_datos',
   },
   campo: {
@@ -91,10 +101,25 @@ export function tipoDeIntent(intent: string | null | undefined): TipoOperacion |
   }
 }
 
+/** ¿Tiene este tipo una comisión definida por José? */
+export function tieneComision(tipo: TipoOperacion): boolean {
+  const c = TIPOS[tipo]
+  return c.comisionPct != null || (c.comisionMesesCanon ?? 0) > 0
+}
+
 /** ¿Puede este tipo salir a contrapartes? Solo con una comisión definida por José. */
 export function enviaAContrapartes(tipo: TipoOperacion): boolean {
-  const c = TIPOS[tipo]
-  return c.comisionPct != null && c.contrapartes.length > 0
+  return tieneComision(tipo) && TIPOS[tipo].contrapartes.length > 0
+}
+
+/** Comisión de un arrendamiento sobre el canon anual: 0,8 de un mes. */
+export function comisionArrendamiento(canonAnualArs: number): number {
+  return Math.round((canonAnualArs / 12) * (TIPOS.arrendamiento.comisionMesesCanon ?? 0))
+}
+
+/** Lo que cobraría el mercado (un mes completo): para mostrar el ahorro, nunca para cobrar. */
+export function comisionArrendamientoMercado(canonAnualArs: number): number {
+  return Math.round((canonAnualArs / 12) * MESES_CANON_REFERENCIA)
 }
 
 export interface LeadParaValuar {
@@ -152,8 +177,12 @@ export function valuarLead(l: LeadParaValuar, ref: Referencias): Valuacion | nul
     motivo = 'una tasación no genera comisión'
   }
 
-  if (bruto != null && pct == null) motivo = 'comisión de este tipo sin definir por José'
-  const comision = bruto != null && pct != null ? Math.round((bruto * pct) / 100) : null
+  let comision: number | null = null
+  if (bruto != null) {
+    if (tipo === 'arrendamiento') comision = comisionArrendamiento(bruto)
+    else if (pct != null) comision = Math.round((bruto * pct) / 100)
+    else motivo = 'comisión de este tipo sin definir por José'
+  }
   return { tipo, brutoArs: bruto, comisionArs: comision, ...(motivo ? { motivo } : {}) }
 }
 
