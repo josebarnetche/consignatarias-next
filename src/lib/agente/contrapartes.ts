@@ -74,6 +74,8 @@ export interface Candidato {
   /** Solo frigoríficos: notas internas de la base (ahí dice "PORCINO", "no compra"...). */
   notas?: string | null
   opera?: boolean | null
+  /** Solo firmas: si es PRO. Las demás solo reciben pedidos de compra (José, 21-10). */
+  pro?: boolean
   /** Solo leads: qué categoría y cuántas cabezas busca o tiene. */
   categoria?: string | null
   cabezas?: number | null
