@@ -96,11 +96,16 @@ La comisión del 1% está definida **solo para hacienda**. Para arrendamiento y 
 - Check 718 tests OK, build OK.
 - **Para José:** la plantilla `oferta()` de hacienda que está en producción tiene BAJA, pero **no tiene la leyenda de "comunicación comercial"** (Disp. 4/2009). Sumarla es cambiar un texto que ya sale: va en el informe como recomendación y no lo toqué.
 
+### #4 — 01:50
+- `src/lib/agente/cola.ts` + tests (4): `ordenarCola()` ordena por prioridad = comisión estimada × peso de la etapa; a igual prioridad, el más vencido.
+- `motor.ts`: **un solo cambio**, el `for` de la corrida recorre `ordenarCola(aMirar, comisionEstimada)`. El tope de 20 contactos nuevos por día va primero a los casos que más pueden dejar. No cambia qué se hace con cada caso ni ninguna regla de envío.
+- Check 722 tests OK, build OK.
+
 ## Próximos pasos
 0. (los 3 informes llegaron ✅) Leer los 3 informes de `docs/agente/` y bajar sus reglas a esta lista. Riesgos legales → bloqueos.
 1. Usar `tipoDeIntent` en el motor (`motor.ts` ~l.487) para que tome arrendamiento y tasación con su primer paso. Los tipos sin comisión quedan en "calificar o pedir datos" **solo hacia el propio lead** (el que nos escribió), nunca a contrapartes. Ojo: escribirle al lead que nos escribió también es mandar un mail → queda detrás del mismo encendido, y se deja listo para que José lo prenda.
 2. ✅ (#3) Plantillas por tipo en un archivo nuevo `mensajes-tipos.ts`:
    - arrendamiento: pedir ha, aptitud, zona y fecha; la oferta a la contraparte explica el servicio llave en mano, "0,8 de un mes de canon contra el mes completo del mercado" y que la aceptación es por escrito;
    - tasación: "¿querés venderlo o arrendarlo?".
-3. Ordenar la cola del motor por `prioridad()` en vez de por fecha.
+3. ✅ (#4) Ordenar la cola del motor por prioridad en vez de por fecha.
 4. Sumar al tablero `/admin/agente` (el de main) una fila por tipo con el bruto de referencia y "comisión sin definir".

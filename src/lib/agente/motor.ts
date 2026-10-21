@@ -26,6 +26,8 @@ import { leadDeDemanda, type Demanda } from './demanda'
 import { enviar, leerBandeja, CASILLA, type Entrante } from './correo'
 import { triageLead, leerRespuesta } from './ia'
 import * as M from './mensajes'
+import { ordenarCola } from './cola'
+import { comisionEstimada } from './tablero'
 import {
   DIAS_ESPERA_CONTRAPARTE,
   MAX_CONTACTOS_NUEVOS_DIA,
@@ -575,7 +577,8 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
   const { data: sinContraparte } = await db.from('agente_casos').select('*').eq('estado', 'sin_contraparte').lte('proximo_at', ahora.toISOString()).limit(50)
   const vistos = new Set<number>()
   const aMirar = [...(vencidos ?? []), ...(enEspera ?? []), ...(sinContraparte ?? [])].filter((c) => (vistos.has(c.lead_id) ? false : (vistos.add(c.lead_id), true)))
-  for (const caso of aMirar as Caso[]) {
+  // Por plata esperada primero (cola.ts): el cupo diario de contactos va a lo que más puede dejar.
+  for (const caso of ordenarCola(aMirar as Caso[], (c) => comisionEstimada(c.datos))) {
     const lead = await leerLead(caso.lead_id)
     if (!lead?.email) continue
     const falta = faltantes(caso.datos)
