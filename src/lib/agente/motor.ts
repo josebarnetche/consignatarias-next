@@ -57,6 +57,8 @@ import {
 
 const ACTOR = 'agente'
 const MAX_TRIAGE_POR_CORRIDA = 10
+/** Motivo del caso que todavía no tiene a quién ofrecerse (se reintenta cada día). */
+const SIN_CANDIDATOS = 'todavía sin contrapartes en la zona'
 
 interface Lead {
   id: number
@@ -82,6 +84,7 @@ interface Caso {
   recordatorios: number
   tandas: number
   proximo_at: string
+  motivo: string | null
 }
 
 interface Oferta {
@@ -554,7 +557,7 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
       const { data: firmas } = await q
       for (const f of firmas ?? []) if (f.email) lista.push({ tipo: 'firma', ref: f.canonical_slug, nombre: f.display_name, email: f.email, provincia: f.province })
     }
-    const { data: otros } = await db.from('agente_casos').select('lead_id,lado,datos').in('estado', ['ofreciendo', 'presentado', 'sin_contraparte'])
+    const { data: otros } = await db.from('agente_casos').select('lead_id,lado,datos').in('estado', ['nuevo', 'pidiendo_datos', 'ofreciendo', 'presentado', 'sin_contraparte'])
     if (otros?.length) {
       const { data: ls } = await db.from('producer_leads').select('id,email').in('id', otros.map((o) => o.lead_id))
       const mail = new Map((ls ?? []).map((l) => [l.id, l.email]))
@@ -661,6 +664,21 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
       : caso.tandas >= MAX_TANDAS
         ? cruces
         : elegirContrapartes({ lado: caso.lado, datos: caso.datos, candidatos: todos, yaConsultados, bajas: bloqueados, cuantos: Math.min(OFERTAS_POR_TANDA, cupo) })
+
+    if (elegidos.length === 0 && ofertas.length === 0) {
+      // Nadie a quién ofrecerle todavía: al cliente no se le dice nada (antes le
+      // llegaba "lo ofrecimos a 0 contrapartes" una hora después de "ya estamos
+      // buscando"). Se vuelve a buscar cada día y a José se le avisa una sola vez.
+      if (caso.motivo !== SIN_CANDIDATOS) {
+        await escalar(
+          `Sin a quién ofrecer · caso #${lead.id}`,
+          `${caso.lado === 'compra' ? 'Busca' : 'Vende'} ${M.resumenHacienda(caso.datos)} y con las reglas actuales no hay ningún lead, frigorífico ni firma PRO en la zona para ofrecérselo. Lo vuelvo a buscar todos los días; si aparece un cruce sale solo.`,
+        )
+        await bitacora(lead.id, 'Todavía no hay contrapartes en la zona: se vuelve a buscar cada día', 'pendiente')
+      }
+      await guardarCaso(lead.id, { estado: 'ofreciendo', motivo: SIN_CANDIDATOS, proximo_at: enDias(ahora, 1).toISOString() })
+      continue
+    }
 
     if (elegidos.length === 0) {
       const consultadas = ofertas.length

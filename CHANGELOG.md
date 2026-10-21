@@ -7,6 +7,13 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.237.2] — 2026-10-21
+
+### Agente: si no hay a quién ofrecer, se sigue buscando
+
+- **Al cliente ya no le llega "lo ofrecimos a 0 contrapartes".** Tradefood recibió "ya estamos buscando" y una hora después "ofrecimos 200 vacas a 0 contrapartes y ninguna confirmó interés". Ahora, si no hay ningún candidato, el caso sigue en `ofreciendo`, se vuelve a buscar cada día y a José se le avisa una sola vez. El correo de "sin contraparte" sale solo después de consultas reales.
+- **Los leads que todavía están dando datos también cuentan como contraparte** (estados `nuevo` y `pidiendo_datos`): un vendedor de vacas que no terminó de cargar puede cruzar con un comprador.
+
 ## [1.237.1] — 2026-10-21
 
 ### Agente: fuera las demandas de prueba
