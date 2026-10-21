@@ -41,5 +41,6 @@ jobs:
             CODE=$(printf '%s' "$RESP" | tail -n1)
             BODY=$(printf '%s' "$RESP" | sed '$d')
             echo "$(date -u +%H:%M) vuelta $i · HTTP $CODE — $(printf '%s' "$BODY" | head -c 400)"
-            [ "$i" -lt "$VUELTAS" ] && sleep 600
+            # Con `&&` la última vuelta devolvía 1 y la corrida quedaba en rojo.
+            if [ "$i" -lt "$VUELTAS" ]; then sleep 600; fi
           done

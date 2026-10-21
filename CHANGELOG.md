@@ -7,6 +7,13 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.237.1] — 2026-10-21
+
+### Agente: fuera las demandas de prueba
+
+- **Las demandas con mail de dominio reservado (`example.com/.org/.net`, `.test`) no entran al agente.** La sincronización de `demanda_compra` de la v1.237.0 levantó tres demandas de prueba del MCP: el agente les escribió y cada 10 minutos intentaba ofrecer a `operaciones@example.com`, que Resend rechaza. Los tres casos quedaron descartados.
+- **El workflow del agente ya no termina en rojo**: la última vuelta devolvía 1 por el `&& sleep`.
+
 ## [1.237.0] — 2026-10-21
 
 ### Agente: más contrapartes reales y corridas cada 10 minutos
