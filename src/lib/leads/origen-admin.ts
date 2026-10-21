@@ -41,6 +41,15 @@ export function origenLead(source: string | null): OrigenLead {
     const donde = extra?.replace(/^(zona|prov)-/, '').replace(/-/g, ' ')
     return { grupo: 'Campos', etiqueta: [quiere, donde && donde !== 'tasador' ? nombrePropio(donde) : null, extra === 'tasador' ? 'tasador' : null].filter(Boolean).join(' · '), href: null }
   }
+  // Formulario corto de hacienda (21-10-2026, `sourceDePagina()`): la clave es la de la URL.
+  if (tipo === 'consignataria' && clave) {
+    return { grupo: 'Ficha de consignataria', etiqueta: nombrePropio(clave.replace(/-/g, ' ')), href: `/consignatarias/${clave}` }
+  }
+  if (tipo === 'remate' && clave) return { grupo: 'Ficha de remate', etiqueta: clave, href: `/remates/${clave}` }
+  if (tipo === 'precios' && clave) return { grupo: 'Precios', etiqueta: `Precio de ${clave}`, href: `/precios/${clave}` }
+  if (tipo === 'frigorificos-provincia' && clave) {
+    return { grupo: 'Frigoríficos por provincia', etiqueta: `Frigoríficos en ${nombrePropio(clave.replace(/-/g, ' '))}`, href: `/frigorificos/${clave}` }
+  }
   if (tipo === 'arrendamiento') return { grupo: 'Arrendamiento', etiqueta: 'Calculadora de arrendamiento', href: null }
   return { grupo: 'Herramientas', etiqueta: source, href: null }
 }

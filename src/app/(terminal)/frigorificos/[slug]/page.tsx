@@ -13,6 +13,7 @@ import BadgeConfianza from '@/components/frigorifico/BadgeConfianza'
 import ReclamarFichaStrip from '@/components/frigorifico/ReclamarFichaStrip'
 import LoginGate from '@/components/LoginGate'
 import FrigorificoLeadCapture from '@/components/leads/FrigorificoLeadCapture'
+import { provinciaParaFormulario } from '@/lib/leads/contexto-pagina'
 import FrigorificoConsultaGeneral from '@/components/leads/FrigorificoConsultaGeneral'
 import { getDemandaFicha, VENTANA_DIAS } from '@/lib/demanda-fichas'
 import SubscribeStrip from '@/components/SubscribeStrip'
@@ -529,7 +530,7 @@ export default async function FrigorificoDetailPage({
       {/* Captura de venta a faena — el productor llegó al perfil de la planta →
           intención de venderle. Lo conectamos (comisión), no publicamos su dato. */}
       {recibeHacienda ? (
-        <FrigorificoLeadCapture source={`frigorifico:${slug}`} frigorificoName={name} />
+        <FrigorificoLeadCapture source={`frigorifico:${slug}`} frigorificoName={name} presetProvince={provinciaParaFormulario(province)} />
       ) : (
         <div className="terminal-panel border-negative/40">
           <div className="terminal-panel-header">

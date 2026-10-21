@@ -6,6 +6,8 @@ import { FAQPageSchema } from '@/components/seo/JsonLd'
 import { FaqList } from '@/components/seo/FaqList'
 import { ProvinceCluster } from '@/components/seo/ProvinceCluster'
 import Breadcrumb from '@/components/ui/Breadcrumb'
+import HaciendaLeadCorto from '@/components/leads/HaciendaLeadCorto'
+import { provinciaParaFormulario, sourceDePagina } from '@/lib/leads/contexto-pagina'
 
 /* ============================================================
    FRIGORIFICO PROVINCE VIEW — used when /frigorificos/[slug]
@@ -256,6 +258,9 @@ export function FrigorificoProvinceView({ provincia }: { provincia: string }) {
           <div className="border-b border-terminal-border px-panel py-4">
             <h1 className="text-lg font-terminal text-zinc-200 mb-3">Frigoríficos en {config.displayName}: {habilitados} habilitados de {provinceFrigorificos.length} indexados</h1>
             <p className="text-sm text-zinc-400 leading-relaxed">{config.intro}</p>
+            <a href="#vender-hacienda" className="mt-3 inline-block text-sm text-accent hover:text-accent-bright">
+              ¿Tenés hacienda para faena en {config.displayName}? Dejá los datos y buscamos la planta →
+            </a>
           </div>
 
           <div className="border-b border-terminal-border px-cell py-px2 hidden md:flex items-center gap-0 bg-terminal-panel">
@@ -282,6 +287,19 @@ export function FrigorificoProvinceView({ provincia }: { provincia: string }) {
             <span className="text-xxs text-zinc-700 font-terminal hidden sm:inline">Datos MAGYP • Orden alfabético</span>
           </div>
         </div>
+
+        {/* VENDO / BUSCO HACIENDA (21-10-2026) — las páginas de provincia de frigoríficos
+            sumaron 1.444 vistas en 30 días y no tenían captura de hacienda: el formulario
+            estaba sólo en la ficha de cada planta. Va DEBAJO del listado (la tarea de la
+            página es encontrar la planta) con un enlace desde la intro, y entra como
+            `frigorificos-provincia:<slug>`. */}
+        <HaciendaLeadCorto
+          className="mt-4"
+          source={sourceDePagina('frigorificos-provincia', provincia)}
+          presetProvince={provinciaParaFormulario(config.name)}
+          title={`¿Tenés hacienda para faena en ${config.displayName}?`}
+          subtitle="Dejá cuántas cabezas, qué categoría y dónde está. Buscamos comprador entre los frigoríficos y las consignatarias de la zona, y te escribimos por email."
+        />
 
         <div className="mt-4 terminal-panel border-sky-500/30 bg-sky-500/5">
           <div className="terminal-panel-header" style={{ borderBottomColor: 'rgba(56, 189, 248, 0.3)' }}>
