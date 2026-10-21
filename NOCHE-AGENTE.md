@@ -101,6 +101,17 @@ La comisión del 1% está definida **solo para hacienda**. Para arrendamiento y 
 - `motor.ts`: **un solo cambio**, el `for` de la corrida recorre `ordenarCola(aMirar, comisionEstimada)`. El tope de 20 contactos nuevos por día va primero a los casos que más pueden dejar. No cambia qué se hace con cada caso ni ninguna regla de envío.
 - Check 722 tests OK, build OK.
 
+### #5 — 02:25
+- **Tablero por tipo de operación** en `/admin/agente`:
+  - `src/lib/agente/por-tipo.ts` + tests (5): `resumenPorTipo`, `estadoEnvio`, y `kgHaMesTipico` (canon típico por provincia, de `tierra-por-kilo.json`).
+  - `src/components/admin/agente/PorTipo.tsx`: tabla con leads abiertos, cuántos tiene el agente, bruto de referencia, comisión y estado (Lo trabaja / Bloqueo legal / Sin comisión definida).
+  - `page.tsx`: **una línea** (`<PorTipo />` arriba del embudo).
+- **Números reales** (base al 21-10 02:24, precio de referencia ≈ $4.176/kg):
+  - 4 leads `arrendar_busco` (80, 100 y 100 ha en Buenos Aires; 1.661 ha en Corrientes) → canon anual de referencia ≈ **$325M** → comisión a 0,8 de un mes ≈ **$21,7M**.
+  - ⚠️ Es una estimación con canon típico por provincia, no ofertas. Y está **bloqueada legalmente** (matrícula de corredor). Casi todo es el lead de 1.661 ha de Corrientes.
+  - 6 tasaciones (53 a 20.000 ha): sin comisión. Sirven para calificar si detrás hay una venta o un arrendamiento.
+- Check 727 tests OK, build OK.
+
 ## Próximos pasos
 0. (los 3 informes llegaron ✅) Leer los 3 informes de `docs/agente/` y bajar sus reglas a esta lista. Riesgos legales → bloqueos.
 1. Usar `tipoDeIntent` en el motor (`motor.ts` ~l.487) para que tome arrendamiento y tasación con su primer paso. Los tipos sin comisión quedan en "calificar o pedir datos" **solo hacia el propio lead** (el que nos escribió), nunca a contrapartes. Ojo: escribirle al lead que nos escribió también es mandar un mail → queda detrás del mismo encendido, y se deja listo para que José lo prenda.
@@ -108,4 +119,4 @@ La comisión del 1% está definida **solo para hacienda**. Para arrendamiento y 
    - arrendamiento: pedir ha, aptitud, zona y fecha; la oferta a la contraparte explica el servicio llave en mano, "0,8 de un mes de canon contra el mes completo del mercado" y que la aceptación es por escrito;
    - tasación: "¿querés venderlo o arrendarlo?".
 3. ✅ (#4) Ordenar la cola del motor por prioridad en vez de por fecha.
-4. Sumar al tablero `/admin/agente` (el de main) una fila por tipo con el bruto de referencia y "comisión sin definir".
+4. ✅ (#5) Sumar al tablero `/admin/agente` (el de main) una fila por tipo con el bruto de referencia y "comisión sin definir".

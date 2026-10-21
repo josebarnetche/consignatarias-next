@@ -4,6 +4,7 @@ import { createAdminClient } from '@/lib/supabase-server'
 import { getCronHealth } from '@/lib/ops'
 import { AdminPageHeader, AdminSection, KpiRow, KpiCell, AdminEmpty } from '@/components/admin/kit'
 import Stat from '@/components/ui/Stat'
+import PorTipo from '@/components/admin/agente/PorTipo'
 import Badge, { type BadgeTone } from '@/components/ui/Badge'
 import { resumenHacienda } from '@/lib/agente/mensajes'
 import { whatsappLink } from '@/lib/leads/routing'
@@ -123,6 +124,8 @@ export default async function AdminAgentePage() {
           />
         </KpiCell>
       </KpiRow>
+
+      <PorTipo />
 
       <AdminSection title="Embudo">
         <div className="flex flex-wrap gap-x-5 gap-y-2">
