@@ -33,6 +33,8 @@ export interface ConfigTipo {
   baseComision: string
   /** El primer paso del agente con un lead nuevo de este tipo. */
   primerPaso: 'pedir_datos' | 'calificar'
+  /** Bloqueo legal: mientras exista, el tipo NO sale a contrapartes aunque tenga comisión. */
+  bloqueoLegal?: string
 }
 
 /** Lo que cobra el mercado por un arrendamiento: un mes de canon (José, 21-10-2026). */
@@ -59,6 +61,13 @@ export const TIPOS: Record<TipoOperacion, ConfigTipo> = {
     comisionMesesCanon: MESES_CANON_REFERENCIA * (1 - DESCUENTO_ARRENDAMIENTO),
     baseComision: 'un mes de canon con 20% off (0,8 meses; canon = ha × kg de novillo/ha/mes × precio)',
     primerPaso: 'pedir_datos',
+    // Investigación del 21-10-2026 (docs/agente/investigacion-inmobiliaria-rural.md):
+    // CCyC art. 1351 — en locaciones de inmuebles la intermediación solo la puede
+    // hacer un profesional matriculado; art. 1346 — sin habilitación no hay derecho
+    // a comisión. Hasta que José defina el circuito (corredor matriculado que cobra
+    // y factura, o cobro por software/publicación), esto no sale.
+    bloqueoLegal:
+      'cobrar comisión por un arrendamiento exige corredor matriculado en la provincia del campo (CCyC arts. 1346 y 1351)',
   },
   campo: {
     tipo: 'campo',
@@ -109,7 +118,7 @@ export function tieneComision(tipo: TipoOperacion): boolean {
 
 /** ¿Puede este tipo salir a contrapartes? Solo con una comisión definida por José. */
 export function enviaAContrapartes(tipo: TipoOperacion): boolean {
-  return tieneComision(tipo) && TIPOS[tipo].contrapartes.length > 0
+  return tieneComision(tipo) && !TIPOS[tipo].bloqueoLegal && TIPOS[tipo].contrapartes.length > 0
 }
 
 /** Comisión de un arrendamiento sobre el canon anual: 0,8 de un mes. */

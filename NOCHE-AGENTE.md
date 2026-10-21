@@ -33,6 +33,24 @@ Bitácora del loop de 30 min. Rama `feat/agente-v2` (worktree `~/consignatarias-
   - `investigacion-cierre-broker.md`: cadencias de seguimiento, cómo cobrar sin que las partes cierren por fuera, pipeline ponderado para el tablero y cómo comunicar el servicio llave en mano sin engañar.
   → **La próxima vuelta del loop los lee y convierte sus "reglas accionables" en pasos de la lista.** Si un informe marca un riesgo legal (por ejemplo, que cobrar comisión de arrendamiento exige matrícula de corredor), se anota acá como bloqueo y NO se habilita el envío de ese tipo.
 
+## ⚠️ BLOQUEO LEGAL — arrendamiento (01:00, informe `docs/agente/investigacion-inmobiliaria-rural.md`)
+- **CCyC art. 1351:** "En las locaciones de inmuebles la intermediación solo podrá estar a cargo de un profesional matriculado".
+- **Art. 1346:** sin habilitación no nace el derecho a la comisión.
+- Además hay riesgo de ejercicio ilegal (CP art. 247; en 2025 imputaron a alguien en Villa María, Córdoba).
+- Lo que sí tiene respaldo en fallos: **publicar y conectar** (modelo clasificado, cobrar por publicación o suscripción). Una comisión atada al cierre es corretaje.
+- **0,8 de un mes de canon contra los aranceles legales:**
+  - Buenos Aires (Ley 10.973 art. 54): 1–2% por parte sobre el total del contrato.
+  - En un contrato de 3 años, 0,8 meses ≈ 2,2%: entra.
+  - En 1 año ≈ 6,7%: pasa el máximo bonaerense (4%) y el 5% supletorio de Córdoba.
+  - En un pastaje de 6 meses ≈ 13,3%.
+  - Conclusión: "barato contra el mercado" solo vale en contratos largos.
+- **En el código:** `TIPOS.arrendamiento.bloqueoLegal`. Con eso `enviaAContrapartes('arrendamiento')` = **false**. La comisión se sigue calculando para el tablero.
+- **Opciones para José** (las del informe):
+  - (a) un corredor matriculado por provincia cobra y factura, y consignatarias le cobra software o publicación;
+  - (b) cobrar al que publica o busca por publicación o suscripción, sin comisión al cierre;
+  - (c) consultarlo con un abogado antes de cualquier envío.
+- Ajuste de la regla de comisión si se sigue: calcularla sobre el total del contrato con tope por provincia, no en meses fijos.
+
 ## Pendiente de José
 - **Quién paga la comisión de arrendamiento:** el arrendatario, el arrendador o los dos. Supuesto provisorio, por analogía con hacienda: quien recibe el contacto. Confirmar.
 - **Comisión de venta de campo:** sin definir (sigue apagada).
@@ -58,7 +76,7 @@ La comisión del 1% está definida **solo para hacienda**. Para arrendamiento y 
 - Arrendamiento ahora tiene comisión: 0,8 de un mes de canon. `enviaAContrapartes('arrendamiento')` = true **en la rama**, sin publicar. 14 tests.
 
 ## Próximos pasos
-0. Leer los 3 informes de `docs/agente/` y bajar sus reglas a esta lista. Riesgos legales → bloqueos.
+0. (cierre-broker ✅ e inmobiliaria-rural ✅ ya llegaron; falta comisionista-hacienda) Leer los 3 informes de `docs/agente/` y bajar sus reglas a esta lista. Riesgos legales → bloqueos.
 1. Usar `tipoDeIntent` en el motor (`motor.ts` ~l.487) para que tome arrendamiento y tasación con su primer paso. Los tipos sin comisión quedan en "calificar o pedir datos" **solo hacia el propio lead** (el que nos escribió), nunca a contrapartes. Ojo: escribirle al lead que nos escribió también es mandar un mail → queda detrás del mismo encendido, y se deja listo para que José lo prenda.
 2. Plantillas por tipo en un archivo nuevo `mensajes-tipos.ts`:
    - arrendamiento: pedir ha, aptitud, zona y fecha; la oferta a la contraparte explica el servicio llave en mano, "0,8 de un mes de canon contra el mes completo del mercado" y que la aceptación es por escrito;

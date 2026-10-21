@@ -20,9 +20,10 @@ describe('tipoDeIntent', () => {
 })
 
 describe('enviaAContrapartes', () => {
-  it('salen hacienda y arrendamiento: los dos con comisión definida por José', () => {
+  it('sale solo hacienda: arrendamiento tiene comisión pero bloqueo legal (matrícula de corredor)', () => {
     expect(enviaAContrapartes('hacienda')).toBe(true)
-    expect(enviaAContrapartes('arrendamiento')).toBe(true)
+    expect(TIPOS.arrendamiento.bloqueoLegal).toMatch(/matriculado/)
+    expect(enviaAContrapartes('arrendamiento')).toBe(false)
     expect(enviaAContrapartes('campo')).toBe(false)
     expect(enviaAContrapartes('tasacion')).toBe(false)
   })
