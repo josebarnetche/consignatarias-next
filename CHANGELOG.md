@@ -7,6 +7,17 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.240.0] — 2026-10-21
+
+### Prospectos PRO: a qué firma escribirle y qué decirle, con los números de la base
+
+- **`/admin/prospectos`** (menú: Directorio → Prospectos PRO). Arriba, el embudo PRO medido: firmas, con mail/teléfono, con visitas en 30 días, reclamadas (y cómo terminaron los pedidos), PRO, pagando por Rebill, canceladas, ofertas del agente a firmas PRO y correos automáticos a firmas con su respuesta. Hoy: 130 firmas, 4 PRO —las cuatro por destaque manual—, **0 pagando**, 1 ficha reclamada, 82 correos post-remate a 22 firmas sin una sola respuesta registrada.
+- **Firmas no PRO ordenadas por puntaje** (`src/lib/pro-adquisicion/prospectos.ts`, puro y con tests): pesa más la constancia (días distintos con visitas) que el volumen, porque un solo celular que recarga la ficha 40 veces en una tarde no es un mercado mirándola; suma Google (Search Console, 28 días), pedidos de hacienda de su provincia y las limítrofes, operaciones abiertas del agente en la zona (≥ 40 cabezas), remates próximos y ficha verificada. Sin mail vale la mitad. Avisa el pico de un día y a la firma que recibió correos automáticos y nunca contestó ("mejor llamar").
+- **Informe redactado por firma**: sus visitas, sus apariciones en Google, la demanda de su zona, las operaciones abiertas que hoy se les ofrecen a las PRO —con la comisión del 1% sólo si se concreta— y el link a su propuesta y a activar. Toda cifra sale de una métrica medida; la que no se pudo medir no aparece. Se copia, se abre en el correo propio o se manda desde `hola@`.
+- **Nada sale solo.** El envío es un botón por firma, con confirmación, y además exige `PRO_PROSPECTOS_ENVIO=on` en Vercel (apagado). El endpoint (`/api/admin/prospectos/enviar`) recalcula los números en el servidor y se niega si la firma ya es PRO, no tiene mail, se dio de baja o ya recibió el informe en 30 días; cada envío queda en `outreach_log` (`pro_informe_ficha`) con List-Unsubscribe e identificación legal.
+- WhatsApp con el guion ya escrito para las firmas que no contestan mails.
+
+---
 ## [1.239.0] — 2026-10-21
 
 ### SEO de plantillas: cada búsqueda a su página, y del precio al formulario que convierte
