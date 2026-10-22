@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { ImagenTema } from '@/components/ui/ImagenTema'
+import MesaDemandaLink from '@/components/MesaDemandaLink'
 
 /**
  * Puente de las páginas de PRECIO (las que más tráfico orgánico traen) a las tres que
@@ -69,6 +70,7 @@ export default function PuenteHacienda({
           </Link>
         ))}
       </div>
+      <MesaDemandaLink plural={plural} className="mt-3" />
     </nav>
   )
 }

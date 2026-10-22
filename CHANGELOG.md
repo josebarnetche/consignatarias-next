@@ -7,6 +7,14 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.244.2] — 2026-10-22
+
+### De las plantillas con tráfico a la mesa de demanda
+
+- **`MesaDemandaLink`**: una línea "¿Hay compradores o vendedores de {categoría} ahora? Ver la mesa de demanda →" hacia `/mercado/demanda#hacienda`, para quien todavía no quiere dejar sus datos. Va dentro de `PuenteHacienda` (precios, cuánto vale una vaca/toro, arrendamiento, mercado), debajo del formulario corto en las fichas de remate y debajo del formulario de `/quiero-comprar`. Hasta acá la mesa solo se enlazaba desde `/mercado` y el sitemap.
+
+---
+
 ## [1.244.1] — 2026-10-22
 
 ### `/mercado/demanda`: anclas fijas `#hacienda` y `#campos`
