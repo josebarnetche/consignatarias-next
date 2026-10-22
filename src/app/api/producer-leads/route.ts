@@ -9,6 +9,7 @@ import { puedeFaenarBovinos } from '@/lib/frigorificos/faena'
 import { getFrigorificoProfile } from '@/lib/dal/frigorificos'
 import { z } from 'zod'
 import { cuitValido, formatearCuit } from '@/lib/cuit'
+import { esFormularioCorto } from '@/lib/leads/contexto-pagina'
 import crypto from 'crypto'
 
 export const runtime = 'nodejs'
@@ -69,6 +70,11 @@ export async function POST(req: NextRequest) {
     // es peor que el campo vacío: hace creer que el chequeo crediticio se puede hacer.
     if (d.cuit && !cuitValido(d.cuit)) {
       return NextResponse.json({ error: 'El CUIT no es válido' }, { status: 400 })
+    }
+    // En el formulario corto el CUIT es obligatorio (José, 22-10): la operación se
+    // trabaja a nombre de alguien y sin CUIT no se puede verificar a la contraparte.
+    if (!d.cuit && esFormularioCorto(d.source) && (d.intent === 'vender' || d.intent === 'comprar')) {
+      return NextResponse.json({ error: 'Necesitamos el CUIT de quien vende o compra' }, { status: 400 })
     }
 
     // Necesitamos una vía de contacto: teléfono o email.
