@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import DemandaCompraForm from '@/components/DemandaCompraForm'
+import MesaDemandaLink from '@/components/MesaDemandaLink'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 
 export const revalidate = 86400
@@ -44,6 +45,7 @@ export default function QuieroComprarPage() {
 
         <div className="mb-8">
           <DemandaCompraForm />
+          <MesaDemandaLink className="mt-3" />
         </div>
 
         <h2 className="text-zinc-200 text-lg font-medium mb-3">Cómo funciona</h2>
