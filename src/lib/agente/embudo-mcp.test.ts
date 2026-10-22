@@ -43,4 +43,31 @@ describe('armarEmbudoMcp', () => {
     ])
     expect(e).toMatchObject({ pedidos: '3–9', verificados: '1–2', enOperacion: '1–2' })
   })
+
+  it('separa la confirmación enviada y la que hizo la persona', () => {
+    const e = armarEmbudoMcp([], [
+      { status: 'needs_review', caso: null, confirmacionEnviada: true },
+      { status: 'new', caso: 'ofreciendo', confirmacionEnviada: true, confirmado: true },
+      { status: 'new', caso: null },
+    ])
+    expect(e).toMatchObject({ confirmacionEnviada: '1–2', confirmados: '1–2', verificados: '1–2' })
+  })
+
+  it('uso humano: saca anónimas, librerías, bots y barridos', () => {
+    const barrido = Array.from({ length: 15 }, (_, i) => llamada({ ip: '9.9.9.9', ua: 'Claude-User', tool: `t${i}`, canonico: null, created_at: '2026-10-21T10:00:00Z' }))
+    const e = armarEmbudoMcp(
+      [
+        llamada({ ua: 'claude-code/2.1', ip: '5.5.5.5' }),
+        llamada({ ua: null }),
+        llamada({ ua: 'python-requests/2.32' }),
+        llamada({ ua: 'Mozilla/5.0 (compatible; BrickBlueBot/1.0)' }),
+        llamada({ ua: 'Vouch-Census/0.1 (+mailto:probing@example.org)' }),
+        llamada({ ua: 'SentinelOracle/0.1 (+https://example.org)' }),
+        ...barrido,
+      ],
+      [],
+    )
+    expect(e.humanas).toBe(1)
+    expect(e.origenesHumanos).toBe(1)
+  })
 })
