@@ -24,6 +24,7 @@ import { categoriaParaFormulario, sourceDePagina } from '@/lib/leads/contexto-pa
 import SellZoneBadge from '@/components/SellZoneBadge'
 import SellZoneAlertSignup from '@/components/SellZoneAlertSignup'
 import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
+import PuenteHacienda from '@/components/PuenteHacienda'
 import { BandaVrCategoria, PRECIO_A_VR } from '@/components/precios/BandaVrCategoria'
 import { RematesDeInvernada, TERNERO_ESTIMADO_NOTA } from '@/components/precios/TerneroEstimado'
 
@@ -492,6 +493,10 @@ export default async function PreciosCategoriaPage({
           presetCategory={categoriaParaFormulario(categoria)}
           title={`¿Vendés o buscás ${categoria}?`}
         />
+
+        {/* Puente a vender / comprar / lotes: el que busca "precio ternero 180 kg hoy" está por
+            operar. Hasta oct-2026 esta plantilla (14.861 impr/28d) no enlazaba a ningún formulario. */}
+        <PuenteHacienda plural={categoria} />
 
         {/* El parte semanal, después del número y la descripción (la página ya entregó lo suyo).
             Regla de OfrecerInforme: lo que la pantalla no da, y qué sigue gratis. `desde` lleva
