@@ -7,6 +7,14 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.242.1] — 2026-10-22
+
+### Agente: las demandas que carga el MCP esperan verificación
+
+- **Una demanda de compra cargada por el MCP (`cattle_buying_request`, origen `mcp`) entra como lead en `needs_review`**, y `tomable()` (v1.242.0) la frena hasta que una persona la verifique y la pase a `new`. Desde la v1.237.0 entraba como `new` y el agente le escribía al mail cargado, que puede ser de otra persona. Las de la web no cambian.
+
+---
+
 ## [1.242.0] — 2026-10-22
 
 ### El agente cerrador, por tipo de operación (hacienda, arrendamiento, campo, tasación)
