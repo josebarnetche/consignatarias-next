@@ -317,6 +317,42 @@ export async function sendConsignatariaViewsOutreach(opts: {
 }
 
 /**
+ * Informe de ficha a una firma que NO es PRO (src/lib/pro-adquisicion). Lo redacta
+ * `redactarInforme` con números medidos; acá sólo se arma el HTML. Lo dispara un
+ * admin a mano desde /admin/prospectos y sólo con PRO_PROSPECTOS_ENVIO=on.
+ */
+export async function sendInformeFichaProspecto(opts: {
+  to: string
+  asunto: string
+  parrafos: string[]
+  numeros: string[]
+  texto: string
+}): Promise<{ success: boolean; error?: string }> {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'resend_no_configurado' }
+  const p = (s: string) =>
+    `<p style="color:#a1a1aa;font-size:13px;line-height:1.7;margin:0 0 12px">${escapeHtml(s).replace(/(https:\/\/[^\s<]+)/g, '<a href="$1" style="color:#38bdf8">$1</a>').replace(/\n/g, '<br>')}</p>`
+  const [saludo, intro, ...resto] = opts.parrafos
+  const lista = opts.numeros.length
+    ? `<ul style="color:#fafafa;font-size:13px;line-height:1.7;margin:0 0 14px;padding-left:18px">${opts.numeros.map((n) => `<li style="margin-bottom:6px">${escapeHtml(n)}</li>`).join('')}</ul>`
+    : ''
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM_PERSONAL,
+      replyTo: REPLY_TO,
+      to: opts.to,
+      headers: listUnsubHeaders(opts.to, 'pro_informe_ficha'),
+      subject: opts.asunto,
+      text: opts.texto,
+      html: darkEmailShell(`${[saludo, intro].filter(Boolean).map(p).join('')}${lista}${resto.map(p).join('')}${legalIdentificationHtml(opts.to)}`),
+    })
+    return error ? { success: false, error: error.message } : { success: true }
+  } catch (e) {
+    return { success: false, error: e instanceof Error ? e.message : 'send_failed' }
+  }
+}
+
+/**
  * Invitación a una firma para que publique los campos que tiene en cartera.
  *
  * Es warm por construcción: entra con un dato cierto y propio de esa firma —las

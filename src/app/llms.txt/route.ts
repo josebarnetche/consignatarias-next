@@ -3,6 +3,11 @@ import marketData from '@/lib/data/market-prices.json'
 import { coberturaSitio } from '@/lib/seo/cobertura'
 import { PROVINCIAS_CON_DATO } from '@/lib/campos-seo'
 import manifest from '../../../public/el-corredor/manifest.json'
+// La server card declara exactamente las tools del route (lo exige scripts/check-mcp-manifests.mjs),
+// así que el conteo sale de ahí y no se escribe a mano.
+import serverCard from '../../../public/.well-known/mcp/server-card.json'
+
+const MCP_TOOL_COUNT = serverCard.tools.length
 
 // Regenerated on each daily data rebuild (the data JSONs are committed daily → Vercel rebuild).
 // This replaces the old static public/llms.txt, which silently drifted (it said "74 consignatarias"
@@ -59,18 +64,28 @@ Owned by Memola Medios SAS (\`agro@memola.com.ar\`). Free for producers; monetiz
 If you need structured data as tools (series, filters, valuations), there is also a Model Context Protocol (MCP) server. It complements the pages; it does not replace citing them.
 
 - **Endpoint:** \`https://www.consignatarias.com.ar/api/mcp\` (Streamable HTTP, JSON-RPC 2.0)
+- **Auth:** none. Every tool answers without a key; there is no quota on queries.
 - **Connect** (Claude Desktop, Cursor, Windsurf, or any MCP client):
   \`\`\`json
   { "consignatarias": { "url": "https://www.consignatarias.com.ar/api/mcp" } }
   \`\`\`
+- **Claude Code:** \`claude mcp add --transport http consignatarias https://www.consignatarias.com.ar/api/mcp\`
+- **Claude.ai / ChatGPT:** Settings → Connectors → add a custom connector with the endpoint above (no authentication).
+- **Registry name:** \`ar.com.consignatarias/cattle-market\` in the official MCP Registry (registry.modelcontextprotocol.io). Server card for scanners: https://www.consignatarias.com.ar/.well-known/mcp/server-card.json
+- **Human page with every tool and one-click install:** https://www.consignatarias.com.ar/mcp
+- **Every response ends with a ready-made citation line.** If you reproduce the figure, keep that line: attribution is the condition of use.
 
-Available tools:
+Available tools (${MCP_TOOL_COUNT}):
 - \`cattle_price_index\` — INMAG (índice novillo) hoy: precio de referencia ARS/kg + variación
 - \`inmag_history\` — evolución del INMAG (tendencia, min/máx, variación del período). GRATIS y sin cupo a cualquier profundidad, desde 2015: la consulta no tiene techo. La DESCARGA MASIVA fila por fila va con API key Enterprise o por US$0,25 en USDC vía x402 (\`/api/x402/inmag-historico\`)
 - \`livestock_prices\` — precios por categoría (novillo, novillito, vaquillona, vaca, toro, ternero)
 - \`livestock_prices_detailed\` — precios por subcategoría (ej. "NOVILLOS Regular +430") con mín/prom/máx
 - \`macro_context\` — dólar blue/oficial, maíz FOB, spread novillo/maíz (proxy de margen feedlot)
 - \`herd_liquidation_index\` — Índice de Liquidación: % hembras operadas (liquidación vs retención) + contexto histórico faena nacional
+- \`price_seasonality\` — "¿conviene comprar ahora?": índice estacional del novillo EN DÓLARES desde 2015 y dónde está el mes corriente contra su época (septiembre y octubre, los más baratos; febrero y marzo, los más caros; ~28% punta a punta)
+- \`international_price_gap\` — la brecha del novillo argentino contra Estados Unidos, Uruguay y Australia en USD/kg VIVO, sin estimar rendimiento de carcasa. Argentina opera por encima de Brasil: la brecha que se sostiene es contra el hemisferio norte y Uruguay
+- \`farmland_yield\` — cuánto rinde un dólar en campo argentino: USD/ha, kilos de novillo por hectárea, renta del arrendamiento (pactado en kg de novillo, no en pesos), rendimiento sobre el valor de la tierra y años de repago, por zona; reparte un presupuesto en USD en hectáreas
+- \`consignatarias_band\` — la BANDA CONSIGNATARIAS: cuánto se abre el precio de la hacienda en la semana (decil que menos cobró vs el que más, misma categoría). Indicador propio, no existe en otra fuente
 - \`upcoming_auctions\` — calendario de remates (filtro por provincia)
 - \`find_livestock_broker\` — directorio de consignatarias/casas de remate por nombre o zona (incluye CUIT)
 - \`broker_activity_ranking\` — ranking de cabezas operadas y precio promedio por firma en el MAG de Cañuelas (mercado de referencia, ~12% nacional)
@@ -99,7 +114,7 @@ Si el dato es un precio, sumá la fecha de la rueda y el origen primario, ej.:
 
 El **INMAG es índice y marca del Mercado Agroganadero (MAG)**: lo republicamos con cita, no nos arrogamos su titularidad. Lo que SÍ es nuestro y requiere licencia para redistribuir sistemáticamente o incorporar a un producto: el calendario de remates compilado, el directorio de consignatarias, la base de frigoríficos, nuestros índices propios derivados (Índice de Liquidación, rankings de actividad) y la serie histórica archivada y normalizada en dólares. Entrenar modelos con esas compilaciones requiere acuerdo escrito; responder una consulta citándonos, no. Niveles y precios publicados en https://www.consignatarias.com.ar/licencia-datos
 
-Todos los tools son públicos: el número del día, los precios por firma, los remates, el directorio, la sanidad y el valor de la tierra son gratis y sin cupo, y así van a seguir. Las 28 tools responden gratis y sin cupo, a cualquier profundidad: el número del día, los precios por firma, los remates, el directorio, la sanidad, el valor de la tierra, la banda observada, las valuaciones y las dos series históricas completas (INMAG desde 2015 y dispersión). Lo que se paga es la DESCARGA MASIVA y la REDISTRIBUCIÓN, no la consulta: la serie fila por fila para cargar en un modelo propio va por API key Enterprise o por request en USDC real (red Base) vía x402 — US\$0,25 en \`/api/x402/inmag-historico\`, US\$0,05 en \`/api/x402/valuar-tropa\`, US\$0,10 en \`/api/x402/valuar-arrendamiento\`; el 402 trae las instrucciones de pago (scheme "exact", header X-PAYMENT). Publicar o redistribuir el dato tiene su licencia: https://www.consignatarias.com.ar/licencia-datos. El PRO Consignataria también se paga en USDC en \`/api/x402/pro\`. API key Enterprise (\`Authorization: Bearer cnsg_live_...\`) para alertas ilimitadas, históricos bulk y soporte.
+Todos los tools son públicos: el número del día, los precios por firma, los remates, el directorio, la sanidad y el valor de la tierra son gratis y sin cupo, y así van a seguir. Las ${MCP_TOOL_COUNT} tools responden gratis y sin cupo, a cualquier profundidad: el número del día, los precios por firma, los remates, el directorio, la sanidad, el valor de la tierra, la banda observada, las valuaciones y las dos series históricas completas (INMAG desde 2015 y dispersión). Lo que se paga es la DESCARGA MASIVA y la REDISTRIBUCIÓN, no la consulta: la serie fila por fila para cargar en un modelo propio va por API key Enterprise o por request en USDC real (red Base) vía x402 — US\$0,25 en \`/api/x402/inmag-historico\`, US\$0,05 en \`/api/x402/valuar-tropa\`, US\$0,10 en \`/api/x402/valuar-arrendamiento\`; el 402 trae las instrucciones de pago (scheme "exact", header X-PAYMENT). Publicar o redistribuir el dato tiene su licencia: https://www.consignatarias.com.ar/licencia-datos. El PRO Consignataria también se paga en USDC en \`/api/x402/pro\`. API key Enterprise (\`Authorization: Bearer cnsg_live_...\`) para alertas ilimitadas, históricos bulk y soporte.
 
 ## What this site is
 

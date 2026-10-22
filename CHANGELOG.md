@@ -7,6 +7,81 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.241.0] — 2026-10-22
+
+### MCP: la ficha lista para los directorios (sin publicar nada)
+
+El uso del MCP viene casi todo de escáneres y la palanca es la distribución. Antes de mandar el server a más directorios había que arreglar lo que esos directorios leen, porque mostraban una versión vieja.
+
+- **Server card al día** (`public/.well-known/mcp/server-card.json`): seguía en v1.5.0 con 24 tools y los nombres viejos en castellano, y eso es lo que Smithery tiene escaneado. Ahora declara las 28 tools con su `title`, `inputSchema` y anotaciones, y los 13 prompts. `scripts/check-mcp-manifests.mjs` (en `pnpm check`) exige que la versión coincida con el manifiesto y con `SERVER_INFO` del route, y que las tools sean exactamente las del route.
+- **Manifiesto del registry v1.8.0, sin publicar** (`mcp-registry/server.json` = `server.json`): schema `2025-12-11`, `title` (los directorios mostraban el slug o "MCP-CATTLE-MARKET"), `icons`, `repository` con su id y `websiteUrl` a `/mcp`. La descripción pasa a inglés: los directorios que pullean del registry se buscan en inglés. La copia de la raíz queda idéntica a la que se publica; se terminó la divergencia de `$schema`. `mcp-publisher validate` da OK contra el registry.
+- **`/llms.txt` nombra las 28 tools**: le faltaban `price_seasonality`, `international_price_gap`, `farmland_yield` y `consignatarias_band`, las cuatro que se hicieron para el comprador del exterior. Suma cómo conectarse desde Claude Code, Claude.ai y ChatGPT, que no hace falta autenticación, el nombre en el registry y la línea de cita. El conteo sale de la server card y no se escribe a mano.
+- **`/llms-full.txt`**: el párrafo del MCP nombraba 15 tools y decía a la vez que la serie de dispersión se pagaba pasados 30 días y que iba completa y gratis. Ahora lista las 28 desde la server card y dice una sola cosa: las consultas son gratis y lo que se paga es la descarga masiva y la redistribución.
+- **Página `/mcp`**: dos tools figuraban con su alias viejo (`get_estacionalidad`, `get_renta_campo`); van con el nombre canónico. Suma enlaces a Smithery, al registry y a la server card, y cómo agregarlo como conector en Claude.ai y ChatGPT.
+- **Anotaciones honestas para el directorio de conectores de Claude**, que revisa título y `readOnlyHint` de cada tool. `cattle_buying_request` se declaraba de solo lectura y escribe: deja una demanda que trabaja el agente de operaciones. Ahora va con `readOnlyHint: false`, igual que `create_price_alert` (`TOOLS_QUE_ESCRIBEN` en el route). Además, diez tools no tenían título y mostraban el slug; ahora cada una tiene el suyo.
+- **Server card con `serverInfo`**, que es lo que Smithery lee cuando no puede hacer el handshake.
+- **Test nuevo** `src/app/api/mcp/mcp-superficies.test.ts`: `/llms.txt` y `/mcp` tienen que nombrar cada tool del route, sin alias; cada tool tiene que tener título, y las que escriben no pueden declararse de solo lectura.
+- **`docs/mcp-distribucion.md`**: estado en cada directorio, verificado el 21-10, y el paso a paso de cada envío con el texto en inglés y en castellano. Nada se envió: cada paso espera el OK de José.
+
+---
+## [1.240.0] — 2026-10-21
+
+### Prospectos PRO: a qué firma escribirle y qué decirle, con los números de la base
+
+- **`/admin/prospectos`** (menú: Directorio → Prospectos PRO). Arriba, el embudo PRO medido: firmas, con mail/teléfono, con visitas en 30 días, reclamadas (y cómo terminaron los pedidos), PRO, pagando por Rebill, canceladas, ofertas del agente a firmas PRO y correos automáticos a firmas con su respuesta. Hoy: 130 firmas, 4 PRO —las cuatro por destaque manual—, **0 pagando**, 1 ficha reclamada, 82 correos post-remate a 22 firmas sin una sola respuesta registrada.
+- **Firmas no PRO ordenadas por puntaje** (`src/lib/pro-adquisicion/prospectos.ts`, puro y con tests): pesa más la constancia (días distintos con visitas) que el volumen, porque un solo celular que recarga la ficha 40 veces en una tarde no es un mercado mirándola; suma Google (Search Console, 28 días), pedidos de hacienda de su provincia y las limítrofes, operaciones abiertas del agente en la zona (≥ 40 cabezas), remates próximos y ficha verificada. Sin mail vale la mitad. Avisa el pico de un día y a la firma que recibió correos automáticos y nunca contestó ("mejor llamar").
+- **Informe redactado por firma**: sus visitas, sus apariciones en Google, la demanda de su zona, las operaciones abiertas que hoy se les ofrecen a las PRO —con la comisión del 1% sólo si se concreta— y el link a su propuesta y a activar. Toda cifra sale de una métrica medida; la que no se pudo medir no aparece. Se copia, se abre en el correo propio o se manda desde `hola@`.
+- **Nada sale solo.** El envío es un botón por firma, con confirmación, y además exige `PRO_PROSPECTOS_ENVIO=on` en Vercel (apagado). El endpoint (`/api/admin/prospectos/enviar`) recalcula los números en el servidor y se niega si la firma ya es PRO, no tiene mail, se dio de baja o ya recibió el informe en 30 días; cada envío queda en `outreach_log` (`pro_informe_ficha`) con List-Unsubscribe e identificación legal.
+- WhatsApp con el guion ya escrito para las firmas que no contestan mails.
+
+---
+## [1.239.0] — 2026-10-21
+
+### SEO de plantillas: cada búsqueda a su página, y del precio al formulario que convierte
+
+Search Console, 28 días del 19-09 al 16-10-2026 (`reports/gsc/consulta-pagina-28d.csv` y
+`historico-por-pagina.csv`). Sin guías nuevas: todo es plantilla, enlazado y metadata con dato de la base.
+
+- **Fichas de consignataria: el próximo remate en el snippet.** 72 fichas con impresiones, 14.186 impr,
+  CTR 1,64 %, posición 7,0, casi todo búsqueda de marca con cero clics ("pedro noel irey" 402,
+  "jauregui lorda" 324, "gananor pujol" 257, "mondino remates" 226). Arriba está el sitio de la firma; lo
+  que nosotros tenemos y ese resultado no muestra es cuándo y dónde rematan. Si la firma tiene un remate
+  programado, el título pasa a "Mondino: próximo remate 28 de octubre en Olavarría" y la description
+  arranca con "Próximo remate: …". Sale de `remates.json` (el scrape diario redeploya), helper
+  `src/lib/consignatarias/proximo-remate.ts` con tests; sin remate programado queda el título de siempre.
+  No se tocan las firmas con canal de YouTube (título "en vivo" del 17-10) ni las de `profile-seo.ts`.
+- **`PuenteHacienda`** (`src/components/PuenteHacienda.tsx`, server, sin JS): vender (formulario "Buscame
+  comprador" de `/mercado/vender-ahora`, que alimenta al agente), comprar (`/quiero-comprar`) y lotes en
+  venta (`/lotes`), con anchors exactos. Va en `/precios/[categoria]` (14.861 impr, CTR 0,42 %) y
+  `/precios/[categoria]/[provincia]` (4.955 impr), `/mercado/arrendamiento` (44.506 impr, la página #1),
+  `/mercado`, `/cuanto-vale-una-vaca` (9.749) y `/cuanto-vale-un-toro` (1.676). Ninguna de esas
+  plantillas enlazaba a un formulario de venta o compra. No enlaza a `/mercado/[categoria]` aunque tenga el
+  mismo formulario: compite con `/precios/[categoria]` por "precio del X hoy".
+- **`/mercado` deriva cada búsqueda a su página.** El hub (8.731 impr, CTR 0,70 %, pos 7,3) recibía
+  "inmag" (198, pos 9,7), "precio ternero hoy" (156), "kg de novillo hoy" (97) y "precio del novillo hoy"
+  (75) con cero clics. Fila server-side con el anchor exacto y el número del día hacia `/precios/novillos`,
+  `/precios/vacas`, `/precios/vaquillonas`, `/precios/terneros` (rotulado estimado), `/mercado/inmag` y
+  `/mercado/arrendamiento`.
+- **`/campos/valor-hectarea/[provincia]`**: `BreadcrumbList` (la de zona lo tenía, la de provincia no) y
+  enlace "cuánto vale una hectárea en Argentina" a `/campos/valuar`: esa búsqueda y sus variantes (~300
+  impr, pos 7-8, cero clics) caían en la página de Buenos Aires (1.931 impr, CTR 0,62 %).
+- Línea base para medir a los 28 días, en el cuerpo del PR. Releer por query, no por página.
+
+---
+
+## [1.238.0] — 2026-10-21
+
+### Conversión: "vendo / busco hacienda" en las plantillas con tráfico y cero leads
+
+Línea de base (30 días al 21-10, vistas = `value_events.time_on_page` por plantilla, leads = `producer_leads` por `source`): ficha de frigorífico 5.358 vistas → 10 leads (0,19 %); provincia de frigoríficos 1.444 → 0; ficha de remate 1.289 → 0; ficha de consignataria 966 → 0; `/precios/*` ~550 → 0. Y de los 31 leads de compra/venta históricos, sólo 13 traían cabezas + categoría + zona + email: el resto obligaba al agente a pedir los datos por mail.
+
+- **Formulario corto `HaciendaLeadCorto`** (`src/components/leads/`): vendo/busco, categoría, cabezas, provincia, localidad, nombre, email y WhatsApp opcional. Pide justo lo que el agente necesita para ofrecer (`DATOS_MINIMOS`) y exige el email porque el agente trabaja por correo (un lead sin email se descarta solo). Sin precio ni CUIT en el primer paso. Inline, sin modal; mide `lead_capture_open` (primer foco) y `lead_capture_submit` con su `source`.
+- **Dónde va**: ficha de consignataria (debajo del encabezado), ficha de remate (después del contexto), provincia de frigoríficos (debajo del listado, con enlace desde la intro) y `/precios/[categoria]` (después de la descripción). En las fichas de firma y de remate aclara que lo trabaja consignatarias.com, no la firma.
+- **Precarga desde la página** (`src/lib/leads/contexto-pagina.ts`, con tests): provincia y localidad de la firma o del remate, provincia de la página de frigoríficos, categoría de `/precios`. La Capital Federal no se precarga (hay firmas con sede en CABA que rematan en Tornquist) y en los remates no se precarga la categoría (un remate mezcla lotes). La ficha de frigorífico ahora también precarga la provincia de la planta en su formulario.
+- **`source` por página**: `consignataria:<slug>`, `remate:<slug>`, `precios:<categoria>`, `frigorificos-provincia:<slug>`. `/admin/leads` los muestra con su grupo y enlace (`origenLead`).
+- Una sola lista de provincias para todos los formularios (`PROVINCIAS_FORM`, suma Tierra del Fuego).
+
+---
 ## [1.237.2] — 2026-10-21
 
 ### Agente: si no hay a quién ofrecer, se sigue buscando

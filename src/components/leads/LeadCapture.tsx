@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { cuitValido, formatearCuit, soloDigitos } from '@/lib/cuit'
 import { trackValueEvent } from '@/lib/analytics'
+import { PROVINCIAS_FORM } from '@/lib/leads/contexto-pagina'
 
 /**
  * LeadCapture — captura de intención de productor para el negocio comisionista.
@@ -33,12 +34,9 @@ const CATEGORIES: Array<{ value: string; label: string }> = [
   { value: 'terneros', label: 'Terneros' },
 ]
 
-const PROVINCES = [
-  'Buenos Aires', 'Córdoba', 'Santa Fe', 'Entre Ríos', 'La Pampa', 'Corrientes',
-  'Chaco', 'Formosa', 'Santiago del Estero', 'Salta', 'Tucumán', 'San Luis',
-  'Misiones', 'Mendoza', 'Río Negro', 'La Rioja', 'Catamarca', 'Jujuy',
-  'Neuquén', 'Chubut', 'Santa Cruz', 'San Juan',
-]
+// Una sola lista para todos los formularios: la precarga de provincia (contexto-pagina.ts)
+// devuelve siempre una de estas opciones.
+const PROVINCES = PROVINCIAS_FORM
 
 export interface LeadCaptureProps {
   /** De qué herramienta viene (analytics + ruteo). */

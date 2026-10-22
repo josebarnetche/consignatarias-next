@@ -14,7 +14,7 @@ import {
 import { anosDeArrendamiento, promedioMesAnterior } from '@/lib/valuacion-campos'
 import ValuacionCampo from '@/components/campos/ValuacionCampo'
 import CapturaCampoForm from '@/components/campos/CapturaCampoForm'
-import { FAQPageSchema, DatasetSchema, SpeakableSchema } from '@/components/seo/JsonLd'
+import { FAQPageSchema, DatasetSchema, SpeakableSchema, BreadcrumbSchema } from '@/components/seo/JsonLd'
 import { DESCARGA_VALOR_TIERRA, LICENCIA_CC_BY } from '@/lib/seo/schemas'
 import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
 
@@ -113,6 +113,14 @@ export default async function ValorHectareaProvincia({
   return (
     <>
       <FAQPageSchema items={FAQ} />
+      {/* BreadcrumbList: la página de zona lo tenía y la de provincia no (21-10-2026). */}
+      <BreadcrumbSchema
+        items={[
+          { name: 'Campos', url: `${BASE_URL}/campos` },
+          { name: 'Valor de la hectárea', url: `${BASE_URL}/campos/valuar` },
+          { name: t.provincia, url: `${BASE_URL}/campos/valor-hectarea/${provincia}` },
+        ]}
+      />
       <DatasetSchema
         name={`Valor de la hectárea de campo en ${t.provincia}`}
         description={`Valor de referencia, rango y detalle por zona de la hectárea de campo en ${t.provincia}, con la fuente y la fecha de cada dato. ${t.fuente ?? ''}`}
@@ -147,6 +155,17 @@ export default async function ValorHectareaProvincia({
           {t.aptitud !== 'agricola' && t.kg_ha_mes_canon
             ? ` El arrendamiento ronda los ${Math.round(t.kg_ha_mes_canon * 12)} kilos de novillo por hectárea por año.`
             : ''}
+        </p>
+        {/* GSC 19-09 → 16-10-2026: "cuanto vale una hectarea en argentina" y variantes (~300 impr,
+            pos 7-8, cero clics) caían en /campos/valor-hectarea/buenos-aires. La respuesta
+            nacional, con la tabla de las 15 provincias, es /campos/valuar: enlace con el anchor
+            exacto para que Google mande la búsqueda ahí. */}
+        <p className="text-zinc-400 text-sm -mt-2 mb-5">
+          Para comparar con el resto del país:{' '}
+          <Link href="/campos/valuar" className="text-accent hover:underline">
+            cuánto vale una hectárea en Argentina
+          </Link>
+          , provincia por provincia.
         </p>
 
         <div className="border border-zinc-800 rounded-xl bg-gradient-to-b from-zinc-900/80 to-zinc-950 p-6 mb-6">

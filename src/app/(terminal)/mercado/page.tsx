@@ -15,6 +15,7 @@ import { ChicagoReference } from '@/components/market/ChicagoReference'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
 import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
+import PuenteHacienda from '@/components/PuenteHacienda'
 
 export const revalidate = 86400 // daily rebuild via Vercel
 
@@ -123,6 +124,35 @@ export default function MercadoPage() {
         <p>
           Todos los datos se actualizan automáticamente cada día hábil.
         </p>
+        {/* Cada búsqueda a su página. GSC 19-09 → 16-10-2026: este hub recibía "inmag" (198 impr,
+            pos 9,7), "precio ternero hoy" (156, pos 9,2), "kg de novillo hoy" (97) y "precio del
+            novillo hoy" (75) con CERO clics — búsquedas que tienen su página propia. Enlaces
+            server-side con el anchor exacto y el número del día (sale de market-prices.json, el
+            mismo dato de la description), para que Google mande cada una a donde se responde. */}
+        <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-data" aria-label="Precio del día por categoría">
+          <li>
+            <Link href="/precios/novillos" className="text-accent hover:underline">Precio del novillo hoy</Link>{' '}
+            <span className="text-zinc-500 tabular-nums">${fmt(novillo)}/kg</span>
+          </li>
+          <li>
+            <Link href="/precios/vacas" className="text-accent hover:underline">Precio de la vaca hoy</Link>{' '}
+            <span className="text-zinc-500 tabular-nums">${fmt(vaca)}/kg</span>
+          </li>
+          <li>
+            <Link href="/precios/vaquillonas" className="text-accent hover:underline">Precio de la vaquillona hoy</Link>{' '}
+            <span className="text-zinc-500 tabular-nums">${fmt(vaquillona)}/kg</span>
+          </li>
+          <li>
+            <Link href="/precios/terneros" className="text-accent hover:underline">Precio del ternero hoy</Link>{' '}
+            <span className="text-zinc-500">(estimado)</span>
+          </li>
+          <li>
+            <Link href="/mercado/inmag" className="text-accent hover:underline">INMAG hoy</Link>
+          </li>
+          <li>
+            <Link href="/mercado/arrendamiento" className="text-accent hover:underline">Índice novillo arrendamiento</Link>
+          </li>
+        </ul>
       </section>
       <MercadoClient />
 
@@ -155,6 +185,11 @@ export default function MercadoPage() {
             Novillo, novillito, vaquillona, vaca, toro y ternero — kilo vivo desde el MAG, actualizado a diario.
           </p>
         </Link>
+      </div>
+
+      {/* Puente a vender / comprar / lotes (ver PuenteHacienda). */}
+      <div className="px-4 max-w-6xl mx-auto">
+        <PuenteHacienda />
       </div>
 
       {/* El Corredor — lead magnet with inline email capture (high-traffic hub) */}

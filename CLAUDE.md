@@ -3,7 +3,7 @@
 > **For AI agents and new contributors.** This file is the *single one-screen briefing*. For depth, read in order:
 > [`README.md`](./README.md) → [`CHANGELOG.md`](./CHANGELOG.md) → [`ROADMAP.md`](./ROADMAP.md).
 
-**Current version:** v1.236.1 (2026-10-19). See [CHANGELOG.md](CHANGELOG.md) for the full history. Brand system v2.0 (desde v1.88): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
+**Current version:** v1.241.0 (2026-10-22). See [CHANGELOG.md](CHANGELOG.md) for the full history. Brand system v2.0 (desde v1.88): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
 
 > **Tema claro (desde v1.217.0, Fases 1-2 de [docs/PLAN-TEMA-WHITE.md](docs/PLAN-TEMA-WHITE.md)):**
 > el sitio abre en **claro** (blanco puro, acento `blue-700`), con un botón en el header
@@ -114,7 +114,7 @@ neto en mano, comparador, spread, seasonality, INMAG history) are free. The prod
 | Sitemap URLs | ~2700 | `src/app/sitemap.ts` (dedup por URL; excluye perfiles thin noindex; varía con el scrape) |
 | Páginas de valor de la tierra | 67 (15 provincias + 52 zonas) | `/campos/valor-hectarea/[provincia]/[zona]` desde `tierra-por-kilo.json` |
 | Guías indexadas | 52 en 6 temas | `src/lib/data/guias.ts` → hub `/guias` |
-| MCP tools | 28 (+ alias en castellano) | `src/app/api/mcp/route.ts` · registry `ar.com.consignatarias/cattle-market` v1.7.0 |
+| MCP tools | 28 (+ alias en castellano) | `src/app/api/mcp/route.ts` · registry `ar.com.consignatarias/cattle-market` v1.8.0 (en el repo; publicado: v1.7.0 — ver `docs/mcp-distribucion.md`) |
 | Lotes de hacienda en vidriera | lo que dCaC publica cada día (catálogo acumulativo) | `src/lib/data/lotes-dcac.json` → `/lotes` |
 | API endpoints | 137 under `src/app/api/` | route handlers |
 | Public Enterprise endpoints (auth-gated) | 2 — `/api/precios`, `/api/lots` | |

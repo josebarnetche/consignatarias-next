@@ -19,9 +19,12 @@ import { CitaBlock } from '@/components/seo/CitaBlock'
 import PriceWhatsAppShare from '@/components/share/PriceWhatsAppShare'
 import { getDetailedRowsForCategory, CATEGORY_PREFIX } from '@/components/market/PriceRangeTable'
 import { PriceCTA } from '@/components/PriceCTA'
+import HaciendaLeadCorto from '@/components/leads/HaciendaLeadCorto'
+import { categoriaParaFormulario, sourceDePagina } from '@/lib/leads/contexto-pagina'
 import SellZoneBadge from '@/components/SellZoneBadge'
 import SellZoneAlertSignup from '@/components/SellZoneAlertSignup'
 import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
+import PuenteHacienda from '@/components/PuenteHacienda'
 import { BandaVrCategoria, PRECIO_A_VR } from '@/components/precios/BandaVrCategoria'
 import { RematesDeInvernada, TERNERO_ESTIMADO_NOTA } from '@/components/precios/TerneroEstimado'
 
@@ -479,6 +482,21 @@ export default async function PreciosCategoriaPage({
             <p className="text-zinc-300 text-sm leading-relaxed">{c.descripcion}</p>
           </div>
         </div>
+
+        {/* VENDO / BUSCO HACIENDA (21-10-2026) — /precios/* suma cientos de vistas al mes
+            y cero leads de hacienda: el que llega por "precio del ternero hoy" muchas veces
+            tiene terneros para vender. La categoría viene precargada (es la de la página) y
+            el lead entra como `precios:<categoria>`. */}
+        <HaciendaLeadCorto
+          className="mb-6"
+          source={sourceDePagina('precios', categoria)}
+          presetCategory={categoriaParaFormulario(categoria)}
+          title={`¿Vendés o buscás ${categoria}?`}
+        />
+
+        {/* Puente a vender / comprar / lotes: el que busca "precio ternero 180 kg hoy" está por
+            operar. Hasta oct-2026 esta plantilla (14.861 impr/28d) no enlazaba a ningún formulario. */}
+        <PuenteHacienda plural={categoria} />
 
         {/* El parte semanal, después del número y la descripción (la página ya entregó lo suyo).
             Regla de OfrecerInforme: lo que la pantalla no da, y qué sigue gratis. `desde` lleva

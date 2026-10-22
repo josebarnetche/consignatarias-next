@@ -24,6 +24,7 @@ import { CitaBlock } from '@/components/seo/CitaBlock'
 import PriceWhatsAppShare from '@/components/share/PriceWhatsAppShare'
 import { MethodologyMicroBlock } from '@/components/seo/MethodologyMicroBlock'
 import { PriceCTA } from '@/components/PriceCTA'
+import PuenteHacienda from '@/components/PuenteHacienda'
 import { EmptyState } from '@/components/ui'
 
 /* ============================================================
@@ -382,6 +383,9 @@ export default async function PrecioCategoriaProvinciaPage({
             />
           )}
         </div>
+
+        {/* Puente a vender / comprar / lotes (ver PuenteHacienda). */}
+        <PuenteHacienda plural={categoria} titulo={`¿Vendés o comprás ${categoria} en ${prov.display}?`} />
 
         {/* Consignatarias operating in province */}
         {consignatarias.length > 0 && (

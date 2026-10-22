@@ -2,15 +2,41 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/draft/server-card.schema.json",
   "name": "ar.com.consignatarias/cattle-market",
   "title": "Consignatarias — Mercado Ganadero Argentino",
-  "description": "La infraestructura de inteligencia de mercado del ganado argentino, expuesta como servidor MCP. Índice Novillo (INMAG) diario ponderado por volumen del Mercado Agroganadero (Cañuelas) en ARS y USD desde 2015, panel de precios por categoría, contexto macro, remates, directorio de consignatarias y frigoríficos, herramientas de cálculo (arrendamiento, valuación de lote, ¿vendo ahora o espero?), una capa de sanidad SENASA (planes obligatorios, calendario de vacunación antiaftosa, requisitos de movimiento, RENSPA, DT-e) con la resolución fuente citada, y las Buenas Prácticas Ganaderas (14 temas, Guía Red BPA).",
-  "version": "1.5.0",
+  "description": "Mercado ganadero argentino, en vivo y como herramientas MCP para agentes. Índice Novillo (INMAG) diario en ARS y USD desde 2015; precios por categoría y bandas de dispersión observada (P10, mediana y P90) sobre lotes del MAG, con historia y referencia por rango de peso para valuar una tropa. Contexto macro, estacionalidad de precios y brecha del precio argentino frente a EE.UU., Uruguay y Australia. Calendario de remates, directorio y actividad de consignatarias, y búsqueda de frigoríficos. Valuaciones de tierra por provincia y zona, cálculo de arrendamientos y renta del campo, con fuentes y fechas de los datos. Sanidad SENASA, vacunación, reglas de movimiento y Buenas Prácticas Ganaderas. Consultas públicas gratuitas; API key Enterprise para descarga masiva y exports.",
+  "version": "1.8.0",
+  "serverInfo": {
+    "name": "consignatarias",
+    "title": "Consignatarias — Mercado Ganadero Argentino",
+    "version": "1.8.0"
+  },
   "protocolVersions": [
     "2026-07-28",
     "2025-06-18",
     "2025-03-26"
   ],
-  "websiteUrl": "https://www.consignatarias.com.ar",
+  "websiteUrl": "https://www.consignatarias.com.ar/mcp",
   "documentationUrl": "https://www.consignatarias.com.ar/api-docs",
+  "repository": {
+    "url": "https://github.com/josebarnetche/consignatarias-next",
+    "source": "github",
+    "id": "1167351861"
+  },
+  "icons": [
+    {
+      "src": "https://www.consignatarias.com.ar/icon-512.png",
+      "mimeType": "image/png",
+      "sizes": [
+        "512x512"
+      ]
+    },
+    {
+      "src": "https://www.consignatarias.com.ar/icon-192.png",
+      "mimeType": "image/png",
+      "sizes": [
+        "192x192"
+      ]
+    }
+  ],
   "vendor": {
     "name": "Memola Medios SAS",
     "url": "https://www.consignatarias.com.ar",
@@ -28,139 +54,887 @@
   "authentication": {
     "type": "bearer",
     "required": false,
-    "description": "Las 24 tools responden gratis y sin cupo, a cualquier profundidad — no hace falta key. La API key Enterprise (Authorization: Bearer cnsg_live_...) es para la descarga masiva fila por fila, los exports y las alertas sin límite. Publicar o redistribuir el dato tiene licencia: https://www.consignatarias.com.ar/licencia-datos",
+    "description": "Las 28 tools responden sin key. Las de consulta son gratis y sin cupo, a cualquier profundidad. La API key Enterprise (Authorization: Bearer cnsg_live_...) es para la descarga masiva fila por fila, los exports y las alertas sin límite. Publicar o redistribuir el dato tiene licencia: https://www.consignatarias.com.ar/licencia-datos",
     "tokenUrl": "https://www.consignatarias.com.ar/planes"
   },
   "tools": [
     {
-      "name": "get_indice_novillo",
-      "description": "Índice Novillo (INMAG) de hoy en ARS/kg vivo: precio de referencia diario ponderado por volumen del Mercado Agroganadero, con variación y tendencia."
+      "name": "cattle_price_index",
+      "title": "Índice Novillo (INMAG) hoy",
+      "description": "INMAG diario del Mercado Agroganadero (MAG/Cañuelas): novillo de referencia HOY en ARS/kg vivo, ponderado por volumen. Devuelve valor, volumen, variación vs rueda previa (marca ruedas flacas) y promedio 5 ruedas. Sin args. Histórico: inmag_history. NO da precios por categoría (livestock_prices, semanal) ni subcategoría (livestock_prices_detailed); no comparar 1:1. [EN] Today's Argentine cattle price index (INMAG): live-weight steer reference price in ARS/kg, volume-weighted, plus the daily change.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Índice Novillo (INMAG) hoy",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
     },
     {
-      "name": "get_inmag_historico",
-      "description": "Evolución histórica del Índice Novillo (INMAG) en ARS/kg vivo: inicial, final, variación, mínimo, máximo y serie muestreada de una ventana de días."
+      "name": "inmag_history",
+      "title": "Histórico del Índice Novillo (INMAG)",
+      "description": "Serie histórica del Índice Novillo (INMAG) — TENDENCIA. Serie diaria desde 2015-01-05: MAG/Cañuelas desde may-2022, antes era Mercado de Liniers (índice empalmado; la respuesta lo aclara cuando el rango cruza esa frontera). Devuelve valor inicial y final, variación %, mínimo, máximo, nº de ruedas y una muestra (~8 puntos). Índice DIARIO ponderado por volumen. Rango: dias (ventana atrás, default 30) o desde/hasta (YYYY-MM-DD, exacto — sirve para una fecha puntual: desde=hasta, GRATIS a cualquier profundidad). moneda: ars (default) o usd (dólar blue venta, último valor conocido a cada fecha). GRATIS y sin cupo a CUALQUIER profundidad, desde 2015-01-05: la consulta no tiene techo. Devuelve el análisis completo (inicio, fin, variación, mínimo, máximo) con una muestra de ~8 puntos. Si lo que necesitás es la serie fila por fila para cargarla en tu propio modelo, eso va por API key Enterprise o US$0,25 en USDC vía x402 (/api/x402/inmag-historico) — se cobra la descarga masiva y la redistribución, no la consulta. Valor de HOY → cattle_price_index; por categoría (semanal) → livestock_prices, no comparar 1:1. [EN] Historical Argentine cattle price series (INMAG) since 2015, in ARS or USD. Free, no cap, any window.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dias": {
+            "type": "number",
+            "description": "Ventana en días hacia atrás (default 30, máx 5000; la serie arranca 2015-01-05). Sin techo: cualquier ventana responde gratis. Ignorado si se pasa desde/hasta."
+          },
+          "desde": {
+            "type": "string",
+            "description": "Fecha inicial YYYY-MM-DD (opcional; la serie arranca 2015-01-05)"
+          },
+          "hasta": {
+            "type": "string",
+            "description": "Fecha final YYYY-MM-DD (opcional; default hoy). desde=hasta consulta una fecha puntual."
+          },
+          "moneda": {
+            "type": "string",
+            "enum": [
+              "ars",
+              "usd"
+            ],
+            "description": "ars (default) o usd — conversión por dólar blue venta, último valor conocido a cada fecha (regla de /mercado/inmag-dolares)"
+          },
+          "api_key": {
+            "type": "string",
+            "description": "API key Enterprise (cnsg_live_...). Opcional y ya no necesaria para la consulta: sirve para la descarga masiva fila por fila y los exports. Si ya va por el header Authorization: Bearer, no hace falta acá."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Histórico del Índice Novillo (INMAG)",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
     },
     {
-      "name": "get_precios_hacienda",
-      "description": "Precios de hacienda por categoría (novillo, vaca, vaquillona, ternero…) — observación semanal del mercado."
+      "name": "livestock_prices",
+      "title": "Precios de hacienda por categoría",
+      "description": "Precios de hacienda por categoría (novillos, novillitos, vaquillonas, vacas, toros, terneros) del Mercado Agroganadero: observación SEMANAL del SIO, ARS/kg vivo. Cada una: precio actual, cabezas y aviso si <200 cab (pocos datos). categoria (enum) filtra una; sin arg, todas. NO es el INMAG diario (cattle_price_index, no comparar 1:1) ni subcategorías (livestock_prices_detailed). [EN] Argentine cattle prices by category (steer, young steer, heifer, cow, bull, calf), ARS per live kilogram.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "categoria": {
+            "type": "string",
+            "enum": [
+              "novillos",
+              "novillitos",
+              "vaquillonas",
+              "vacas",
+              "toros",
+              "terneros"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Precios de hacienda por categoría",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
     },
     {
-      "name": "get_precios_detallados",
-      "description": "Precios detallados por sub-categoría del Mercado Agroganadero."
+      "name": "livestock_prices_detailed",
+      "title": "Precios por subcategoría",
+      "description": "Precios por SUBCATEGORÍA del Mercado Agroganadero (MAG/Cañuelas), último día hábil: ej. \"NOVILLOS Regular +430\", \"VACAS Conserva Buena\" — mín/prom/máx en ARS/kg vivo + cabezas. Más granular que livestock_prices (categorías); NO es el índice INMAG diario (cattle_price_index). Param opcional grupo (novillos/novillitos/vaquillonas/vacas/toros); sin filtro, todas. [EN] Argentine cattle prices by sub-category with min/avg/max and head count.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "grupo": {
+            "type": "string",
+            "enum": [
+              "novillos",
+              "novillitos",
+              "vaquillonas",
+              "vacas",
+              "toros"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Precios por subcategoría",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
     },
     {
-      "name": "get_contexto_macro",
-      "description": "Contexto macro para leer el precio de la hacienda: dólar oficial y blue, y maíz."
+      "name": "macro_context",
+      "title": "Contexto macro ganadero",
+      "description": "Contexto macro del mercado ganadero argentino, sin parámetros: dólar blue y oficial (ARS), maíz FOB (USD/tn y ARS/kg), novillo INMAG (ARS/kg) y el spread novillo/maíz (kg de maíz que compra 1 kg novillo; proxy de rentabilidad de feedlot); y, si hay, índice de arrendamiento MAG (ARS/kg). NO da la serie INMAG (→cattle_price_index) ni precios por categoría (→livestock_prices). [EN] Argentine macro context for cattle trading: parallel and official USD rates, FOB corn, and the steer/corn spread.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Contexto macro ganadero",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
     },
     {
-      "name": "get_indice_liquidacion",
-      "description": "Índice de Liquidación: participación de hembras en la hacienda operada (indicador adelantado de liquidación vs. retención), con contexto histórico de la faena nacional."
+      "name": "herd_liquidation_index",
+      "title": "Índice de Liquidación (% hembras)",
+      "description": "Índice de Liquidación: participación de HEMBRAS (vacas + vaquillonas) en la hacienda operada en el Mercado Agroganadero (Cañuelas) — indicador ADELANTADO de liquidación (descarga de vientres) vs. retención (armado de rodeo). Sin args. Devuelve la lectura fresca de Cañuelas (mensual, 2026→), el ancla nacional actual (YTD, PDF mensual MAGyP) y el contexto histórico de la faena de hembras NACIONAL (1998-2025: mensual MAGyP + trimestral IPCVA). Ojo: Cañuelas corre estructuralmente por encima de la faena nacional — no comparar 1:1. [EN] Share of females in slaughter: tells whether the Argentine herd is liquidating or rebuilding.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Índice de Liquidación (% hembras)",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
     },
     {
-      "name": "list_remates",
-      "description": "Calendario de remates de hacienda en Argentina: fecha, consignataria, ubicación, categoría y cabezas estimadas."
+      "name": "upcoming_auctions",
+      "title": "Próximos remates de hacienda",
+      "description": "Calendario de próximos remates de hacienda en Argentina: solo programados, fecha ≥ hoy, ordenados por fecha. Devuelve fecha, hora, consignataria, localidad/provincia, categoría principal y si hay transmisión en vivo. Params: provincia (subcadena, opcional), limite (default 10, máx 50). No da precios ni INMAG: usá livestock_prices/cattle_price_index. [EN] Calendar of upcoming Argentine cattle auctions, filterable by province.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "provincia": {
+            "type": "string",
+            "description": "Filtra por provincia (ej. \"Buenos Aires\")"
+          },
+          "limite": {
+            "type": "number",
+            "description": "Máximo de remates (default 10)"
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Próximos remates de hacienda",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
     },
     {
-      "name": "buscar_consignataria",
-      "description": "Busca una consignataria/casa consignataria en el directorio por nombre o provincia."
+      "name": "find_livestock_broker",
+      "title": "Buscar consignataria",
+      "description": "Directorio de consignatarias/casas de remate de hacienda por nombre, razón social o localidad. Devuelve nombre, localidad/provincia, categoría, CUIT, un contacto (WhatsApp/teléfono/web) y el perfil en consignatarias.com.ar. Alcanza con el nombre O con la provincia: \"¿qué consignatarias hay en Salta?\" es una consulta válida sin término. Limite def 8, máx 25. NO da actividad de mercado: para cabezas/precio en el MAG usá broker_activity_ranking. [EN] Directory of Argentine livestock brokers and auction houses, by name, province or tax ID (CUIT).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Nombre, localidad o razón social (opcional si pasás provincia)"
+          },
+          "provincia": {
+            "type": "string",
+            "description": "Provincia (opcional si pasás query)"
+          },
+          "limite": {
+            "type": "number",
+            "description": "Máximo de resultados (default 8)"
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Buscar consignataria",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
     },
     {
-      "name": "actividad_consignatarias",
-      "description": "Actividad de las consignatarias del Mercado Agroganadero: cabezas y lotes operados por firma en un período."
+      "name": "broker_activity_ranking",
+      "title": "Ranking de actividad de consignatarias",
+      "description": "Ranking de consignatarias por CABEZAS operadas en el Mercado Agroganadero (MAG, Cañuelas; mercado de referencia) en un período, con precio promedio ARS/kg por firma. Para \"qué firma operó más\"; NO da precio de mercado (livestock_prices) ni índice diario (cattle_price_index). Args: desde (def. 7d), hasta (hoy), categoria (NOVILLO/VACA… opc.), limite (def. 15, máx. 45). [EN] Ranking of livestock brokers by head traded at the Argentine reference market (Cañuelas), with average price per firm.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "desde": {
+            "type": "string",
+            "description": "Fecha inicio YYYY-MM-DD (default: últimos 7 días)"
+          },
+          "hasta": {
+            "type": "string",
+            "description": "Fecha fin YYYY-MM-DD (default: hoy)"
+          },
+          "categoria": {
+            "type": "string",
+            "description": "Filtra por categoría: NOVILLO, NOVILLITO, VACA, VAQUILLONA, TORO (opcional)"
+          },
+          "limite": {
+            "type": "number",
+            "description": "Máximo de firmas en el ranking (default 15)"
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Ranking de actividad de consignatarias",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
     },
     {
-      "name": "buscar_frigorifico",
-      "description": "Busca un frigorífico argentino en el registro por nombre, matrícula o provincia."
+      "name": "price_seasonality",
+      "title": "Estacionalidad del novillo en dólares",
+      "description": "En qué mes del año la hacienda está típicamente cara o barata, y dónde está HOY contra esa norma. Índice estacional del INMAG EN DÓLARES desde 2015 (razón sobre media móvil centrada de 12 meses, mediana entre años, normalizado a 1,00). Contesta \"¿conviene comprar ahora o esperar?\" — que es lo que el precio del día NO contesta. Args: mes (YYYY-MM, opcional; default el último con índice). Se calcula en dólares a propósito: en pesos mediría la inflación, no el ciclo. [EN] Which month Argentine cattle is typically cheap or expensive, and where it stands today against that norm. Seasonal index on the USD series since 2015.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "mes": {
+            "type": "string",
+            "description": "Mes a evaluar, YYYY-MM (opcional)"
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Estacionalidad del novillo en dólares",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
     },
     {
-      "name": "calcular_arrendamiento",
-      "description": "Calcula el valor de un arrendamiento rural pactado en kilos de novillo por hectárea, a precio de hoy."
+      "name": "farmland_yield",
+      "title": "Renta de un campo ganadero en dólares",
+      "description": "El RENDIMIENTO ANUAL de un campo argentino sobre el capital invertido, por zona y para las tres aptitudes (ganadera, agrícola y mixta). Devuelve: USD/hectárea (el capital), la renta anual del arrendamiento, el canon en su unidad real —kg de novillo o quintales de soja por ha/año—, el rendimiento como % sobre el capital y los años de repago. Lo particular: el canon se pacta en PRODUCTO, no en moneda, así que el yield está nominado en carne o grano y no se licúa con una devaluación. Para el comprador del exterior que evalúa entrar. Args: presupuesto_usd (opcional, lo reparte en hectáreas), provincia, aptitud (ganadera|agricola|mixta), limite (def 10). Cada aptitud rinde por lo suyo: la zona núcleo vale por la soja, no por los novillos. [EN] What a dollar buys and earns in Argentine farmland, by zone: USD per hectare, annual rental yield, payback years. Covers grazing, cropping and mixed land.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "presupuesto_usd": {
+            "type": "number",
+            "description": "Capital a invertir en dólares (opcional)"
+          },
+          "provincia": {
+            "type": "string",
+            "description": "Filtra por provincia (opcional)"
+          },
+          "aptitud": {
+            "type": "string",
+            "description": "ganadera | agricola | mixta (opcional; por defecto las tres)"
+          },
+          "limite": {
+            "type": "number",
+            "description": "Máximo de zonas (default 10)"
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Renta de un campo ganadero en dólares",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
     },
     {
-      "name": "sanidad_plan",
-      "description": "Ficha de un plan sanitario SENASA (aftosa, brucelosis, tuberculosis, garrapata) con régimen, categorías y resolución fuente."
+      "name": "international_price_gap",
+      "title": "Brecha del novillo contra EE.UU., Uruguay y Australia",
+      "description": "La brecha: cuánto más barato (o más caro) está el novillo argentino contra Estados Unidos, Uruguay y Australia, en dólares por kilo VIVO. Es la pregunta del que mira el país desde afuera para comprar hacienda o campos, y no la publica nadie armada. ⚠️ Argentina NO es la más barata de la región: opera por ENCIMA de Brasil, así que la brecha defendible es contra el hemisferio norte y Uruguay, no contra el vecino. No se estima rendimiento de carcasa en ningún país: sólo entran fuentes que publican peso vivo. [EN] How much cheaper (or dearer) Argentine cattle is versus the US, Uruguay and Australia, in USD per live kilogram. Live weight everywhere — no carcass yield assumptions.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Brecha del novillo contra EE.UU., Uruguay y Australia",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
     },
     {
-      "name": "sanidad_calendario_aftosa",
-      "description": "Calendario de vacunación antiaftosa 2026 (Res. SENASA 711/2025) y estado de zona con/sin vacunación por provincia."
+      "name": "find_meat_plant",
+      "title": "Buscar frigorífico",
+      "description": "Directorio de frigoríficos y plantas de faena habilitados MAGYP/SENASA (1.102). Buscá por nombre, CUIT o provincia. Por planta devuelve nombre, provincia, matrícula, CUIT y ciclo; marca las inactivas en SENASA. Requiere query (nombre/CUIT) o provincia (una alcanza); limite default 10, máx 30. No da precios ni faena — es directorio. [EN] Directory of Argentine meat plants and slaughterhouses licensed by SENASA/MAGYP, by name, tax ID or province.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Nombre o CUIT a buscar (opcional si se pasa provincia)"
+          },
+          "provincia": {
+            "type": "string",
+            "description": "Filtra por provincia"
+          },
+          "limite": {
+            "type": "number",
+            "description": "Máximo de resultados (default 10)"
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Buscar frigorífico",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
     },
     {
-      "name": "sanidad_requisitos_movimiento",
-      "description": "Requisitos sanitarios de SENASA para mover hacienda bovina (RENSPA, DT-e, serología de brucelosis, barrera de garrapata), con fuente."
+      "name": "calculate_farmland_rent",
+      "title": "Calcular arrendamiento rural",
+      "description": "Calcula el canon de arrendamiento de campo (ARS) = kg novillo/ha/mes × hectáreas × precio. Devuelve canon mensual, anual y por ha/mes. Sin precio_novillo usa el índice oficial de arrendamientos del MAG (haciinfo000013), o el INMAG del día si falta. Solo calcula: para consultar precios usá cattle_price_index o livestock_prices. Estimación, no asesoramiento. [EN] Convert a farmland rent in kilograms of steer per hectare into ARS and USD at today's price.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kg_ha": {
+            "type": "number",
+            "description": "Kg de novillo por hectárea. Por MES salvo que se pase periodo=\"anio\" (típico 3-6 por mes, o 36-72 por año). Los avisos suelen publicarlo por año."
+          },
+          "periodo": {
+            "type": "string",
+            "enum": [
+              "mes",
+              "anio"
+            ],
+            "description": "Unidad de kg_ha. Por defecto \"mes\"."
+          },
+          "hectareas": {
+            "type": "number",
+            "description": "Cantidad de hectáreas"
+          },
+          "precio_novillo": {
+            "type": "number",
+            "description": "Precio del novillo ARS/kg (default: INMAG actual)"
+          }
+        },
+        "required": [
+          "kg_ha",
+          "hectareas"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Calcular arrendamiento rural",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
     },
     {
-      "name": "sanidad_renspa",
-      "description": "Valida y decodifica un código RENSPA (17 dígitos, 00.000.0.00000.00) en sus segmentos; remite a la consulta oficial para vigencia."
+      "name": "animal_health_plan",
+      "title": "Plan sanitario SENASA (ficha)",
+      "description": "Ficha de un plan sanitario obligatorio de SENASA para bovinos: aftosa, brucelosis, tuberculosis o garrapata/tristeza. Devuelve agente, régimen (vacunación/testeo), categorías afectadas, si es zoonosis y las resoluciones fuente (con URL oficial). Sin argumento lista los 4 planes. Es información regulatoria citada, no operativa (para mover hacienda usá livestock_movement_rules). [EN] Argentine animal health requirements (SENASA), with the regulation cited.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "enfermedad": {
+            "type": "string",
+            "enum": [
+              "aftosa",
+              "brucelosis",
+              "tuberculosis",
+              "garrapata"
+            ],
+            "description": "Plan a consultar; sin este arg devuelve los 4"
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Plan sanitario SENASA (ficha)",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
     },
     {
-      "name": "sanidad_dte_tropa",
-      "description": "Explica el DT-e / número de tropa que ampara el movimiento de hacienda: qué es y qué se necesita para emitirlo (referencia, no lo emite)."
+      "name": "fmd_vaccination_calendar",
+      "title": "Calendario de vacunación antiaftosa",
+      "description": "Calendario de vacunación antiaftosa 2026 de SENASA (Res. 711/2025) y estado de zona por provincia. Devuelve las ventanas de la 1ra campaña (todas las categorías) y 2da campaña (solo terneros/terneras), y si la provincia está en zona CON o SIN vacunación (Patagonia/Calingasta). El día exacto por distrito lo fija el Plan Local del Ente Sanitario — devuelve la ventana + la cita, nunca un día inventado. [EN] Foot-and-mouth disease vaccination calendar in Argentina, by region and period.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "provincia": {
+            "type": "string",
+            "description": "Provincia para saber el estado de zona (opcional)"
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Calendario de vacunación antiaftosa",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
     },
     {
-      "name": "buenas_practicas",
-      "description": "Buenas Prácticas Ganaderas (BPG) para vacunos de carne, 14 temas resumidos de la Guía de la Red BPA: cómo implementar cada uno (salud, bienestar, manejo de rodeo, alimentación, agua, forrajes, etc.)."
+      "name": "livestock_movement_rules",
+      "title": "Requisitos sanitarios de movimiento",
+      "description": "Requisitos sanitarios de SENASA para mover hacienda bovina (RENSPA, DT-e, aftosa al día, serología de brucelosis, barrera de garrapata, transporte habilitado), con la resolución fuente de cada uno. Si pasás provincia de origen y destino, señala si el movimiento cruza la barrera de aftosa (zona con↔sin vacunación). No emite el DT-e (eso es SIGSA, requiere clave fiscal ARCA); informa qué se exige. [EN] What is required to move cattle between Argentine provinces or regions.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "provincia_origen": {
+            "type": "string",
+            "description": "Provincia de origen (opcional)"
+          },
+          "provincia_destino": {
+            "type": "string",
+            "description": "Provincia de destino (opcional)"
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Requisitos sanitarios de movimiento",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
     },
     {
-      "name": "crear_alerta_precio",
-      "description": "Crea una alerta de precio para una categoría de hacienda (requiere API key Enterprise)."
+      "name": "renspa_lookup",
+      "title": "Validar / decodificar RENSPA",
+      "description": "Valida y decodifica un código RENSPA (Registro Nacional Sanitario de Productores Agropecuarios): 17 caracteres, formato 00.000.0.00000.00. Devuelve los segmentos (provincia, departamento, jurisdicción de oficina local, establecimiento y productor) y explica qué identifica. NO consulta la vigencia en vivo (la base de SENASA está tras clave fiscal ARCA); para verificar vigencia remite a la consulta pública oficial. [EN] Validate and decode a RENSPA, the Argentine farm registration number.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "renspa": {
+            "type": "string",
+            "description": "Código RENSPA, con o sin puntos (ej. 01.234.5.67890.12)"
+          }
+        },
+        "required": [
+          "renspa"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Validar / decodificar RENSPA",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
     },
     {
-      "name": "valuar_tropa",
-      "description": "¿Cuánto vale una tropa? Valuación con la banda realmente observada en los lotes del MAG (P10/mediana/P90, VR v1.0), con el n de lotes que la sostiene, en ARS y USD. Gratis y sin cupo."
+      "name": "dte_lookup",
+      "title": "DT-e (número de tropa) — referencia",
+      "description": "Explica el DT-e (Documento de Tránsito electrónico) / número de tropa que ampara el movimiento de hacienda a remate o faena: qué es, qué requisitos hacen falta para emitirlo (RENSPA vigente, clave fiscal ARCA, vacunación al día) y cómo se encadena con los requisitos sanitarios. NO emite ni consulta un DT-e real (SIGSA está tras clave fiscal ARCA); es referencia. Para el detalle de requisitos por movimiento usá livestock_movement_rules. [EN] Decode an Argentine DT-e (electronic transit document) or herd movement number.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "DT-e (número de tropa) — referencia",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
     },
     {
-      "name": "valuar_arrendamiento_campo",
-      "description": "Canon de arrendamiento ganadero al índice oficial del MAG: anual y mensual, en ARS y USD, con escenarios de 40 a 100 kg/ha/año. Gratis y sin cupo."
+      "name": "good_farming_practices",
+      "title": "Buenas Prácticas Ganaderas (BPG)",
+      "description": "Buenas Prácticas Ganaderas (BPG) para la producción de vacunos de carne, resumidas de la Guía de la Red BPA (2019). Sin argumento lista los 14 temas (organización, personal, establecimiento, instalaciones, suelo, agua, forrajes, estiércol, residuos, cambio climático, manejo de rodeo, alimentación, salud animal, bienestar animal). Con un tema, devuelve cómo implementarlo (secciones y prácticas). Son voluntarias — para lo sanitario OBLIGATORIO usá animal_health_plan / livestock_movement_rules. [EN] Argentine Good Livestock Farming Practices (Red BPA guide), 14 topics.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tema": {
+            "type": "string",
+            "description": "Slug o nombre del tema (ej. \"salud-animal\", \"manejo-rodeo\", \"agua\"); sin este arg lista los 14"
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Buenas Prácticas Ganaderas (BPG)",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
     },
     {
-      "name": "valuar_campo",
-      "description": "Valor de la hectárea en USD por provincia y zona (relevamiento propio: 15 provincias, 52 zonas), con rango, canon típico en kg de novillo y la fuente fechada. Distingue campo ganadero de agrícola."
+      "name": "value_cattle_lot",
+      "title": "Valuar una tropa de hacienda",
+      "description": "¿Cuánto valen 350 novillos en Formosa? Valúa una tropa de hacienda con la BANDA de precio realmente observada en las operaciones de lote del MAG (VR v1.0): conservador (P10), central (mediana) y optimista (P90), con la cantidad de lotes y cabezas que la sostiene, más el total en USD (blue y oficial) y la fuente fechada. Cuando una categoría no tiene base suficiente de lotes cae a la referencia nacional del MAG y lo declara — nunca inventa un rango. Metodología: https://www.consignatarias.com.ar/metodologia/vr. GRATIS y sin cupo. Params: categoria, cabezas, kg_promedio (opcional, si no se asume el peso típico de venta), provincia (opcional). [EN] Value a lot of cattle in Argentina: returns the observed P10/median/P90 price band, not a single point.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "categoria": {
+            "type": "string",
+            "enum": [
+              "novillos",
+              "novillitos",
+              "vaquillonas",
+              "vacas",
+              "toros",
+              "terneros"
+            ],
+            "description": "Categoría MAG"
+          },
+          "cabezas": {
+            "type": "number",
+            "description": "Cantidad de animales (1 a 100.000)"
+          },
+          "kg_promedio": {
+            "type": "number",
+            "description": "Peso vivo promedio en kg (opcional; default: peso típico de venta de la categoría)"
+          },
+          "provincia": {
+            "type": "string",
+            "description": "Provincia (opcional; la referencia de precio es nacional MAG)"
+          }
+        },
+        "required": [
+          "categoria",
+          "cabezas"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Valuar una tropa de hacienda",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
     },
     {
-      "name": "get_vr_historico",
-      "description": "¿Se está abriendo o cerrando la dispersión? Serie histórica de la banda P10–P90 por categoría. Completa y gratis, a cualquier ventana."
+      "name": "consignatarias_band",
+      "title": "Banda Consignatarias (dispersión semanal)",
+      "description": "La BANDA CONSIGNATARIAS: cuánto se abre el precio de la hacienda esta semana — la distancia entre el 10% que menos cobró y el 10% que más cobró, por la misma categoría y el mismo día, sobre los lotes realmente operados en el Mercado Agroganadero. Es un indicador propio y no existe en ninguna otra fuente: el resto publica el promedio y se reserva la dispersión. Cuando la banda se abre, la misma hacienda vale cada vez más distinto según quién la venda. Devuelve la cita ya redactada para publicar. [EN] The Consignatarias Band: how wide Argentine cattle prices spread in a given week — the gap between the bottom and top deciles for the same category, from actual lot sales. A proprietary indicator; everyone else publishes the average and keeps the dispersion.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "fecha": {
+            "type": "string",
+            "description": "Corte YYYY-MM-DD (opcional; default el último dato)"
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Banda Consignatarias (dispersión semanal)",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
     },
     {
-      "name": "quiero_comprar",
-      "description": "Publicá qué hacienda buscás: devuelve los remates que matchean y avisa de cada remate nuevo que encaje."
+      "name": "price_dispersion_history",
+      "title": "Histórico de la dispersión de precios",
+      "description": "¿Se está abriendo o cerrando la dispersión de precios? Serie histórica de la BANDA observada (VR v1.0): cómo evolucionó el rango P10–P90 por categoría en el Mercado Agroganadero. Es la pregunta que el precio puntual NO puede contestar — amplitud y mediana se mueven independientemente, así que una dispersión que se abre mientras el precio hace otra cosa es señal de riesgo que no se deriva del precio. GRATIS los últimos 30 días y también hacia atrás sin techo, gratis y sin cupo (la ventana publicada en /mercado y /vr es solo el default). Params: dias (default 30), categoria (opcional). Valor de HOY → livestock_prices; valuar una tropa → value_cattle_lot. [EN] Is the market widening or tightening? Historical series of the observed P10-P90 price band by category in the Argentine reference market.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "dias": {
+            "type": "number",
+            "description": "Ventana en días hacia atrás (default 30, máx 3650). Sin techo: cualquier ventana responde gratis."
+          },
+          "categoria": {
+            "type": "string",
+            "description": "Categoría a filtrar (opcional). Con serie: novillos, novillitos, vaquillonas, vacas, toros, terneros, novillo, novillito, vaquillona, vaca, toro, mej. Sin filtro devuelve todas."
+          },
+          "api_key": {
+            "type": "string",
+            "description": "API key Enterprise (cnsg_live_...). Opcional: la serie va completa sin key; la key es para la descarga masiva y los exports."
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Histórico de la dispersión de precios",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
     },
     {
-      "name": "contratar_pro_consignataria",
-      "description": "Cotiza y activa PRO Consignataria pagando en USDC (x402), sin formularios."
+      "name": "value_farmland_rent",
+      "title": "Arrendamiento de un campo al índice oficial",
+      "description": "¿Cuánto cuesta arrendar un campo de 3.500 has en Corrientes? Canon de arrendamiento ganadero al índice oficial del MAG (haciinfo000013): anual y mensual, en ARS y USD. Con kg_ha_anio pactado da el canon exacto; sin él, escenarios de 40 a 100 kg/ha/año. GRATIS y sin cupo. Params: hectareas, kg_ha_anio (opcional), provincia (opcional). [EN] Cost of renting Argentine farmland, quoted the way it is actually contracted: in kilograms of steer per hectare per year.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "hectareas": {
+            "type": "number",
+            "description": "Superficie en hectáreas (1 a 1.000.000)"
+          },
+          "kg_ha_anio": {
+            "type": "number",
+            "description": "Canon pactado en kg de novillo por ha por año (opcional; sin él se responden escenarios)"
+          },
+          "provincia": {
+            "type": "string",
+            "description": "Provincia (opcional; el canon por zona/aptitud se pacta, no hay valor oficial provincial)"
+          }
+        },
+        "required": [
+          "hectareas"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Arrendamiento de un campo al índice oficial",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "value_farmland",
+      "title": "Valor de la hectárea por zona",
+      "description": "¿Cuánto vale la hectárea en Corrientes? ¿Cuánto vale un campo de 800 has en la cuenca del Salado? Valor de la tierra en dólares por hectárea, con el rango real de la zona, el arrendamiento típico en kg de novillo y la fuente de cada dato. Relevamiento propio: 15 provincias y 52 zonas, cruzando tasadores con serie publicada, catastro provincial y avisos de venta. Distingue campo ganadero de agrícola y valúa cada uno en SU moneda: el ganadero en kg de novillo por ha por mes, el agrícola en quintales de soja por ha por año. GRATIS, sin cupo. Params: provincia (obligatoria), hectareas (opcional), zona (opcional — acepta el nombre de la zona o el partido), kg_ha_mes (opcional, canon pactado). [EN] Value Argentine farmland by province and zone, with the observed range and the survey date.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "provincia": {
+            "type": "string",
+            "description": "Provincia. Con dato propio: Buenos Aires, Córdoba, Santa Fe, Entre Ríos, Corrientes, Chaco, Formosa, Santiago del Estero, La Pampa, San Luis, Salta, Catamarca, La Rioja, Río Negro, Chubut"
+          },
+          "hectareas": {
+            "type": "number",
+            "description": "Superficie en hectáreas (opcional; sin ella responde solo el valor por hectárea)"
+          },
+          "zona": {
+            "type": "string",
+            "description": "Zona o partido (opcional). Ej: \"Cuenca del Salado\", \"Pergamino\", \"Marcos Juárez\". Precisa mucho el número."
+          },
+          "kg_ha_mes": {
+            "type": "number",
+            "description": "Canon ganadero pactado, en kg de novillo por ha por mes (opcional). Si el dato que tenés es anual, dividilo por 12."
+          },
+          "qq_soja_ha_anio": {
+            "type": "number",
+            "description": "Canon agrícola pactado, en quintales de soja por ha por año (opcional). Es la unidad del arrendamiento agrícola."
+          }
+        },
+        "required": [
+          "provincia"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Valor de la hectárea por zona",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "cattle_buying_request",
+      "title": "Publicar una búsqueda de hacienda para comprar",
+      "description": "\"Quiero comprar 300 terneros en Corrientes\" → te devuelve YA los próximos remates programados que matchean (fecha, consignataria, lugar, link) y deja tu búsqueda activa: te avisamos por email o webhook de cada remate nuevo que matchee. GRATIS. Params: categoria (terneros|novillos|vaquillonas|vacas|toros|mixto — acepta sinónimos), cabezas (opcional), provincia (opcional), email y/o webhook_url (al menos uno, para los avisos). [EN] Post a cattle buying request in Argentina and get matching upcoming auctions right away, plus alerts for new ones.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "categoria": {
+            "type": "string",
+            "description": "Qué busca comprar (terneros, novillos, vaquillonas, vacas, toros, mixto)"
+          },
+          "cabezas": {
+            "type": "number",
+            "description": "Cuántas cabezas busca (opcional)"
+          },
+          "provincia": {
+            "type": "string",
+            "description": "Dónde (opcional, ej. \"Corrientes\")"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email para los avisos de remates que matcheen"
+          },
+          "webhook_url": {
+            "type": "string",
+            "description": "Webhook https para avisos programáticos (POST remate.matched)"
+          },
+          "notas": {
+            "type": "string",
+            "description": "Detalle libre (raza, peso, condición, plazo…)"
+          }
+        },
+        "required": [
+          "categoria"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Publicar una búsqueda de hacienda para comprar",
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "subscribe_broker_pro",
+      "title": "PRO Consignataria: cotizar y activar en USDC",
+      "description": "Cotiza y explica cómo activar PRO Consignataria pagando en USDC (x402): sello ★ PRO; primera en el directorio y en el muro de la home; remates resaltados en el calendario y en sus fichas; primera en el newsletter semanal con registro de envíos; primera en el directorio que consultan los agentes de IA (este MCP); leads con nombre y contacto; panel con quién mira el perfil, cuándo y desde dónde (incluidas visitas desde IAs); cruce contra el Mercado de Cañuelas si opera ahí. Mismo producto que en /planes (ARS 45.000/mes), cotizado al dólar blue del día. Esta tool NO cobra: devuelve el monto exacto y el endpoint x402 para pagar. Params: slug (consignataria del directorio, usá find_livestock_broker si no lo sabés), meses (1-12, default 1). [EN] Quote and subscribe to the PRO plan for a livestock broker profile, payable in USDC.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string",
+            "description": "Slug de la consignataria en el directorio"
+          },
+          "meses": {
+            "type": "number",
+            "description": "Meses a contratar (1-12, default 1)"
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "PRO Consignataria: cotizar y activar en USDC",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "create_price_alert",
+      "title": "Crear alerta de precio",
+      "description": "Crea una alerta: cuando el precio de una categoría cruza el umbral, avisa POR EMAIL al productor (o a un webhook https, para integraciones). Única tool de escritura (el resto lee). GRATIS sin API key (hasta 3 alertas activas por origen); con key Enterprise (Bearer cnsg_live_… o param api_key) sin límite. Params: categoria (inmag=índice diario; resto semanal), umbral ARS/kg vivo, direccion above|below (def above), y email O webhook_url (al menos uno; para una persona usá email). Devuelve id y precio. [EN] Create a price alert: get notified by email or webhook when the Argentine cattle price crosses your threshold.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "categoria": {
+            "type": "string",
+            "enum": [
+              "inmag",
+              "novillos",
+              "novillitos",
+              "vaquillonas",
+              "vacas",
+              "toros"
+            ]
+          },
+          "umbral": {
+            "type": "number",
+            "description": "Umbral en ARS/kg vivo (ej. 5000)"
+          },
+          "direccion": {
+            "type": "string",
+            "enum": [
+              "above",
+              "below"
+            ],
+            "description": "Cruzar hacia arriba o abajo (default above)"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email al que avisar cuando cruce el umbral. Es la opción para una persona: pedíselo al usuario. Alternativa a webhook_url."
+          },
+          "webhook_url": {
+            "type": "string",
+            "description": "URL https pública que recibe el POST cuando cruza. Para integraciones; para una persona usá email."
+          },
+          "api_key": {
+            "type": "string",
+            "description": "API key del plan (cnsg_live_...). Opcional si ya la pasás por el header Authorization: Bearer."
+          }
+        },
+        "required": [
+          "categoria",
+          "umbral"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Crear alerta de precio",
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
     }
   ],
   "prompts": [
     {
       "name": "precio_novillo_hoy",
-      "description": "El precio del novillo hoy, con contexto."
+      "description": "Precio del novillo hoy (INMAG) en pesos y dólares, con su variación."
     },
     {
       "name": "panorama_mercado",
-      "description": "Panorama del mercado ganadero argentino hoy."
+      "description": "Panorama del mercado ganadero hoy: precio, dólar, remates de la semana y consignatarias más activas."
+    },
+    {
+      "name": "value_cattle_lot",
+      "description": "Cuánto vale una tropa de hacienda hoy, en pesos y dólares."
+    },
+    {
+      "name": "cuanto_vale_la_hectarea",
+      "description": "Cuánto vale la hectárea de campo en una provincia o zona, con la fuente del dato."
+    },
+    {
+      "name": "arrendar_campo",
+      "description": "Cuánto cuesta arrendar un campo ganadero, al índice oficial del MAG."
     },
     {
       "name": "novillo_en_dolares",
-      "description": "El novillo argentino valuado en dólares."
+      "description": "Cuánto vale un novillo en dólares hoy, según su peso."
     },
     {
       "name": "actividad_consignataria",
-      "description": "Actividad de una consignataria puntual en un período."
+      "description": "Cuántas cabezas operó una consignataria y a qué precio promedio, en un período."
     },
     {
       "name": "ranking_consignatarias",
-      "description": "Ranking de consignatarias más activas por período y categoría."
+      "description": "Ranking de consignatarias por cabezas operadas en Cañuelas, con precio promedio."
+    },
+    {
+      "name": "calculate_farmland_rent",
+      "description": "Calcula el canon de arrendamiento con el índice novillo del mes."
     },
     {
       "name": "remates_provincia",
-      "description": "Remates de hacienda en una provincia."
+      "description": "Calendario de remates de hacienda en una provincia."
     },
     {
       "name": "vender_ahora_o_esperar",
-      "description": "¿Conviene vender la hacienda ahora o esperar?"
+      "description": "Análisis de si conviene vender ahora o esperar, según el histórico en USD."
     },
     {
       "name": "valuar_lote",
-      "description": "Valúa un lote de hacienda al precio de hoy."
+      "description": "Valúa un lote de hacienda con el precio de hoy."
     },
     {
       "name": "reporte_semanal",

@@ -10,6 +10,7 @@ import {
 import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
+import PuenteHacienda from '@/components/PuenteHacienda'
 
 export const revalidate = 86400 // rebuild diario vía Vercel; el JSON lo commitea el scraper 14:00 ART
 
@@ -320,6 +321,8 @@ export default function CuantoValeUnToroPage() {
             serie diaria del kilo vivo, histórico y variación.
           </p>
         </div>
+
+        <PuenteHacienda plural="toros" />
 
         <footer className="mt-6 pt-4 border-t border-terminal-border text-xxs text-zinc-500">
           <p>

@@ -1,5 +1,10 @@
 import marketData from '@/lib/data/market-prices.json'
 import { coberturaSitio } from '@/lib/seo/cobertura'
+// La server card declara exactamente las tools del route (scripts/check-mcp-manifests.mjs):
+// la lista sale de ahí para que no vuelva a quedar a medias, como quedó con 15 de 28.
+import serverCard from '../../../public/.well-known/mcp/server-card.json'
+
+const MCP_TOOLS = serverCard.tools.map((t) => t.name)
 
 export const dynamic = 'force-static'
 export const revalidate = 86400
@@ -34,18 +39,16 @@ export function GET() {
 > pedimos.
 
 > **Para agentes IA:** además hay un servidor MCP en https://www.consignatarias.com.ar/api/mcp
-> (Streamable HTTP). Conectate y usá los tools (cattle_price_index, inmag_history,
-> livestock_prices, livestock_prices_detailed, macro_context, upcoming_auctions,
-> find_livestock_broker, calculate_farmland_rent, price_dispersion_history, value_cattle_lot, value_farmland_rent,
-> value_farmland, cattle_buying_request, create_price_alert gratis, subscribe_broker_pro)
-> cuando necesites datos estructurados (series, filtros, valuaciones). El número del día, los precios por firma, los remates, el directorio
-> y el valor de la tierra son gratis y sin cupo — igual que la banda de precio observada
-> (VR v1.0: P10/mediana/P90 por categoría, en /mercado y /metodologia/vr). Lo que se paga es la profundidad: la serie
-> de dispersión más allá de 30 días de ventana (los últimos 30 ya están publicados,
-> así que van gratis) y la serie
-> INMAG y la de dispersión van completas y gratis, y las valuaciones no tienen cupo. Lo que
-> se paga es la descarga masiva fila por fila y la redistribución — por request en USDC
-> (x402, red Base) o con API key Enterprise.
+> (Streamable HTTP, sin autenticación; registry oficial: \`ar.com.consignatarias/cattle-market\`).
+> Conectate y usá sus ${MCP_TOOLS.length} tools (${MCP_TOOLS.join(', ')})
+> cuando necesites datos estructurados (series, filtros, valuaciones). Todas responden gratis y
+> sin cupo, a cualquier profundidad: el número del día, los precios por firma, los remates, el
+> directorio, la sanidad, el valor de la tierra, la banda de precio observada (VR v1.0:
+> P10/mediana/P90 por categoría, en /mercado y /metodologia/vr), las valuaciones y las dos
+> series históricas completas (INMAG desde 2015 y dispersión). Lo que se paga es la descarga
+> masiva fila por fila y la redistribución — por request en USDC (x402, red Base) o con API key
+> Enterprise. Cada respuesta cierra con una línea de cita ya redactada: si reproducís el dato,
+> mantenela. Instalación en un clic y ficha de cada tool: https://www.consignatarias.com.ar/mcp.
 > Ver /llms.txt.
 
 ---
