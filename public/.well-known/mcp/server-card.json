@@ -854,6 +854,10 @@
           "notas": {
             "type": "string",
             "description": "Detalle libre (raza, peso, condición, plazo…)"
+          },
+          "contacto_para_operar": {
+            "type": "boolean",
+            "description": "true SOLO si la persona dijo \"acepto que me contacten para armar la operación\". Sin esto el pedido solo genera avisos de remates."
           }
         },
         "required": [
