@@ -1,7 +1,6 @@
 # Distribución del MCP fuera de Google
 
-> Estado verificado el **21-10-2026**. Nada de este documento se envió: cada paso espera el OK
-> de José. El orden importa. Primero se mergea y despliega el PR que trae este archivo
+> Estado verificado el **22-10-2026**. Con el OK de José del 22-10 ya se hicieron los pasos 1, 5, 6 (actualización) y 7, en su versión gratis, y la descripción del repo (paso 10). El resto espera su cuenta o su OK. El orden importa. Primero se mergea y despliega el PR que trae este archivo
 > (server card, títulos y anotaciones nuevas en producción) y recién después se publica
 > o se re-escanea en cada directorio. Si se hace al revés, los directorios vuelven a guardar la
 > ficha vieja.
@@ -17,14 +16,14 @@
 
 | Directorio | Estado al 21-10 | Qué falta |
 |---|---|---|
-| Registry oficial (`registry.modelcontextprotocol.io`) | Publicado v1.7.0 (07-10), descripción en castellano, sin `title` ni ícono | Publicar v1.9.0 (paso 1) |
+| Registry oficial (`registry.modelcontextprotocol.io`) | ✅ **Publicado v1.9.0 el 22-10** (latest), con `title`, íconos, `repository` y descripción en inglés | Nada |
 | Glama (connector) | Listado, Healthy, 100% de uptime en 65 días, TDQS **A 3,8/5** sobre 28 tools (medido antes de v1.9.0; hoy son 29). **Sin reclamar** | Reclamarlo (paso 2) |
 | Smithery | Listado desde el 04-10 como **"MCP-CATTLE-MARKET"**, con el escaneo viejo (24 tools, nombres anteriores), sin verificar | Renombrar, re-escanear y verificar (paso 3) |
 | punkpeye/awesome-remote-mcp-servers | Listado en Agriculture, con el badge de Glama | Nada |
 | Directorio de conectores de Claude | No | Enviar (paso 4) |
-| mcpservers.org (wong2) | No | Formulario (paso 5) |
-| mcp.so | No (la búsqueda da 0) | Issue o formulario (paso 6) |
-| MCP Market | No | Formulario (paso 7) |
+| mcpservers.org (wong2) | ✅ Enviado gratis el 22-10, revisión en ~2 semanas, aviso a agro@ | Esperar |
+| mcp.so | Issue gratis [chatmcp/mcpso#4663](https://github.com/chatmcp/mcpso/issues/4663) abierto el 03-10, sin respuesta; actualizado a v1.9.0 el 22-10 | Esperar, o US$39 si José quiere |
+| MCP Market | ✅ Enviado a la cola gratis el 22-10 (repo de GitHub), 4 a 6 semanas, aviso a agro@. La pestaña Remote MCP solo ofrece la opción paga (US$69) | Esperar |
 | GitHub MCP registry (github.com/mcp, alimenta VS Code) | No | Mail (paso 8) |
 | Docker MCP Catalog | No | **Bloqueado:** el repo no tiene licencia (paso 9) |
 | PulseMCP | No se pudo confirmar: Cloudflare devuelve 403 | Cerrado a altas y a correcciones. Lo toma solo del registry cuando reabra |
@@ -185,7 +184,7 @@ Authentication ("no authentication"), Data handling, Test & launch, Compliance y
 >
 > Animal health: SENASA mandatory plans, the foot-and-mouth vaccination calendar, movement requirements, RENSPA validation and DT-e reference, each with the regulation cited, plus the 14 topics of the Good Livestock Practices guide.
 >
-> Two tools write: a price alert by email and a cattle buying request that returns matching auctions. Everything else is read-only. No account, no key, no quota. Every response ends with a ready-made citation line.
+> Three tools write: a price alert by email, a cattle buying request that returns matching auctions, and market_match when the person asks to be contacted (with explicit consent). Everything else is read-only. No account, no key, no quota. Every response ends with a ready-made citation line.
 
 - **Use cases** (tres):
   1. "¿Cuánto vale hoy un lote de 350 novillos de 430 kg en Formosa?" → `value_cattle_lot`
@@ -194,6 +193,7 @@ Authentication ("no authentication"), Data handling, Test & launch, Compliance y
 - **Data handling:**
   - Las tools de lectura no guardan datos personales; el origen se agrupa por un hash, no por IP.
   - `create_price_alert` y `cattle_buying_request` guardan el email que el usuario da para avisarle.
+  - `market_match` con `registrar: true` y `consentimiento: true` guarda nombre y email o teléfono para que una persona lo contacte. Queda en revisión hasta que alguien verifique el contacto.
 
 **Qué aprueba José:**
 - Enviar con la cuenta de Memola.
