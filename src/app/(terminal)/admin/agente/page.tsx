@@ -6,6 +6,7 @@ import { AdminPageHeader, AdminSection, KpiRow, KpiCell, AdminEmpty } from '@/co
 import Stat from '@/components/ui/Stat'
 import PorTipo from '@/components/admin/agente/PorTipo'
 import Decisiones from '@/components/admin/agente/Decisiones'
+import EmbudoMcp from '@/components/admin/agente/EmbudoMcp'
 import Badge, { type BadgeTone } from '@/components/ui/Badge'
 import { resumenHacienda } from '@/lib/agente/mensajes'
 import { whatsappLink } from '@/lib/leads/routing'
@@ -26,6 +27,7 @@ export const metadata: Metadata = { title: 'Agente · Admin' }
  *      (en el campo un llamado cierra más que tres correos)
  *   4. Casos vivos ordenados por plata, con el próximo paso
  *   5. Últimos correos que entraron y salieron
+ *   + Del MCP a la operación: uso del MCP → pedido → verificado → operación
  *
  * La bitácora completa de cada caso sigue en /admin/leads?lead=N.
  */
@@ -129,6 +131,8 @@ export default async function AdminAgentePage() {
       <Decisiones />
 
       <PorTipo />
+
+      <EmbudoMcp />
 
       <AdminSection title="Embudo">
         <div className="flex flex-wrap gap-x-5 gap-y-2">
