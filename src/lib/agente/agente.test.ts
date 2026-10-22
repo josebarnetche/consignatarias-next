@@ -219,6 +219,7 @@ describe('demandas de compra', () => {
     expect(leadDeDemanda({ ...d, email: 'operaciones@example.com' }, [])).toBeNull()
     expect(leadDeDemanda({ ...d, email: 'ganaderia+alerts@example.org' }, [])).toBeNull()
     expect(leadDeDemanda({ ...d, email: 'compras@campo.test' }, [])).toBeNull()
+    expect(leadDeDemanda({ ...d, origen: 'mcp' }, [])).toBeNull()
   })
 
   it('un comprador de terneros en Entre Ríos cruza con un vendedor de Santa Fe', () => {

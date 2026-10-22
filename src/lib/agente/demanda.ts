@@ -70,12 +70,15 @@ export function provinciaDemanda(p: string | null): string | null {
 
 /**
  * La fila de `producer_leads` que representa a la demanda, o null si no se
- * trabaja: sin mail, sin activar, o las que cargamos nosotros de prueba.
+ * trabaja: sin mail, sin activar, cargada por el MCP (sin verificar) o de prueba.
  */
 export function leadDeDemanda(d: Demanda, propios: string[]): Record<string, unknown> | null {
   const email = d.email?.trim().toLowerCase()
   if (!email || d.status !== 'active') return null
   if (propios.includes(email)) return null
+  // Las que carga un agente externo por el MCP (cattle_buying_request) pueden traer el
+  // mail de OTRA persona: no se le escribe a nadie sin que una persona la verifique.
+  if ((d.origen ?? '').trim().toLowerCase() === 'mcp') return null
   if (/\bdemo\b|prueba|test/i.test(d.notas ?? '')) return null
   // Dominios reservados (RFC 2606): las demandas de prueba del MCP vienen con example.com/.org/.net.
   if (/@(.+\.)?(example\.(com|org|net)|[^@]+\.(test|example|invalid|localhost))$/.test(email)) return null
