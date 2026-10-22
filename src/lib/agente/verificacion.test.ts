@@ -30,3 +30,27 @@ describe('demandas de compra en needs_review (las del MCP, ver PR de demanda.ts)
     expect(tomable({ status: 'new', source: 'demanda_compra:9' })).toBe(true)
   })
 })
+
+describe('cola de verificación', async () => {
+  const { pendienteVerificacion, transicionBloqueada } = await import('./verificacion')
+  const mcp = { status: 'needs_review', source: 'mcp:market_match' }
+  it('detecta los pendientes de verificar', () => {
+    expect(pendienteVerificacion(mcp)).toBe(true)
+    expect(pendienteVerificacion({ status: 'needs_review', source: 'demanda_compra:3' })).toBe(true)
+    expect(pendienteVerificacion({ status: 'needs_review', source: 'frigorifico:1' })).toBe(false)
+    expect(pendienteVerificacion({ status: 'new', source: 'mcp:market_match' })).toBe(false)
+  })
+  it('verificar (→ new) lo deja tomable por el agente', () => {
+    expect(transicionBloqueada(mcp, { status: 'new' })).toBeNull()
+    expect(tomable({ ...mcp, status: 'new' })).toBe(true)
+  })
+  it('avanzar nunca lo deja en routed, contacted ni won', () => {
+    for (const s of ['routed', 'contacted', 'won']) expect(transicionBloqueada(mcp, { status: s })).toMatch(/no está verificado/)
+    expect(transicionBloqueada(mcp, { rutea: true })).toMatch(/no está verificado/)
+  })
+  it('descartar o perder sí se puede; los leads normales no cambian', () => {
+    expect(transicionBloqueada(mcp, { status: 'discarded' })).toBeNull()
+    expect(transicionBloqueada(mcp, { status: 'lost' })).toBeNull()
+    expect(transicionBloqueada({ status: 'needs_review', source: null }, { status: 'routed' })).toBeNull()
+  })
+})

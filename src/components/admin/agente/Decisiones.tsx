@@ -1,4 +1,5 @@
 import { AdminSection } from '@/components/admin/kit'
+import { createAdminClient } from '@/lib/supabase-server'
 import Badge, { type BadgeTone } from '@/components/ui/Badge'
 import { ofertaHacienda } from '@/lib/agente/mensajes-contacto'
 import { TIPOS_CAMPO_ACTIVOS } from '@/lib/agente/campos-agente'
@@ -12,9 +13,15 @@ const TONO: Record<Gravedad, { label: string; tone: BadgeTone }> = {
   producto: { label: 'Producto', tone: 'accent' },
 }
 
-export default function Decisiones() {
+export default async function Decisiones() {
+  const { count: pendientes } = await createAdminClient()
+    .from('producer_leads')
+    .select('id', { count: 'exact', head: true })
+    .eq('status', 'needs_review')
+    .or('source.like.mcp:%,source.like.demanda_compra:%')
   const estado = estadoActual({
     tiposActivos: TIPOS_CAMPO_ACTIVOS,
+    pendientesVerificacion: pendientes ?? 0,
     ofertaDePrueba: (d) =>
       ofertaHacienda({ leadId: 0, ofertaId: 0, lado: 'vende', datos: { cabezas: 100, categoria: 'novillos', zona: 'Azul', ...d }, contraparte: 'X' }).texto,
   })

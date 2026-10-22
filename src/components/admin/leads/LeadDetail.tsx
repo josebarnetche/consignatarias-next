@@ -6,9 +6,10 @@ import Badge from '@/components/ui/Badge'
 import LeadActivity from '@/components/admin/LeadActivity'
 import { computeSpread, spreadReading } from '@/lib/leads/spread'
 import type { ActivityRow } from '@/lib/leads/activity'
+import { pendienteVerificacion } from '@/lib/agente/verificacion'
 import {
   LEAD_STATUSES,
-  NEXT_STEP,
+  siguientePaso,
   STATUS_META,
   ars,
   fmtFecha,
@@ -53,7 +54,8 @@ export default function LeadDetail({
 
   const wa = waLink(l.phone, `Hola ${l.name.split(' ')[0]}, te escribimos de Consignatarias por tu consulta.`)
   const sp = computeSpread(l.category, l.desired_price_ars)
-  const next = NEXT_STEP[l.status]
+  const next = siguientePaso(l)
+  const sinVerificar = pendienteVerificacion(l)
   const meta = STATUS_META[l.status] ?? STATUS_META.new
   const ubic = ubicacion(l)
   const bits = queBits(l)
@@ -178,7 +180,7 @@ export default function LeadDetail({
           </label>
           {next && (
             <button type="button" onClick={() => onPatch({ status: next })} disabled={saving} className="terminal-btn disabled:opacity-40">
-              Pasar a {STATUS_META[next].label.toLowerCase()}
+              {sinVerificar ? 'Contacto verificado → al agente' : `Pasar a ${STATUS_META[next].label.toLowerCase()}`}
             </button>
           )}
           {l.status !== 'discarded' && (

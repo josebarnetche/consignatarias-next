@@ -26,6 +26,8 @@ export interface Estado {
   ofertaConPieComercial: boolean
   /** Encuadre actual del cobro de hacienda. */
   encuadreHacienda: 'comision' | 'servicio_contacto'
+  /** Pedidos del MCP / demandas de compra en needs_review esperando que alguien verifique el contacto. */
+  pendientesVerificacion?: number
 }
 
 export function decisionesPendientes(e: Estado): Decision[] {
@@ -103,6 +105,18 @@ export function decisionesPendientes(e: Estado): Decision[] {
     })
   }
 
+  if (e.pendientesVerificacion) {
+    const n = e.pendientesVerificacion
+    d.push({
+      id: 'verificar-contactos',
+      gravedad: 'plata',
+      titulo: `${n} ${n === 1 ? 'pedido espera' : 'pedidos esperan'} que verifiques el contacto`,
+      detalle:
+        'Los cargó un agente externo (MCP) o entraron como demanda de compra: el mail puede no ser de quien dice. El agente no les escribe hasta que en /admin/leads marques "Contacto verificado → al agente", o los descartes.',
+      ref: '/admin/leads (pestaña Sin trabajar, estado A revisar)',
+    })
+  }
+
   const orden: Record<Gravedad, number> = { legal: 0, plata: 1, producto: 2 }
   return d.sort((a, b) => orden[a.gravedad] - orden[b.gravedad])
 }
@@ -111,7 +125,11 @@ export function decisionesPendientes(e: Estado): Decision[] {
  * El estado real, leído del código que corre: se arma una oferta de prueba y se
  * mira qué dice. Cuando alguien cambia la plantilla, la decisión sale sola.
  */
-export function estadoActual(o: { tiposActivos: boolean; ofertaDePrueba: (d: { precio_pedido_kg: number }) => string }): Estado {
+export function estadoActual(o: {
+  tiposActivos: boolean
+  ofertaDePrueba: (d: { precio_pedido_kg: number }) => string
+  pendientesVerificacion?: number
+}): Estado {
   const texto = o.ofertaDePrueba({ precio_pedido_kg: 9_876 })
   return {
     tiposActivos: o.tiposActivos,
@@ -119,5 +137,6 @@ export function estadoActual(o: { tiposActivos: boolean; ofertaDePrueba: (d: { p
     ofertaConPieComercial: /comunicaci[oó]n comercial/i.test(texto),
     // El motor usa `M.oferta` (encuadre comisión); el borrador `ofertaServicioContacto` no está conectado.
     encuadreHacienda: /servicio de contacto/i.test(texto) ? 'servicio_contacto' : 'comision',
+    pendientesVerificacion: o.pendientesVerificacion ?? 0,
   }
 }

@@ -9,6 +9,7 @@
 import type { BadgeTone } from '@/components/ui/Badge'
 import { provinciaNombre } from '@/lib/ui/tokens'
 import type { OrigenLead } from '@/lib/leads/origen-admin'
+import { pendienteVerificacion } from '@/lib/agente/verificacion'
 
 export interface Lead {
   id: number
@@ -54,6 +55,15 @@ export const NEXT_STEP: Record<string, LeadStatus | undefined> = {
   needs_review: 'routed',
   routed: 'contacted',
   contacted: 'won',
+}
+
+/**
+ * El paso sugerido para ESTE lead. Un pedido del MCP o una demanda de compra sin
+ * verificar no se rutea: su paso es "contacto verificado" → `new`, y ahí lo toma el
+ * agente (src/lib/agente/verificacion.ts).
+ */
+export function siguientePaso(l: { status: string; source: string | null }): LeadStatus | undefined {
+  return pendienteVerificacion(l) ? 'new' : NEXT_STEP[l.status]
 }
 
 export const INTENT_LABEL: Record<string, string> = {
