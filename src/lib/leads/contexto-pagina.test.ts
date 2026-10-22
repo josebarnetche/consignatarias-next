@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { provinciaParaFormulario, zonaParaFormulario, categoriaParaFormulario, sourceDePagina } from './contexto-pagina'
+import { provinciaParaFormulario, zonaParaFormulario, categoriaParaFormulario, sourceDePagina, esFormularioCorto } from './contexto-pagina'
 
 describe('provinciaParaFormulario', () => {
   it('lleva la grafía del padrón a la opción del selector', () => {
@@ -44,5 +44,18 @@ describe('sourceDePagina', () => {
     expect(sourceDePagina('consignataria', 'rosgan')).toBe('consignataria:rosgan')
     expect(sourceDePagina('frigorificos-provincia', 'Entre Rios')).toBe('frigorificos-provincia:entre-rios')
     expect(sourceDePagina('remate', 'x'.repeat(200)).length).toBe(80)
+  })
+})
+
+describe('esFormularioCorto', () => {
+  it('reconoce los source del formulario corto, donde el CUIT es obligatorio', () => {
+    expect(esFormularioCorto('remate:rural-mercedes-2026-10-23')).toBe(true)
+    expect(esFormularioCorto('precios:terneros')).toBe(true)
+    expect(esFormularioCorto('frigorificos-provincia:santa-fe')).toBe(true)
+  })
+  it('no confunde la ficha de un frigorífico ni otros formularios', () => {
+    expect(esFormularioCorto('frigorifico:30500689443')).toBe(false)
+    expect(esFormularioCorto('vender-ahora')).toBe(false)
+    expect(esFormularioCorto(null)).toBe(false)
   })
 })
