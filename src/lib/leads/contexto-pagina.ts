@@ -71,7 +71,14 @@ export function categoriaParaFormulario(raw: string | null | undefined): string 
 }
 
 /** Tipos de página que capturan leads con el formulario corto. */
-export type TipoPaginaLead = 'consignataria' | 'remate' | 'precios' | 'frigorificos-provincia'
+export const TIPOS_PAGINA_LEAD = ['consignataria', 'remate', 'precios', 'frigorificos-provincia'] as const
+export type TipoPaginaLead = (typeof TIPOS_PAGINA_LEAD)[number]
+
+/** ¿El lead viene del formulario corto (`HaciendaLeadCorto`)? Ahí el CUIT es obligatorio (José, 22-10). */
+export function esFormularioCorto(source: string | null | undefined): boolean {
+  const tipo = String(source ?? '').split(':')[0]
+  return (TIPOS_PAGINA_LEAD as readonly string[]).includes(tipo)
+}
 
 /**
  * El `source` que se guarda en `producer_leads`: `<tipo>:<clave>`. La clave es la de

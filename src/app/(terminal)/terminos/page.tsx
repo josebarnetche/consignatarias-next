@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://www.consignatarias.com.ar/terminos' },
 }
 
-const UPDATED = '6 de julio de 2026'
+const UPDATED = '22 de octubre de 2026'
 
 export default function TerminosPage() {
   return (
@@ -55,9 +55,53 @@ export default function TerminosPage() {
             del Mercado Agroganadero de Cañuelas presentado operación por operación. Memola{' '}
             <strong className="text-zinc-200">no es</strong> consignataria, comisionista, corredor, martillero,
             agente de liquidación y compensación, entidad financiera ni parte de las operaciones de compraventa,
-            remate o faena de hacienda. El Sitio no realiza intermediación en dichas operaciones ni garantiza su
-            concreción. Toda operación es responsabilidad exclusiva de las partes que la celebren.
+            remate o faena de hacienda. Además del observatorio, Memola presta un <strong className="text-zinc-200">servicio de
+            contacto</strong> entre quienes quieren vender o comprar hacienda (punto 3 bis): presenta a las partes,
+            pero no interviene en la operación ni garantiza su concreción. Toda operación es responsabilidad
+            exclusiva de las partes que la celebren.
           </p>
+        </section>
+
+        <section>
+          <h2 className="text-zinc-100 text-lg font-medium mb-2">3 bis. Servicio de contacto para operaciones de hacienda</h2>
+          <p className="text-zinc-400">
+            Quien deja un pedido de venta o de compra de hacienda en el Sitio (formularios de venta, compra y
+            &ldquo;busco hacienda&rdquo;, o a través de un asistente de IA) nos encarga buscar una contraparte. El
+            servicio funciona así:
+          </p>
+          <ul className="text-zinc-400 space-y-1 list-disc list-inside mt-2">
+            <li>
+              Para trabajar un pedido pedimos nombre, email, CUIT y los datos de la hacienda (categoría, cabezas y
+              zona). El CUIT se usa para verificar antecedentes antes de presentar a nadie y no se publica.
+            </li>
+            <li>
+              Ofrecemos el pedido, <strong className="text-zinc-200">sin datos de contacto</strong>, a compradores, vendedores, frigoríficos y
+              consignatarias de la zona. El contacto directo se pasa solo a la contraparte que acepta por escrito
+              (respondiendo &ldquo;ACEPTO&rdquo;) las condiciones del servicio, y esa aceptación queda registrada.
+            </li>
+            <li>
+              Quien recibe el contacto contrata el servicio: si la operación se concreta, paga a Memola el 
+              <strong className="text-zinc-200">1% del monto bruto</strong> de la operación, que Memola factura. Si no se concreta, no hay
+              cargo. Quien dejó el pedido no paga por el contacto que recibe la otra parte.
+            </li>
+            <li>
+              Memola no negocia el precio, no cobra ni paga por cuenta de nadie, no emite liquidaciones,
+              Documentos de Tránsito (DT-e) ni guías, no recibe la hacienda y no garantiza el pago ni el
+              cumplimiento. Precio, plazo, flete, sanidad y documentación los acuerdan las partes directamente, y
+              cada una debe verificar la inscripción vigente de la otra en el SIOCAL y el RENSPA del
+              establecimiento antes de operar.
+            </li>
+            <li>
+              Las comunicaciones del servicio se envían por email desde 
+              <code className="text-zinc-300 bg-zinc-900 px-1">agente@consignatarias.com</code>; parte de ellas
+              las redacta y clasifica un sistema automatizado y las revisa una persona cuando hay algo que
+              decidir. Cualquiera puede pedir no recibir más ofertas respondiendo &ldquo;BAJA&rdquo;.
+            </li>
+            <li>
+              Quien deja un pedido de compra para recibir <strong className="text-zinc-200">avisos de remates</strong> no es contactado para
+              armar una operación salvo que lo haya pedido expresamente al cargarlo.
+            </li>
+          </ul>
         </section>
 
         <section>
@@ -182,14 +226,16 @@ export default function TerminosPage() {
         </section>
 
         <section>
-          <h2 className="text-zinc-100 text-lg font-medium mb-2">11. API y MCP Enterprise</h2>
+          <h2 className="text-zinc-100 text-lg font-medium mb-2">11. API y servidor MCP</h2>
           <p className="text-zinc-400">
-            El acceso programático a los datos se ofrece a través de la <strong className="text-zinc-200">API
-            REST</strong> (INMAG, precios por categoría, remates, dato transaccional lote a lote y directorios) y
-            del <strong className="text-zinc-200">servidor MCP propio</strong> de Memola, publicado en el registro
-            oficial de MCP como{' '}
-            <code className="text-zinc-300 bg-zinc-900 px-1">ar.com.consignatarias/cattle-market</code>, y está
-            reservado a los planes Enterprise. La autenticación se realiza mediante{' '}
+            El acceso programático a los datos se ofrece a través del <strong className="text-zinc-200">servidor
+            MCP propio</strong> de Memola, publicado en el registro oficial de MCP como{' '}
+            <code className="text-zinc-300 bg-zinc-900 px-1">ar.com.consignatarias/cattle-market</code>, y de la{' '}
+            <strong className="text-zinc-200">API REST</strong> (INMAG, precios por categoría, remates, dato
+            transaccional lote a lote y directorios). Las consultas del servidor MCP son gratuitas, con la
+            condición de citar la fuente según la{' '}
+            <Link href="/licencia-datos" className="text-sky-400 hover:underline">licencia de datos</Link>. La
+            descarga masiva de series y la API REST están reservadas a los planes Enterprise. La autenticación se realiza mediante{' '}
             <strong className="text-zinc-200">claves de API</strong>, personales e intransferibles, sujetas a los
             cupos y límites de tasa del plan contratado y a períodos de facturación de 28 días. Se espera un uso
             razonable dentro de esos límites; superar el cupo devuelve{' '}
@@ -206,7 +252,8 @@ export default function TerminosPage() {
             El usuario se obliga a usar el Sitio conforme a la ley, la buena fe y estos términos. Queda
             prohibido, entre otros: vulnerar la seguridad del Sitio, realizar accesos automatizados que
             degraden el servicio, suplantar identidad, cargar información falsa o que infrinja derechos de
-            terceros, y todo uso que perjudique a Memola o a otros usuarios.
+            terceros, cargar datos personales de otra persona sin su consentimiento (también a través de un
+            asistente de IA o del servidor MCP), y todo uso que perjudique a Memola o a otros usuarios.
           </p>
         </section>
 

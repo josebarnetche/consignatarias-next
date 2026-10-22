@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react'
 import { trackValueEvent } from '@/lib/analytics'
+import { cuitValido, formatearCuit, soloDigitos } from '@/lib/cuit'
 import { CATEGORIAS_FORM, PROVINCIAS_FORM } from '@/lib/leads/contexto-pagina'
 
 /**
@@ -11,12 +12,13 @@ import { CATEGORIAS_FORM, PROVINCIAS_FORM } from '@/lib/leads/contexto-pagina'
  * consignataria y de remate, páginas de provincia de frigoríficos, /precios/*):
  * en los 30 días al 21-10 sumaron miles de vistas y cero leads. Pide sólo lo que el
  * agente (`src/lib/agente/`) necesita para ofrecer sin volver a escribirle al
- * productor: lado, categoría, cabezas, zona y un email. El email es obligatorio
- * porque el agente trabaja por correo — un lead sin email se descarta solo.
+ * productor: lado, categoría, cabezas, zona, un email y el CUIT. El email es
+ * obligatorio porque el agente trabaja por correo — un lead sin email se descarta
+ * solo. El CUIT también (José, 22-10): la operación se trabaja a nombre de alguien
+ * y sin CUIT no se verifica a nadie. /api/producer-leads lo exige para estos `source`.
  *
  * Diferencias a propósito con `LeadCapture`:
- *  · No pide precio ni CUIT. El CUIT lo pide quien recibe la hacienda antes de
- *    operar; acá frenaba el primer paso.
+ *  · No pide precio ni razón social.
  *  · Nada se abre en un modal: el formulario está a la vista, inline.
  *  · La página precarga lo que sabe (provincia/zona de la firma, del remate o de la
  *    provincia; categoría de /precios) y el `source` dice qué página lo trajo.
@@ -60,6 +62,7 @@ export default function HaciendaLeadCorto({
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
+  const [cuit, setCuit] = useState('')
   const [state, setState] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
   const [errMsg, setErrMsg] = useState('')
   const abierto = useRef(false)
@@ -80,6 +83,9 @@ export default function HaciendaLeadCorto({
     if (!province && !zona.trim()) return fallar('Decinos dónde está la hacienda.')
     if (name.trim().length < 2) return fallar('Decinos tu nombre.')
     if (!/^\S+@\S+\.\S+$/.test(email.trim())) return fallar('Necesitamos un email: por ahí te escribimos.')
+    if (!cuitValido(cuit)) {
+      return fallar(soloDigitos(cuit).length === 11 ? 'Ese CUIT no es válido: revisá el número.' : 'Necesitamos el CUIT completo, con sus 11 dígitos.')
+    }
     setState('loading')
     try {
       const res = await fetch('/api/producer-leads', {
@@ -95,6 +101,7 @@ export default function HaciendaLeadCorto({
           name: name.trim(),
           email: email.trim(),
           phone: phone.trim() || undefined,
+          cuit: formatearCuit(cuit),
         }),
       })
       if (res.ok) {
@@ -192,7 +199,7 @@ export default function HaciendaLeadCorto({
           </label>
         </div>
 
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-4">
           <label>
             <span className={labelCls}>Nombre</span>
             <input value={name} onChange={(e) => setName(e.target.value)} className={inputCls} placeholder="Nombre y apellido" autoComplete="name" required />
@@ -200,6 +207,18 @@ export default function HaciendaLeadCorto({
           <label>
             <span className={labelCls}>Email</span>
             <input value={email} onChange={(e) => setEmail(e.target.value)} className={inputCls} placeholder="tu@email.com" type="email" inputMode="email" autoComplete="email" required />
+          </label>
+          <label>
+            <span className={labelCls}>CUIT</span>
+            <input
+              value={cuit}
+              onChange={(e) => setCuit(e.target.value)}
+              onBlur={() => setCuit((v) => (cuitValido(v) ? formatearCuit(v) : v))}
+              className={inputCls}
+              placeholder="20-12345678-9"
+              inputMode="numeric"
+              required
+            />
           </label>
           <label>
             <span className={labelCls}>WhatsApp <span className="text-zinc-600">(opcional)</span></span>
@@ -218,7 +237,7 @@ export default function HaciendaLeadCorto({
             {state === 'loading' ? 'Enviando…' : intent === 'vender' ? 'Buscar comprador →' : 'Buscar hacienda →'}
           </button>
           <span className="text-xs text-zinc-500">
-            Tus datos no se publican. No somos consignatarios: te presentamos a la contraparte y el precio lo acuerdan ustedes.
+            Tus datos no se publican: el CUIT lo usamos para verificar antecedentes antes de presentar a la contraparte. No somos consignatarios: te presentamos a la contraparte y el precio lo acuerdan ustedes.
           </span>
         </div>
       </form>
