@@ -1,12 +1,27 @@
 {
-  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "ar.com.consignatarias/cattle-market",
-  "description": "Mercado ganadero argentino y la brecha de precio contra EE.UU., Uruguay y Australia.",
-  "version": "1.7.0",
+  "title": "Consignatarias · Argentine Cattle Market",
+  "description": "Argentine cattle market data: steer index since 2015, prices, auctions, land values, SENASA rules.",
+  "version": "1.8.0",
+  "websiteUrl": "https://www.consignatarias.com.ar/mcp",
   "repository": {
     "url": "https://github.com/josebarnetche/consignatarias-next",
-    "source": "github"
+    "source": "github",
+    "id": "1167351861"
   },
+  "icons": [
+    {
+      "src": "https://www.consignatarias.com.ar/icon-512.png",
+      "mimeType": "image/png",
+      "sizes": ["512x512"]
+    },
+    {
+      "src": "https://www.consignatarias.com.ar/icon-192.png",
+      "mimeType": "image/png",
+      "sizes": ["192x192"]
+    }
+  ],
   "remotes": [
     {
       "type": "streamable-http",

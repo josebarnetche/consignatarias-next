@@ -14,6 +14,8 @@
  *   3. Pisar la descripción larga del `.well-known` con la corta del registry.
  *      El cap de 100 es del registry y NO aplica acá: el `.well-known` es la
  *      superficie que un cliente lee al descubrir el server y admite texto largo.
+ *   4. Dejar la server card (`.well-known/mcp/server-card.json`) vieja: en oct-2026 decía
+ *      v1.5.0 y 24 tools con los nombres en castellano de antes, y eso mostraba Smithery.
  *
  * QUÉ NO CUBRE (explícito)
  *   • No valida contra el JSON Schema oficial (requiere red; el publisher ya lo hace).
@@ -32,6 +34,9 @@ const raíz = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const PUBLICADO = 'mcp-registry/server.json'
 const COPIA_RAIZ = 'server.json'
 const WELL_KNOWN = 'public/.well-known/mcp/server.json'
+/** Server card: la leen Smithery y los escáneres sin handshake. Versión + tools en sync. */
+const SERVER_CARD = 'public/.well-known/mcp/server-card.json'
+const ROUTE = 'src/app/api/mcp/route.ts'
 const CAP_REGISTRY = 100
 /** Piso del `.well-known`: si bajó de acá, alguien le pegó la descripción corta. */
 const MIN_WELL_KNOWN = 200
@@ -94,7 +99,38 @@ if (errores.length === 0) {
     errores.push(`${PUBLICADO}: el remote no es https (${remote.url}).`)
   }
 
-  // 5. CLAUDE.md declara la versión del registry: que no quede vieja
+  // 5. La server card (`/.well-known/mcp/server-card.json`) es lo que Smithery y otros
+  //    escáneres leen cuando no pueden (o no quieren) hacer el handshake. En oct-2026 seguía
+  //    en v1.5.0 con 24 tools y nombres viejos, y Smithery mostraba eso. Tiene que coincidir
+  //    en versión con el manifiesto y declarar EXACTAMENTE las tools del route.
+  const card = leer(SERVER_CARD)
+  if (card.__error) {
+    errores.push(`${SERVER_CARD}: no se pudo leer — ${card.__error}`)
+  } else {
+    if (card.name !== pub.name) errores.push(`${SERVER_CARD}: name=${card.name}, el manifiesto dice ${pub.name}.`)
+    if (card.version !== pub.version) {
+      errores.push(`${SERVER_CARD}: version=${card.version}, el manifiesto está en ${pub.version}.`)
+    }
+    try {
+      const route = readFileSync(resolve(raíz, ROUTE), 'utf8')
+      const vRoute = route.match(/const SERVER_INFO = \{[\s\S]*?version: '([^']+)'/)?.[1]
+      if (vRoute && vRoute !== pub.version) {
+        errores.push(`${ROUTE}: SERVER_INFO.version=${vRoute}, el manifiesto está en ${pub.version}.`)
+      }
+      // Mismo recorte que mcp-doctrina.test.ts: sólo el array TOOLS (PROMPTS usa `name` igual).
+      const bloque = route.slice(route.indexOf('const TOOLS: Tool[] = ['), route.indexOf('const PROMPTS'))
+      const enRoute = new Set([...bloque.matchAll(/^\s{4}name: '(\w+)',$/gm)].map((m) => m[1]))
+      const enCard = new Set((card.tools ?? []).map((t) => t.name))
+      const faltan = [...enRoute].filter((n) => !enCard.has(n))
+      const sobran = [...enCard].filter((n) => !enRoute.has(n))
+      if (faltan.length) errores.push(`${SERVER_CARD}: faltan tools del route: ${faltan.join(', ')}.`)
+      if (sobran.length) errores.push(`${SERVER_CARD}: tools que el route no declara: ${sobran.join(', ')}.`)
+    } catch (e) {
+      errores.push(`${ROUTE}: no se pudo leer — ${e.message}`)
+    }
+  }
+
+  // 6. CLAUDE.md declara la versión del registry: que no quede vieja
   try {
     const cm = readFileSync(resolve(raíz, 'CLAUDE.md'), 'utf8')
     const m = cm.match(/cattle-market` v(\d+\.\d+\.\d+)/)
