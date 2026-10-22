@@ -1109,6 +1109,7 @@ export type Database = {
         Row: {
           cabezas: number | null
           categoria: string
+          consiente_contacto: boolean
           created_at: string
           email: string | null
           id: number
@@ -1123,6 +1124,7 @@ export type Database = {
         Insert: {
           cabezas?: number | null
           categoria: string
+          consiente_contacto?: boolean
           created_at?: string
           email?: string | null
           id?: never
@@ -1137,6 +1139,7 @@ export type Database = {
         Update: {
           cabezas?: number | null
           categoria?: string
+          consiente_contacto?: boolean
           created_at?: string
           email?: string | null
           id?: never

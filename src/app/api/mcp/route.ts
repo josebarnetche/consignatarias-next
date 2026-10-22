@@ -1658,6 +1658,7 @@ const TOOLS: Tool[] = [
         email: { type: 'string', description: 'Email para los avisos de remates que matcheen' },
         webhook_url: { type: 'string', description: 'Webhook https para avisos programáticos (POST remate.matched)' },
         notas: { type: 'string', description: 'Detalle libre (raza, peso, condición, plazo…)' },
+        contacto_para_operar: { type: 'boolean', description: 'true SOLO si la persona dijo "acepto que me contacten para armar la operación". Sin esto el pedido solo genera avisos de remates.' },
       },
       required: ['categoria'],
       additionalProperties: false,
@@ -1699,6 +1700,7 @@ const TOOLS: Tool[] = [
           origen: 'mcp',
           originIp: clientIp(req),
           notas: args.notas ? String(args.notas).slice(0, 500) : null,
+          consienteContacto: args.contacto_para_operar === true,
         })
         return ok(
           `Búsqueda #${id} activa: ${cabezas ? `${cabezas.toLocaleString('es-AR')} cab de ` : ''}${categoria}${provincia ? ` en ${provincia}` : ''}. ` +

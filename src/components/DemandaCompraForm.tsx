@@ -32,6 +32,7 @@ export default function DemandaCompraForm() {
   const [provincia, setProvincia] = useState('')
   const [email, setEmail] = useState('')
   const [notas, setNotas] = useState('')
+  const [contacto, setContacto] = useState(false)
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
   const [matches, setMatches] = useState<Match[]>([])
@@ -43,7 +44,7 @@ export default function DemandaCompraForm() {
       const res = await fetch('/api/demanda', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ categoria, cabezas: cabezas || undefined, provincia: provincia || undefined, email, notas: notas || undefined }),
+        body: JSON.stringify({ categoria, cabezas: cabezas || undefined, provincia: provincia || undefined, email, notas: notas || undefined, contacto_para_operar: contacto }),
       })
       const data = await res.json()
       if (res.ok) {
@@ -126,6 +127,10 @@ export default function DemandaCompraForm() {
       <label className="block">
         <span className="text-zinc-400 text-xs block mb-1">Detalle (opcional: raza, peso, plazo…)</span>
         <input type="text" maxLength={500} value={notas} onChange={(e) => setNotas(e.target.value)} placeholder="Braford, 180-200 kg, para marzo" className={inputCls} />
+      </label>
+      <label className="flex items-start gap-2 text-xs text-zinc-400">
+        <input type="checkbox" checked={contacto} onChange={(e) => setContacto(e.target.checked)} className="mt-0.5" />
+        <span>También quiero que me contacten para conseguir la hacienda: consignatarias.com me escribe con vendedores y firmas de la zona que tengan lo que busco.</span>
       </label>
       <button
         type="submit"

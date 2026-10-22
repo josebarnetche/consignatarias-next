@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.244.0] — 2026-10-22
+
+### Demandas de compra: el agente escribe solo a quien aceptó que lo contacten
+
+- **Consentimiento explícito para operar** (José, 22-10). Quien deja un pedido en `/quiero-comprar` o en `cattle_buying_request` aceptaba solo avisos de remates, y el agente igual le escribía para armar la operación. Ahora `demanda_compra.consiente_contacto` (migración `20261022_demanda_consentimiento.sql`, default `false`) decide: sin consentimiento la demanda sigue recibiendo avisos de remates pero no entra al agente.
+- **Formulario `/quiero-comprar`**: checkbox opcional "también quiero que me contacten para conseguir la hacienda". `/api/demanda` lo recibe como `contacto_para_operar`.
+- Las demandas web #2 y #3, que ya están en el agente, siguen como están. Las del MCP con consentimiento siguen entrando en `needs_review` (v1.242.1).
+
+---
+
 ## [1.243.0] — 2026-10-22
 
 ### MCP 1.9.0: `market_match`, la mesa en `/mercado/demanda` y privacidad de leads

@@ -19,6 +19,8 @@ export interface Demanda {
   origen: string | null
   status: string | null
   notas: string | null
+  /** Aceptó que lo contactemos para armar la operación. Sin esto, solo avisos de remates. */
+  consiente_contacto?: boolean | null
   created_at: string
 }
 
@@ -70,12 +72,14 @@ export function provinciaDemanda(p: string | null): string | null {
 
 /**
  * La fila de `producer_leads` que representa a la demanda, o null si no se
- * trabaja: sin mail, sin activar, o de prueba. Las del MCP entran sin verificar (needs_review).
+ * trabaja: sin consentimiento para operar, sin mail, sin activar, o de prueba. Las del MCP entran sin verificar (needs_review).
  */
 export function leadDeDemanda(d: Demanda, propios: string[]): Record<string, unknown> | null {
   const email = d.email?.trim().toLowerCase()
   if (!email || d.status !== 'active') return null
   if (propios.includes(email)) return null
+  // Quien solo pidió avisos de remates no aceptó que le escribamos para operar (José, 22-10).
+  if (d.consiente_contacto !== true) return null
   // Las que carga un agente externo por el MCP (cattle_buying_request) pueden traer el
   // mail de OTRA persona: entran en needs_review y el agente no las toma (tomable() en
   // verificacion.ts) hasta que una persona las verifique y las pase a `new`.
