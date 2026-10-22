@@ -53,9 +53,10 @@ describe('valuarLead', () => {
     expect(comisionArrendamientoMercado(anual)).toBe(1_000_000)
     expect(comisionArrendamiento(anual)).toBe(800_000)
   })
-  it('venta de campo sigue sin comisión definida', () => {
-    expect(TIPOS.campo.comisionPct).toBeNull()
-    expect(TIPOS.campo.comisionMesesCanon).toBeUndefined()
+  it('venta de campo: propuesta 2,4% (ESTIMADO) con bloqueo legal, no sale a contrapartes', () => {
+    expect(TIPOS.campo.comisionPct).toBe(2.4)
+    expect(TIPOS.campo.bloqueoLegal).toMatch(/matriculado/)
+    expect(enviaAContrapartes('campo')).toBe(false)
   })
   it('arrendamiento usa el canon del lead si lo trae', () => {
     const v = valuarLead({ intent: 'arrendar_ofrezco', hectareas: 100, kg_ha_mes: 6 }, ref)

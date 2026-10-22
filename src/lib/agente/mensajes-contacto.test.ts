@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ofertaServicioContacto, LO_QUE_NO_HACEMOS } from './mensajes-contacto'
+import { cobroCorto, ofertaServicioContacto, textoCobro, LO_QUE_NO_HACEMOS } from './mensajes-contacto'
 import { oferta } from './mensajes'
 import { comprometePrecio, filtraContacto } from './reglas'
 
@@ -43,5 +43,25 @@ describe('ofertaHacienda (la que usa el motor)', () => {
   it('a otro lead le habla de "ustedes"', async () => {
     const { ofertaHacienda } = await import('./mensajes-contacto')
     expect(ofertaHacienda({ ...base, contraparte: 'ustedes' }).texto).toContain('lo que ustedes buscan')
+  })
+})
+
+describe('modo de cobro', () => {
+  const o = { leadId: 1, ofertaId: 2, lado: 'vende' as const, datos: { cabezas: 50, categoria: 'terneros', zona: 'Azul' }, contraparte: 'X' }
+  it('a éxito (lo de hoy): 1% si se concreta, nunca "intermediaria"', () => {
+    const t = ofertaServicioContacto(o).texto
+    expect(t).toContain('1% del bruto')
+    expect(t).toContain('ni mandataria')
+    expect(t).not.toContain('intermediaria')
+  })
+  it('tarifa: monto fijo por contacto, sin porcentaje ni condición de éxito', () => {
+    const t = ofertaServicioContacto({ ...o, modo: 'tarifa' }).texto
+    expect(t).toContain('$45.000 + IVA por contacto entregado')
+    expect(t).not.toContain('% del bruto')
+    expect(textoCobro('tarifa', 60_000)).toContain('$60.000')
+  })
+  it('el recordatorio repite el mismo cobro que la oferta', () => {
+    expect(cobroCorto('exito')).toContain('servicio de contacto')
+    expect(cobroCorto('tarifa')).toContain('por contacto entregado')
   })
 })

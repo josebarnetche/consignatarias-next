@@ -27,7 +27,7 @@ import { enviar, leerBandeja, CASILLA, type Entrante } from './correo'
 import { triageLead, leerRespuesta } from './ia'
 import * as M from './mensajes'
 import { ordenarCola } from './cola'
-import { ofertaHacienda } from './mensajes-contacto'
+import { cobroCorto, ofertaHacienda } from './mensajes-contacto'
 import { tomable } from './verificacion'
 import { esCasoDeHacienda, trabajarCampos } from './campos-agente'
 import { pedirConfirmaciones } from './confirmacion'
@@ -660,7 +660,7 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
     const diasDesde = (iso: string) => (ahora.getTime() - new Date(iso).getTime()) / 86_400_000
     for (const o of vivas.filter((x) => tocaRecordatorio(x.seguimientos, diasDesde(x.enviada_at)) && !bajas.has(x.email))) {
       const { data: orig } = await db.from('agente_mensajes').select('message_id').eq('oferta_id', o.id).eq('dir', 'out').order('creado_at').limit(1)
-      const id = await mandar({ leadId: lead.id, ofertaId: o.id, para: [o.email], correo: M.recordatorioOferta({ leadId: lead.id, ofertaId: o.id, lado: caso.lado, datos: caso.datos }), plantilla: 'recordatorio_oferta', enRespuestaA: orig?.[0]?.message_id ?? null, conBaja: true })
+      const id = await mandar({ leadId: lead.id, ofertaId: o.id, para: [o.email], correo: M.recordatorioOferta({ leadId: lead.id, ofertaId: o.id, lado: caso.lado, datos: caso.datos, cobro: cobroCorto() }), plantilla: 'recordatorio_oferta', enRespuestaA: orig?.[0]?.message_id ?? null, conBaja: true })
       if (id) {
         await guardarOferta(o.id, { seguimientos: o.seguimientos + 1 })
         await bitacora(lead.id, `Recordatorio ${o.seguimientos + 1} a ${o.nombre}`, 'pendiente', { oferta_id: o.id })

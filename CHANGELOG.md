@@ -7,6 +7,20 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.253.0] — 2026-10-22
+
+### Agente: las decisiones de cobro quedan listas para un clic
+
+José pidió el 22-10 "avanzá sin mí". Las tres decisiones abiertas de la investigación del 22-10 (`docs/agente/decisiones-2026-10-22-siocal-arrendamiento-campos.md`) quedan preparadas en el código. Lo que sale hoy no cambia, salvo dos correcciones de texto.
+
+- **Hacienda: tarifa fija por contacto, detrás de un interruptor.** Se prende con `AGENTE_COBRO_HACIENDA=tarifa` y está **apagado**. La oferta pasa a cobrar ARS 45.000 + IVA por contacto entregado, sin condición de éxito. El monto es ESTIMADO, anclado al abono PRO Consignataria, y se puede pisar con `AGENTE_TARIFA_CONTACTO_ARS`. Por defecto sigue el 1% a éxito. Fuente: `src/lib/agente/mensajes-contacto.ts` (`textoCobro`, `cobroCorto`).
+- **Corrección de texto en la oferta.** Decía "no es consignataria ni intermediaria" y ahora dice "**ni mandataria**" (CCyC art. 1335): poner en contacto ya es intermediar, lo que no se hace es actuar por cuenta de nadie.
+- **Corrección del recordatorio a contrapartes.** Seguía diciendo "comisión del 1%" aunque la oferta es "servicio de contacto" desde la 1.245.0. Ahora repite el mismo cobro que la oferta, en cualquiera de los dos modos.
+- **Venta de campo.** `TIPOS.campo` lleva la propuesta de 2,4% + IVA al vendedor sobre el precio en USD, con un mínimo de USD 5.000 (ESTIMADO), y además **bloqueo legal**: esa comisión la cobra un corredor matriculado. No sale a contrapartes. En Decisiones, "comisión sin definir" pasa a "no sale a contrapartes".
+- **Decisiones:** la tarjeta de hacienda dice cómo pasar a tarifa fija. Con la tarifa prendida, solo queda pendiente el abogado.
+
+---
+
 ## [1.252.0] — 2026-10-22
 
 ### Cierre de la integración de sesiones: README, ROADMAP y CLAUDE.md al día

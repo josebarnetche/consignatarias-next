@@ -3,11 +3,11 @@ import { estadoEnvio, kgHaMesTipico, resumenPorTipo } from './por-tipo'
 import type { Valuacion } from './tipos'
 
 describe('estadoEnvio', () => {
-  it('hacienda sale, arrendamiento tiene bloqueo legal, campo y tasación sin comisión', () => {
+  it('hacienda sale, arrendamiento y campo tienen bloqueo legal, tasación sin comisión', () => {
     expect(estadoEnvio('hacienda').envio).toBe('sale')
     expect(estadoEnvio('arrendamiento').envio).toBe('bloqueo_legal')
     expect(estadoEnvio('arrendamiento').motivo).toMatch(/matriculado/)
-    expect(estadoEnvio('campo').envio).toBe('sin_comision')
+    expect(estadoEnvio('campo').envio).toBe('bloqueo_legal')
     expect(estadoEnvio('tasacion').envio).toBe('sin_comision')
   })
 })

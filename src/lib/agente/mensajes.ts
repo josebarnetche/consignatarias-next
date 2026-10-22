@@ -161,8 +161,12 @@ export function presentacion(o: {
   }
 }
 
-/** Un solo recordatorio a la contraparte que no contestó la oferta, en el mismo hilo. */
-export function recordatorioOferta(o: { leadId: number; ofertaId: number; lado: Lado; datos: DatosHacienda }): Correo {
+/**
+ * Un solo recordatorio a la contraparte que no contestó la oferta, en el mismo hilo.
+ * `cobro` repite en corto lo que dijo la oferta (`cobroCorto` de mensajes-contacto.ts):
+ * hasta v1.252 decía "comisión del 1%" aunque la oferta ya era servicio de contacto.
+ */
+export function recordatorioOferta(o: { leadId: number; ofertaId: number; lado: Lado; datos: DatosHacienda; cobro?: string }): Correo {
   return {
     asunto: `Re: ${o.lado === 'vende' ? 'Hacienda disponible' : 'Comprador buscando'}: ${resumenHacienda(o.datos)} · Ref. ${referencia(o.leadId, o.ofertaId)}`,
     texto: [
@@ -170,7 +174,7 @@ export function recordatorioOferta(o: { leadId: number; ofertaId: number; lado: 
       '',
       `Les reenvío la consulta de hace unos días por ${resumenHacienda(o.datos)}: ${o.lado === 'vende' ? 'la hacienda sigue disponible' : 'el comprador sigue buscando'}.`,
       '',
-      `Si les interesa, respondan ACEPTO y les pasamos el contacto directo (comisión del ${COMISION_PCT}% sobre el bruto solo si la operación se concreta). Si no es para ustedes, con un "no" alcanza y no insistimos.`,
+      `Si les interesa, respondan ACEPTO y les pasamos el contacto directo (${o.cobro ?? `servicio de contacto: ${COMISION_PCT}% del bruto solo si la operación se concreta`}). Si no es para ustedes, con un "no" alcanza y no insistimos.`,
       FIRMA,
     ].join('\n'),
   }
