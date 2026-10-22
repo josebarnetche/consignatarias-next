@@ -7,6 +7,28 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.245.0] — 2026-10-22
+
+### Agente: la oferta de hacienda como "servicio de contacto", cadencia 0/3/7/14 y tablero que cuadra
+
+José: «avanzá con todo» (22-10-2026), sobre las decisiones pendientes que listaba `/admin/agente`.
+
+- **La oferta a contrapartes de hacienda pasa al encuadre "servicio de contacto"** (`mensajes-contacto.ts → ofertaHacienda`; el motor ya no usa `M.oferta`). Cobra lo mismo: el 1% del bruto si se concreta, a cargo de quien recibe el contacto. Cambia el resto:
+  - **Ya no lleva el precio pedido por el productor**: era su piso y la contraparte lo veía antes de negociar.
+  - **Lleva el aviso de comunicación comercial** con BAJA (Ley 25.326 art. 27, Disp. 4/2009).
+  - **Aclara lo que no hacemos**: no negociamos precio, no cobramos ni pagamos por cuenta de nadie, no emitimos liquidaciones ni DT-e, no garantizamos el pago.
+  - **Pide a las partes verificar SIOCAL y RENSPA.** Es por el riesgo SIOCAL (`docs/agente/investigacion-comisionista-hacienda.md`), que sigue pendiente de validar con un abogado y figura como decisión en el tablero.
+  - La presentación (después del ACEPTO) no cambia.
+- **Cadencia a contrapartes unificada en 0/3/7/14** (`reglas.ts`: `CADENCIA_CONTRAPARTE_DIAS`, `tocaRecordatorio`, `DIAS_OFERTA_VIVA`):
+  - recordatorios a los 3, 7 y 14 días, en el mismo hilo, nunca un cuarto;
+  - la oferta se da por perdida a los 17 días;
+  - la tanda siguiente sigue saliendo a los 4 días (`DIAS_ESPERA_CONTRAPARTE`), así que el embudo no se frena.
+  - Antes había un solo recordatorio, a los 2 días.
+- **`/admin/agente` → "Por tipo de operación"** cuenta solo lo que se puede trabajar: saca los leads que el agente ya descartó, durmió, retiró o cerró. Así cuadra con "Potencial". Antes un lead descartado con muchas cabezas inflaba la tabla.
+- **Decisiones pendientes:** salen solas "precio pedido en la oferta" y "falta el pie comercial". "SIOCAL" pasa a "falta validarlo con un abogado".
+
+---
+
 ## [1.244.3] — 2026-10-22
 
 ### CUIT obligatorio en el formulario corto; términos y privacidad al día

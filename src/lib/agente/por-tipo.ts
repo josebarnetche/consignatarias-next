@@ -46,9 +46,12 @@ export function resumenPorTipo(
   leads: readonly LeadAbierto[],
   enAgente: ReadonlySet<number>,
   valuar: (l: LeadAbierto) => Valuacion | null,
+  /** Leads que el agente ya cerró por su lado (descartado, dormido, retirado, cerrado): no suman. */
+  terminados: ReadonlySet<number> = new Set(),
 ): FilaTipo[] {
   const acc = new Map<TipoOperacion, FilaTipo>()
   for (const l of leads) {
+    if (terminados.has(l.id)) continue
     const tipo = tipoDeIntent(l.intent)
     if (!tipo) continue
     const f =

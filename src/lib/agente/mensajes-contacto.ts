@@ -1,8 +1,8 @@
 /**
- * BORRADOR — oferta de hacienda con el encuadre "servicio de contacto" (21-10-2026).
- *
- * NO lo usa el motor. Existe para que José lo compare con `oferta()` de
- * `mensajes.ts` (la que sale hoy) y decida, idealmente con un abogado.
+ * Oferta de hacienda con el encuadre "servicio de contacto" — la que usa el motor
+ * desde v1.244.0 (José: "avanzá con todo", 22-10-2026). Reemplaza a `oferta()` de
+ * `mensajes.ts`, que queda solo como referencia. Conviene igual validarla con un
+ * abogado (ver el riesgo SIOCAL abajo).
  *
  * Por qué (docs/agente/investigacion-comisionista-hacienda.md):
  *  · Intervenir en el comercio de hacienda exige inscripción en el SIOCAL
@@ -46,6 +46,9 @@ function detalleCorto(d: DatosHacienda): string {
     .join('\n')
 }
 
+/** La oferta que sale hoy a contrapartes. Un solo lugar: el motor y el tablero leen esto. */
+export const ofertaHacienda = (o: Parameters<typeof ofertaServicioContacto>[0]) => ofertaServicioContacto(o)
+
 export function ofertaServicioContacto(o: { leadId: number; ofertaId: number; lado: Lado; datos: DatosHacienda; contraparte: string }): Correo {
   const vende = o.lado === 'vende'
   const otro = vende ? 'productor' : 'comprador'
@@ -54,9 +57,14 @@ export function ofertaServicioContacto(o: { leadId: number; ofertaId: number; la
     texto: [
       'Buenas,',
       '',
-      vende
-        ? `Les escribimos desde consignatarias.com. Un productor publicó con nosotros hacienda que puede interesarle a ${o.contraparte}:`
-        : `Les escribimos desde consignatarias.com. Un comprador publicó con nosotros un pedido que ${o.contraparte} puede cubrir:`,
+      // A otro lead se le habla de "ustedes"; a una firma o planta, por su nombre.
+      o.contraparte === 'ustedes'
+        ? vende
+          ? 'Les escribimos desde consignatarias.com. Un productor publicó con nosotros hacienda que coincide con lo que ustedes buscan:'
+          : 'Les escribimos desde consignatarias.com. Un comprador publicó con nosotros un pedido de hacienda como la que ustedes ofrecen:'
+        : vende
+          ? `Les escribimos desde consignatarias.com. Un productor publicó con nosotros hacienda que puede interesarle a ${o.contraparte}:`
+          : `Les escribimos desde consignatarias.com. Un comprador publicó con nosotros un pedido que ${o.contraparte} puede cubrir:`,
       '',
       detalleCorto(o.datos),
       '',

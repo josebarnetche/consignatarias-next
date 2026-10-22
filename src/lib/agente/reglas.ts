@@ -35,7 +35,23 @@ export const DIAS_ESPERA_CONTRAPARTE = 4
 /** Recordatorios al productor que no completó los datos antes de dormir el caso. */
 export const MAX_RECORDATORIOS = 2
 /** Días sin respuesta tras los que se manda UN recordatorio a la contraparte (antes de darla por perdida). */
-export const RECORDATORIO_CONTRAPARTE_DIAS = 2
+/**
+ * Recordatorios a una contraparte que no contestó, en días desde la oferta: 1 inicial
+ * + 3 seguimientos en 14 días. Del cuarto en adelante se disparan bajas y denuncias de
+ * spam (docs/agente/investigacion-cierre-broker.md). Unificado el 22-10-2026; antes
+ * era un solo recordatorio a los 2 días.
+ */
+export const CADENCIA_CONTRAPARTE_DIAS = [0, 3, 7, 14] as const
+/** Una oferta sin respuesta se da por perdida 3 días después del último recordatorio. */
+export const DIAS_OFERTA_VIVA = 17
+/** Primer recordatorio (compatibilidad con lo que lo importe). */
+export const RECORDATORIO_CONTRAPARTE_DIAS = CADENCIA_CONTRAPARTE_DIAS[1]
+
+/** ¿Toca otro recordatorio a esta oferta? `seguimientos` = recordatorios ya enviados. */
+export function tocaRecordatorio(seguimientos: number, diasDesdeOferta: number): boolean {
+  const proximo = CADENCIA_CONTRAPARTE_DIAS[seguimientos + 1]
+  return proximo !== undefined && diasDesdeOferta >= proximo
+}
 /** Seguimiento de una presentación: días después de presentar en que se pregunta. */
 export const SEGUIMIENTO_DIAS = [4, 10, 21, 35] as const
 /** Tope de correos a contactos NUEVOS (contrapartes que no escribieron) por día. */

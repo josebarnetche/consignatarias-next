@@ -32,7 +32,7 @@ export default async function PorTipo() {
   const db = createAdminClient()
   const [leadsQ, casosQ] = await Promise.all([
     db.from('producer_leads').select('id,intent,province,head_count,category,hectareas').in('status', ABIERTOS),
-    db.from('agente_casos').select('lead_id'),
+    db.from('agente_casos').select('lead_id,estado'),
   ])
   if (leadsQ.error) {
     return (
@@ -42,7 +42,10 @@ export default async function PorTipo() {
     )
   }
   const leads = (leadsQ.data ?? []) as LeadFila[]
-  const enAgente = new Set((casosQ.data ?? []).map((c) => c.lead_id as number))
+  const casos = (casosQ.data ?? []) as Array<{ lead_id: number; estado: string }>
+  const enAgente = new Set(casos.map((c) => c.lead_id))
+  // Lo que el agente ya descartó o cerró no es plata a trabajar: así la tabla cuadra con "Potencial".
+  const terminados = new Set(casos.filter((c) => ['descartado', 'dormido', 'retirado', 'cerrado'].includes(c.estado)).map((c) => c.lead_id))
   const precioNovilloKg = canonEnPlata(1, 1).referencia
 
   const valuar = (l: LeadAbierto): Valuacion | null => {
@@ -56,12 +59,12 @@ export default async function PorTipo() {
       { precioNovilloKg, pesoKg: () => 0, kgHaMesTipico: kgHaMesTipico(f.province) },
     )
   }
-  const filas = resumenPorTipo(leads, enAgente, valuar)
+  const filas = resumenPorTipo(leads, enAgente, valuar, terminados)
 
   return (
     <AdminSection
       title="Por tipo de operación"
-      action={<span className="text-xxs text-zinc-500 font-terminal">leads abiertos · valores de referencia</span>}
+      action={<span className="text-xxs text-zinc-500 font-terminal">leads que se pueden trabajar · valores de referencia</span>}
       flush
     >
       {filas.length === 0 ? (
