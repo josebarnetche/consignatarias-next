@@ -60,7 +60,9 @@ describe('doctrina del server MCP', () => {
     const builds = [...tramoPrompts.matchAll(/build: \([^)]*\) => [`'](.*)[`'],?$/gm)].map((m) => m[1])
     expect(builds.length).toBeGreaterThanOrEqual(15)
     const mencionadas = builds.flatMap((b) => [...b.replace(/\$\{[^}]*\}/g, '').matchAll(/\b([a-z]+(?:_[a-z]+)+)\b/g)].map((m) => m[1]))
-    const NO_TOOL = new Set(['kg_ha'])
+    // Parámetros y valores de enum que los prompts nombran a propósito; tienen que existir en los tools.
+    const NO_TOOL = new Set(['kg_ha', 'arrendar_busco', 'arrendar_ofrezco', 'contacto_para_operar'])
+    for (const p of NO_TOOL) expect(tramoTools).toContain(p)
     expect(mencionadas.filter((n) => !tools.has(n) && !NO_TOOL.has(n))).toEqual([])
     expect(builds.some((b) => b.includes('market_match'))).toBe(true)
   })
