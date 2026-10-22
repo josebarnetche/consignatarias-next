@@ -7,6 +7,11 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.247.0] — 2026-10-22
+
+### Agregado
+- **/admin/agente → "Del MCP a la operación"** (`src/components/admin/agente/EmbudoMcp.tsx`, cálculo en `src/lib/agente/embudo-mcp.ts` con tests): consultas reales del MCP en 7 días (sin escáneres) y orígenes distintos por IP, ambos contra la base del 22-10 (`docs/mcp-medicion-base.md`); consultas de la integración anónima (`esIntegracionAnonima`); llamadas al puente (`market_match`, `cattle_buying_request`); y desde la base, pedidos `mcp:*` o de demanda de origen mcp → verificados → en operación en el agente. Los pedidos van en rangos (0 · 1–2 · 3–9 · 10–49 · 50+), nunca en conteos exactos. Ronda 2 de la integración de sesiones: mide el puente de la 39 y la verificación de la 50.
+
 ## [1.246.0] — 2026-10-22
 
 ### Cola de verificación: los pedidos del MCP y las demandas de compra tienen salida
