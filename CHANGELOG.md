@@ -7,6 +7,15 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.244.1] — 2026-10-22
+
+### `/mercado/demanda`: anclas fijas `#hacienda` y `#campos`
+
+- Las plantillas con tráfico van a enlazar a `/mercado/demanda#hacienda`. Por eso las anclas existen aunque la sección quede vacía: los grupos k-anónimos aparecen y desaparecen.
+- Se usan anclas y no `?categoria=` para no romper el ISR de 1 h.
+
+---
+
 ## [1.244.0] — 2026-10-22
 
 ### Demandas de compra: el agente escribe solo a quien aceptó que lo contacten

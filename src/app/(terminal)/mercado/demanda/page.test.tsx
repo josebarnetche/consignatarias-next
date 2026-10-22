@@ -38,6 +38,12 @@ describe('/mercado/demanda', () => {
     expect(await render()).toContain('Demanda de hacienda y campos hoy')
   })
 
+  it('las anclas #hacienda y #campos existen aunque no haya grupos', async () => {
+    const html = await render()
+    expect(html).toContain('id="hacienda"')
+    expect(html).toContain('id="campos"')
+  })
+
   it('con datos muestra los grupos y nunca datos de un lead', async () => {
     LEADS = [lead(1, {}), lead(2, {}), lead(3, {}), lead(4, { source: 'mcp:market_match' })]
     const html = await render()
