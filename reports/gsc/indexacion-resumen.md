@@ -1,17 +1,17 @@
-# Indexación — 2026-10-21
+# Indexación — 2026-10-22
 
-Inspeccionadas 3575 de 2960 URLs del sitemap.
+Inspeccionadas 3583 de 2963 URLs del sitemap.
 
 | Sección | Inspeccionadas | Indexadas | NO indexadas | % |
 |---|---:|---:|---:|---:|
-| /remates | 1434 | 1019 | 415 | 29% |
+| /remates | 1439 | 1024 | 415 | 29% |
 | /productividad | 479 | 168 | 311 | 65% |
-| /consignatarias | 90 | 70 | 20 | 22% |
+| /consignatarias | 91 | 71 | 20 | 22% |
 | /frigorificos | 1145 | 1133 | 12 | 1% |
-| /calendario | 77 | 71 | 6 | 8% |
+| /calendario | 78 | 71 | 7 | 9% |
 | /precios | 117 | 114 | 3 | 3% |
 | /vr | 7 | 5 | 2 | 29% |
-| /mercado | 39 | 38 | 1 | 3% |
+| /mercado | 40 | 39 | 1 | 3% |
 | /campos | 70 | 69 | 1 | 1% |
 | /informes | 5 | 4 | 1 | 20% |
 | /como-se-tasa-un-campo | 1 | 0 | 1 | 100% |
@@ -113,8 +113,8 @@ Inspeccionadas 3575 de 2960 URLs del sitemap.
 
 | Motivo | URLs |
 |---|---:|
-| Enviada e indexada | 2795 |
-| Descubierta: actualmente sin indexar | 457 |
+| Enviada e indexada | 2802 |
+| Descubierta: actualmente sin indexar | 458 |
 | Google no reconoce esta URL | 248 |
 | Rastreada: actualmente sin indexar | 39 |
 | Excluida por una etiqueta "noindex" | 20 |
