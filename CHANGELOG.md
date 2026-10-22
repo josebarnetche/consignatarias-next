@@ -29,6 +29,16 @@ José: «avanzá con todo» (22-10-2026), sobre las decisiones pendientes que li
 
 ---
 
+## [1.244.3] — 2026-10-22
+
+### CUIT obligatorio en el formulario corto; términos y privacidad al día
+
+- **El formulario corto "vendo / busco hacienda" pide el CUIT, obligatorio** (José, 22-10), con dígito verificador. `/api/producer-leads` lo exige para los `source` de ese formulario (`esFormularioCorto()`): la operación se trabaja a nombre de alguien y sin CUIT no se verifica a la contraparte.
+- **Términos**: el punto 3 decía que el Sitio "no realiza intermediación", y desde octubre presta un servicio de contacto con 1% sobre el bruto. Nuevo punto 3 bis con cómo funciona (pedido sin datos de contacto, ACEPTO escrito, quién paga, lo que no hacemos, SIOCAL/RENSPA, BAJA, avisos de remates ≠ contacto para operar). El punto 11 ya no dice que el MCP es solo Enterprise. Conducta: prohibido cargar datos de otra persona, también vía IA o MCP.
+- **Privacidad**: los datos de los pedidos (CUIT, teléfono, correos y constancias), a quién se comunican y cuándo, el reenvío a la planta desde la ficha de un frigorífico, los pedidos que llegan por IA o MCP (se verifican antes), el tratamiento automatizado con IA, Anthropic y Hostinger como encargados, y conservación de pedidos (24 meses desde el último contacto).
+
+---
+
 ## [1.244.2] — 2026-10-22
 
 ### De las plantillas con tráfico a la mesa de demanda
