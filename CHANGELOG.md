@@ -7,7 +7,7 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
-## [1.244.0] — 2026-10-22
+## [1.245.0] — 2026-10-22
 
 ### Agente: la oferta de hacienda como "servicio de contacto", cadencia 0/3/7/14 y tablero que cuadra
 
@@ -26,6 +26,33 @@ José: «avanzá con todo» (22-10-2026), sobre las decisiones pendientes que li
   - Antes había un solo recordatorio, a los 2 días.
 - **`/admin/agente` → "Por tipo de operación"** cuenta solo lo que se puede trabajar: saca los leads que el agente ya descartó, durmió, retiró o cerró. Así cuadra con "Potencial". Antes un lead descartado con muchas cabezas inflaba la tabla.
 - **Decisiones pendientes:** salen solas "precio pedido en la oferta" y "falta el pie comercial". "SIOCAL" pasa a "falta validarlo con un abogado".
+
+---
+
+## [1.244.2] — 2026-10-22
+
+### De las plantillas con tráfico a la mesa de demanda
+
+- **`MesaDemandaLink`**: una línea "¿Hay compradores o vendedores de {categoría} ahora? Ver la mesa de demanda →" hacia `/mercado/demanda#hacienda`, para quien todavía no quiere dejar sus datos. Va dentro de `PuenteHacienda` (precios, cuánto vale una vaca/toro, arrendamiento, mercado), debajo del formulario corto en las fichas de remate y debajo del formulario de `/quiero-comprar`. Hasta acá la mesa solo se enlazaba desde `/mercado` y el sitemap.
+
+---
+
+## [1.244.1] — 2026-10-22
+
+### `/mercado/demanda`: anclas fijas `#hacienda` y `#campos`
+
+- Las plantillas con tráfico van a enlazar a `/mercado/demanda#hacienda`. Por eso las anclas existen aunque la sección quede vacía: los grupos k-anónimos aparecen y desaparecen.
+- Se usan anclas y no `?categoria=` para no romper el ISR de 1 h.
+
+---
+
+## [1.244.0] — 2026-10-22
+
+### Demandas de compra: el agente escribe solo a quien aceptó que lo contacten
+
+- **Consentimiento explícito para operar** (José, 22-10). Quien deja un pedido en `/quiero-comprar` o en `cattle_buying_request` aceptaba solo avisos de remates, y el agente igual le escribía para armar la operación. Ahora `demanda_compra.consiente_contacto` (migración `20261022_demanda_consentimiento.sql`, default `false`) decide: sin consentimiento la demanda sigue recibiendo avisos de remates pero no entra al agente.
+- **Formulario `/quiero-comprar`**: checkbox opcional "también quiero que me contacten para conseguir la hacienda". `/api/demanda` lo recibe como `contacto_para_operar`.
+- Las demandas web #2 y #3, que ya están en el agente, siguen como están. Las del MCP con consentimiento siguen entrando en `needs_review` (v1.242.1).
 
 ---
 

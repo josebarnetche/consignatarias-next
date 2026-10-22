@@ -95,6 +95,8 @@ export interface DemandaInput {
   origen: 'mcp' | 'web'
   originIp: string
   notas?: string | null
+  /** Aceptó que lo contactemos para armar la operación (no solo avisos de remates). */
+  consienteContacto?: boolean
 }
 
 /**
@@ -119,6 +121,8 @@ export async function crearDemanda(input: DemandaInput): Promise<{ id: number; m
       origen: input.origen,
       origin_ip: input.originIp,
       notas: input.notas ?? null,
+      // Solo se manda cuando es true: así el insert no depende de la columna hasta que alguien consiente.
+      ...(input.consienteContacto ? { consiente_contacto: true } : {}),
     })
     .select('id')
     .single()

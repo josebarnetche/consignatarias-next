@@ -46,6 +46,7 @@ export async function POST(req: NextRequest) {
       origen: 'web',
       originIp: ip,
       notas,
+      consienteContacto: body.contacto_para_operar === true,
     })
     return NextResponse.json({ ok: true, id, matches })
   } catch (e) {

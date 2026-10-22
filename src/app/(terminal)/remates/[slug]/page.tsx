@@ -24,6 +24,7 @@ import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 import LoginGate from '@/components/LoginGate'
 import ConsultarRemate from '@/components/remates/ConsultarRemate'
 import HaciendaLeadCorto from '@/components/leads/HaciendaLeadCorto'
+import MesaDemandaLink from '@/components/MesaDemandaLink'
 import { provinciaParaFormulario, zonaParaFormulario, sourceDePagina } from '@/lib/leads/contexto-pagina'
 // DteCTA inline implementation for remate pages (lock-in strategy)
 import { 
@@ -822,6 +823,7 @@ export default async function RemateDetailPage({ params }: Props) {
             title={isPast ? '¿Vendés o buscás hacienda en la zona?' : '¿Tenés hacienda y no llegás a este remate?'}
             subtitle={`Dejá cuántas cabezas, qué categoría y dónde está, y te escribimos por email. Lo trabaja consignatarias.com, no ${consigDisplay}: buscamos la contraparte entre compradores, frigoríficos y firmas de la zona.`}
           />
+          <MesaDemandaLink className="mt-2" />
 
           {/* Consignataria profile card */}
           {consigProfile && (
