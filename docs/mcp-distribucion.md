@@ -14,7 +14,7 @@
 
 ## Dónde estamos hoy
 
-| Directorio | Estado al 21-10 | Qué falta |
+| Directorio | Estado al 22-10 | Qué falta |
 |---|---|---|
 | Registry oficial (`registry.modelcontextprotocol.io`) | ✅ **Publicado v1.9.0 el 22-10** (latest), con `title`, íconos, `repository` y descripción en inglés | Nada |
 | Glama (connector) | Listado, Healthy, 100% de uptime en 65 días, TDQS **A 3,8/5** sobre 28 tools (medido antes de v1.9.0; hoy son 29). **Sin reclamar** | Reclamarlo (paso 2) |
@@ -154,6 +154,8 @@ enlaza a la ficha de Smithery, así que puede servir como `backlinkUrl`:
 
 Es el envío con más uso real potencial, porque el server aparece dentro de Claude.
 
+> **Por qué va primero (medido el 22-10):** de las ~365 llamadas semanales a las tools de precio, lote, remates y campos que no vienen de la integración anónima, ~350 son escáneres (python-requests, que barre 23 tools en una hora desde un origen nuevo cada vez, y BrickBlueBot). Clientes humanos: unos 5 por semana. Mejorar el texto de las respuestas no llega a nadie si no hay humanos del otro lado. Lo que trae humanos es estar dentro del cliente.
+
 **Requisitos** (`https://www.claude.com/docs/connectors/building/submission`). Este PR deja todo
 cumplido salvo lo que es de cuenta:
 - URL https, sin autenticación (permitido para datos públicos). ✔
@@ -193,7 +195,8 @@ Authentication ("no authentication"), Data handling, Test & launch, Compliance y
 - **Data handling:**
   - Las tools de lectura no guardan datos personales; el origen se agrupa por un hash, no por IP.
   - `create_price_alert` y `cattle_buying_request` guardan el email que el usuario da para avisarle.
-  - `market_match` con `registrar: true` y `consentimiento: true` guarda nombre y email o teléfono para que una persona lo contacte. Queda en revisión hasta que alguien verifique el contacto.
+  - `market_match` con `registrar: true` y `consentimiento: true` guarda nombre y email o teléfono para que una persona lo contacte. Nadie le escribe hasta que la persona confirma desde un link firmado que le llega por mail (doble opt-in, v1.249.0) o hasta que alguien verifica el contacto.
+  - `cattle_buying_request` pasa a operación solo con `contacto_para_operar: true` (consentimiento explícito, v1.244.0); sin eso, solo manda avisos de remates.
 
 **Qué aprueba José:**
 - Enviar con la cuenta de Memola.
