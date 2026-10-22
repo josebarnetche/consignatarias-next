@@ -18,6 +18,15 @@ describe('tomable', () => {
   })
   it('esOrigenSinVerificar', () => {
     expect(esOrigenSinVerificar(' mcp:x')).toBe(true)
-    expect(esOrigenSinVerificar('demanda_compra:12')).toBe(false)
+    // Toda demanda cuenta como sin verificar, pero solo frena en needs_review: las de la web entran en new.
+    expect(esOrigenSinVerificar('demanda_compra:12')).toBe(true)
+    expect(esOrigenSinVerificar('frigorifico:1')).toBe(false)
+  })
+})
+
+describe('demandas de compra en needs_review (las del MCP, ver PR de demanda.ts)', () => {
+  it('una demanda en needs_review no se toma; en new (web o verificada) sí', () => {
+    expect(tomable({ status: 'needs_review', source: 'demanda_compra:9' })).toBe(false)
+    expect(tomable({ status: 'new', source: 'demanda_compra:9' })).toBe(true)
   })
 })

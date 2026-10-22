@@ -577,6 +577,8 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
       const { data: ls } = await db.from('producer_leads').select('id,email').in('id', otros.map((o) => o.lead_id))
       const mail = new Map((ls ?? []).map((l) => [l.id, l.email]))
       for (const o of otros) {
+        // Un caso de campo (arrendamiento, tasación) no es contraparte de hacienda (campos-agente.ts).
+        if (!esCasoDeHacienda(o.datos)) continue
         const d = o.datos as DatosHacienda
         const email = mail.get(o.lead_id)
         if (email) lista.push({ tipo: 'lead', ref: String(o.lead_id), nombre: `un productor de ${d.zona ?? d.provincia ?? 'la zona'}`, email, provincia: d.provincia ?? d.zona ?? null, categoria: d.categoria, cabezas: d.cabezas, lado: o.lado as Lado })

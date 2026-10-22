@@ -134,3 +134,12 @@ describe('trabajarCampos (prendido)', () => {
     expect(insertados).toHaveLength(0)
   })
 })
+
+describe('un caso de campo nunca es contraparte de hacienda', () => {
+  it('motor.ts filtra los casos con datos.tipo de campo al armar candidatos', async () => {
+    const fs = await import('node:fs')
+    const src = fs.readFileSync(new URL('./motor.ts', import.meta.url), 'utf8')
+    const bloque = src.slice(src.indexOf("from('agente_casos').select('lead_id,lado,datos')"), src.indexOf("tipo: 'lead', ref: String(o.lead_id)"))
+    expect(bloque).toContain('esCasoDeHacienda(o.datos)')
+  })
+})

@@ -7,9 +7,14 @@
  * los pase a `new`. Coordinado con la sesión del MCP (INTEGRACION-SESIONES-2026-10-22.md).
  */
 
-/** Orígenes que cargó un tercero automatizado: no se les escribe sin verificación humana. */
+/**
+ * Orígenes que pudo cargar un tercero automatizado: no se les escribe sin verificación humana.
+ *  · 'mcp:…' — pedidos del MCP (market_match).
+ *  · 'demanda_compra:N' — demandas de compra; las del MCP (cattle_buying_request) entran
+ *    en needs_review (demanda.ts → leadDeDemanda). Las de la web entran en `new` y pasan.
+ */
 export function esOrigenSinVerificar(source: string | null | undefined): boolean {
-  return /^mcp:/i.test((source ?? '').trim())
+  return /^(mcp:|demanda_compra:)/i.test((source ?? '').trim())
 }
 
 /** ¿Puede el agente tomar (y escribirle a) este lead? */
