@@ -31,6 +31,7 @@ describe('el estado se lee de la oferta que usa el motor', () => {
       ofertaMuestraPrecioPedido: false,
       ofertaConPieComercial: true,
       encuadreHacienda: 'servicio_contacto',
+      pendientesVerificacion: 0,
     })
   })
   it('esas tres decisiones salen solas de la lista', () => {
@@ -39,5 +40,11 @@ describe('el estado se lee de la oferta que usa el motor', () => {
     expect(ids).not.toContain('precio-pedido')
     expect(ids).not.toContain('pie-comercial')
     expect(ids).toContain('siocal-abogado') // el riesgo legal no se da por cerrado sin abogado
+  })
+  it('los pedidos sin verificar aparecen con su conteo, y sin pendientes no hay línea', () => {
+    const con = decisionesPendientes(estadoActual({ tiposActivos: true, ofertaDePrueba, pendientesVerificacion: 3 }))
+    expect(con.find((d) => d.id === 'verificar-contactos')?.titulo).toMatch(/^3 pedidos esperan/)
+    const sin = decisionesPendientes(estadoActual({ tiposActivos: true, ofertaDePrueba, pendientesVerificacion: 0 }))
+    expect(sin.map((d) => d.id)).not.toContain('verificar-contactos')
   })
 })

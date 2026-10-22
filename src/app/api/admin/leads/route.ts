@@ -4,6 +4,7 @@ import { requireServiceClient } from '@/lib/supabase'
 import { createClient } from '@/lib/supabase-server'
 import { logActivity, describeStatusChange, getActivityByLead } from '@/lib/leads/activity'
 import { origenLead } from '@/lib/leads/origen-admin'
+import { transicionBloqueada } from '@/lib/agente/verificacion'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -92,9 +93,18 @@ export async function PATCH(req: NextRequest) {
   // Estado previo, para que la bitácora diga de dónde a dónde se movió el lead.
   const { data: antes } = await db()
     .from('producer_leads')
-    .select('status, routed_to_slug')
+    .select('status, routed_to_slug, source')
     .eq('id', id)
     .maybeSingle()
+
+  // Un pedido sin verificar (MCP, demanda de compra) solo se verifica o se descarta (verificacion.ts).
+  if (antes) {
+    const bloqueo = transicionBloqueada(antes, {
+      status: typeof body.status === 'string' ? body.status : undefined,
+      rutea: typeof body.routed_to_slug === 'string' && !!body.routed_to_slug,
+    })
+    if (bloqueo) return NextResponse.json({ error: bloqueo }, { status: 409 })
+  }
 
   const patch: Record<string, unknown> = {}
   const nowIso = new Date().toISOString()

@@ -7,6 +7,18 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.246.0] — 2026-10-22
+
+### Cola de verificación: los pedidos del MCP y las demandas de compra tienen salida
+
+Hasta acá un lead `mcp:%` o `demanda_compra:%` en `needs_review` quedaba trabado: el agente no lo toma (bien), pero "avanzarlo" en `/admin/leads` lo mandaba a `routed`, y ahí el agente no lo toma nunca. Repartido entre las sesiones el 22-10 (paso 2, zona del agente).
+
+- **`/admin/leads`:** en esos leads, el botón sugerido es **"Contacto verificado → al agente"**. Lo pasa a `new` y el agente lo toma en la próxima corrida. "Descartar" sigue igual.
+- **La API frena el resto** (`PATCH /api/admin/leads`, 409): un lead sin verificar no se rutea ni se marca contactado ni ganado. Solo se verifica, se descarta o se pierde. Regla pura en `verificacion.ts` → `pendienteVerificacion()`, `transicionBloqueada()`, con tests.
+- **`/admin/agente` → Decisiones:** "N pedidos esperan que verifiques el contacto", con el conteo real. Desaparece cuando no queda ninguno.
+
+---
+
 ## [1.245.0] — 2026-10-22
 
 ### Agente: la oferta de hacienda como "servicio de contacto", cadencia 0/3/7/14 y tablero que cuadra

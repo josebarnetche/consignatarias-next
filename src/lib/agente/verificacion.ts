@@ -23,3 +23,25 @@ export function tomable(l: { status: string | null | undefined; source: string |
   if (l.status === 'needs_review') return !esOrigenSinVerificar(l.source)
   return false
 }
+
+/** ¿Es un lead cargado por un tercero que todavía nadie verificó? */
+export function pendienteVerificacion(l: { status: string | null | undefined; source: string | null | undefined }): boolean {
+  return l.status === 'needs_review' && esOrigenSinVerificar(l.source)
+}
+
+/**
+ * Un lead sin verificar tiene solo dos salidas: "contacto verificado" (pasa a
+ * `new` y lo toma el agente) o descartarlo/perderlo. Rutearlo, marcarlo contactado
+ * o ganado lo dejaría fuera del agente para siempre sin que nadie haya confirmado
+ * que el mail es de quien dice. Devuelve el motivo del bloqueo, o null si pasa.
+ */
+export function transicionBloqueada(
+  antes: { status: string | null | undefined; source: string | null | undefined },
+  cambio: { status?: string; rutea?: boolean },
+): string | null {
+  if (!pendienteVerificacion(antes)) return null
+  if (cambio.rutea || (cambio.status && !['new', 'needs_review', 'discarded', 'lost'].includes(cambio.status))) {
+    return 'Este pedido lo cargó un agente externo y el contacto no está verificado: marcalo como verificado (pasa al agente) o descartalo.'
+  }
+  return null
+}
