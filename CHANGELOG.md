@@ -7,6 +7,52 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.252.0] — 2026-10-22
+
+### Cierre de la integración de sesiones: README, ROADMAP y CLAUDE.md al día
+
+Versión final de la integración del 21 y 22-10. Del 19 al 21-10, tres sesiones de Claude construyeron en paralelo el mismo cerrador. El 22-10 se consolidaron en un solo motor (el agente) y se integraron en tres rondas coordinadas, de un PR por vez. Plan y bitácora: `INTEGRACION-SESIONES-2026-10-22.md` (local).
+
+- **README:** la mesa de demanda (`/mercado/demanda`) en la sección de productores; el MCP para operar (`market_match`, verificación de lo que carga un tercero); registry v1.9.0; pie en v1.252.0.
+- **ROADMAP:** estado v1.235 → v1.252: qué quedó andando, el resultado sin maquillar (ninguna operación cerrada, $0), las decisiones que esperan a José y los próximos pasos.
+- **CLAUDE.md:** un solo motor, privacidad de leads (solo rangos), coordinación entre sesiones y la regla de conflictos en `package.json`.
+
+#### Integración 21/22-10: PR → versión
+
+| PR | Versión | Qué |
+|---|---|---|
+| #74 | 1.238.0 | Formulario corto vendo/busco en plantillas con tráfico |
+| #73 | 1.239.0 | SEO de plantillas y puente precio → vender/comprar |
+| #72 | 1.240.0 | Prospectos PRO: embudo medido e informe por firma |
+| #75 | 1.241.0 | MCP: ficha lista para los directorios |
+| #79 | 1.242.0 | Agente por tipo de operación, cola por plata y filtro MCP |
+| #80 | 1.242.1 | Las demandas del MCP no se sincronizan sin verificar |
+| #78 | 1.243.0 | MCP 1.9.0: `market_match`, `/mercado/demanda`, privacidad de leads |
+| #81 | 1.244.0 | Demandas de compra solo con consentimiento para operar |
+| #86 | 1.244.1 | `/mercado/demanda`: anclas fijas |
+| #85 | 1.244.2 | Enlaces a la mesa desde precios, remates y quiero-comprar |
+| #87 | 1.244.3 | CUIT obligatorio; términos y privacidad |
+| #83 | 1.245.0 | Oferta como servicio de contacto, cadencia 0/3/7/14 |
+| #88 | 1.246.0 | Cola de verificación |
+| #89 | 1.247.0 | Embudo del MCP a la operación en `/admin/agente` |
+| #90 | 1.248.0 | MCP: puente del dato a la operación |
+| #91 | 1.249.0 | Doble opt-in |
+| #93 | 1.249.1 | Seguridad: 11 alertas de Dependabot |
+| #92 | 1.250.0 | MCP: la mesa desde el primer mensaje. **No llegó a producción** |
+| #95 | 1.250.1 | Restaura el `package.json` de la 1.249.1 (arregla el deploy de la 1.250.0) |
+| #94 | 1.251.0 | Arrendamiento valuado dentro de la escala legal |
+| este | 1.252.0 | Docs de cierre |
+
+**Sin versión (solo docs):** #82, estado de la distribución del MCP al 22-10, y #84, medición base del MCP del 22-10.
+
+**Notas para cuadrar con el historial de git:**
+- El commit squash de #83 dice "(v1.244.0)", pero la versión real es la 1.245.0 (`package.json`, este CHANGELOG y el tag).
+- El título de #78 dice "MCP 1.9.0": es la versión del server MCP. La del producto es la 1.243.0.
+- La 1.250.0 falló en Vercel (`ERR_PNPM_LOCKFILE_CONFIG_MISMATCH`) y producción siguió en la 1.249.1 hasta la 1.250.1.
+- El cerrador genérico de la rama `closer-agentico` no se mergeó: quedó como tag local `archivo/closer-agentico-2026-10-21`.
+
+---
+
 ## [1.251.0] — 2026-10-22
 
 ### Agente: el arrendamiento se valúa dentro de la escala legal
