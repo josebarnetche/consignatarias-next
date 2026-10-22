@@ -25,6 +25,14 @@ Hasta ahora el tablero valuaba el arrendamiento siempre en 0,8 meses de canon. L
 
 ---
 
+## [1.250.1] — 2026-10-22
+
+### Arreglo: el package.json de la v1.249.1 vuelve completo
+
+El rebase de la v1.250.0 (#92) se quedó con un `package.json` anterior a la v1.249.1. Volvieron `xlsx` 0.18.5 y `vitest` 4.1.11, se cayeron los `overrides` de `follow-redirects` y `postcss-selector-parser` y desapareció `vite`. El lockfile ya no coincidía y Vercel no pudo desplegar la v1.250.0 (`ERR_PNPM_LOCKFILE_CONFIG_MISMATCH`); producción quedó en la v1.249.1. Se restaura el `package.json` de la v1.249.1, con la versión nueva. Sin cambios de código.
+
+---
+
 ## [1.250.0] — 2026-10-22
 
 ### MCP: la mesa se ofrece desde el primer mensaje
