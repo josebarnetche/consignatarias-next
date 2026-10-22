@@ -11,6 +11,8 @@ import type { EntityTier } from '@/lib/features'
 import type { AuctionResult } from './page'
 import FeatureGate from '@/components/FeatureGate'
 import ContactlessLeadForm from '@/components/ContactlessLeadForm'
+import HaciendaLeadCorto from '@/components/leads/HaciendaLeadCorto'
+import { provinciaParaFormulario, zonaParaFormulario, sourceDePagina } from '@/lib/leads/contexto-pagina'
 import LoginGate from '@/components/LoginGate'
 import { normalizeUrl } from '@/lib/utils/url'
 import { remateAnchor, remateHref } from '@/lib/remates-enlaces'
@@ -985,6 +987,19 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
           </div>
         </div>
       </div>
+
+      {/* VENDO / BUSCO HACIENDA (21-10-2026) — las fichas de consignataria sumaron 966
+          vistas en 30 días y cero leads de hacienda: la única captura era la de las firmas
+          SIN contacto. El productor que llega a una firma de su zona suele tener hacienda;
+          el formulario corto se precarga con la provincia y la localidad de la firma y el
+          lead entra como `consignataria:<slug>` para medir esta plantilla. */}
+      <HaciendaLeadCorto
+        className="mt-3"
+        source={sourceDePagina('consignataria', profile.canonicalSlug)}
+        presetProvince={provinciaParaFormulario(profile.province)}
+        presetZona={provinciaParaFormulario(profile.province) ? zonaParaFormulario(profile.location) : ''}
+        subtitle={`Dejá cuántas cabezas, qué categoría y dónde está, y te escribimos por email. Lo trabaja consignatarias.com, no ${profile.displayName}: buscamos la contraparte en toda la zona.`}
+      />
 
       {/* REMATES ESPECIALES — destaque sutil debajo del hero, antes del cronograma.
           Config-driven (remates-especiales.json), reusable para cualquier firma. */}

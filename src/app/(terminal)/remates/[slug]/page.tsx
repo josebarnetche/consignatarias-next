@@ -23,6 +23,8 @@ import { AddToCalendarButton } from '@/components/ui/AddToCalendarButton'
 import ProUpgradePrompt from '@/components/ProUpgradePrompt'
 import LoginGate from '@/components/LoginGate'
 import ConsultarRemate from '@/components/remates/ConsultarRemate'
+import HaciendaLeadCorto from '@/components/leads/HaciendaLeadCorto'
+import { provinciaParaFormulario, zonaParaFormulario, sourceDePagina } from '@/lib/leads/contexto-pagina'
 // DteCTA inline implementation for remate pages (lock-in strategy)
 import { 
   Calendar, 
@@ -806,6 +808,20 @@ export default async function RemateDetailPage({ params }: Props) {
             </>
             </LoginGate>
           </div>
+
+          {/* VENDO / BUSCO HACIENDA (21-10-2026) — las fichas de remate sumaron 1.289 vistas
+              en 30 días y cero leads: quien mira un remate de su zona tiene hacienda para
+              vender o está comprando, y la página no le ofrecía nada fuera del remate. Se
+              precarga la provincia y la localidad del remate; NO la categoría (un remate
+              mezcla lotes y precargarla sería inventarle el dato). */}
+          <HaciendaLeadCorto
+            className="mt-8"
+            source={sourceDePagina('remate', slug)}
+            presetProvince={provinciaParaFormulario(remate.province)}
+            presetZona={provinciaParaFormulario(remate.province) ? zonaParaFormulario(cityOf(remate)) : ''}
+            title={isPast ? '¿Vendés o buscás hacienda en la zona?' : '¿Tenés hacienda y no llegás a este remate?'}
+            subtitle={`Dejá cuántas cabezas, qué categoría y dónde está, y te escribimos por email. Lo trabaja consignatarias.com, no ${consigDisplay}: buscamos la contraparte entre compradores, frigoríficos y firmas de la zona.`}
+          />
 
           {/* Consignataria profile card */}
           {consigProfile && (

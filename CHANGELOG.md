@@ -7,6 +7,19 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.238.0] — 2026-10-21
+
+### Conversión: "vendo / busco hacienda" en las plantillas con tráfico y cero leads
+
+Línea de base (30 días al 21-10, vistas = `value_events.time_on_page` por plantilla, leads = `producer_leads` por `source`): ficha de frigorífico 5.358 vistas → 10 leads (0,19 %); provincia de frigoríficos 1.444 → 0; ficha de remate 1.289 → 0; ficha de consignataria 966 → 0; `/precios/*` ~550 → 0. Y de los 31 leads de compra/venta históricos, sólo 13 traían cabezas + categoría + zona + email: el resto obligaba al agente a pedir los datos por mail.
+
+- **Formulario corto `HaciendaLeadCorto`** (`src/components/leads/`): vendo/busco, categoría, cabezas, provincia, localidad, nombre, email y WhatsApp opcional. Pide justo lo que el agente necesita para ofrecer (`DATOS_MINIMOS`) y exige el email porque el agente trabaja por correo (un lead sin email se descarta solo). Sin precio ni CUIT en el primer paso. Inline, sin modal; mide `lead_capture_open` (primer foco) y `lead_capture_submit` con su `source`.
+- **Dónde va**: ficha de consignataria (debajo del encabezado), ficha de remate (después del contexto), provincia de frigoríficos (debajo del listado, con enlace desde la intro) y `/precios/[categoria]` (después de la descripción). En las fichas de firma y de remate aclara que lo trabaja consignatarias.com, no la firma.
+- **Precarga desde la página** (`src/lib/leads/contexto-pagina.ts`, con tests): provincia y localidad de la firma o del remate, provincia de la página de frigoríficos, categoría de `/precios`. La Capital Federal no se precarga (hay firmas con sede en CABA que rematan en Tornquist) y en los remates no se precarga la categoría (un remate mezcla lotes). La ficha de frigorífico ahora también precarga la provincia de la planta en su formulario.
+- **`source` por página**: `consignataria:<slug>`, `remate:<slug>`, `precios:<categoria>`, `frigorificos-provincia:<slug>`. `/admin/leads` los muestra con su grupo y enlace (`origenLead`).
+- Una sola lista de provincias para todos los formularios (`PROVINCIAS_FORM`, suma Tierra del Fuego).
+
+---
 ## [1.237.2] — 2026-10-21
 
 ### Agente: si no hay a quién ofrecer, se sigue buscando

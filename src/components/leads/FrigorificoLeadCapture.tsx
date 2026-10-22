@@ -10,9 +10,12 @@ import LeadCapture from './LeadCapture'
 export default function FrigorificoLeadCapture({
   source,
   frigorificoName,
+  presetProvince,
 }: {
   source: string
   frigorificoName?: string
+  /** Provincia de la planta, ya en la grafía del selector (`provinciaParaFormulario`). */
+  presetProvince?: string
 }) {
   return (
     <LeadCapture
@@ -22,6 +25,7 @@ export default function FrigorificoLeadCapture({
       defaultIntent="vender"
       intents={[{ value: 'vender', label: 'Vender hacienda para faena' }]}
       askFiscal
+      presetProvince={presetProvince}
       askCategory
       quantityField="headCount"
       quantityLabel="Cabezas"

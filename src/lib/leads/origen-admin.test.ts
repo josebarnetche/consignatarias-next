@@ -15,4 +15,10 @@ describe('origenLead', () => {
     expect(origenLead('arrendamiento').grupo).toBe('Arrendamiento')
     expect(origenLead('spread')).toMatchObject({ grupo: 'Herramientas', etiqueta: 'spread' })
   })
+  it('el formulario corto dice de qué plantilla vino', () => {
+    expect(origenLead('consignataria:rosgan')).toMatchObject({ grupo: 'Ficha de consignataria', href: '/consignatarias/rosgan' })
+    expect(origenLead('precios:terneros')).toMatchObject({ grupo: 'Precios', href: '/precios/terneros' })
+    expect(origenLead('frigorificos-provincia:entre-rios')).toMatchObject({ grupo: 'Frigoríficos por provincia', href: '/frigorificos/entre-rios' })
+    expect(origenLead('remate:abc')).toMatchObject({ grupo: 'Ficha de remate', href: '/remates/abc' })
+  })
 })
