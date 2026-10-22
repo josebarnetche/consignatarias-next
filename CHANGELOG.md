@@ -7,6 +7,24 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.249.0] — 2026-10-22
+
+### Agente: doble opt-in para los pedidos que cargó un tercero
+
+Hasta ahora, un pedido del MCP o una demanda de compra sin verificar (`needs_review`) esperaba que José marcara "Contacto verificado" a mano (v1.246.0). Ahora lo verifica la propia persona. Es la ronda 2 entre sesiones, frente del agente.
+
+- **Un mail, una sola vez por lead, con un link firmado** (`src/lib/agente/confirmacion.ts`). El link es un HMAC del lead y el mail, vence a los 14 días y no lleva el mail en la URL. Lo manda el motor en cada corrida, con las reglas de siempre:
+  - días hábiles de 8 a 19;
+  - nadie recibe dos mails el mismo día;
+  - la BAJA es para siempre;
+  - tope propio de 10 por día, aparte de los 20 contactos nuevos de las ofertas.
+- **`/confirmar-pedido` → POST `/api/agente/confirmar`.** El GET no confirma nada, porque los escáneres de correo abren los links solos. Al confirmar, el lead pasa a `new`, queda en `lead_activity` con `actor='confirmacion'` y el agente lo toma en la corrida siguiente.
+- **Se prende con `AGENTE_DOBLE_OPTIN=on`** (José dio el OK el 22-10). Sin secreto en el servidor (`AGENTE_CONFIRM_SECRET`, que si falta cae a `API_KEY_PEPPER`) no sale nada.
+- **Decisiones pendientes:** la tarjeta de verificar contactos cambia el texto según el interruptor esté prendido o apagado.
+- **Docs:** `docs/agente/decisiones-2026-10-22-siocal-arrendamiento-campos.md` junta la investigación de las 3 decisiones abiertas (SIOCAL, circuito y topes de arrendamiento, comisión por venta de campos). No cambia ningún valor de `tipos.ts`.
+
+---
+
 ## [1.248.0] — 2026-10-22
 
 ### MCP: puente del dato a la operación
