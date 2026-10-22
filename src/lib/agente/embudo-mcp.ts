@@ -3,7 +3,8 @@
  * en un pedido, cuánto de eso se verifica y cuánto termina en una operación.
  *
  *   uso real (tools/call sin escáneres) → puente (market_match, cattle_buying_request)
- *     → pedidos mcp:* (o demanda de origen mcp) → verificados → en operación
+ *     → pedidos mcp:* (o demanda de origen mcp) → confirmación enviada (doble opt-in)
+ *     → verificados (los confirmó la persona o José a mano) → en operación
  *
  * La foto contra la que se compara es la del 22-10 (docs/mcp-medicion-base.md):
  * los orígenes se cuentan por ip para que el corte cuadre con esa base.
@@ -30,6 +31,10 @@ export interface PedidoMcp {
   status: string
   /** Estado del caso en el agente, si lo tomó. */
   caso: string | null
+  /** Le salió el mail de doble opt-in (agente_mensajes, plantilla 'confirmacion'). */
+  confirmacionEnviada?: boolean
+  /** Lo confirmó la propia persona con el link (lead_activity, actor 'confirmacion'). */
+  confirmado?: boolean
 }
 
 export interface EmbudoMcp {
@@ -39,6 +44,9 @@ export interface EmbudoMcp {
   anonimas: number
   puente: number
   pedidos: string
+  confirmacionEnviada: string
+  /** De los verificados, cuántos confirmó la persona (el resto lo verificó José a mano). */
+  confirmados: string
   verificados: string
   enOperacion: string
   /** Variación de tools/call y orígenes contra la base, en %. */
@@ -70,6 +78,8 @@ export function armarEmbudoMcp(llamadas: LlamadaMcp[], pedidos: PedidoMcp[]): Em
     anonimas: reales.filter((l) => esIntegracionAnonima({ ua: l.ua, has_auth: l.has_auth === true })).length,
     puente: reales.filter((l) => TOOLS_PUENTE.includes(l.canonico ?? l.tool ?? '')).length,
     pedidos: rango(pedidos.length),
+    confirmacionEnviada: rango(pedidos.filter((p) => p.confirmacionEnviada).length),
+    confirmados: rango(pedidos.filter((p) => p.confirmado).length),
     verificados: rango(pedidos.filter((p) => VERIFICADO.includes(p.status) || (p.caso != null && p.caso !== 'descartado')).length),
     enOperacion: rango(pedidos.filter((p) => p.caso != null && EN_OPERACION.includes(p.caso)).length),
     vsBase: { toolsCall: pct(toolsCall, BASE_MCP.toolsCallSemana), origenes: pct(origenes, BASE_MCP.origenesSemana) },

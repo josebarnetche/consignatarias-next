@@ -7,6 +7,11 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.254.0] — 2026-10-22
+
+### Agregado
+- **/admin/agente → "Del MCP a la operación": paso de confirmación** (doble opt-in de la v1.249.0). Entre "pedidos cargados" y "verificados" aparece "confirmación enviada" (`agente_mensajes`, dir `out`, `clasificacion.plantilla = 'confirmacion'`), y debajo de los verificados se ve cuántos confirmó la persona con el link (`lead_activity`, `actor = 'confirmacion'`); el resto los verificó José a mano. Todo en rangos, como el resto de los pedidos.
+
 ## [1.253.0] — 2026-10-22
 
 ### Agente: las decisiones de cobro quedan listas para un clic

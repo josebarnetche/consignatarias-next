@@ -2,6 +2,7 @@ import { createAdminClient } from '@/lib/supabase-server'
 import { AdminSection, AdminEmpty } from '@/components/admin/kit'
 import { armarEmbudoMcp, BASE_MCP, type LlamadaMcp, type PedidoMcp } from '@/lib/agente/embudo-mcp'
 import { fuenteDemanda } from '@/lib/agente/demanda'
+import { PLANTILLA_CONFIRMACION } from '@/lib/agente/confirmacion'
 
 /**
  * /admin/agente → "Del MCP a la operación". Uso de los últimos 7 días contra la
@@ -47,10 +48,20 @@ async function pedidosDesdeBase(db: ReturnType<typeof createAdminClient>): Promi
     ? await db.from('agente_casos').select('lead_id,estado').in('lead_id', leads.map((l) => l.id))
     : { data: [] as Array<{ lead_id: number; estado: string }> }
   const caso = new Map((casos ?? []).map((c) => [c.lead_id, c.estado]))
+  // Doble opt-in (src/lib/agente/confirmacion.ts): el mail que salió y el click que volvió.
+  const ids = leads.map((l) => l.id)
+  const [envQ, confQ] = ids.length
+    ? await Promise.all([
+        db.from('agente_mensajes').select('lead_id').in('lead_id', ids).eq('dir', 'out').eq('clasificacion->>plantilla', PLANTILLA_CONFIRMACION),
+        db.from('lead_activity').select('lead_id').in('lead_id', ids).eq('actor', 'confirmacion'),
+      ])
+    : [{ data: [] }, { data: [] }]
+  const enviada = new Set((envQ.data ?? []).map((m) => m.lead_id))
+  const confirmado = new Set((confQ.data ?? []).map((a) => a.lead_id))
   // Una demanda del MCP sin consentimiento no llega a ser lead: cuenta como pedido sin verificar.
   const sinLead = demandas.length - (deDemanda ?? []).length
   return [
-    ...leads.map((l) => ({ status: l.status, caso: caso.get(l.id) ?? null })),
+    ...leads.map((l) => ({ status: l.status, caso: caso.get(l.id) ?? null, confirmacionEnviada: enviada.has(l.id), confirmado: confirmado.has(l.id) })),
     ...Array.from({ length: sinLead }, () => ({ status: 'needs_review', caso: null })),
   ]
 }
@@ -71,7 +82,8 @@ export default async function EmbudoMcp() {
     { valor: nf(e.origenes), label: 'orígenes distintos', sub: `${signo(e.vsBase.origenes)} vs base · ${nf(e.anonimas)} consultas de la integración anónima` },
     { valor: nf(e.puente), label: 'pedidos de operar', sub: 'market_match + cattle_buying_request' },
     { valor: e.pedidos, label: 'pedidos cargados', sub: `desde el ${BASE_MCP.fecha} · base ${BASE_MCP.pedidos}` },
-    { valor: e.verificados, label: 'verificados', sub: 'el mail es de quien pide' },
+    { valor: e.confirmacionEnviada, label: 'confirmación enviada', sub: 'doble opt-in, un mail por pedido' },
+    { valor: e.verificados, label: 'verificados', sub: `el mail es de quien pide · ${e.confirmados} con el link` },
     { valor: e.enOperacion, label: 'en operación', sub: 'el agente los ofrece o presentó' },
   ]
   return (

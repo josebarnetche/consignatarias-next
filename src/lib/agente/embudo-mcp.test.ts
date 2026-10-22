@@ -43,4 +43,13 @@ describe('armarEmbudoMcp', () => {
     ])
     expect(e).toMatchObject({ pedidos: '3–9', verificados: '1–2', enOperacion: '1–2' })
   })
+
+  it('separa la confirmación enviada y la que hizo la persona', () => {
+    const e = armarEmbudoMcp([], [
+      { status: 'needs_review', caso: null, confirmacionEnviada: true },
+      { status: 'new', caso: 'ofreciendo', confirmacionEnviada: true, confirmado: true },
+      { status: 'new', caso: null },
+    ])
+    expect(e).toMatchObject({ confirmacionEnviada: '1–2', confirmados: '1–2', verificados: '1–2' })
+  })
 })
