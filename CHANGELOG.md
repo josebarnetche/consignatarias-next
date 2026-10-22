@@ -7,6 +7,24 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.251.0] — 2026-10-22
+
+### Agente: el arrendamiento se valúa dentro de la escala legal
+
+Hasta ahora el tablero valuaba el arrendamiento siempre en 0,8 meses de canon. La investigación del 22-10 (`docs/agente/decisiones-2026-10-22-siocal-arrendamiento-campos.md`) mostró que eso choca con las escalas provinciales. En Buenos Aires la escala tiene mínimo y máximo obligatorios (1%–2% por parte, sobre todo el plazo del contrato): con un contrato de 1 año los 0,8 meses equivalen al 6,7% y pasan el máximo; con uno de 4 años equivalen al 1,67% y quedan debajo del mínimo. Ronda 3 entre sesiones, frente del agente.
+
+- **`comisionArrendamientoLegal`** (`src/lib/agente/tipos.ts`): lleva los 0,8 meses al piso y al tope de la provincia, sobre el valor total del contrato.
+  - Buenos Aires: piso 2%, tope 4%.
+  - Córdoba: tope 5%.
+  - Santa Fe: tope 6%.
+  - Resto: tope interno del 4% hasta confirmar la escala.
+  - Ejemplo en Buenos Aires: 1 año → 0,48 meses; 3 años → 0,8; 5 años → 1,2.
+- **Plazo:** sale de lo que contestó el lead (`plazoEnAnios`: "3 años", "2 campañas", "18 meses"). Si no lo trae, vale el mínimo legal de 3 años (Ley 13.246).
+- **/admin/agente → Por tipo:** valúa con esta función. La decisión pendiente de arrendamiento queda en quién paga y con qué corredor matriculado.
+- **No cambia** ninguna oferta, ningún mail, ni `TIPOS` (0,8 meses sigue como referencia comercial), ni el bloqueo legal.
+
+---
+
 ## [1.250.0] — 2026-10-22
 
 ### MCP: la mesa se ofrece desde el primer mensaje
