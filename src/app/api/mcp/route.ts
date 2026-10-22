@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto'
 import { COLUMNAS_DEMANDA } from '@/lib/mercado/demanda-agregada'
 import { esIntegracionAnonima, conAvisoIntegracion } from '@/lib/mcp/integracion'
+import { conPuente } from '@/lib/mcp/puente'
 import { esProbe } from '@/lib/mcp-probe'
 import { panoramaContraparte, textoPanorama, type ConsultaMercado } from '@/lib/mcp/market-match'
 import { validarContacto, consultaALead } from '@/lib/mcp/registrar-lead'
@@ -2568,7 +2569,10 @@ export async function POST(req: NextRequest) {
         // En main, la cita salía en el texto solo por nombre canónico (por alias no, por
         // el bug): se reproduce eso para no cambiarle el texto a quien ya integró.
         const legado = esIntegracionAnonima(rmeta)
-        const conCita = conFuente(await tool.run(args, req), canonico, legado && name !== canonico)
+        // Puente a market_match (antes de la cita, que sigue cerrando la respuesta).
+        // A la integración anónima no: su texto no cambia.
+        const crudo = await tool.run(args, req)
+        const conCita = conFuente(legado ? crudo : conPuente(crudo, canonico), canonico, legado && name !== canonico)
         const completo = legado ? conAvisoIntegracion(conCita, { soloMeta: true }) : conCita
         // structuredContent, _meta y outputSchema son de la 2025-06-18: a un cliente que no
         // la negoció no se le mandan. A una integración anónima, tampoco: recibe el mismo

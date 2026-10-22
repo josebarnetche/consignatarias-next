@@ -34,8 +34,9 @@ describe('doctrina del server MCP', () => {
     // Con el nombre CANÓNICO: con el alias, PAGINA_DE_LA_TOOL no encontraba la
     // página y ~1.900 llamadas/mes de la integración de Misiones salían sin cita
     // (bug encontrado el 21-10-2026).
-    expect(ROUTE).toMatch(/conFuente\(await tool\.run\(args, req\), canonico[,)]/)
-    expect(ROUTE).not.toContain('conFuente(await tool.run(args, req), name')
+    // (Desde el puente a market_match, el resultado pasa antes por conPuente.)
+    expect(ROUTE).toMatch(/conFuente\(legado \? crudo : conPuente\(crudo, canonico\), canonico[,)]/)
+    expect(ROUTE).not.toMatch(/conFuente\([^\n]*\), name[,)]/)
   })
 
   it('toda tool tiene título humano y las que escriben no se anuncian como lectura', () => {
