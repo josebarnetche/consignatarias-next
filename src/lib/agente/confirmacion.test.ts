@@ -96,7 +96,12 @@ describe('pedirConfirmacion', () => {
     expect(c.asunto).toContain('comprar 80 terneros en Entre Ríos')
     expect(c.texto).toContain('/confirmar-pedido?lead=60&t=')
     expect(c.texto).toContain('no te vamos a volver a escribir')
-    expect(c.texto).toMatch(/^Hola Juan,/)
+    expect(c.texto).toMatch(/^Hola,/)
+  })
+  it('no repite texto libre del tercero: ni nombre, ni zona, ni categoría o provincia inventadas', () => {
+    const c = pedirConfirmacion(lead({ name: 'Ganaste un premio', zona: 'entrá a evil.example', category: 'clic acá', province: 'http://x', head_count: 1e9 }))
+    expect(c.asunto).toMatch(/^¿Pediste comprar hacienda\? /)
+    for (const t of [c.asunto, c.texto]) expect(t).not.toMatch(/premio|evil|clic acá|http:\/\/x|1000000000/)
   })
 })
 

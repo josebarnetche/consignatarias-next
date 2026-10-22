@@ -20,6 +20,7 @@ import { createHmac, timingSafeEqual } from 'node:crypto'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { Correo } from './mensajes'
 import { pendienteVerificacion } from './verificacion'
+import { CATEGORIAS_FORM, provinciaParaFormulario } from '@/lib/leads/contexto-pagina'
 import { DIA_MS, horarioHabil, referencia } from './reglas'
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
@@ -71,11 +72,23 @@ export interface LeadConfirmable {
   created_at: string
 }
 
+const CATEGORIA_TEXTO: Record<string, string> = {
+  ...Object.fromEntries(CATEGORIAS_FORM.map((c) => [c.value, c.value])),
+  vaca_gorda: 'vacas gordas',
+}
+
+/**
+ * Qué se pidió, armado SOLO con campos normalizados. El pedido lo cargó un tercero:
+ * si el asunto o el saludo repitieran su texto libre (categoría, zona, nombre), le
+ * podría poner palabras en el correo a otra persona. Categoría fuera de la lista →
+ * "hacienda"; provincia fuera del selector → no va; cabezas solo si es un entero sano.
+ */
 function queAsunto(l: LeadConfirmable): string {
-  const que = [l.head_count ? `${l.head_count}` : null, l.category ?? 'hacienda'].filter(Boolean).join(' ')
-  const donde = [l.zona, l.province].filter(Boolean).join(', ')
+  const cat = CATEGORIA_TEXTO[(l.category ?? '').trim().toLowerCase()] ?? 'hacienda'
+  const cab = Number.isInteger(l.head_count) && l.head_count! > 0 && l.head_count! < 100_000 ? `${l.head_count} ` : ''
+  const prov = provinciaParaFormulario(l.province)
   const verbo = l.intent === 'vender' ? 'vender' : l.intent === 'comprar' ? 'comprar' : 'operar'
-  return `${verbo} ${que}${donde ? ` en ${donde}` : ''}`
+  return `${verbo} ${cab}${cat}${prov ? ` en ${prov}` : ''}`
 }
 
 export function pedirConfirmacion(l: LeadConfirmable): Correo {
@@ -83,7 +96,7 @@ export function pedirConfirmacion(l: LeadConfirmable): Correo {
   return {
     asunto: `¿Pediste ${que}? Confirmá tu pedido · Ref. ${referencia(l.id)}`,
     texto: [
-      l.name ? `Hola ${l.name.split(' ')[0]},` : 'Hola,',
+      'Hola,',
       '',
       `Recibimos en consignatarias.com un pedido para ${que} con este correo como contacto. Lo cargó un asistente o una integración, no un formulario del sitio, así que antes de buscar contraparte necesitamos saber que fuiste vos.`,
       '',

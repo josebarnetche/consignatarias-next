@@ -18,6 +18,7 @@ Hasta ahora, un pedido del MCP o una demanda de compra sin verificar (`needs_rev
   - nadie recibe dos mails el mismo día;
   - la BAJA es para siempre;
   - tope propio de 10 por día, aparte de los 20 contactos nuevos de las ofertas.
+- **El correo arma el asunto y el texto solo con campos normalizados:** categoría de la lista, provincia del selector y cabezas enteras. No va ni el nombre ni la zona. El pedido lo cargó un tercero, y así no puede ponerle palabras propias en el correo a otra persona (revisión de la 39).
 - **`/confirmar-pedido` → POST `/api/agente/confirmar`.** El GET no confirma nada, porque los escáneres de correo abren los links solos. Al confirmar, el lead pasa a `new`, queda en `lead_activity` con `actor='confirmacion'` y el agente lo toma en la corrida siguiente.
 - **Se prende con `AGENTE_DOBLE_OPTIN=on`** (José dio el OK el 22-10). Sin secreto en el servidor (`AGENTE_CONFIRM_SECRET`, que si falta cae a `API_KEY_PEPPER`) no sale nada.
 - **Decisiones pendientes:** la tarjeta de verificar contactos cambia el texto según el interruptor esté prendido o apagado.
