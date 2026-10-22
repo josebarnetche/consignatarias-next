@@ -3,6 +3,7 @@ import { createAdminClient } from '@/lib/supabase-server'
 import Badge, { type BadgeTone } from '@/components/ui/Badge'
 import { ofertaHacienda } from '@/lib/agente/mensajes-contacto'
 import { TIPOS_CAMPO_ACTIVOS } from '@/lib/agente/campos-agente'
+import { DOBLE_OPTIN_ACTIVO } from '@/lib/agente/confirmacion'
 import { decisionesPendientes, estadoActual, type Gravedad } from '@/lib/agente/decisiones'
 
 /** /admin/agente → lo que el agente no puede resolver solo. Desaparece cuando se resuelve en el código. */
@@ -22,6 +23,7 @@ export default async function Decisiones() {
   const estado = estadoActual({
     tiposActivos: TIPOS_CAMPO_ACTIVOS,
     pendientesVerificacion: pendientes ?? 0,
+    dobleOptinActivo: DOBLE_OPTIN_ACTIVO,
     ofertaDePrueba: (d) =>
       ofertaHacienda({ leadId: 0, ofertaId: 0, lado: 'vende', datos: { cabezas: 100, categoria: 'novillos', zona: 'Azul', ...d }, contraparte: 'X' }).texto,
   })

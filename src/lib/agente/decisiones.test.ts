@@ -32,6 +32,7 @@ describe('el estado se lee de la oferta que usa el motor', () => {
       ofertaConPieComercial: true,
       encuadreHacienda: 'servicio_contacto',
       pendientesVerificacion: 0,
+      dobleOptinActivo: false,
     })
   })
   it('esas tres decisiones salen solas de la lista', () => {
@@ -46,5 +47,18 @@ describe('el estado se lee de la oferta que usa el motor', () => {
     expect(con.find((d) => d.id === 'verificar-contactos')?.titulo).toMatch(/^3 pedidos esperan/)
     const sin = decisionesPendientes(estadoActual({ tiposActivos: true, ofertaDePrueba, pendientesVerificacion: 0 }))
     expect(sin.map((d) => d.id)).not.toContain('verificar-contactos')
+  })
+})
+
+describe('verificar-contactos con doble opt-in', () => {
+  const base = { tiposActivos: true, ofertaMuestraPrecioPedido: false, ofertaConPieComercial: true, encuadreHacienda: 'servicio_contacto' as const, pendientesVerificacion: 2 }
+  it('apagado: explica que se puede prender y que lo prende José', () => {
+    const d = decisionesPendientes(base).find((x) => x.id === 'verificar-contactos')!
+    expect(d.detalle).toContain('AGENTE_DOBLE_OPTIN=on')
+  })
+  it('prendido: dice que ya se les pidió confirmación', () => {
+    const d = decisionesPendientes({ ...base, dobleOptinActivo: true }).find((x) => x.id === 'verificar-contactos')!
+    expect(d.detalle).toContain('doble opt-in')
+    expect(d.detalle).not.toContain('AGENTE_DOBLE_OPTIN=on')
   })
 })
