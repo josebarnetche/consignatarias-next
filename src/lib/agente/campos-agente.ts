@@ -18,6 +18,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import { tipoDeIntent, type TipoOperacion } from './tipos'
 import { faltantesCampo, pedirDatosCampo, calificarTasacion, type DatosCampo } from './mensajes-tipos'
 import type { Correo } from './mensajes'
+import { tomable } from './verificacion'
 import { MAX_RECORDATORIOS, enDias, horarioRespuesta, type EstadoCaso, type Lado } from './reglas'
 
 export const TIPOS_CAMPO_ACTIVOS = (process.env.AGENTE_TIPOS ?? 'off').toLowerCase() === 'on'
@@ -47,6 +48,8 @@ export interface LeadCampo {
   zona: string | null
   hectareas: number | null
   category: string | null
+  status?: string | null
+  source?: string | null
 }
 
 export function ladoDeIntent(intent: string): Lado {
@@ -136,7 +139,7 @@ export async function trabajarCampos(ctx: Ctx, activo = TIPOS_CAMPO_ACTIVOS): Pr
   if (!activo) return
   if (!horarioRespuesta(ctx.ahora)) return
   const { db, ahora } = ctx
-  const cols = 'id,intent,name,email,province,zona,hectareas,category'
+  const cols = 'id,intent,name,email,province,zona,hectareas,category,status,source'
 
   const { data: tomados } = await db.from('agente_casos').select('lead_id')
   const ya = new Set((tomados ?? []).map((r) => r.lead_id as number))
@@ -146,7 +149,8 @@ export async function trabajarCampos(ctx: Ctx, activo = TIPOS_CAMPO_ACTIVOS): Pr
     .in('intent', [...INTENTS_CAMPO])
     .in('status', ['new', 'needs_review'])
     .order('created_at', { ascending: true })
-  for (const l of ((nuevos ?? []) as LeadCampo[]).filter((x) => !ya.has(x.id)).slice(0, MAX_CAMPOS_POR_CORRIDA)) {
+  // Mismo resguardo que hacienda: un lead del MCP sin verificar no se toma (verificacion.ts).
+  for (const l of ((nuevos ?? []) as LeadCampo[]).filter((x) => !ya.has(x.id) && tomable({ status: x.status ?? 'new', source: x.source })).slice(0, MAX_CAMPOS_POR_CORRIDA)) {
     const a = planNuevo(l, ahora)
     if (a.tipo !== 'tomar') continue
     if (!ctx.dryRun) {

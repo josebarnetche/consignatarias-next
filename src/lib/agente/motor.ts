@@ -27,6 +27,7 @@ import { enviar, leerBandeja, CASILLA, type Entrante } from './correo'
 import { triageLead, leerRespuesta } from './ia'
 import * as M from './mensajes'
 import { ordenarCola } from './cola'
+import { tomable } from './verificacion'
 import { esCasoDeHacienda, trabajarCampos } from './campos-agente'
 import { comisionEstimada } from './tablero'
 import {
@@ -508,7 +509,8 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
       .in('intent', ['vender', 'comprar'])
       .in('status', ['new', 'needs_review'])
       .order('created_at', { ascending: true })
-    const pendientes = ((leads ?? []) as Lead[]).filter((l) => !yaTomados.has(l.id)).slice(0, MAX_TRIAGE_POR_CORRIDA)
+    // Un lead del MCP en needs_review no se toma hasta que una persona lo verifique (verificacion.ts).
+    const pendientes = ((leads ?? []) as Lead[]).filter((l) => !yaTomados.has(l.id) && tomable(l)).slice(0, MAX_TRIAGE_POR_CORRIDA)
     for (const l of pendientes) {
       const t = await triageLead(l)
       if (!t) {
