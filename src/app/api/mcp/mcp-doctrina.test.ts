@@ -31,7 +31,57 @@ describe('doctrina del server MCP', () => {
     // Sin esto el agente se queda con el dato y nosotros no existimos: el tráfico
     // no llega al sitio, que es donde están los productos que sí cobran.
     expect(ROUTE).toContain('utm_source=mcp')
-    expect(ROUTE).toContain('conFuente(await tool.run(args, req), name)')
+    // Con el nombre CANÓNICO: con el alias, PAGINA_DE_LA_TOOL no encontraba la
+    // página y ~1.900 llamadas/mes de la integración de Misiones salían sin cita
+    // (bug encontrado el 21-10-2026).
+    expect(ROUTE).toMatch(/conFuente\(await tool\.run\(args, req\), canonico[,)]/)
+    expect(ROUTE).not.toContain('conFuente(await tool.run(args, req), name')
+  })
+
+  it('toda tool tiene título humano y las que escriben no se anuncian como lectura', () => {
+    const tramoTools = ROUTE.slice(ROUTE.indexOf('const TOOLS'), ROUTE.indexOf('const PROMPTS'))
+    const nombres = [...tramoTools.matchAll(/^    name: '(\w+)',\n    description:/gm)].map((m) => m[1])
+    const titulos = ROUTE.match(/const TOOL_TITLES[^=]*= \{([\s\S]*?)\n\}/)
+    const conTitulo = new Set([...titulos![1].matchAll(/^\s*(\w+):/gm)].map((m) => m[1]))
+    expect(nombres.length).toBeGreaterThanOrEqual(28)
+    expect(nombres.filter((n) => !conTitulo.has(n))).toEqual([])
+    expect(ROUTE).toMatch(/TOOLS_QUE_ESCRIBEN = new Set\(\[[^\]]*'cattle_buying_request'/)
+  })
+
+  it('cada prompt nombra solo tools que existen (o sus alias)', () => {
+    // valuar_lote apuntaba al INMAG en vez de a value_cattle_lot: un prompt que
+    // manda al agente a una tool equivocada o inexistente es peor que no tenerlo.
+    const tramoTools = ROUTE.slice(ROUTE.indexOf('const TOOLS: Tool[] = ['), ROUTE.indexOf('const PROMPTS'))
+    const tools = new Set([...tramoTools.matchAll(/^    name: '(\w+)',$/gm)].map((m) => m[1]))
+    const alias = ROUTE.match(/const ALIAS_DE_TOOL[^=]*= \{([\s\S]*?)\n\}/)![1]
+    for (const m of alias.matchAll(/^\s*(\w+):/gm)) tools.add(m[1])
+    const tramoPrompts = ROUTE.slice(ROUTE.indexOf('const PROMPTS'), ROUTE.indexOf('function reqMeta'))
+    const builds = [...tramoPrompts.matchAll(/build: \([^)]*\) => [`'](.*)[`'],?$/gm)].map((m) => m[1])
+    expect(builds.length).toBeGreaterThanOrEqual(15)
+    const mencionadas = builds.flatMap((b) => [...b.replace(/\$\{[^}]*\}/g, '').matchAll(/\b([a-z]+(?:_[a-z]+)+)\b/g)].map((m) => m[1]))
+    const NO_TOOL = new Set(['kg_ha'])
+    expect(mencionadas.filter((n) => !tools.has(n) && !NO_TOOL.has(n))).toEqual([])
+    expect(builds.some((b) => b.includes('market_match'))).toBe(true)
+  })
+
+  it('a la integración anónima se le deja una vía de contacto', () => {
+    // La integración de Misiones no tiene key ni UA: la respuesta es el único canal.
+    // Desde la revisión del 21-10-2026 el aviso va SOLO en _meta: el texto de una
+    // integración anónima queda como en main (los tests de contrato están en
+    // structured.route.test.ts).
+    expect(ROUTE).toContain('legado ? conAvisoIntegracion(conCita, { soloMeta: true }) : conCita')
+  })
+
+  it('el log no guarda el contacto de nadie', () => {
+    const lista = ROUTE.match(/const CAMPOS_PRIVADOS = \[([^\]]*)\]/)
+    expect(lista).toBeTruthy()
+    for (const campo of ['api_key', 'nombre', 'email', 'telefono', 'webhook_url']) expect(lista![1]).toContain(`'${campo}'`)
+  })
+
+  it('una provincia sin remates no recibe una respuesta muerta', () => {
+    // Misiones recibió 477 veces "No hay remates próximos" en 28 días.
+    expect(ROUTE).toContain('rematesDeLaRegion(')
+    expect(ROUTE).toContain('sugerenciaPedido(')
   })
 
   it('cada tool de lectura tiene una página a la que mandar', () => {

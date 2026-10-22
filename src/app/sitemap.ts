@@ -665,6 +665,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'daily' as const,
       priority: 0.8,
     },
+    // Demanda y oferta abiertas de la mesa, agregadas y anónimas (ISR 1 h).
+    {
+      url: `${baseUrl}/mercado/demanda`,
+      lastModified: priceDate,
+      changeFrequency: 'hourly' as const,
+      priority: 0.7,
+    },
     {
       url: `${baseUrl}/calendario-exportar`,
       lastModified: editado('/calendario-exportar'),

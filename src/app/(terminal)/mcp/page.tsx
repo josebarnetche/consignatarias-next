@@ -17,6 +17,16 @@ export const revalidate = 3600
 
 const ENDPOINT = 'https://www.consignatarias.com.ar/api/mcp'
 
+/** Resources y templates que expone el server (route.ts → RESOURCES / RESOURCE_TEMPLATES). */
+const RESOURCE_URIS = [
+  'consignatarias://inmag/ultimos-90-dias',
+  'consignatarias://catalogo/categorias',
+  'consignatarias://catalogo/provincias',
+  'consignatarias://remates/proximos',
+  'consignatarias://remates/provincia/{provincia}',
+  'consignatarias://tierra/{provincia}',
+]
+
 // Instalación en un clic. Los dos clientes usan el mismo payload (la config del server
 // en JSON) con codificación distinta: Cursor lo quiere en base64, VS Code URL-encoded.
 const MCP_CONFIG = JSON.stringify({ url: ENDPOINT })
@@ -37,6 +47,7 @@ const TOOL_ICONS: Record<string, string> = {
   livestock_prices_detailed: 'bascula', macro_context: 'dolar-billete', upcoming_auctions: 'calendario',
   find_livestock_broker: 'casa-remates', find_meat_plant: 'frigorifico',
   calculate_farmland_rent: 'arrendamiento', create_price_alert: 'alerta',
+  market_match: 'martillo', cattle_buying_request: 'buscador-lupa',
 }
 
 const TOOLS = [
@@ -65,6 +76,7 @@ const TOOLS = [
   { name: 'renspa_lookup', desc: 'Valida y decodifica un RENSPA (provincia, departamento, titular)', auth: false },
   { name: 'dte_lookup', desc: 'DT-e y número de tropa: qué son y cómo se leen', auth: false },
   { name: 'good_farming_practices', desc: 'Buenas Prácticas Ganaderas: 14 temas de la Guía Red BPA', auth: false },
+  { name: 'market_match', desc: '"¿Hay compradores para mis 80 terneros en Entre Ríos?" → contraparte abierta en la mesa, agregada por región y anónima. Con permiso de la persona deja el pedido para que alguien arme la operación. Gratis: la tool para OPERAR, no solo para saber el precio', auth: false },
   { name: 'cattle_buying_request', desc: 'Publicá qué hacienda buscás → remates que matchean + aviso de cada remate nuevo', auth: false },
   { name: 'create_price_alert', desc: 'Alerta cuando un precio cruza un umbral → email o webhook (gratis: 3 activas por origen)', auth: false },
   { name: 'subscribe_broker_pro', desc: 'Cotizá y activá PRO Consignataria pagando en USDC (x402), sin formularios', auth: false },
@@ -313,6 +325,17 @@ export default function McpPage() {
 
       {/* Tools */}
       <section className="max-w-4xl mx-auto px-4 pb-10">
+        <div className="mb-6 rounded-xl border border-sky-500/30 bg-sky-500/[0.05] p-5">
+          <p className="text-label tracking-widest text-sky-300 mb-2">PARA OPERAR, NO SOLO PARA SABER EL PRECIO</p>
+          <p className="text-sm text-zinc-300 leading-relaxed">
+            <code className="text-sky-300 font-mono">market_match</code> contesta lo que pregunta quien quiere vender,
+            comprar o arrendar: <em>«¿hay compradores para mis 80 terneros en Entre Ríos?»</em>. Devuelve cuántas
+            contrapartes abiertas hay en la mesa, agrupadas por región y sin identificar a nadie. Si la persona quiere
+            que la contacten, el agente le pide permiso y repite la llamada con{' '}
+            <code className="text-zinc-400">registrar: true</code>, <code className="text-zinc-400">consentimiento: true</code>,
+            nombre y email o teléfono: el pedido queda en la mesa y una persona arma la operación. Gratis.
+          </p>
+        </div>
         <p className="text-label tracking-widest text-zinc-400 mb-4">TOOLS DISPONIBLES ({TOOLS.length})</p>
         <div className="grid gap-px bg-terminal-border rounded-xl overflow-hidden border border-terminal-border">
           {TOOLS.map((t) => (
@@ -343,6 +366,40 @@ export default function McpPage() {
           <a href="/licencia-datos" className="text-zinc-400 underline hover:text-sky-300">licencia</a>. Citarnos es
           gratis y siempre lo va a ser.
         </p>
+        <p className="text-xs text-zinc-500 mt-2">
+          Los nombres de arriba son los canónicos. El server también acepta alias en castellano para clientes viejos
+          (por ejemplo <code className="text-zinc-400">get_estacionalidad</code> → <code className="text-zinc-400">price_seasonality</code>,{' '}
+          <code className="text-zinc-400">get_renta_campo</code> → <code className="text-zinc-400">farmland_yield</code>,{' '}
+          <code className="text-zinc-400">valuar_tropa</code> → <code className="text-zinc-400">value_cattle_lot</code>): no son tools
+          aparte, resuelven a la misma.
+        </p>
+        <p className="text-xs text-zinc-500 mt-2">
+          Las tools principales devuelven también <code className="text-zinc-400">structuredContent</code> con{' '}
+          <code className="text-zinc-400">outputSchema</code> (índice, precios, macro, remates, valuación de tropa y
+          market_match): el mismo dato que el texto, como objeto JSON con su fuente, para usar los números sin parsear prosa.
+        </p>
+
+        <p className="text-label tracking-widest text-zinc-400 mt-8 mb-3">RESOURCES Y COMPLETIONS</p>
+        <div className="rounded-xl border border-terminal-border bg-terminal-panel p-4 text-sm text-zinc-400 leading-relaxed">
+          <p>
+            Además de tools y prompts, el server expone <strong className="text-ink">resources</strong>: datos que el
+            cliente lee por URI y adjunta al contexto sin llamar una tool. Cada uno es JSON y trae su campo{' '}
+            <code className="text-zinc-400">fuente</code> con la cita.
+          </p>
+          <ul className="mt-3 space-y-1 font-mono text-xs">
+            {RESOURCE_URIS.map((uri) => (
+              <li key={uri}>
+                <code className="text-sky-300 break-all">{uri}</code>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3">
+            El del INMAG son los últimos 90 días: la serie completa se analiza gratis con{' '}
+            <code className="text-zinc-400">inmag_history</code> y la descarga masiva va por x402. También responde{' '}
+            <strong className="text-ink">completions</strong> (<code className="text-zinc-400">completion/complete</code>):
+            autocompleta provincia, categoría y zona en los prompts y la provincia en los templates.
+          </p>
+        </div>
       </section>
 
       {/* CTA */}

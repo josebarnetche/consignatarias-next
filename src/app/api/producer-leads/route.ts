@@ -112,7 +112,9 @@ export async function POST(req: NextRequest) {
       ) as { id: number } | undefined
 
       if (yaEsta) {
-        return NextResponse.json({ ok: true, leadId: yaEsta.id, duplicate: true }, { status: 200 })
+        // La MISMA respuesta que un alta nueva: distinguirlas le decía a cualquiera si
+        // un email ajeno había dejado un pedido en las últimas 24 h (y su id).
+        return NextResponse.json({ success: true, message: 'Listo. Te contactamos a la brevedad.' })
       }
     }
 

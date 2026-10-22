@@ -51,5 +51,8 @@ export function origenLead(source: string | null): OrigenLead {
     return { grupo: 'Frigoríficos por provincia', etiqueta: `Frigoríficos en ${nombrePropio(clave.replace(/-/g, ' '))}`, href: `/frigorificos/${clave}` }
   }
   if (tipo === 'arrendamiento') return { grupo: 'Arrendamiento', etiqueta: 'Calculadora de arrendamiento', href: null }
+  // Desde el 21-10-2026 los agentes de IA dejan pedidos por el MCP (market_match con consentimiento).
+  if (tipo === 'mcp') return { grupo: 'Agentes de IA (MCP)', etiqueta: clave ? `MCP · ${clave}` : 'MCP', href: '/mcp' }
+  if (tipo === 'demanda_compra') return { grupo: 'Pedido de compra', etiqueta: `Pedido de compra #${clave ?? '?'}`, href: null }
   return { grupo: 'Herramientas', etiqueta: source, href: null }
 }

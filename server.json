@@ -3,7 +3,7 @@
   "name": "ar.com.consignatarias/cattle-market",
   "title": "Consignatarias · Argentine Cattle Market",
   "description": "Argentine cattle market data: steer index since 2015, prices, auctions, land values, SENASA rules.",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "websiteUrl": "https://www.consignatarias.com.ar/mcp",
   "repository": {
     "url": "https://github.com/josebarnetche/consignatarias-next",

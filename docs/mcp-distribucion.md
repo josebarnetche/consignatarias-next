@@ -17,7 +17,7 @@
 
 | Directorio | Estado al 21-10 | Qué falta |
 |---|---|---|
-| Registry oficial (`registry.modelcontextprotocol.io`) | Publicado v1.7.0 (07-10), descripción en castellano, sin `title` ni ícono | Publicar v1.8.0 (paso 1) |
+| Registry oficial (`registry.modelcontextprotocol.io`) | Publicado v1.7.0 (07-10), descripción en castellano, sin `title` ni ícono | Publicar v1.9.0 (paso 1) |
 | Glama (connector) | Listado, Healthy, 100% de uptime en 65 días, TDQS **A 3,8/5** sobre 28 tools. **Sin reclamar** | Reclamarlo (paso 2) |
 | Smithery | Listado desde el 04-10 como **"MCP-CATTLE-MARKET"**, con el escaneo viejo (24 tools, nombres anteriores), sin verificar | Renombrar, re-escanear y verificar (paso 3) |
 | punkpeye/awesome-remote-mcp-servers | Listado en Agriculture, con el badge de Glama | Nada |
@@ -44,7 +44,7 @@ siguiente. Las tools ya devuelven la fuente con `utm_source=mcp`.
 
 ---
 
-## Paso 1 — Registry oficial: publicar v1.8.0
+## Paso 1 — Registry oficial: publicar v1.9.0
 
 **Qué cambia.** No cambia ninguna tool: cambia la ficha.
 - Suma `title` ("Consignatarias · Argentine Cattle Market").
@@ -316,7 +316,7 @@ no cambia.
 | # | Envío | Costo | Aprueba |
 |---|---|---|---|
 | 0 | Mergear y desplegar este PR | — | El merge |
-| 1 | Registry oficial v1.8.0 | Gratis | La descripción en inglés y correr `mcp-publisher publish` |
+| 1 | Registry oficial v1.9.0 | Gratis | La descripción en inglés y correr `mcp-publisher publish` |
 | 2 | Reclamar Glama | Gratis | La cuenta de Glama y commitear el token en `glama.json` |
 | 3 | Smithery: renombrar, re-escanear y verificar | Gratis | El nombre, la descripción y usar su API key |
 | 4 | Directorio de conectores de Claude | Requiere un plan pago de Claude | Los textos, los 7 compromisos y enviar con la cuenta de Memola |
