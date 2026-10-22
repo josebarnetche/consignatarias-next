@@ -55,7 +55,7 @@
   "authentication": {
     "type": "bearer",
     "required": false,
-    "description": "Las 28 tools responden sin key. Las de consulta son gratis y sin cupo, a cualquier profundidad. La API key Enterprise (Authorization: Bearer cnsg_live_...) es para la descarga masiva fila por fila, los exports y las alertas sin límite. Publicar o redistribuir el dato tiene licencia: https://www.consignatarias.com.ar/licencia-datos",
+    "description": "Las 29 tools responden sin key. Las de consulta son gratis y sin cupo, a cualquier profundidad. La API key Enterprise (Authorization: Bearer cnsg_live_...) es para la descarga masiva fila por fila, los exports y las alertas sin límite. Publicar o redistribuir el dato tiene licencia: https://www.consignatarias.com.ar/licencia-datos",
     "tokenUrl": "https://www.consignatarias.com.ar/planes"
   },
   "tools": [
