@@ -50,6 +50,7 @@ export const ADMIN_NAV: AdminNavGroup[] = [
     items: [
       { href: '/admin/consignatarias', label: 'Consignatarias' },
       { href: '/admin/ver-como', label: 'Firmas' },
+      { href: '/admin/prospectos', label: 'Prospectos PRO' },
       { href: '/admin/propuesta', label: 'Propuestas PRO' },
     ],
   },
