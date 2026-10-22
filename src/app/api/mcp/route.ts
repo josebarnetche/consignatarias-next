@@ -1,4 +1,12 @@
 import { createHash } from 'node:crypto'
+import { COLUMNAS_DEMANDA } from '@/lib/mercado/demanda-agregada'
+import { esIntegracionAnonima, conAvisoIntegracion } from '@/lib/mcp/integracion'
+import { esProbe } from '@/lib/mcp-probe'
+import { panoramaContraparte, textoPanorama, type ConsultaMercado } from '@/lib/mcp/market-match'
+import { validarContacto, consultaALead } from '@/lib/mcp/registrar-lead'
+import { insertarLeadConDedupe } from '@/lib/leads/insertar-lead'
+import type { LeadFila } from '@/lib/mercado/leads-mesa'
+import { rematesDeLaRegion, sugerenciaPedido } from '@/lib/mcp/remates-region'
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { authenticate } from '@/lib/api-auth'
@@ -14,7 +22,8 @@ import {
 import { BPG_TEMAS, BPG_FUENTE } from '@/lib/data/bpg-ganaderas'
 import { getLiquidacion, LIQUIDACION_CAVEAT } from '@/lib/data/liquidacion'
 import { valuarTropa, valuarArrendamiento, KG_DEFAULT } from '@/lib/valuaciones'
-import { valuarCampoTexto, TIERRA_PROVINCIAS } from '@/lib/valuacion-campos'
+import { valuarCampoTexto, TIERRA, TIERRA_PROVINCIAS, zonasDe } from '@/lib/valuacion-campos'
+import { provinciaNombre } from '@/lib/ui/tokens'
 import { getX402Config } from '@/lib/x402'
 import { cotizarProUsdCents, proArsMensual, proMeses, validarSlugPro } from '@/lib/pro-x402'
 import { getFeaturedSlugs } from '@/lib/featured'
@@ -64,7 +73,7 @@ export const maxDuration = 60
 const SERVER_INFO = {
   name: 'consignatarias',
   title: 'Consignatarias — Mercado Ganadero Argentino',
-  version: '1.8.0',
+  version: '1.9.0',
   websiteUrl: 'https://www.consignatarias.com.ar/mcp',
 }
 // Versiones del protocolo MCP que soportamos. Somos tools-only + stateless, así que
@@ -86,11 +95,24 @@ function negotiateProtocolVersion(requested?: string): string {
 }
 
 // ── Tools (wrappers finos sobre data/lógica existente) ───────────────────────
-type ToolResult = { content: Array<{ type: 'text'; text: string }>; isError?: boolean }
+/**
+ * `structuredContent` (MCP 2025-06-18): el mismo dato que el texto, como objeto
+ * JSON que valida contra el `outputSchema` de la tool. Se AGREGA al texto, nunca
+ * lo reemplaza: hay una integración en producción que parsea la prosa.
+ */
+type ToolResult = {
+  content: Array<{ type: 'text'; text: string }>
+  isError?: boolean
+  structuredContent?: Record<string, unknown>
+  /** Metadatos MCP: cita y aviso para integraciones que no leen el texto. */
+  _meta?: Record<string, unknown>
+}
 interface Tool {
   name: string
   description: string
   inputSchema: Record<string, unknown>
+  /** JSON Schema del `structuredContent`. Solo se anuncia en tools/list si está. */
+  outputSchema?: object
   requiresAuth?: boolean
   run: (args: Record<string, unknown>, req: NextRequest) => Promise<ToolResult>
 }
@@ -126,17 +148,18 @@ const TOOL_TITLES: Record<string, string> = {
   value_farmland_rent: 'Arrendamiento de un campo al índice oficial',
   value_farmland: 'Valor de la hectárea por zona',
   cattle_buying_request: 'Publicar una búsqueda de hacienda para comprar',
+  market_match: '¿Hay compradores o vendedores? (anónimo)',
   subscribe_broker_pro: 'PRO Consignataria: cotizar y activar en USDC',
 }
 
 // MCP tool annotations (spec 2025-03-26+): declaran el comportamiento de forma
 // ESTRUCTURADA — es lo que Glama (y otros scorers) esperan para la dimensión
 // "side effects / auth / destructive". Todas las tools son de solo lectura sobre
-// datos de mercado (open-world) salvo las dos que crean un recurso: create_price_alert (la
+// datos de mercado (open-world) salvo las tres que crean un recurso: create_price_alert (la
 // alerta) y cattle_buying_request (deja una demanda de compra que el agente de operaciones
-// trabaja). Hasta v1.238.0 la segunda se declaraba readOnly, y el directorio de conectores de
+// trabaja), más market_match, que con registrar: true deja el pedido en producer_leads. Hasta v1.238.0 la segunda se declaraba readOnly, y el directorio de conectores de
 // Claude revisa justamente eso: una tool que escribe con readOnlyHint=true es motivo de rechazo.
-const TOOLS_QUE_ESCRIBEN = new Set(['create_price_alert', 'cattle_buying_request'])
+const TOOLS_QUE_ESCRIBEN = new Set(['create_price_alert', 'cattle_buying_request', 'market_match'])
 function toolAnnotations(t: Tool) {
   const readOnly = !TOOLS_QUE_ESCRIBEN.has(t.name)
   return {
@@ -166,6 +189,11 @@ const frigorificos = frigorificosData as unknown as Array<{
 }>
 
 const ok = (text: string): ToolResult => ({ content: [{ type: 'text', text }] })
+/** Texto + el mismo dato estructurado. La `fuente` la agrega conFuente() en el handler. */
+const okData = (text: string, structuredContent: Record<string, unknown>): ToolResult => ({
+  content: [{ type: 'text', text }],
+  structuredContent,
+})
 const fail = (text: string): ToolResult => ({ content: [{ type: 'text', text }], isError: true })
 
 /**
@@ -335,18 +363,134 @@ const ALIAS_DE_TOOL: Record<string, string> = {
 }
 
 
+// ── outputSchema de las tools con structuredContent ──────────────────────────
+// Cada objeto lleva `fuente` (la agrega conFuente() con el nombre canónico, así
+// que también la reciben las llamadas por alias). Los números son los mismos que
+// el texto: cada tool calcula una vez y deriva texto y objeto de ahí.
+const num = { type: 'number' } as const
+const str = { type: 'string' } as const
+const bool = { type: 'boolean' } as const
+const numONull = { type: ['number', 'null'] } as const
+const strONull = { type: ['string', 'null'] } as const
+const FUENTE_SCHEMA = {
+  type: 'object',
+  description: 'Cita: página de consignatarias.com.ar que respalda el dato (utm_source=mcp) y fecha de consulta ISO (hora argentina).',
+  properties: { url: str, consultado: str },
+  required: ['url', 'consultado'],
+}
+const conFuenteSchema = (properties: Record<string, unknown>, required: string[]) => ({
+  type: 'object',
+  properties: { ...properties, fuente: FUENTE_SCHEMA },
+  required: [...required, 'fuente'],
+})
+
+const OUTPUT_CATTLE_PRICE_INDEX = conFuenteSchema(
+  {
+    inmag: num, date: str, volume: numONull,
+    change_dia_pct: num, prev_date: strONull, prev: numONull,
+    avg_5_ruedas: numONull, change_vs_avg5_pct: numONull, prev_low_volume: bool,
+    unit: str, metric: str,
+  },
+  ['inmag', 'date', 'change_dia_pct', 'unit', 'metric'],
+)
+const OUTPUT_LIVESTOCK_PRICES = conFuenteSchema(
+  {
+    metric: str,
+    week: strONull,
+    prices: {
+      type: 'object',
+      description: 'Por categoría: precio ARS/kg vivo y cabezas de la observación.',
+      additionalProperties: { type: 'object', properties: { price: num, head: numONull }, required: ['price', 'head'] },
+    },
+  },
+  ['metric', 'week', 'prices'],
+)
+const OUTPUT_MACRO_CONTEXT = conFuenteSchema(
+  {
+    usd_blue: num, usd_oficial: num, maiz_usd_tn: num, maiz_ars_kg: num,
+    novillo_ars_kg: num, kg_maiz_por_kg_novillo: num,
+    indice_arrendamiento_oficial: { type: ['object', 'null'], properties: { index: num, date: str } },
+  },
+  ['usd_blue', 'usd_oficial', 'maiz_usd_tn', 'maiz_ars_kg', 'novillo_ars_kg', 'kg_maiz_por_kg_novillo', 'indice_arrendamiento_oficial'],
+)
+const REMATE_SCHEMA = {
+  type: 'object',
+  properties: {
+    date: str, time: strONull, consignataria: str, consignataria_slug: strONull,
+    lugar: str, provincia: str, categoria: strONull, en_vivo: bool,
+  },
+  required: ['date', 'time', 'consignataria', 'lugar', 'provincia', 'categoria', 'en_vivo'],
+}
+const OUTPUT_UPCOMING_AUCTIONS = conFuenteSchema(
+  {
+    remates: { type: 'array', items: REMATE_SCHEMA },
+    region: {
+      type: 'object',
+      description: 'Solo cuando la provincia pedida no tiene remates: los más cercanos, de su región.',
+      properties: { codigo: strONull, nombre: str, remates: { type: 'array', items: REMATE_SCHEMA } },
+      required: ['codigo', 'nombre', 'remates'],
+    },
+    sugerencia: str,
+    corte: { type: 'string', description: 'Presente solo si el listado se cortó por el techo de consultas.' },
+  },
+  ['remates'],
+)
+const OUTPUT_VALUE_CATTLE_LOT = conFuenteSchema(
+  {
+    categoria: str, cabezas: num, kg_promedio: num, kg_asumido: bool,
+    precio_kg_ars: num, precio_kg_mag: num, brecha_vs_mag_pct: num,
+    total_ars: num, total_usd_blue: num, total_usd_oficial: num,
+    usd_blue: num, usd_oficial: num, fecha_indice: str,
+    origen: { type: 'string', description: 'De dónde salen los precios (MAG + dolarapi.com).' },
+    provincia: strONull,
+    referencia: { type: 'object', description: 'Referencia VR v1.0: banda observada, ventana y límites.' },
+    valuacion: {
+      type: 'object',
+      properties: { conservador_ars: num, central_ars: num, optimista_ars: num, uso_banda: bool },
+      required: ['conservador_ars', 'central_ars', 'optimista_ars', 'uso_banda'],
+    },
+  },
+  ['categoria', 'cabezas', 'kg_promedio', 'precio_kg_ars', 'precio_kg_mag', 'total_ars', 'total_usd_blue', 'total_usd_oficial', 'valuacion'],
+)
+const OUTPUT_MARKET_MATCH = conFuenteSchema(
+  {
+    // Consulta: el panorama AGREGADO. Nunca datos de un lead.
+    vertical: { type: 'string', enum: ['hacienda', 'campos'] },
+    ladoBuscado: str,
+    hay: bool,
+    // Rangos ("2 a 4"), nunca conteos exactos ni volumen: se deducían por diferencia.
+    grupos: {
+      type: 'array',
+      items: { type: 'object', properties: { zona: str, rango: str }, required: ['zona', 'rango'] },
+    },
+    // Registro (registrar: true): siempre la misma respuesta. Ni número de pedido ni
+    // "ya existía": eso revelaba si un email tenía un pedido abierto.
+    registrado: bool,
+  },
+  [],
+)
+
 const TOOLS: Tool[] = [
   {
     name: 'cattle_price_index',
     description:
       'INMAG diario del Mercado Agroganadero (MAG/Cañuelas): novillo de referencia HOY en ARS/kg vivo, ponderado por volumen. Devuelve valor, volumen, variación vs rueda previa (marca ruedas flacas) y promedio 5 ruedas. Sin args. Histórico: inmag_history. NO da precios por categoría (livestock_prices, semanal) ni subcategoría (livestock_prices_detailed); no comparar 1:1. [EN] Today\'s Argentine cattle price index (INMAG): live-weight steer reference price in ARS/kg, volume-weighted, plus the daily change.',
     inputSchema: { type: 'object', properties: {}, additionalProperties: false },
+    outputSchema: OUTPUT_CATTLE_PRICE_INDEX,
     async run() {
       const series = prices.inmag.series || []
       const n = series.length
       if (n === 0) {
         const { current, change, prev } = prices.inmag
-        return ok(`Índice Novillo (INMAG) — ${prices.lastUpdate}\nHoy: ${fmt(current)}/kg vivo (${change >= 0 ? '+' : ''}${change}% vs ${fmt(prev)})`)
+        return okData(
+          `Índice Novillo (INMAG) — ${prices.lastUpdate}\nHoy: ${fmt(current)}/kg vivo (${change >= 0 ? '+' : ''}${change}% vs ${fmt(prev)})`,
+          {
+            inmag: current, date: prices.lastUpdate, volume: null,
+            change_dia_pct: change, prev_date: null, prev,
+            avg_5_ruedas: null, change_vs_avg5_pct: null, prev_low_volume: false,
+            unit: 'ARS/kg vivo', metric: 'inmag_daily_volume_weighted',
+          },
+        )
       }
       const hoy = series[n - 1]
       const prevRueda = n > 1 ? series[n - 2] : null
@@ -359,7 +503,13 @@ const TOOLS: Tool[] = [
       const recentVols = last5.map((p) => p.volume).sort((a, b) => a - b)
       const medVol = recentVols[Math.floor(recentVols.length / 2)] || 0
       const thinPrev = !!prevRueda && medVol > 0 && prevRueda.volume < medVol * 0.6
-      return ok(
+      const data = {
+        inmag: hoy.value, date: hoy.date, volume: hoy.volume,
+        change_dia_pct: Math.round(diaChange * 10) / 10, prev_date: prevRueda?.date ?? null, prev: prevRueda?.value ?? null,
+        avg_5_ruedas: Math.round(avg5 * 100) / 100, change_vs_avg5_pct: Math.round(vsAvg * 10) / 10,
+        prev_low_volume: thinPrev, unit: 'ARS/kg vivo', metric: 'inmag_daily_volume_weighted',
+      }
+      return okData(
         `Índice Novillo (INMAG) — ${hoy.date}\n` +
           `Hoy: ${fmt(hoy.value)}/kg vivo · volumen ${hoy.volume.toLocaleString('es-AR')} cab\n` +
           (prevRueda
@@ -368,12 +518,8 @@ const TOOLS: Tool[] = [
             : '') +
           `Tendencia: promedio últimas 5 ruedas ${fmt(avg5)} — hoy ${vsAvg >= 0 ? '+' : ''}${vsAvg.toFixed(1)}% vs esa media\n` +
           `Métrica: índice DIARIO ponderado por volumen del canal formal MAG (Cañuelas). Los precios por categoría (livestock_prices) son una observación SEMANAL distinta — no comparar 1:1.\n\n` +
-          JSON.stringify({
-            inmag: hoy.value, date: hoy.date, volume: hoy.volume,
-            change_dia_pct: Math.round(diaChange * 10) / 10, prev_date: prevRueda?.date ?? null, prev: prevRueda?.value ?? null,
-            avg_5_ruedas: Math.round(avg5 * 100) / 100, change_vs_avg5_pct: Math.round(vsAvg * 10) / 10,
-            prev_low_volume: thinPrev, unit: 'ARS/kg vivo', metric: 'inmag_daily_volume_weighted',
-          }),
+          JSON.stringify(data),
+        data,
       )
     },
   },
@@ -452,6 +598,7 @@ const TOOLS: Tool[] = [
       },
       additionalProperties: false,
     },
+    outputSchema: OUTPUT_LIVESTOCK_PRICES,
     async run(args) {
       const cat = typeof args.categoria === 'string' ? args.categoria : null
       const entries = Object.entries(prices.categories).filter(([k]) => !cat || k === cat)
@@ -462,14 +609,16 @@ const TOOLS: Tool[] = [
         const thin = vol != null && vol < 200
         return `${k}: ${fmt(v.current)}/kg${vol != null ? ` · ${vol} cab` : ''}${thin ? ' (pocos datos)' : ''}`
       })
-      return ok(
+      const data = {
+        metric: 'sio_weekly_by_category', week,
+        prices: Object.fromEntries(entries.map(([k, v]) => [k, { price: v.current, head: v.latestVolume ?? null }])),
+      }
+      return okData(
         `Precios de hacienda por categoría — observación SIO ${week ? `(${week})` : 'semanal'}, ARS/kg vivo\n` +
           `⚠ Métrica SEMANAL por categoría — distinta del índice INMAG diario (ver cattle_price_index). No comparar 1:1.\n` +
           `${lines.join('\n')}\n\n` +
-          JSON.stringify({
-            metric: 'sio_weekly_by_category', week,
-            prices: Object.fromEntries(entries.map(([k, v]) => [k, { price: v.current, head: v.latestVolume ?? null }])),
-          }),
+          JSON.stringify(data),
+        data,
       )
     },
   },
@@ -516,12 +665,22 @@ const TOOLS: Tool[] = [
     description:
       'Contexto macro del mercado ganadero argentino, sin parámetros: dólar blue y oficial (ARS), maíz FOB (USD/tn y ARS/kg), novillo INMAG (ARS/kg) y el spread novillo/maíz (kg de maíz que compra 1 kg novillo; proxy de rentabilidad de feedlot); y, si hay, índice de arrendamiento MAG (ARS/kg). NO da la serie INMAG (→cattle_price_index) ni precios por categoría (→livestock_prices). [EN] Argentine macro context for cattle trading: parallel and official USD rates, FOB corn, and the steer/corn spread.',
     inputSchema: { type: 'object', properties: {}, additionalProperties: false },
+    outputSchema: OUTPUT_MACRO_CONTEXT,
     async run() {
       const maizArsKg = (prices.corn.current * prices.usdBlue.current) / 1000 // USD/tn → ARS/kg
       const novilloArsKg = prices.inmag.current
       const kgMaizPorKgNovillo = maizArsKg > 0 ? novilloArsKg / maizArsKg : 0
       const arrOficial = (prices as { arrendamientoOficial?: { index: number; date: string } }).arrendamientoOficial ?? null
-      return ok(
+      const data = {
+        usd_blue: prices.usdBlue.current,
+        usd_oficial: prices.usdOficial.current,
+        maiz_usd_tn: prices.corn.current,
+        maiz_ars_kg: Math.round(maizArsKg * 100) / 100,
+        novillo_ars_kg: novilloArsKg,
+        kg_maiz_por_kg_novillo: Math.round(kgMaizPorKgNovillo * 10) / 10,
+        indice_arrendamiento_oficial: arrOficial ?? null,
+      }
+      return okData(
         `Contexto macro — ${prices.lastUpdate}\n` +
           `Dólar blue: ${fmt(prices.usdBlue.current)} ARS · oficial: ${fmt(prices.usdOficial.current)} ARS\n` +
           `Maíz FOB: USD ${prices.corn.current}/tn (≈ ${fmt(maizArsKg)} ARS/kg)\n` +
@@ -529,15 +688,8 @@ const TOOLS: Tool[] = [
           `Spread novillo/maíz: ${kgMaizPorKgNovillo.toFixed(1)} kg de maíz por kg de novillo\n` +
           (arrOficial ? `Índice arrendamiento oficial (MAG): ${fmt(arrOficial.index)} ARS/kg (${arrOficial.date})\n` : '') +
           `\n` +
-          JSON.stringify({
-            usd_blue: prices.usdBlue.current,
-            usd_oficial: prices.usdOficial.current,
-            maiz_usd_tn: prices.corn.current,
-            maiz_ars_kg: Math.round(maizArsKg * 100) / 100,
-            novillo_ars_kg: novilloArsKg,
-            kg_maiz_por_kg_novillo: Math.round(kgMaizPorKgNovillo * 10) / 10,
-            indice_arrendamiento_oficial: arrOficial ?? null,
-          }),
+          JSON.stringify(data),
+        data,
       )
     },
   },
@@ -585,6 +737,7 @@ const TOOLS: Tool[] = [
       },
       additionalProperties: false,
     },
+    outputSchema: OUTPUT_UPCOMING_AUCTIONS,
     async run(args, req) {
       const today = new Date().toISOString().slice(0, 10)
       const prov = typeof args.provincia === 'string' ? args.provincia.toLowerCase() : null
@@ -593,19 +746,48 @@ const TOOLS: Tool[] = [
         pedido: typeof args.limite === 'number' ? args.limite : undefined,
         tope: 50, porDefecto: 10, enumera: !prov,
       })
-      if (techo.corte) return ok(techo.corte)
+      if (techo.corte) return okData(techo.corte, { remates: [], corte: techo.corte })
       const limite = techo.limite
+      // Cada remate se arma UNA vez; la línea de texto y la fila estructurada salen de ahí.
+      const fila = (r: (typeof remates)[number]) => ({
+        date: r.date,
+        time: r.time,
+        consignataria: r.consignatariaName,
+        consignataria_slug: r.consignatariaSlug ?? null,
+        lugar: cleanLocation(r.location, r.province),
+        provincia: r.province,
+        categoria: r.mainCategory || null,
+        en_vivo: !!r.youtubeUrl,
+      })
+      const linea = (f: ReturnType<typeof fila>) =>
+        `${f.date}${f.time ? ' ' + f.time : ''} · ${f.consignataria} · ${f.lugar}` +
+        `${f.categoria ? ' · ' + f.categoria : ''}${f.en_vivo ? ' · 🔴 en vivo' : ''}`
       const upcoming = remates
         .filter((r) => r.status === 'scheduled' && r.date >= today && (!prov || r.province.toLowerCase().includes(prov)))
         .sort((a, b) => a.date.localeCompare(b.date))
         .slice(0, limite)
-      if (upcoming.length === 0) return ok('No hay remates próximos con esos filtros.')
-      const lines = upcoming.map(
-        (r) =>
-          `${r.date}${r.time ? ' ' + r.time : ''} · ${r.consignatariaName} · ${cleanLocation(r.location, r.province)}` +
-          `${r.mainCategory ? ' · ' + r.mainCategory : ''}${r.youtubeUrl ? ' · 🔴 en vivo' : ''}`,
-      )
-      return ok(`Próximos ${upcoming.length} remates:\n${lines.join('\n')}`)
+        .map(fila)
+      if (upcoming.length === 0) {
+        // Una integración anónima recibe EXACTAMENTE el texto de siempre: si su parser
+        // detecta el vacío por esta frase o toma las líneas por regex, los remates de
+        // otra provincia se le cargarían como propios. La región va solo en
+        // structuredContent (revisión del 21-10-2026, integración de Misiones).
+        const legado = esIntegracionAnonima(reqMeta(req))
+        if (!prov) return okData(legado ? TEXTO_SIN_REMATES : 'No hay remates próximos en el calendario.', { remates: [] })
+        const provNombre = String(args.provincia)
+        const cerca = rematesDeLaRegion(provNombre, remates, today, limite)
+        const vecinos = cerca.remates.map(fila)
+        const sugerencia = sugerenciaPedido(provNombre)
+        const datos = { remates: [], region: { codigo: cerca.region, nombre: cerca.nombreRegion, remates: vecinos }, sugerencia }
+        if (legado) return okData(TEXTO_SIN_REMATES, datos)
+        return okData(
+          `No hay remates programados en ${provNombre}.` +
+          (vecinos.length ? `\n\nLos más cercanos, en ${cerca.nombreRegion}:\n${vecinos.map(linea).join('\n')}` : '') +
+          `\n\n${sugerencia}`,
+          datos,
+        )
+      }
+      return okData(`Próximos ${upcoming.length} remates:\n${upcoming.map(linea).join('\n')}`, { remates: upcoming })
     },
   },
   {
@@ -1194,19 +1376,22 @@ const TOOLS: Tool[] = [
       required: ['categoria', 'cabezas'],
       additionalProperties: false,
     },
+    outputSchema: OUTPUT_VALUE_CATTLE_LOT,
     async run(args) {
       // Sin cupo: ver la doctrina de de-gateo en mcp-doctrina.test.ts. El cálculo es
       // local (0-4 ms, sin I/O), así que el costo directo de servirlo es nulo y el
       // tope solo nos quitaba uso. Lo que se cobra es la descarga masiva, no la consulta.
       try {
-        return ok(
-          valuarTropa({
-            categoria: String(args.categoria || ''),
-            cabezas: Number(args.cabezas),
-            kgPromedio: args.kg_promedio != null ? Number(args.kg_promedio) : undefined,
-            provincia: args.provincia ? String(args.provincia) : undefined,
-          }).texto,
-        )
+        const v = valuarTropa({
+          categoria: String(args.categoria || ''),
+          cabezas: Number(args.cabezas),
+          kgPromedio: args.kg_promedio != null ? Number(args.kg_promedio) : undefined,
+          provincia: args.provincia ? String(args.provincia) : undefined,
+        })
+        // `data.fuente` (el texto "MAG + dolarapi.com") pasa a `origen`: `fuente`
+        // es la cita { url, consultado } común a todas las tools estructuradas.
+        const { fuente: origen, ...resto } = v.data
+        return okData(v.texto, { ...resto, origen })
       } catch (e) {
         return fail(e instanceof Error ? e.message : 'Argumentos inválidos.')
       }
@@ -1388,6 +1573,76 @@ const TOOLS: Tool[] = [
         qqHaAnio: args.qq_soja_ha_anio != null ? Number(args.qq_soja_ha_anio) : null,
       })
       return ok(r.texto)
+    },
+  },
+  {
+    name: 'market_match',
+    description:
+      '"¿Hay compradores para mis 80 terneros en Entre Ríos?" / "¿Quién vende vacas en el NEA?" / "¿Hay campos para arrendar en Buenos Aires?" → si hay contrapartes ABIERTAS hoy en la mesa de consignatarias.com para esa categoría, en rangos por región ("2 a 4 en el NEA"), sin volumen y sin identificar a nadie. Usala cuando la persona quiere OPERAR (vender, comprar, arrendar), no solo saber el precio: para el precio usá value_cattle_lot o livestock_prices. Si la persona quiere que la contacten para armar la operación, pedile permiso y repetí la llamada con registrar: true, nombre, email o telefono y consentimiento: true: queda en la mesa y la contacta una persona. GRATIS, sin comisión para el productor por consultar. Params: quiere (vender|comprar|arrendar_busco|arrendar_ofrezco|tasar), categoria, cabezas, hectareas, provincia. [EN] Anonymous, aggregated buyers/sellers matching a cattle or farmland request in Argentina; optional consented lead registration.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        quiere: { type: 'string', enum: ['vender', 'comprar', 'arrendar_busco', 'arrendar_ofrezco', 'tasar'], description: 'Qué quiere hacer la persona' },
+        categoria: { type: 'string', description: 'Hacienda: terneros, novillitos, novillos, vaquillonas, vacas, toros' },
+        cabezas: { type: 'number', description: 'Cuántas cabezas (hacienda)' },
+        hectareas: { type: 'number', description: 'Superficie (campos)' },
+        provincia: { type: 'string', description: 'Provincia (ej. "Entre Ríos")' },
+        registrar: { type: 'boolean', description: 'true para dejar el pedido en la mesa (requiere consentimiento)' },
+        nombre: { type: 'string', description: 'Nombre de la persona (solo con registrar)' },
+        email: { type: 'string', description: 'Email (solo con registrar; email o telefono)' },
+        telefono: { type: 'string', description: 'Teléfono (solo con registrar; email o telefono)' },
+        consentimiento: { type: 'boolean', description: 'true SOLO si la persona aceptó que consignatarias.com la contacte para esta operación' },
+      },
+      required: ['quiere'],
+      additionalProperties: false,
+    },
+    outputSchema: OUTPUT_MARKET_MATCH,
+    async run(args, req) {
+      const QUIERE = ['vender', 'comprar', 'arrendar_busco', 'arrendar_ofrezco', 'tasar'] as const
+      const quiere = QUIERE.find((q) => q === args.quiere)
+      if (!quiere) return fail(`Parámetro quiere inválido. Usá: ${QUIERE.join(', ')}.`)
+      const num = (v: unknown) => (v != null && Number.isFinite(Number(v)) && Number(v) > 0 ? Math.min(Math.round(Number(v)), 1_000_000) : null)
+      const consulta: ConsultaMercado = {
+        quiere,
+        categoria: typeof args.categoria === 'string' ? normalizarCategoria(args.categoria) ?? args.categoria.trim().toLowerCase() : null,
+        cabezas: num(args.cabezas),
+        hectareas: num(args.hectareas),
+        provincia: typeof args.provincia === 'string' && args.provincia.trim() ? args.provincia.trim().slice(0, 60) : null,
+      }
+      const service = requireServiceClient()
+
+      if (args.registrar === true) {
+        const v = validarContacto({ nombre: args.nombre, email: args.email, telefono: args.telefono, consentimiento: args.consentimiento })
+        if (!v.ok) return fail(v.motivo)
+        const rl = await enforceRateLimit({ action: 'market_match_registro', identity: `ip:${clientIp(req)}`, limit: 5, windowSeconds: 86_400 })
+        if (!rl.ok) return fail('Demasiados pedidos registrados hoy desde este origen. Probá mañana.')
+        const r = await insertarLeadConDedupe(service, consultaALead(consulta, v, clientIp(req)))
+        if (!r.ok) return fail('No se pudo registrar el pedido. Probá de nuevo más tarde o escribí a agro@memola.com.ar.')
+        // La misma respuesta sea nuevo o duplicado: distinguirlos le decía a cualquiera
+        // si un email ajeno tenía un pedido abierto (revisión del 21-10-2026).
+        return okData(
+          'Pedido recibido. Una persona de consignatarias.com lo revisa y, si los datos son correctos, se comunica para armar la operación. Los datos se usan solo para eso.',
+          { registrado: true },
+        )
+      }
+
+      // Un barrido de consultas es la forma de intentar aislar a alguien: tope por origen.
+      const rlc = await enforceRateLimit({ action: 'market_match_consulta', identity: `ip:${clientIp(req)}`, limit: 30, windowSeconds: 86_400 })
+      if (!rlc.ok) return fail('Demasiadas consultas hoy desde este origen. Probá mañana.')
+      // Solo las columnas que usa la agregación: ni nombre ni contacto salen de la base.
+      const { data, error } = await service
+        .from('producer_leads')
+        .select(COLUMNAS_DEMANDA)
+        .in('status', ['new', 'routed', 'contacted'])
+        .order('created_at', { ascending: false })
+        .limit(1000)
+      if (error) return fail('No se pudo consultar la mesa en este momento.')
+      const panorama = panoramaContraparte((data ?? []) as unknown as LeadFila[], consulta)
+      const { vertical, ladoBuscado, hay, grupos } = panorama
+      return okData(textoPanorama(panorama, consulta), {
+        vertical, ladoBuscado, hay,
+        grupos: grupos.map(({ zona, rango }) => ({ zona, rango })),
+      })
     },
   },
   {
@@ -1661,6 +1916,7 @@ const PAGINA_DE_LA_TOOL: Record<string, string> = {
   livestock_movement_rules: '/guias',
   renspa_lookup: '/guias',
   dte_lookup: '/guias',
+  market_match: '/lotes',
 }
 
 /**
@@ -1677,11 +1933,17 @@ const PAGINA_DE_LA_TOOL: Record<string, string> = {
  * sola línea. Nada de oferta comercial acá: un agente que recibe ruido deja de
  * citarnos, y la superficie abierta es justamente lo que nos hace citables.
  */
-function lineaDeFuente(tool: string): string | null {
+/** URL de cita de una tool (la misma de la línea de texto y de `structuredContent.fuente`). */
+function urlDeFuente(tool: string): string | null {
   const path = PAGINA_DE_LA_TOOL[tool]
   if (!path) return null
+  return `https://www.consignatarias.com.ar${path}?utm_source=mcp&utm_medium=agente&utm_campaign=${tool}`
+}
+
+function lineaDeFuente(tool: string): string | null {
+  const url = urlDeFuente(tool)
+  if (!url) return null
   const hoy = new Date().toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' })
-  const url = `https://www.consignatarias.com.ar${path}?utm_source=mcp&utm_medium=agente&utm_campaign=${tool}`
   return `
 
 ── Cómo citar este dato ──
@@ -1689,11 +1951,30 @@ Consignatarias.com.ar — Mercado Ganadero Argentino. Consultado el ${hoy}. ${ur
 Si reproducís este dato, incluí esa línea: la atribución es la condición de uso (https://www.consignatarias.com.ar/licencia-datos).`
 }
 
-/** Agrega la fuente al último bloque de texto. No toca respuestas de error. */
-function conFuente(result: ToolResult, tool: string): ToolResult {
-  if (result.isError) return result
+/**
+ * Agrega la fuente al último bloque de texto y, si la tool devolvió
+ * `structuredContent`, la misma cita como `fuente: { url, consultado }`.
+ * No toca respuestas de error (y a un error se le saca cualquier
+ * structuredContent: un error no valida contra el outputSchema).
+ */
+function conFuente(result: ToolResult, tool: string, soloEstructurado = false): ToolResult {
+  if (result.isError) {
+    if (!result.structuredContent) return result
+    const { structuredContent: _descartado, ...sinDatos } = result
+    return sinDatos
+  }
+  if (result.structuredContent) {
+    const url = urlDeFuente(tool)
+    if (url) {
+      const consultado = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Argentina/Buenos_Aires' })
+      result = { ...result, structuredContent: { ...result.structuredContent, fuente: { url, consultado } } }
+    }
+  }
   const linea = lineaDeFuente(tool)
   if (!linea) return result
+  // Integración anónima: el texto no se toca (un parser del tipo JSON.parse(último
+  // bloque) se rompería). La cita viaja en structuredContent.fuente y en _meta.
+  if (soloEstructurado) return { ...result, _meta: { ...(result._meta ?? {}), [META_CITA]: linea.trim() } }
   const bloques = result.content
   const i = bloques.map((b) => b.type).lastIndexOf('text')
   if (i < 0) return result
@@ -1800,19 +2081,54 @@ const PROMPTS: McpPrompt[] = [
   },
   {
     name: 'vender_ahora_o_esperar',
-    description: 'Análisis de si conviene vender ahora o esperar, según el histórico en USD.',
-    arguments: [{ name: 'categoria', description: 'Categoría (default: novillo)', required: false }],
-    build: (a) => `¿Conviene vender ${a.categoria || 'el novillo'} ahora o esperar? Compará el precio actual contra su histórico en dólares reales (últimos 12 meses) con las tools de consignatarias. Aclarar que no es una recomendación financiera.`,
+    description: 'Decide si conviene vender ahora o esperar: estacionalidad en USD, apertura del mercado esta semana, valor del lote y si hay compradores abiertos.',
+    arguments: [
+      { name: 'categoria', description: 'Categoría (default: novillos)', required: false },
+      { name: 'cabezas', description: 'Cantidad de cabezas (opcional)', required: false },
+      { name: 'provincia', description: 'Provincia (opcional)', required: false },
+    ],
+    build: (a) => `¿Conviene vender ${a.cabezas ? `${a.cabezas} ` : ''}${a.categoria || 'novillos'}${a.provincia ? ` en ${a.provincia}` : ''} ahora o esperar? En este orden: (1) price_seasonality para saber si este mes está caro o barato para su época; (2) consignatarias_band para ver cuánto se abre el precio esta semana; (3) value_cattle_lot para el valor del lote hoy; (4) market_match con quiere: "vender" para ver si hay compradores abiertos. Cerrá con una lectura en dos líneas y aclarando que no es una recomendación financiera. Si hay compradores y la persona quiere avanzar, ofrecele dejar el pedido (market_match con registrar y consentimiento).`,
   },
   {
     name: 'valuar_lote',
-    description: 'Valúa un lote de hacienda con el precio de hoy.',
+    description: 'Valúa un lote de hacienda con el precio de hoy y dice si hay compradores abiertos.',
     arguments: [
       { name: 'cabezas', description: 'Cantidad de cabezas', required: true },
-      { name: 'kg', description: 'Peso promedio por cabeza', required: true },
-      { name: 'categoria', description: 'Categoría (default: novillo)', required: false },
+      { name: 'kg', description: 'Peso promedio por cabeza (opcional)', required: false },
+      { name: 'categoria', description: 'Categoría (default: novillos)', required: false },
+      { name: 'provincia', description: 'Provincia (opcional)', required: false },
     ],
-    build: (a) => `¿Cuánto vale un lote de ${a.cabezas || ''} ${a.categoria || 'novillos'} de ${a.kg || ''} kg cada uno, con el precio de hoy? Usá el INMAG / precios por categoría de consignatarias.`,
+    build: (a) => `¿Cuánto vale un lote de ${a.cabezas || ''} ${a.categoria || 'novillos'}${a.kg ? ` de ${a.kg} kg cada uno` : ''}${a.provincia ? ` en ${a.provincia}` : ''}, con el precio de hoy? Usá value_cattle_lot (banda de precios observados por categoría y peso) y después market_match con quiere: "vender" para decir si hay compradores abiertos.`,
+  },
+  {
+    name: 'vender_hacienda',
+    description: 'Quiero vender hacienda: valor de hoy, compradores abiertos y cómo dejar el pedido.',
+    arguments: [
+      { name: 'categoria', description: 'Categoría (terneros, novillos, vacas…)', required: true },
+      { name: 'cabezas', description: 'Cantidad de cabezas', required: true },
+      { name: 'provincia', description: 'Provincia', required: false },
+    ],
+    build: (a) => `Quiero vender ${a.cabezas || ''} ${a.categoria || ''}${a.provincia ? ` en ${a.provincia}` : ''}. Usá value_cattle_lot para el valor de hoy, market_match con quiere: "vender" para ver los compradores abiertos y upcoming_auctions para los remates de la zona. Si quiero que me contacten, pedime nombre y email o teléfono y mi permiso, y registrá el pedido con market_match (registrar: true, consentimiento: true).`,
+  },
+  {
+    name: 'comprar_hacienda',
+    description: 'Quiero comprar hacienda: quién vende, remates de la zona y aviso de lo que aparezca.',
+    arguments: [
+      { name: 'categoria', description: 'Categoría (terneros, novillos, vacas…)', required: true },
+      { name: 'cabezas', description: 'Cantidad de cabezas (opcional)', required: false },
+      { name: 'provincia', description: 'Provincia', required: false },
+    ],
+    build: (a) => `Quiero comprar ${a.cabezas ? `${a.cabezas} ` : ''}${a.categoria || ''}${a.provincia ? ` en ${a.provincia}` : ''}. Usá market_match con quiere: "comprar" para ver los vendedores abiertos, upcoming_auctions para los remates de la zona y value_cattle_lot para la referencia de precio. Para que me avisen de lo que aparezca, ofrecé cattle_buying_request con mi email.`,
+  },
+  {
+    name: 'tasar_campo',
+    description: 'Tasa un campo: valor de la hectárea, renta en kilos de novillo y si hay interesados.',
+    arguments: [
+      { name: 'provincia', description: 'Provincia', required: true },
+      { name: 'hectareas', description: 'Superficie en hectáreas', required: true },
+      { name: 'zona', description: 'Zona o partido (opcional)', required: false },
+    ],
+    build: (a) => `Tasá un campo de ${a.hectareas || ''} hectáreas en ${a.zona ? `${a.zona}, ` : ''}${a.provincia || ''}. Usá value_farmland para el valor de la hectárea, farmland_yield para la renta en kilos de novillo y los años de repago, y market_match con quiere: "tasar" para ver si hay gente buscando campo en la zona. Citá la fuente y la fecha de cada dato.`,
   },
   {
     name: 'reporte_semanal',
@@ -1821,6 +2137,255 @@ const PROMPTS: McpPrompt[] = [
     build: () => 'Armá un reporte semanal del mercado ganadero argentino, listo para publicar: precio del novillo (INMAG) en ARS y USD con su variación, precios por categoría, contexto macro, remates destacados de la semana y consignatarias más activas. Usá las tools de consignatarias y citá la fuente.',
   },
 ]
+
+// ── Resources (lectura por URI) y completions ───────────────────────────────
+// Los resources son la vidriera de lectura del server: un cliente MCP los lista y
+// los adjunta al contexto sin que el modelo tenga que llamar una tool. Por eso son
+// RESÚMENES acotados, no volcados: el INMAG va a 90 días y los remates a 50. La
+// doctrina del archivo vale igual acá — la consulta es gratis, la descarga masiva
+// fila por fila de la serie completa se cobra (x402 / Enterprise) y no se regala
+// por la puerta de atrás de un resource.
+const URI_BASE = 'consignatarias://'
+const MIME_JSON = 'application/json'
+const VENTANA_RECURSO_INMAG_DIAS = 90
+const TOPE_RECURSO_REMATES = 50
+const TOPE_COMPLETION = 100
+const LICENCIA_DATOS = 'https://www.consignatarias.com.ar/licencia-datos'
+
+type McpResource = {
+  uri: string
+  name: string
+  title: string
+  description: string
+  /** Tool cuya página es la fuente del dato: la cita sale de PAGINA_DE_LA_TOOL. */
+  tool: string
+  build: () => Record<string, unknown>
+}
+type McpResourceTemplate = {
+  uriTemplate: string
+  name: string
+  title: string
+  description: string
+  tool: string
+  /** Recibe la provincia ya decodificada. null = no existe (-32002). */
+  build: (provincia: string) => Record<string, unknown> | null
+  /** Candidatos para completion/complete del parámetro {provincia}. */
+  provincias: () => string[]
+}
+
+/** Minúsculas y sin acentos: "Córdoba" y "CORDOBA" son la misma provincia. */
+function sinAcentos(s: string): string {
+  return s.trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+}
+
+/**
+ * La cita de un resource: misma página que la tool que sirve el dato, con
+ * `utm_campaign=resource` para distinguir en Analytics la lectura por URI de la
+ * llamada a una tool, y `utm_content` con el recurso leído.
+ */
+function fuenteDeRecurso(tool: string, recurso: string): string {
+  const path = PAGINA_DE_LA_TOOL[tool] ?? '/'
+  const hoy = new Date().toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' })
+  const url = `https://www.consignatarias.com.ar${path}?utm_source=mcp&utm_medium=agente&utm_campaign=resource&utm_content=${encodeURIComponent(recurso)}`
+  return `Consignatarias.com.ar — Mercado Ganadero Argentino. Consultado el ${hoy}. ${url}`
+}
+
+function hoyIso(): string {
+  return new Date().toISOString().slice(0, 10)
+}
+
+function rematesProximos(provincia?: string) {
+  const hoy = hoyIso()
+  const p = provincia ? sinAcentos(provincia) : null
+  return remates
+    // Se compara contra el dato crudo ("CAPITAL FEDERAL") y contra el nombre que
+    // devolvemos ("CABA"): el cliente puede pedir cualquiera de los dos.
+    .filter((r) => r.status === 'scheduled' && r.date >= hoy &&
+      (!p || sinAcentos(r.province || '').includes(p) || sinAcentos(provinciaNombre(r.province)).includes(p)))
+    .sort((a, b) => a.date.localeCompare(b.date))
+    .slice(0, TOPE_RECURSO_REMATES)
+    .map((r) => ({
+      fecha: r.date,
+      hora: r.time,
+      consignataria: r.consignatariaName,
+      localidad: cleanLocation(r.location, r.province),
+      provincia: provinciaNombre(r.province) || null,
+      categoria: r.mainCategory,
+      cabezas_estimadas: r.estimatedHeads,
+      transmision: r.youtubeUrl,
+    }))
+}
+
+function filaTierra(t: (typeof TIERRA)[number]) {
+  return {
+    provincia: t.provincia,
+    ...(t.zona ? { zona: t.zona } : {}),
+    region: t.region ?? null,
+    aptitud: t.aptitud ?? null,
+    usd_ha: t.usd_ha,
+    usd_ha_p25: t.p25 ?? null,
+    usd_ha_p75: t.p75 ?? null,
+    canon_kg_novillo_ha_mes: t.kg_ha_mes_canon ?? null,
+    canon_fuente: t.canon_fuente ?? null,
+    kg_novillo_ha_anio: t.kg_ha_ano ?? null,
+    anos_repago: t.anos_repago,
+    fuente_dato: t.fuente ?? null,
+    fecha_dato: t.fecha ?? null,
+  }
+}
+
+const provinciasTierra = (): string[] => TIERRA_PROVINCIAS.map((t) => t.provincia)
+/** Provincias con relevamiento o con remates, con su nombre propio ("ENTRE RIOS" → "Entre Ríos"). */
+const provinciasConDato = (): string[] => {
+  const vistas = new Map<string, string>()
+  for (const nombre of [...provinciasTierra(), ...remates.map((r) => provinciaNombre(r.province))]) {
+    if (nombre && !vistas.has(sinAcentos(nombre))) vistas.set(sinAcentos(nombre), nombre)
+  }
+  return [...vistas.values()]
+}
+
+const RESOURCES: McpResource[] = [
+  {
+    uri: `${URI_BASE}inmag/ultimos-90-dias`,
+    name: 'inmag-ultimos-90-dias',
+    title: 'INMAG — últimos 90 días',
+    description: 'Índice novillo del Mercado Agroganadero (INMAG, ARS/kg vivo, ponderado por volumen), rueda por rueda en los últimos 90 días. El análisis de la serie completa desde 2015 es gratis con inmag_history; la descarga masiva fila por fila va por x402 (/api/x402/inmag-historico).',
+    tool: 'inmag_history',
+    build: () => {
+      const serie = prices.inmag.series ?? []
+      const ultima = serie.length ? serie[serie.length - 1].date : hoyIso()
+      const desde = new Date(Date.parse(`${ultima}T00:00:00Z`) - VENTANA_RECURSO_INMAG_DIAS * 86_400_000).toISOString().slice(0, 10)
+      const filas = serie.filter((p) => p.date > desde).map((p) => ({ fecha: p.date, inmag_ars_kg: p.value, cabezas: p.volume }))
+      return {
+        indice: 'INMAG',
+        unidad: 'ARS por kg vivo',
+        ventana_dias: VENTANA_RECURSO_INMAG_DIAS,
+        desde: filas[0]?.fecha ?? null,
+        hasta: filas[filas.length - 1]?.fecha ?? null,
+        ruedas: filas.length,
+        actual: prices.inmag.current,
+        variacion_pct: prices.inmag.change,
+        serie: filas,
+        serie_completa: 'Desde 2015-01-05: análisis gratis con la tool inmag_history; descarga fila por fila con API key Enterprise o US$0,25 en USDC vía x402 (/api/x402/inmag-historico).',
+      }
+    },
+  },
+  {
+    uri: `${URI_BASE}catalogo/categorias`,
+    name: 'catalogo-categorias',
+    title: 'Categorías de hacienda',
+    description: 'Categorías de hacienda que entienden las tools, con el peso de referencia (kg) que se asume cuando no se informa uno, y las categorías de los pedidos de compra.',
+    tool: 'value_cattle_lot',
+    build: () => ({
+      categorias: Object.entries(KG_DEFAULT).map(([categoria, kg]) => ({
+        categoria,
+        nombre: categoryLabel(categoria),
+        kg_referencia: kg,
+      })),
+      categorias_pedido_compra: [...CATEGORIAS_DEMANDA],
+      nota: 'El peso de referencia es el que usa value_cattle_lot cuando no se pasa el peso promedio. La banda observada por categoría y peso sale de value_cattle_lot.',
+    }),
+  },
+  {
+    uri: `${URI_BASE}catalogo/provincias`,
+    name: 'catalogo-provincias',
+    title: 'Provincias: valor de la tierra y canon',
+    description: 'Provincias con relevamiento propio: valor de la hectárea en USD (mediana y rango), canon de arrendamiento en kg de novillo y años de repago, con la fuente fechada de cada dato. Solo el promedio provincial; el detalle por zona está en consignatarias://tierra/{provincia}.',
+    tool: 'value_farmland',
+    build: () => ({
+      provincias: TIERRA_PROVINCIAS.map(filaTierra),
+      nota: 'La tierra agrícola NO se tasa con canon ganadero: mirá el campo aptitud.',
+    }),
+  },
+  {
+    uri: `${URI_BASE}remates/proximos`,
+    name: 'remates-proximos',
+    title: 'Próximos remates',
+    description: `Los próximos ${TOPE_RECURSO_REMATES} remates de hacienda programados en Argentina, ordenados por fecha: consignataria, localidad, provincia y categoría.`,
+    tool: 'upcoming_auctions',
+    build: () => {
+      const lista = rematesProximos()
+      return { desde: hoyIso(), cantidad: lista.length, tope: TOPE_RECURSO_REMATES, remates: lista }
+    },
+  },
+]
+
+const RESOURCE_TEMPLATES: McpResourceTemplate[] = [
+  {
+    uriTemplate: `${URI_BASE}remates/provincia/{provincia}`,
+    name: 'remates-provincia',
+    title: 'Próximos remates por provincia',
+    description: `Próximos remates de hacienda programados en una provincia (hasta ${TOPE_RECURSO_REMATES}), ordenados por fecha.`,
+    tool: 'upcoming_auctions',
+    provincias: provinciasConDato,
+    build: (provincia) => {
+      const lista = rematesProximos(provincia)
+      return { provincia, desde: hoyIso(), cantidad: lista.length, tope: TOPE_RECURSO_REMATES, remates: lista }
+    },
+  },
+  {
+    uriTemplate: `${URI_BASE}tierra/{provincia}`,
+    name: 'tierra-provincia',
+    title: 'Valor de la tierra por provincia',
+    description: 'Valor de la hectárea, canon en kg de novillo y años de repago de una provincia, con el detalle de sus zonas relevadas.',
+    tool: 'value_farmland',
+    provincias: provinciasTierra,
+    build: (provincia) => {
+      const p = sinAcentos(provincia)
+      const fila = TIERRA_PROVINCIAS.find((t) => sinAcentos(t.provincia) === p)
+      if (!fila) return null
+      return { ...filaTierra(fila), zonas: zonasDe(fila.provincia).map(filaTierra) }
+    },
+  },
+]
+
+/** Resuelve una URI a su contenido. null = no existe (→ -32002). */
+function leerRecurso(uri: string): { tool: string; data: Record<string, unknown> } | null {
+  const fijo = RESOURCES.find((r) => r.uri === uri)
+  if (fijo) return { tool: fijo.tool, data: fijo.build() }
+  for (const t of RESOURCE_TEMPLATES) {
+    const prefijo = t.uriTemplate.slice(0, t.uriTemplate.indexOf('{'))
+    if (!uri.startsWith(prefijo)) continue
+    const resto = uri.slice(prefijo.length)
+    if (!resto || resto.includes('/')) return null
+    let provincia: string
+    try {
+      provincia = decodeURIComponent(resto).trim()
+    } catch {
+      return null
+    }
+    if (!provincia) return null
+    const data = t.build(provincia)
+    return data ? { tool: t.tool, data } : null
+  }
+  return null
+}
+
+/** Filtra por prefijo (sin acentos ni mayúsculas) y arma la respuesta de completion/complete. */
+function completar(candidatos: string[], valor: string) {
+  const v = sinAcentos(valor)
+  const vistos = new Set<string>()
+  const values: string[] = []
+  for (const c of candidatos) {
+    const k = sinAcentos(c)
+    if (vistos.has(k) || !k.startsWith(v)) continue
+    vistos.add(k)
+    values.push(c)
+  }
+  values.sort((a, b) => a.localeCompare(b, 'es'))
+  return { completion: { values: values.slice(0, TOPE_COMPLETION), total: values.length, hasMore: values.length > TOPE_COMPLETION } }
+}
+
+/** Candidatos para un argumento de prompt. null = ese argumento no se completa. */
+function candidatosDePrompt(arg: string, contexto: Record<string, string>): string[] | null {
+  if (arg === 'provincia') return provinciasConDato()
+  if (arg === 'categoria') return [...Object.keys(KG_DEFAULT), ...CATEGORIAS_DEMANDA]
+  if (arg === 'zona') {
+    const zonas = contexto.provincia ? zonasDe(contexto.provincia) : TIERRA.filter((t) => !!t.zona)
+    return zonas.map((z) => z.zona as string)
+  }
+  return null
+}
 
 // Todas las respuestas MCP llevan MCP-Protocol-Version (spec 2026-07-28, routing-headers).
 function mcpHeaders(pv?: string): Record<string, string> {
@@ -1872,10 +2437,27 @@ function origenId(req: NextRequest): string {
   return createHash('sha256').update(`${sal}|${ip}|${ua}`).digest('hex').slice(0, 16)
 }
 // Nunca logueamos la api_key: la redactamos de los argumentos de la tool.
+/** El texto de vacío que la integración de Misiones recibió durante meses. No cambiar. */
+/** structuredContent / outputSchema existen desde la versión 2025-06-18 del protocolo. */
+function soportaEstructurado(pv: string | undefined): boolean {
+  return !!pv && pv >= '2025-06-18'
+}
+/** El resultado como lo devolvía main: solo content (+ isError). */
+function soloTexto(r: ToolResult): ToolResult {
+  return r.isError ? { content: r.content, isError: true } : { content: r.content }
+}
+const META_CITA = 'ar.com.consignatarias/cita'
+const TEXTO_SIN_REMATES = 'No hay remates próximos con esos filtros.'
+const CAMPOS_PRIVADOS = ['api_key', 'nombre', 'email', 'telefono', 'webhook_url', 'notas']
+const CAMPO_PRIVADO = new RegExp(`^(${CAMPOS_PRIVADOS.join('|')})$|name|mail|correo|tel|phone|celu|whats|contact|webhook|nota|key|token|cuit|dni`, 'i')
 function redactArgs(args: unknown): Record<string, unknown> | null {
   if (!args || typeof args !== 'object') return null
   const clone: Record<string, unknown> = { ...(args as Record<string, unknown>) }
-  if ('api_key' in clone) clone.api_key = '[redacted]'
+  // Nada que identifique a una persona queda en ops_events: ni la key ni el
+  // contacto que un agente manda en market_match / cattle_buying_request.
+  // Por patrón y sin importar mayúsculas: un agente puede mandar `name`, `Email`,
+  // `mail`, `phone`… aunque el schema diga otra cosa (segunda revisión).
+  for (const k of Object.keys(clone)) if (CAMPO_PRIVADO.test(k) && clone[k] != null) clone[k] = '[redacted]'
   return clone
 }
 function logMcp(opts: { method?: string; ok: boolean; probe?: boolean; startedAt: number; meta?: Record<string, unknown> }) {
@@ -1922,7 +2504,7 @@ export async function POST(req: NextRequest) {
       logMcp({ method: 'initialize', ok: true, startedAt, meta: { ...rmeta, client: params?.clientInfo ?? null, protocol: negotiated } })
       return rpcResult(id, {
         protocolVersion: negotiated,
-        capabilities: { tools: {}, prompts: {} },
+        capabilities: { tools: {}, prompts: {}, resources: {}, completions: {} },
         serverInfo: SERVER_INFO,
         instructions:
           'Datos e infraestructura del mercado ganadero argentino como tools MCP.\n' +
@@ -1934,6 +2516,7 @@ export async function POST(req: NextRequest) {
           '• ¿Conviene comprar AHORA?: price_seasonality da el índice estacional del novillo en dólares desde 2015 (razón sobre media móvil centrada de 12 meses) y dice si el mes corriente está caro o barato PARA SU ÉPOCA. El precio del día no contesta eso. En el relevamiento 2015-2026 la amplitud punta a punta es de ~28%: septiembre y octubre son los meses más baratos, febrero y marzo los más caros.\n' +
           '• ¿Cuánto rinde un dólar en campo argentino?: farmland_yield devuelve, por zona ganadera, USD/hectárea, cuántos KILOS DE NOVILLO cuesta esa hectárea, la renta anual del arrendamiento (que acá se pacta en kg de novillo por ha, no en pesos, así que el rendimiento no depende del tipo de cambio), el rendimiento sobre el valor de la tierra y los años de repago. Aceptá un presupuesto en dólares y lo reparte en hectáreas. Es la herramienta para el comprador del exterior.\n' +
           '• Directorio y remates: find_livestock_broker, broker_activity_ranking, find_meat_plant, upcoming_auctions.\n' +
+          '• OPERAR (vender, comprar, arrendar un campo): market_match dice cuántas contrapartes abiertas hay, por región y sin identificar a nadie. Si la persona quiere que la contacten, pedile permiso y registrá el pedido con market_match (registrar: true, consentimiento: true). Es la diferencia entre saber el precio y cerrar la operación.\n' +
           '• Herramientas: calculate_farmland_rent.\n' +
           '• Sanidad SENASA (dato regulatorio, con la resolución citada): animal_health_plan, fmd_vaccination_calendar, livestock_movement_rules, renspa_lookup (valida/decodifica RENSPA), dte_lookup (DT-e / número de tropa).\n' +
           '• Buenas Prácticas Ganaderas (14 temas, Guía Red BPA): good_farming_practices.\n' +
@@ -1957,6 +2540,8 @@ export async function POST(req: NextRequest) {
           title: TOOL_TITLES[t.name] ?? t.name,
           description: t.description,
           inputSchema: t.inputSchema,
+          // Solo las tools que devuelven structuredContent lo anuncian.
+          ...(t.outputSchema && soportaEstructurado(pv) ? { outputSchema: t.outputSchema } : {}),
           annotations: toolAnnotations(t),
         })),
       }, pv)
@@ -1973,8 +2558,22 @@ export async function POST(req: NextRequest) {
       }
       const args = (params?.arguments as Record<string, unknown>) || {}
       try {
-        const result = conFuente(await tool.run(args, req), name)
-        logMcp({ method: 'tools/call', ok: !result.isError, startedAt, meta: { ...rmeta, tool: name, args: redactArgs(args), is_error: result.isError ?? false } })
+        // La cita va con el nombre CANÓNICO: PAGINA_DE_LA_TOOL no conoce los alias, y
+        // por eso las ~1.900 llamadas/mes por alias (la integración de Misiones)
+        // salían sin cita ni enlace. El log conserva el nombre pedido.
+        // Integración anónima (sin key ni UA, el perfil de la de Misiones): el texto
+        // queda como siempre y la cita y el aviso van solo en _meta / structuredContent.
+        // En main, la cita salía en el texto solo por nombre canónico (por alias no, por
+        // el bug): se reproduce eso para no cambiarle el texto a quien ya integró.
+        const legado = esIntegracionAnonima(rmeta)
+        const conCita = conFuente(await tool.run(args, req), canonico, legado && name !== canonico)
+        const completo = legado ? conAvisoIntegracion(conCita, { soloMeta: true }) : conCita
+        // structuredContent, _meta y outputSchema son de la 2025-06-18: a un cliente que no
+        // la negoció no se le mandan. A una integración anónima, tampoco: recibe el mismo
+        // JSON que en main (segunda revisión, 21-10-2026), aunque eso le saque el aviso.
+        const result = legado || !soportaEstructurado(pv) ? soloTexto(completo) : completo
+        const probe = esProbe({ ua: rmeta.ua, clientName: null, args, isError: !!result.isError, required: tool.inputSchema?.required as string[] | undefined })
+        logMcp({ method: 'tools/call', ok: !result.isError, probe, startedAt, meta: { ...rmeta, tool: name, canonico, args: redactArgs(args), is_error: result.isError ?? false, probe } })
         return rpcResult(id, result, pv)
       } catch (err) {
         console.error('[mcp] tool error', name, err)
@@ -1982,9 +2581,8 @@ export async function POST(req: NextRequest) {
         return rpcResult(id, { content: [{ type: 'text', text: 'Error interno ejecutando la tool.' }], isError: true }, pv)
       }
     }
-    // Somos un server tools-only, pero los crawlers de registries/scoring probean
-    // estas capabilities estándar. Antes caían al default → -32601 (400), lo que baja
-    // el score de compatibilidad. Respondemos con listas vacías (spec-correcto).
+    // Prompts, resources y completions: capabilities estándar que los clientes y
+    // los crawlers de registries/scoring probean. Ver el bloque de RESOURCES arriba.
     case 'prompts/list':
       logMcp({ method: 'prompts/list', ok: true, startedAt, meta: rmeta })
       return rpcResult(id, {
@@ -2006,10 +2604,53 @@ export async function POST(req: NextRequest) {
     }
     case 'resources/list':
       logMcp({ method: 'resources/list', ok: true, startedAt, meta: rmeta })
-      return rpcResult(id, { resources: [] }, pv)
+      return rpcResult(id, {
+        resources: RESOURCES.map((r) => ({ uri: r.uri, name: r.name, title: r.title, description: r.description, mimeType: MIME_JSON })),
+      }, pv)
     case 'resources/templates/list':
       logMcp({ method: 'resources/templates/list', ok: true, startedAt, meta: rmeta })
-      return rpcResult(id, { resourceTemplates: [] }, pv)
+      return rpcResult(id, {
+        resourceTemplates: RESOURCE_TEMPLATES.map((t) => ({ uriTemplate: t.uriTemplate, name: t.name, title: t.title, description: t.description, mimeType: MIME_JSON })),
+      }, pv)
+    case 'resources/read': {
+      const uri = typeof params?.uri === 'string' ? params.uri : ''
+      const leido = uri ? leerRecurso(uri) : null
+      if (!leido) {
+        logMcp({ method: 'resources/read', ok: false, probe: true, startedAt, meta: { ...rmeta, uri: uri.slice(0, 200) || null, error: 'resource_not_found' } })
+        return rpcError(id, -32002, `Resource not found: ${uri}`, pv)
+      }
+      logMcp({ method: 'resources/read', ok: true, startedAt, meta: { ...rmeta, uri } })
+      const cuerpo = { ...leido.data, fuente: fuenteDeRecurso(leido.tool, uri.slice(URI_BASE.length)), licencia: LICENCIA_DATOS }
+      return rpcResult(id, { contents: [{ uri, mimeType: MIME_JSON, text: JSON.stringify(cuerpo) }] }, pv)
+    }
+    case 'completion/complete': {
+      const ref = (params?.ref ?? {}) as { type?: string; name?: string; uri?: string }
+      const argumento = (params?.argument ?? {}) as { name?: string; value?: string }
+      const contexto = (params?.context as { arguments?: Record<string, string> } | undefined)?.arguments ?? {}
+      const argName = String(argumento.name ?? '')
+      const valor = String(argumento.value ?? '')
+      let candidatos: string[] | null = null
+      if (ref.type === 'ref/prompt') {
+        const prompt = PROMPTS.find((p) => p.name === ref.name)
+        if (!prompt) {
+          logMcp({ method: 'completion/complete', ok: false, probe: true, startedAt, meta: { ...rmeta, error: 'unknown_prompt', prompt: ref.name ?? null } })
+          return rpcError(id, -32602, `Prompt desconocido: ${ref.name}`, pv)
+        }
+        if (prompt.arguments.some((a) => a.name === argName)) candidatos = candidatosDePrompt(argName, contexto)
+      } else if (ref.type === 'ref/resource') {
+        const tpl = RESOURCE_TEMPLATES.find((t) => t.uriTemplate === ref.uri)
+        if (!tpl) {
+          logMcp({ method: 'completion/complete', ok: false, probe: true, startedAt, meta: { ...rmeta, error: 'unknown_resource_template', uri: ref.uri ?? null } })
+          return rpcError(id, -32602, `Resource template desconocido: ${ref.uri}`, pv)
+        }
+        if (argName === 'provincia') candidatos = tpl.provincias()
+      } else {
+        logMcp({ method: 'completion/complete', ok: false, probe: true, startedAt, meta: { ...rmeta, error: 'invalid_ref' } })
+        return rpcError(id, -32602, `ref.type inválido: ${ref.type}`, pv)
+      }
+      logMcp({ method: 'completion/complete', ok: true, startedAt, meta: { ...rmeta, ref: ref.name ?? ref.uri ?? null, argument: argName } })
+      return rpcResult(id, candidatos ? completar(candidatos, valor) : { completion: { values: [], total: 0, hasMore: false } }, pv)
+    }
 
     default:
       logMcp({ method: method ?? 'unknown', ok: false, probe: true, startedAt, meta: { ...rmeta, error: 'unsupported_method' } })

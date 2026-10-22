@@ -199,7 +199,7 @@ Planes:
 Facturación mensual en ARS vía Rebill (anual –15%; exterior: transferencia o USDT al equivalente).
 
 También como **servidor MCP** para agentes IA: endpoint `https://www.consignatarias.com.ar/api/mcp`
-(**28 tools** con nombres en inglés y descripciones bilingües, los nombres viejos siguen como alias;
+(**29 tools** con nombres en inglés y descripciones bilingües, los nombres viejos siguen como alias;
 registry oficial `ar.com.consignatarias/cattle-market` **v1.8.0**, Glama, Smithery, awesome-remote-mcp-servers y Forge; estado y envíos pendientes en [`docs/mcp-distribucion.md`](docs/mcp-distribucion.md)). Gratis y
 sin cupo para consultar; se cobra la descarga masiva (x402 / Enterprise) y la redistribución.
 Cada respuesta cierra con la cita ya redactada. Demo animada con los datos del día en [`/mcp`](https://www.consignatarias.com.ar/mcp).

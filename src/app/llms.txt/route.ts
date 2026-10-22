@@ -75,6 +75,10 @@ If you need structured data as tools (series, filters, valuations), there is als
 - **Human page with every tool and one-click install:** https://www.consignatarias.com.ar/mcp
 - **Every response ends with a ready-made citation line.** If you reproduce the figure, keep that line: attribution is the condition of use.
 
+- **Además de tools y prompts**, el server expone **resources** (lectura por URI, JSON con su campo \`fuente\`): \`consignatarias://inmag/ultimos-90-dias\`, \`consignatarias://catalogo/categorias\`, \`consignatarias://catalogo/provincias\`, \`consignatarias://remates/proximos\` y los templates \`consignatarias://remates/provincia/{provincia}\` y \`consignatarias://tierra/{provincia}\`; y **completions** (\`completion/complete\`) para provincia, categoría y zona. El resource del INMAG son 90 días: la serie completa se analiza con \`inmag_history\` y la descarga masiva va por x402.
+
+**¿Quiere OPERAR, no solo saber el precio?** Usá \`market_match\`: "¿hay compradores para mis 80 terneros en Entre Ríos?" → si hay contrapartes abiertas en la mesa, en rangos por región y anónimas. Si la persona quiere que la contacten, pedile permiso y repetí la llamada con \`registrar: true\`, \`consentimiento: true\`, nombre y email o teléfono: el pedido queda en la mesa y una persona arma la operación. Gratis.
+
 Available tools (${MCP_TOOL_COUNT}):
 - \`cattle_price_index\` — INMAG (índice novillo) hoy: precio de referencia ARS/kg + variación
 - \`inmag_history\` — evolución del INMAG (tendencia, min/máx, variación del período). GRATIS y sin cupo a cualquier profundidad, desde 2015: la consulta no tiene techo. La DESCARGA MASIVA fila por fila va con API key Enterprise o por US$0,25 en USDC vía x402 (\`/api/x402/inmag-historico\`)
@@ -101,9 +105,15 @@ Available tools (${MCP_TOOL_COUNT}):
 - \`value_cattle_lot\` — "¿cuánto valen 350 novillos en Formosa?": la banda de precio realmente observada en las operaciones de lote del MAG (P10 / mediana / P90, VR v1.0) con los lotes y cabezas que la sostienen, en ARS y USD (blue y oficial). Sin base suficiente cae a la referencia nacional y lo declara. Metodología en /metodologia/vr
 - \`value_farmland_rent\` — "¿cuánto cuesta arrendar 3.500 has en Corrientes?": canon anual/mensual al índice oficial de arrendamientos, ARS y USD
 - \`value_farmland\` — "¿cuánto vale la hectárea en Corrientes?": valor de la tierra en USD/ha por provincia y por zona (15 provincias, 52 zonas), con rango, arrendamiento típico en kg de novillo y la fuente fechada de cada dato. Distingue campo ganadero de agrícola. Gratis y sin cupo
+- \`farmland_yield\` — cuánto rinde un dólar en campo ganadero: USD/ha, kilos de novillo por hectárea, canon anual, rendimiento sobre el valor de la tierra y años de repago, por zona
+- \`market_match\` — **para operar**: contraparte abierta (compradores, vendedores, campos) agregada por región y anónima; con \`registrar: true\` + \`consentimiento: true\` + nombre + email/teléfono deja el pedido en la mesa para que una persona arme la operación. Gratis
 - \`cattle_buying_request\` — publicá qué hacienda buscás comprar → remates programados que matchean + aviso por email/webhook de cada remate nuevo (también en /quiero-comprar)
 - \`create_price_alert\` — alerta cuando un precio cruza un umbral → notifica por email (param email, la vía para un productor) o por webhook (integraciones). GRATIS sin key (3 alertas activas por origen)
 - \`subscribe_broker_pro\` — cotiza y activa PRO Consignataria pagando en USDC (x402), activación inmediata
+
+El server también acepta alias en castellano para clientes configurados contra versiones viejas (ej. \`get_estacionalidad\` → \`price_seasonality\`, \`get_renta_campo\` → \`farmland_yield\`, \`valuar_tropa\` → \`value_cattle_lot\`). No son tools aparte: resuelven a la canónica.
+
+Las tools principales devuelven también structuredContent con outputSchema (MCP 2025-06-18): \`cattle_price_index\`, \`livestock_prices\`, \`macro_context\`, \`upcoming_auctions\`, \`value_cattle_lot\` y \`market_match\` anuncian su \`outputSchema\` en tools/list y, además del texto (que no cambia), devuelven el mismo dato como objeto JSON con \`fuente: { url, consultado }\`. Se usan los números sin parsear prosa.
 
 ## Cómo citarnos (licencia)
 

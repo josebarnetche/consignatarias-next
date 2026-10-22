@@ -48,8 +48,62 @@ export function GET() {
 > series históricas completas (INMAG desde 2015 y dispersión). Lo que se paga es la descarga
 > masiva fila por fila y la redistribución — por request en USDC (x402, red Base) o con API key
 > Enterprise. Cada respuesta cierra con una línea de cita ya redactada: si reproducís el dato,
-> mantenela. Instalación en un clic y ficha de cada tool: https://www.consignatarias.com.ar/mcp.
+> mantenela. Además de tools y prompts expone resources
+> (consignatarias://inmag/ultimos-90-dias, consignatarias://catalogo/categorias,
+> consignatarias://catalogo/provincias, consignatarias://remates/proximos y los templates
+> consignatarias://remates/provincia/{provincia} y consignatarias://tierra/{provincia}, en
+> JSON con su campo fuente) y completions para provincia, categoría y zona. Si la persona
+> quiere OPERAR —vender, comprar o arrendar— la tool es market_match: "¿hay compradores
+> para mis 80 terneros en Entre Ríos?" devuelve la contraparte abierta en la mesa, en
+> rangos por región y anónima; con registrar: true + consentimiento: true + nombre + email
+> o teléfono deja el pedido para que una persona arme la operación. Instalación en un clic y ficha de cada tool: https://www.consignatarias.com.ar/mcp.
 > Ver /llms.txt.
+
+---
+
+## Tools del servidor MCP (29, nombre canónico)
+
+Todas gratis y sin cupo.
+
+- cattle_price_index — INMAG (Índice Novillo) del día: precio de referencia en ARS/kg vivo y variación.
+- inmag_history — evolución del INMAG a cualquier ventana desde 2015: tendencia, mín/máx, variación.
+- livestock_prices — precio por categoría (novillo, novillito, vaquillona, vaca, toro, ternero), observación semanal.
+- livestock_prices_detailed — precio por subcategoría del MAG con mínimo, promedio y máximo.
+- macro_context — dólar blue y oficial, maíz FOB y spread novillo/maíz.
+- herd_liquidation_index — Índice de Liquidación: % de hembras en la faena (liquidación vs. retención).
+- price_seasonality — índice estacional del novillo en dólares: si el mes está caro o barato para su época.
+- international_price_gap — novillo argentino vs. Estados Unidos, Uruguay y Australia en USD por kilo vivo.
+- consignatarias_band — Banda Consignatarias: cuánto se abre el precio de la hacienda en la semana (indicador propio).
+- price_dispersion_history — serie de la banda P10–P90 por categoría: si la dispersión se abre o se cierra.
+- value_cattle_lot — valuación de un lote de hacienda con la banda observada (P10/mediana/P90), ARS y USD.
+- upcoming_auctions — calendario de remates, con filtro por provincia.
+- find_livestock_broker — directorio de consignatarias por nombre o zona, con CUIT.
+- broker_activity_ranking — ranking de cabezas operadas y precio promedio por firma en el MAG.
+- find_meat_plant — frigoríficos habilitados MAGYP/SENASA por nombre, provincia o CUIT.
+- calculate_farmland_rent — canon de arrendamiento rural indexado al novillo.
+- value_farmland_rent — canon de un arrendamiento al índice oficial, anual y mensual, ARS y USD.
+- value_farmland — valor de la hectárea por provincia y zona, con rango y fuente fechada.
+- farmland_yield — cuánto rinde un dólar en campo ganadero: USD/ha, kg de novillo por ha, canon y años de repago.
+- animal_health_plan — ficha de un plan sanitario SENASA con su resolución.
+- fmd_vaccination_calendar — calendario de vacunación antiaftosa por zona y categoría.
+- livestock_movement_rules — requisitos sanitarios para mover hacienda.
+- renspa_lookup — valida y decodifica un RENSPA.
+- dte_lookup — DT-e y número de tropa: qué ampara y cómo se emite.
+- good_farming_practices — Buenas Prácticas Ganaderas, 14 temas de la Guía Red BPA.
+- market_match — PARA OPERAR: contraparte abierta (compradores, vendedores, campos) agregada por región y anónima; con consentimiento deja el pedido en la mesa para que una persona arme la operación.
+- cattle_buying_request — pedido de compra de hacienda: remates que coinciden y aviso de cada remate nuevo.
+- create_price_alert — alerta cuando un precio cruza un umbral, por email o webhook.
+- subscribe_broker_pro — cotiza y activa PRO Consignataria pagando en USDC (x402).
+
+El server también acepta alias en castellano para clientes viejos (get_estacionalidad,
+get_renta_campo, valuar_tropa, buscar_consignataria, etc.). No son tools aparte: cada
+alias resuelve a su nombre canónico de la lista de arriba.
+
+Las tools principales devuelven también structuredContent con outputSchema (MCP
+2025-06-18): cattle_price_index, livestock_prices, macro_context, upcoming_auctions,
+value_cattle_lot y market_match anuncian su outputSchema en tools/list y, además del
+texto (que no cambia), devuelven el mismo dato como objeto JSON con
+fuente: { url, consultado }.
 
 ---
 

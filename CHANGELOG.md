@@ -7,6 +7,29 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.243.0] — 2026-10-22
+
+### MCP 1.9.0: `market_match`, la mesa en `/mercado/demanda` y privacidad de leads
+
+José: «el MCP más avanzado, útil para la demanda actual, que traiga usuarios, tráfico y leads». Hasta ahora el MCP decía cuánto vale la hacienda. Desde esta versión también dice si hay alguien del otro lado de la operación, sin decir quién.
+
+- **Tool `market_match`** (`src/lib/mcp/market-match.ts`): "¿hay compradores para mis 80 terneros en Entre Ríos?" devuelve la contraparte abierta en **rangos** por región ("2 a 4 en el NEA"), nunca el conteo exacto ni el volumen. Por diferencia en el tiempo o cargando pedidos falsos se deducía a la persona (dos revisiones independientes del 21-10).
+  - Con `registrar: true` + `consentimiento: true` deja el pedido en `producer_leads` como `needs_review` / `mcp:market_match`. El agente no lo toma hasta que una persona verifique el contacto (`tomable()`, v1.242.0).
+  - 30 consultas por día por IP.
+- **`/mercado/demanda`** (`src/lib/mercado/demanda-agregada.ts`): la mesa agregada, k-anónima (grupos de 2 o más), de los últimos 90 días. No cuenta los `needs_review` ni los orígenes que cualquiera puede inventar (`mcp:*`, `demanda_compra:*`).
+- **Spec MCP:**
+  - prompts que terminan en una operación (`vender_hacienda`, `comprar_hacienda`, `tasar_campo`);
+  - resources (`consignatarias://…`) y completions;
+  - `structuredContent` + `outputSchema` en 6 tools, solo para clientes 2025-06-18 o posteriores.
+  - La integración anónima de Misiones recibe el JSON idéntico al de v1.242.0 (verificado en sus 10 llamadas).
+- **Privacidad:**
+  - `/api/producer-leads` responde a un duplicado igual que a un alta nueva, así no revela si un email ya había pedido algo;
+  - los logs del MCP redactan los campos de contacto por patrón.
+- **Superficies:** route, `/mcp`, `llms.txt`, `llms-full.txt`, los tres `server.json` y la server card (regenerada desde `tools/list` y `prompts/list`) en **1.9.0**, con 29 tools y 16 prompts. `docs/mcp-distribucion.md` publica ahora la 1.9.0.
+- Sin snapshots del texto del MCP: dependían de `remates.json` y de las bandas VR, que cambian todos los días.
+
+---
+
 ## [1.242.1] — 2026-10-22
 
 ### Agente: las demandas que carga el MCP esperan verificación

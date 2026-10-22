@@ -3,11 +3,11 @@
   "name": "ar.com.consignatarias/cattle-market",
   "title": "Consignatarias — Mercado Ganadero Argentino",
   "description": "Mercado ganadero argentino, en vivo y como herramientas MCP para agentes. Índice Novillo (INMAG) diario en ARS y USD desde 2015; precios por categoría y bandas de dispersión observada (P10, mediana y P90) sobre lotes del MAG, con historia y referencia por rango de peso para valuar una tropa. Contexto macro, estacionalidad de precios y brecha del precio argentino frente a EE.UU., Uruguay y Australia. Calendario de remates, directorio y actividad de consignatarias, y búsqueda de frigoríficos. Valuaciones de tierra por provincia y zona, cálculo de arrendamientos y renta del campo, con fuentes y fechas de los datos. Sanidad SENASA, vacunación, reglas de movimiento y Buenas Prácticas Ganaderas. Consultas públicas gratuitas; API key Enterprise para descarga masiva y exports.",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "serverInfo": {
     "name": "consignatarias",
     "title": "Consignatarias — Mercado Ganadero Argentino",
-    "version": "1.8.0"
+    "version": "1.9.0"
   },
   "protocolVersions": [
     "2026-07-28",
@@ -49,12 +49,13 @@
   "capabilities": {
     "tools": true,
     "prompts": true,
-    "resources": false
+    "resources": true,
+    "completions": true
   },
   "authentication": {
     "type": "bearer",
     "required": false,
-    "description": "Las 28 tools responden sin key. Las de consulta son gratis y sin cupo, a cualquier profundidad. La API key Enterprise (Authorization: Bearer cnsg_live_...) es para la descarga masiva fila por fila, los exports y las alertas sin límite. Publicar o redistribuir el dato tiene licencia: https://www.consignatarias.com.ar/licencia-datos",
+    "description": "Las 29 tools responden sin key. Las de consulta son gratis y sin cupo, a cualquier profundidad. La API key Enterprise (Authorization: Bearer cnsg_live_...) es para la descarga masiva fila por fila, los exports y las alertas sin límite. Publicar o redistribuir el dato tiene licencia: https://www.consignatarias.com.ar/licencia-datos",
     "tokenUrl": "https://www.consignatarias.com.ar/planes"
   },
   "tools": [
@@ -756,6 +757,74 @@
       }
     },
     {
+      "name": "market_match",
+      "title": "¿Hay compradores o vendedores? (anónimo)",
+      "description": "\"¿Hay compradores para mis 80 terneros en Entre Ríos?\" / \"¿Quién vende vacas en el NEA?\" / \"¿Hay campos para arrendar en Buenos Aires?\" → si hay contrapartes ABIERTAS hoy en la mesa de consignatarias.com para esa categoría, en rangos por región (\"2 a 4 en el NEA\"), sin volumen y sin identificar a nadie. Usala cuando la persona quiere OPERAR (vender, comprar, arrendar), no solo saber el precio: para el precio usá value_cattle_lot o livestock_prices. Si la persona quiere que la contacten para armar la operación, pedile permiso y repetí la llamada con registrar: true, nombre, email o telefono y consentimiento: true: queda en la mesa y la contacta una persona. GRATIS, sin comisión para el productor por consultar. Params: quiere (vender|comprar|arrendar_busco|arrendar_ofrezco|tasar), categoria, cabezas, hectareas, provincia. [EN] Anonymous, aggregated buyers/sellers matching a cattle or farmland request in Argentina; optional consented lead registration.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "quiere": {
+            "type": "string",
+            "enum": [
+              "vender",
+              "comprar",
+              "arrendar_busco",
+              "arrendar_ofrezco",
+              "tasar"
+            ],
+            "description": "Qué quiere hacer la persona"
+          },
+          "categoria": {
+            "type": "string",
+            "description": "Hacienda: terneros, novillitos, novillos, vaquillonas, vacas, toros"
+          },
+          "cabezas": {
+            "type": "number",
+            "description": "Cuántas cabezas (hacienda)"
+          },
+          "hectareas": {
+            "type": "number",
+            "description": "Superficie (campos)"
+          },
+          "provincia": {
+            "type": "string",
+            "description": "Provincia (ej. \"Entre Ríos\")"
+          },
+          "registrar": {
+            "type": "boolean",
+            "description": "true para dejar el pedido en la mesa (requiere consentimiento)"
+          },
+          "nombre": {
+            "type": "string",
+            "description": "Nombre de la persona (solo con registrar)"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email (solo con registrar; email o telefono)"
+          },
+          "telefono": {
+            "type": "string",
+            "description": "Teléfono (solo con registrar; email o telefono)"
+          },
+          "consentimiento": {
+            "type": "boolean",
+            "description": "true SOLO si la persona aceptó que consignatarias.com la contacte para esta operación"
+          }
+        },
+        "required": [
+          "quiere"
+        ],
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "¿Hay compradores o vendedores? (anónimo)",
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": true
+      }
+    },
+    {
       "name": "cattle_buying_request",
       "title": "Publicar una búsqueda de hacienda para comprar",
       "description": "\"Quiero comprar 300 terneros en Corrientes\" → te devuelve YA los próximos remates programados que matchean (fecha, consignataria, lugar, link) y deja tu búsqueda activa: te avisamos por email o webhook de cada remate nuevo que matchee. GRATIS. Params: categoria (terneros|novillos|vaquillonas|vacas|toros|mixto — acepta sinónimos), cabezas (opcional), provincia (opcional), email y/o webhook_url (al menos uno, para los avisos). [EN] Post a cattle buying request in Argentina and get matching upcoming auctions right away, plus alerts for new ones.",
@@ -890,55 +959,256 @@
   "prompts": [
     {
       "name": "precio_novillo_hoy",
-      "description": "Precio del novillo hoy (INMAG) en pesos y dólares, con su variación."
+      "description": "Precio del novillo hoy (INMAG) en pesos y dólares, con su variación.",
+      "arguments": []
     },
     {
       "name": "panorama_mercado",
-      "description": "Panorama del mercado ganadero hoy: precio, dólar, remates de la semana y consignatarias más activas."
+      "description": "Panorama del mercado ganadero hoy: precio, dólar, remates de la semana y consignatarias más activas.",
+      "arguments": []
     },
     {
       "name": "value_cattle_lot",
-      "description": "Cuánto vale una tropa de hacienda hoy, en pesos y dólares."
+      "description": "Cuánto vale una tropa de hacienda hoy, en pesos y dólares.",
+      "arguments": [
+        {
+          "name": "categoria",
+          "description": "Categoría (novillos, terneros, vacas…)",
+          "required": true
+        },
+        {
+          "name": "cabezas",
+          "description": "Cantidad de animales",
+          "required": true
+        },
+        {
+          "name": "provincia",
+          "description": "Provincia (opcional)",
+          "required": false
+        }
+      ]
     },
     {
       "name": "cuanto_vale_la_hectarea",
-      "description": "Cuánto vale la hectárea de campo en una provincia o zona, con la fuente del dato."
+      "description": "Cuánto vale la hectárea de campo en una provincia o zona, con la fuente del dato.",
+      "arguments": [
+        {
+          "name": "provincia",
+          "description": "Provincia",
+          "required": true
+        },
+        {
+          "name": "zona",
+          "description": "Zona o partido (opcional, precisa mucho)",
+          "required": false
+        },
+        {
+          "name": "hectareas",
+          "description": "Superficie del campo (opcional)",
+          "required": false
+        }
+      ]
     },
     {
       "name": "arrendar_campo",
-      "description": "Cuánto cuesta arrendar un campo ganadero, al índice oficial del MAG."
+      "description": "Cuánto cuesta arrendar un campo ganadero, al índice oficial del MAG.",
+      "arguments": [
+        {
+          "name": "hectareas",
+          "description": "Superficie en hectáreas",
+          "required": true
+        },
+        {
+          "name": "provincia",
+          "description": "Provincia (opcional)",
+          "required": false
+        }
+      ]
     },
     {
       "name": "novillo_en_dolares",
-      "description": "Cuánto vale un novillo en dólares hoy, según su peso."
+      "description": "Cuánto vale un novillo en dólares hoy, según su peso.",
+      "arguments": [
+        {
+          "name": "kg",
+          "description": "Peso del novillo en kg (default 460)",
+          "required": false
+        }
+      ]
     },
     {
       "name": "actividad_consignataria",
-      "description": "Cuántas cabezas operó una consignataria y a qué precio promedio, en un período."
+      "description": "Cuántas cabezas operó una consignataria y a qué precio promedio, en un período.",
+      "arguments": [
+        {
+          "name": "firma",
+          "description": "Nombre de la consignataria",
+          "required": true
+        },
+        {
+          "name": "periodo",
+          "description": "Período, ej. \"este mes\" (default: último mes)",
+          "required": false
+        }
+      ]
     },
     {
       "name": "ranking_consignatarias",
-      "description": "Ranking de consignatarias por cabezas operadas en Cañuelas, con precio promedio."
+      "description": "Ranking de consignatarias por cabezas operadas en Cañuelas, con precio promedio.",
+      "arguments": [
+        {
+          "name": "periodo",
+          "description": "Período (default: este mes)",
+          "required": false
+        },
+        {
+          "name": "categoria",
+          "description": "Categoría: NOVILLO, VACA, etc. (opcional)",
+          "required": false
+        }
+      ]
     },
     {
       "name": "calculate_farmland_rent",
-      "description": "Calcula el canon de arrendamiento con el índice novillo del mes."
+      "description": "Calcula el canon de arrendamiento con el índice novillo del mes.",
+      "arguments": [
+        {
+          "name": "hectareas",
+          "description": "Cantidad de hectáreas",
+          "required": true
+        },
+        {
+          "name": "kg_ha",
+          "description": "Kilos de novillo por hectárea pactados (aclarar si es por mes o por año)",
+          "required": true
+        }
+      ]
     },
     {
       "name": "remates_provincia",
-      "description": "Calendario de remates de hacienda en una provincia."
+      "description": "Calendario de remates de hacienda en una provincia.",
+      "arguments": [
+        {
+          "name": "provincia",
+          "description": "Provincia",
+          "required": true
+        }
+      ]
     },
     {
       "name": "vender_ahora_o_esperar",
-      "description": "Análisis de si conviene vender ahora o esperar, según el histórico en USD."
+      "description": "Decide si conviene vender ahora o esperar: estacionalidad en USD, apertura del mercado esta semana, valor del lote y si hay compradores abiertos.",
+      "arguments": [
+        {
+          "name": "categoria",
+          "description": "Categoría (default: novillos)",
+          "required": false
+        },
+        {
+          "name": "cabezas",
+          "description": "Cantidad de cabezas (opcional)",
+          "required": false
+        },
+        {
+          "name": "provincia",
+          "description": "Provincia (opcional)",
+          "required": false
+        }
+      ]
     },
     {
       "name": "valuar_lote",
-      "description": "Valúa un lote de hacienda con el precio de hoy."
+      "description": "Valúa un lote de hacienda con el precio de hoy y dice si hay compradores abiertos.",
+      "arguments": [
+        {
+          "name": "cabezas",
+          "description": "Cantidad de cabezas",
+          "required": true
+        },
+        {
+          "name": "kg",
+          "description": "Peso promedio por cabeza (opcional)",
+          "required": false
+        },
+        {
+          "name": "categoria",
+          "description": "Categoría (default: novillos)",
+          "required": false
+        },
+        {
+          "name": "provincia",
+          "description": "Provincia (opcional)",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "vender_hacienda",
+      "description": "Quiero vender hacienda: valor de hoy, compradores abiertos y cómo dejar el pedido.",
+      "arguments": [
+        {
+          "name": "categoria",
+          "description": "Categoría (terneros, novillos, vacas…)",
+          "required": true
+        },
+        {
+          "name": "cabezas",
+          "description": "Cantidad de cabezas",
+          "required": true
+        },
+        {
+          "name": "provincia",
+          "description": "Provincia",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "comprar_hacienda",
+      "description": "Quiero comprar hacienda: quién vende, remates de la zona y aviso de lo que aparezca.",
+      "arguments": [
+        {
+          "name": "categoria",
+          "description": "Categoría (terneros, novillos, vacas…)",
+          "required": true
+        },
+        {
+          "name": "cabezas",
+          "description": "Cantidad de cabezas (opcional)",
+          "required": false
+        },
+        {
+          "name": "provincia",
+          "description": "Provincia",
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "tasar_campo",
+      "description": "Tasa un campo: valor de la hectárea, renta en kilos de novillo y si hay interesados.",
+      "arguments": [
+        {
+          "name": "provincia",
+          "description": "Provincia",
+          "required": true
+        },
+        {
+          "name": "hectareas",
+          "description": "Superficie en hectáreas",
+          "required": true
+        },
+        {
+          "name": "zona",
+          "description": "Zona o partido (opcional)",
+          "required": false
+        }
+      ]
     },
     {
       "name": "reporte_semanal",
-      "description": "Reporte semanal del mercado ganadero, listo para publicar."
+      "description": "Reporte semanal del mercado ganadero, listo para publicar.",
+      "arguments": []
     }
   ]
 }

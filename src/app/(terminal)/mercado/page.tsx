@@ -172,6 +172,21 @@ export default function MercadoPage() {
         </div>
       </div>
 
+      {/* La mesa: demanda y oferta abiertas, agregadas y anónimas. Dato que solo tenemos nosotros. */}
+      <div className="px-4 pt-2 pb-1 max-w-6xl mx-auto">
+        <Link
+          href="/mercado/demanda"
+          className="block border border-terminal-border bg-terminal-panel/60 px-panel py-3 hover:border-accent transition-colors"
+        >
+          <span className="text-xxs font-terminal uppercase tracking-wider text-zinc-500">
+            Demanda de hacienda y campos hoy →
+          </span>
+          <p className="text-zinc-300 text-data mt-1">
+            Cuántos compran, cuántos venden y cuántos buscan campo en la mesa, por categoría y región. Agregado y anónimo.
+          </p>
+        </Link>
+      </div>
+
       {/* Precios hub teaser — internal link target for /precios SEO */}
       <div className="px-4 pt-2 pb-1 max-w-6xl mx-auto">
         <Link

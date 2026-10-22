@@ -8,7 +8,7 @@
 
 - **Server:** `ar.com.consignatarias/cattle-market`
 - **Endpoint:** `https://www.consignatarias.com.ar/api/mcp` (Streamable HTTP, sin autenticación)
-- **28 tools** de lectura más 2 de escritura (`create_price_alert`, `cattle_buying_request`) y 13 prompts.
+- **29 tools**: 26 de lectura y 3 de escritura (`create_price_alert`, `cattle_buying_request`, `market_match` con `registrar: true`), 16 prompts, resources y completions (v1.9.0).
 - **Ficha para escáneres:** `https://www.consignatarias.com.ar/.well-known/mcp/server-card.json`
 - **Página humana:** `https://www.consignatarias.com.ar/mcp`
 - **Repo público:** `https://github.com/josebarnetche/consignatarias-next` (id `1167351861`)
@@ -17,8 +17,8 @@
 
 | Directorio | Estado al 21-10 | Qué falta |
 |---|---|---|
-| Registry oficial (`registry.modelcontextprotocol.io`) | Publicado v1.7.0 (07-10), descripción en castellano, sin `title` ni ícono | Publicar v1.8.0 (paso 1) |
-| Glama (connector) | Listado, Healthy, 100% de uptime en 65 días, TDQS **A 3,8/5** sobre 28 tools. **Sin reclamar** | Reclamarlo (paso 2) |
+| Registry oficial (`registry.modelcontextprotocol.io`) | Publicado v1.7.0 (07-10), descripción en castellano, sin `title` ni ícono | Publicar v1.9.0 (paso 1) |
+| Glama (connector) | Listado, Healthy, 100% de uptime en 65 días, TDQS **A 3,8/5** sobre 28 tools (medido antes de v1.9.0; hoy son 29). **Sin reclamar** | Reclamarlo (paso 2) |
 | Smithery | Listado desde el 04-10 como **"MCP-CATTLE-MARKET"**, con el escaneo viejo (24 tools, nombres anteriores), sin verificar | Renombrar, re-escanear y verificar (paso 3) |
 | punkpeye/awesome-remote-mcp-servers | Listado en Agriculture, con el badge de Glama | Nada |
 | Directorio de conectores de Claude | No | Enviar (paso 4) |
@@ -44,7 +44,7 @@ siguiente. Las tools ya devuelven la fuente con `utm_source=mcp`.
 
 ---
 
-## Paso 1 — Registry oficial: publicar v1.8.0
+## Paso 1 — Registry oficial: publicar v1.9.0
 
 **Qué cambia.** No cambia ninguna tool: cambia la ficha.
 - Suma `title` ("Consignatarias · Argentine Cattle Market").
@@ -102,7 +102,7 @@ castellano (89 caracteres):
 
 **Qué aprueba José:** la cuenta de Glama con la que se reclama, y el commit con el token.
 
-**Mejora de TDQS sugerida por Glama** (no es un envío, queda para después): 28 tools está por
+**Mejora de TDQS sugerida por Glama** (no es un envío, queda para después): 29 tools está por
 encima de 25, y el grupo de tierra se superpone.
 - `calculate_farmland_rent` y `value_farmland_rent` calculan los dos el canon.
 - Consolidarlas sube la nota de "Tool Count" y "Disambiguation".
@@ -136,7 +136,7 @@ curl -X PATCH "https://api.smithery.ai/servers/jose-barnetche19%2Fconsignatarias
   "displayName": "Consignatarias · Argentine Cattle Market",
   "homepage": "https://www.consignatarias.com.ar/mcp",
   "repositoryUrl": "https://github.com/josebarnetche/consignatarias-next",
-  "description": "Argentina's cattle market as tools for AI agents, free and without quota. The daily steer index (INMAG) since 2015 in pesos and dollars, prices by category and the price band actually observed in lot sales (P10, median, P90), seasonality, and the gap against the US, Uruguay and Australia in USD per live kilo. Upcoming auctions, livestock brokers and 1,100+ licensed meat plants. Land value per hectare in 15 provinces and 52 zones, farmland rent indexed to steer kilos, and SENASA animal-health rules with the regulation cited. 28 tools, every answer with its source and date."
+  "description": "Argentina's cattle market as tools for AI agents, free and without quota. The daily steer index (INMAG) since 2015 in pesos and dollars, prices by category and the price band actually observed in lot sales (P10, median, P90), seasonality, and the gap against the US, Uruguay and Australia in USD per live kilo. Upcoming auctions, livestock brokers and 1,100+ licensed meat plants. Land value per hectare in 15 provinces and 52 zones, farmland rent indexed to steer kilos, and SENASA animal-health rules with the regulation cited. Anonymous buyer/seller matching for cattle and farmland. 29 tools, every answer with its source and date."
 }
 ```
 
@@ -237,7 +237,7 @@ los mantenedores los procesen.
   Website: https://www.consignatarias.com.ar/mcp
   Repository: https://github.com/josebarnetche/consignatarias-next
   Official MCP Registry: ar.com.consignatarias/cattle-market
-  Description: Argentina's cattle market as tools for AI agents: the daily steer index since 2015 in ARS and USD, observed price bands (P10/median/P90), seasonality, the gap vs the US, Uruguay and Australia, upcoming auctions, livestock brokers, 1,100+ meat plants, land value per hectare and SENASA animal-health rules. 28 tools, free, no quota, every answer with its source and date.
+  Description: Argentina's cattle market as tools for AI agents: the daily steer index since 2015 in ARS and USD, observed price bands (P10/median/P90), seasonality, the gap vs the US, Uruguay and Australia, upcoming auctions, livestock brokers, 1,100+ meat plants, land value per hectare, SENASA animal-health rules and anonymous buyer/seller matching. 29 tools, free, no quota, every answer with its source and date.
   Categories: Finance, Agriculture, Data
   ```
 
@@ -266,7 +266,7 @@ oficial (paso 1) y escribir a `partnerships@github.com`. Borrador:
 
 > **Asunto:** MCP Registry inclusion — ar.com.consignatarias/cattle-market
 >
-> Hi — we run consignatarias.com.ar, the reference data layer of the Argentine cattle market. Our remote MCP server is published in the official MCP Registry as `ar.com.consignatarias/cattle-market` (Streamable HTTP, no auth, 28 tools: daily steer index since 2015, observed price bands, auctions, brokers, land values, SENASA animal-health rules). It has 100% uptime on Glama over 65 days and an A tool-definition score. We'd like it to be considered for the GitHub MCP Registry. Endpoint: https://www.consignatarias.com.ar/api/mcp · Docs: https://www.consignatarias.com.ar/mcp · Repo: https://github.com/josebarnetche/consignatarias-next
+> Hi — we run consignatarias.com.ar, the reference data layer of the Argentine cattle market. Our remote MCP server is published in the official MCP Registry as `ar.com.consignatarias/cattle-market` (Streamable HTTP, no auth, 29 tools: daily steer index since 2015, observed price bands, auctions, brokers, land values, SENASA animal-health rules). It has 100% uptime on Glama over 65 days and an A tool-definition score. We'd like it to be considered for the GitHub MCP Registry. Endpoint: https://www.consignatarias.com.ar/api/mcp · Docs: https://www.consignatarias.com.ar/mcp · Repo: https://github.com/josebarnetche/consignatarias-next
 >
 > Memola Medios SAS — agro@memola.com.ar
 
@@ -316,7 +316,7 @@ no cambia.
 | # | Envío | Costo | Aprueba |
 |---|---|---|---|
 | 0 | Mergear y desplegar este PR | — | El merge |
-| 1 | Registry oficial v1.8.0 | Gratis | La descripción en inglés y correr `mcp-publisher publish` |
+| 1 | Registry oficial v1.9.0 | Gratis | La descripción en inglés y correr `mcp-publisher publish` |
 | 2 | Reclamar Glama | Gratis | La cuenta de Glama y commitear el token en `glama.json` |
 | 3 | Smithery: renombrar, re-escanear y verificar | Gratis | El nombre, la descripción y usar su API key |
 | 4 | Directorio de conectores de Claude | Requiere un plan pago de Claude | Los textos, los 7 compromisos y enviar con la cuenta de Memola |
