@@ -20008,6 +20008,25 @@
     "status": "live"
   },
   {
+    "title": "Jauregui Lorda | Invernada y Cría.",
+    "consignatariaName": "Jauregui Lorda Haciendas",
+    "consignatariaSlug": "jauregui-lorda-haciendas",
+    "date": "2026-10-22",
+    "time": "14:00",
+    "location": "",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Jauregui Lorda | Invernada y Cría.",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6682-jauregui-lorda-invernada-y-cria",
+    "source": "tv",
+    "sourceUrl": "https://remates.elrural.com/",
+    "status": "live",
+    "id": 1055
+  },
+  {
     "title": "Remate Televisado por Canal Rural INVERNADA y CRÍA",
     "consignatariaName": "JAUREGUI LORDA S.R.L.",
     "consignatariaSlug": "jauregui-lorda-s-r-l",
@@ -20023,7 +20042,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.jaureguilorda.com.ar",
-    "id": 1055,
+    "id": 1056,
     "status": "live"
   },
   {
@@ -20042,7 +20061,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1056,
+    "id": 1057,
     "status": "live"
   },
   {
@@ -20061,27 +20080,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1057,
+    "id": 1058,
     "status": "live"
-  },
-  {
-    "title": "Jauregui Lorda | Invernada y Cría.",
-    "consignatariaName": "Jauregui Lorda Haciendas",
-    "consignatariaSlug": "jauregui-lorda-haciendas",
-    "date": "2026-10-22",
-    "time": "14:00",
-    "location": "",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Jauregui Lorda | Invernada y Cría.",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6682-jauregui-lorda-invernada-y-cria",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
-    "status": "live",
-    "id": 1058
   },
   {
     "title": ". Faena, Invernada y Cria - 14.30hs.",
@@ -20179,6 +20179,25 @@
     "status": "scheduled"
   },
   {
+    "title": "AFA | Feria Río Cuarto | Especial de Invernada y Cría",
+    "consignatariaName": "AFA",
+    "consignatariaSlug": "afa",
+    "date": "2026-10-23",
+    "time": "10:00",
+    "location": "",
+    "province": "SANTA FE",
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "AFA | Feria Río Cuarto | Especial de Invernada y Cría",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6735-afa-feria-rio-cuarto-especial-de-invernada-y-cria",
+    "source": "tv",
+    "sourceUrl": "https://remates.elrural.com/",
+    "status": "scheduled",
+    "id": 1064
+  },
+  {
     "title": "Argencarne - Sociedad Rural de Río Cuarto",
     "consignatariaName": "A. SAENZ & CIA. S.A.",
     "consignatariaSlug": "a-saenz-cia-s-a",
@@ -20194,7 +20213,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.arielsaenzycia.com",
-    "id": 1064,
+    "id": 1065,
     "status": "scheduled"
   },
   {
@@ -20213,27 +20232,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.afascl.com",
-    "id": 1065,
+    "id": 1066,
     "status": "scheduled"
-  },
-  {
-    "title": "AFA | Feria Río Cuarto | Especial de Invernada y Cría",
-    "consignatariaName": "AFA",
-    "consignatariaSlug": "afa",
-    "date": "2026-10-23",
-    "time": "10:00",
-    "location": "",
-    "province": "SANTA FE",
-    "type": "invernada",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "AFA | Feria Río Cuarto | Especial de Invernada y Cría",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6735-afa-feria-rio-cuarto-especial-de-invernada-y-cria",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled",
-    "id": 1066
   },
   {
     "title": ". Remate Virtual - 11.00hs",
@@ -20540,25 +20540,6 @@
     "status": "scheduled"
   },
   {
-    "title": "GORDOS, CONSERVA e INVERNADA",
-    "consignatariaName": "AGRICULTORES FEDERADOS ARGENTINOS SOC COOP LT",
-    "consignatariaSlug": "agricultores-federados-argentinos-soc-coop-lt",
-    "date": "2026-10-27",
-    "time": "10:00",
-    "location": "TOTORAS, SANTA FE",
-    "province": "SANTA FE",
-    "type": "invernada",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": null,
-    "description": "GORDOS, CONSERVA e INVERNADA",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.afascl.com",
-    "id": 1085,
-    "status": "scheduled"
-  },
-  {
     "title": "AFA | Totoras | Gordos, Conserva e Invernada",
     "consignatariaName": "AFA",
     "consignatariaSlug": "afa",
@@ -20575,7 +20556,26 @@
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
     "status": "scheduled",
-    "id": 1086
+    "id": 1085
+  },
+  {
+    "title": "GORDOS, CONSERVA e INVERNADA",
+    "consignatariaName": "AGRICULTORES FEDERADOS ARGENTINOS SOC COOP LT",
+    "consignatariaSlug": "agricultores-federados-argentinos-soc-coop-lt",
+    "date": "2026-10-27",
+    "time": "10:00",
+    "location": "TOTORAS, SANTA FE",
+    "province": "SANTA FE",
+    "type": "invernada",
+    "mainCategory": "vaca_gorda",
+    "estimatedHeads": null,
+    "description": "GORDOS, CONSERVA e INVERNADA",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "www.afascl.com",
+    "id": 1086,
+    "status": "scheduled"
   },
   {
     "title": "Invernada, cría y consumo",
