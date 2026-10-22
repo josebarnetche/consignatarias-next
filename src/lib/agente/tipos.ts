@@ -131,6 +131,61 @@ export function comisionArrendamientoMercado(canonAnualArs: number): number {
   return Math.round((canonAnualArs / 12) * MESES_CANON_REFERENCIA)
 }
 
+/**
+ * Escala legal de la comisión de un arrendamiento rural, como fracción del VALOR
+ * TOTAL del contrato (canon anual × años), sumando las dos partes. Investigación
+ * del 22-10-2026 (docs/agente/decisiones-2026-10-22-siocal-arrendamiento-campos.md):
+ *  · Buenos Aires, Ley 10.973 art. 54: 1%–2% por parte, mínimo y máximo obligatorios.
+ *  · Córdoba, Ley 9445 art. 25: escala supletoria del 5%.
+ *  · Santa Fe: libre pacto; tabla del colegio de Rosario 3% + 3%.
+ *  · El resto, sin escala rural verificada: tope interno del 4% hasta confirmarla.
+ * Solo para VALUAR en el tablero: los 0,8 meses siguen siendo la referencia
+ * comercial y quién cobra (corredor matriculado) sigue siendo decisión de José.
+ */
+export const ESCALA_ARRENDAMIENTO: Record<string, { piso: number; tope: number }> = {
+  'buenos aires': { piso: 0.02, tope: 0.04 },
+  cordoba: { piso: 0, tope: 0.05 },
+  'santa fe': { piso: 0, tope: 0.06 },
+}
+export const ESCALA_ARRENDAMIENTO_DEFAULT = { piso: 0, tope: 0.04 }
+/** Plazo mínimo legal del arrendamiento rural (Ley 13.246, art. 4): se usa si el lead no trae el suyo. */
+export const PLAZO_ARRENDAMIENTO_DEFAULT_ANIOS = 3
+
+function sinAcentos(s: string): string {
+  return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim()
+}
+
+export function escalaArrendamiento(provincia: string | null | undefined) {
+  return ESCALA_ARRENDAMIENTO[sinAcentos(provincia ?? '')] ?? ESCALA_ARRENDAMIENTO_DEFAULT
+}
+
+/**
+ * Años del contrato a partir del texto libre que contestó el lead ("3 años", "2 campañas",
+ * "18 meses"). null si no se entiende: entonces vale el mínimo legal.
+ */
+export function plazoEnAnios(texto: string | null | undefined): number | null {
+  const t = sinAcentos(texto ?? '')
+  const m = t.match(/(\d+(?:[.,]\d+)?)\s*(anos?|campanas?|meses?)/)
+  if (!m) return null
+  const n = Number(m[1].replace(',', '.'))
+  if (!(n > 0)) return null
+  const anios = m[2].startsWith('mes') ? n / 12 : n
+  return anios > 0 && anios <= 20 ? anios : null
+}
+
+/**
+ * Comisión de un arrendamiento que la ley deja cobrar: los 0,8 meses de canon,
+ * llevados dentro del piso y el tope de la provincia sobre el valor del contrato.
+ * Ej. Buenos Aires: 1 año → 0,48 meses (tope 4%); 3 años → 0,8; 5 años → 1,2 (piso 2%).
+ */
+export function comisionArrendamientoLegal(canonAnualArs: number, o: { provincia?: string | null; plazoAnios?: number | null } = {}): number {
+  const anios = o.plazoAnios && o.plazoAnios > 0 ? o.plazoAnios : PLAZO_ARRENDAMIENTO_DEFAULT_ANIOS
+  const valor = canonAnualArs * anios
+  const { piso, tope } = escalaArrendamiento(o.provincia)
+  const base = comisionArrendamiento(canonAnualArs)
+  return Math.round(Math.min(Math.max(base, piso * valor), tope * valor))
+}
+
 export interface LeadParaValuar {
   intent: string
   head_count?: number | null
@@ -138,6 +193,10 @@ export interface LeadParaValuar {
   hectareas?: number | null
   /** kg de novillo por ha por mes, si el lead o el campo lo traen. */
   kg_ha_mes?: number | null
+  /** Para el tope legal del arrendamiento. */
+  provincia?: string | null
+  /** Plazo del contrato en años, si se sabe (`plazoEnAnios`). */
+  plazoAnios?: number | null
 }
 
 export interface Referencias {
@@ -188,7 +247,7 @@ export function valuarLead(l: LeadParaValuar, ref: Referencias): Valuacion | nul
 
   let comision: number | null = null
   if (bruto != null) {
-    if (tipo === 'arrendamiento') comision = comisionArrendamiento(bruto)
+    if (tipo === 'arrendamiento') comision = comisionArrendamientoLegal(bruto, { provincia: l.provincia, plazoAnios: l.plazoAnios })
     else if (pct != null) comision = Math.round((bruto * pct) / 100)
     else motivo = 'comisión de este tipo sin definir por José'
   }

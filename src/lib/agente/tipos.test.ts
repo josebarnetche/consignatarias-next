@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { TIPOS, comisionArrendamiento, comisionArrendamientoMercado, enviaAContrapartes, prioridad, tipoDeIntent, valuarLead, type Referencias } from './tipos'
+import { TIPOS, comisionArrendamiento, comisionArrendamientoLegal, plazoEnAnios, comisionArrendamientoMercado, enviaAContrapartes, prioridad, tipoDeIntent, valuarLead, type Referencias } from './tipos'
 
 const ref: Referencias = { precioNovilloKg: 3000, pesoKg: () => 400, kgHaMesTipico: 4 }
 
@@ -77,5 +77,30 @@ describe('prioridad', () => {
   it('sin comisión calculable o estado cerrado: 0', () => {
     expect(prioridad(valuarLead({ intent: 'tasar' }, ref), 'nuevo')).toBe(0)
     expect(prioridad(valuarLead({ intent: 'vender', head_count: 10 }, ref), 'cerrado')).toBe(0)
+  })
+})
+
+describe('comisión de arrendamiento dentro de la escala legal', () => {
+  const canon = 12_000_000 // $1M por mes
+  it('Buenos Aires: tope 4% y piso 2% del valor del contrato', () => {
+    expect(comisionArrendamientoLegal(canon, { provincia: 'Buenos Aires', plazoAnios: 1 })).toBe(480_000) // 0,48 meses
+    expect(comisionArrendamientoLegal(canon, { provincia: 'BUENOS AIRES', plazoAnios: 3 })).toBe(800_000) // 0,8 meses
+    expect(comisionArrendamientoLegal(canon, { provincia: 'buenos aires', plazoAnios: 5 })).toBe(1_200_000) // 1,2 meses
+  })
+  it('sin plazo vale el mínimo legal de 3 años', () => {
+    expect(comisionArrendamientoLegal(canon, { provincia: 'Buenos Aires' })).toBe(800_000)
+  })
+  it('Córdoba (5%), Santa Fe (6%) y el resto (4%) solo tienen tope', () => {
+    expect(comisionArrendamientoLegal(canon, { provincia: 'Córdoba', plazoAnios: 1 })).toBe(600_000)
+    expect(comisionArrendamientoLegal(canon, { provincia: 'Santa Fe', plazoAnios: 1 })).toBe(720_000)
+    expect(comisionArrendamientoLegal(canon, { provincia: 'Corrientes', plazoAnios: 1 })).toBe(480_000)
+    expect(comisionArrendamientoLegal(canon, { provincia: 'Corrientes', plazoAnios: 10 })).toBe(800_000)
+  })
+  it('lee el plazo que contestó el lead', () => {
+    expect(plazoEnAnios('3 años')).toBe(3)
+    expect(plazoEnAnios('por 2 campañas desde marzo')).toBe(2)
+    expect(plazoEnAnios('18 meses')).toBe(1.5)
+    expect(plazoEnAnios('lo antes posible')).toBeNull()
+    expect(plazoEnAnios(null)).toBeNull()
   })
 })

@@ -70,10 +70,10 @@ export function decisionesPendientes(e: Estado): Decision[] {
     d.push({
       id: 'arrendamiento-quien-paga',
       gravedad: 'plata',
-      titulo: 'Arrendamiento: quién paga los 0,8 meses y el tope por provincia',
+      titulo: 'Arrendamiento: quién paga y con qué corredor',
       detalle:
-        'En un contrato de 1 año, 0,8 meses equivale a ~6,7% del contrato: pasa el máximo bonaerense (4% entre las partes) y el 5% de Córdoba. Si sigue, calcularlo sobre el total del contrato con el tope de cada provincia.',
-      ref: 'docs/agente/investigacion-inmobiliaria-rural.md',
+        'El tablero ya valúa los 0,8 meses dentro de la escala de cada provincia, sobre el total del contrato. En Buenos Aires el mínimo es 2% y el máximo 4%: 1 año da 0,48 meses y 5 años, 1,2. Falta decidir quién paga (la investigación propone el arrendatario) y con qué corredor matriculado se cobra. Al corredor solo se le puede cobrar un fee fijo, nunca una parte de su comisión.',
+      ref: 'docs/agente/decisiones-2026-10-22-siocal-arrendamiento-campos.md · src/lib/agente/tipos.ts (comisionArrendamientoLegal)',
     })
   }
 
