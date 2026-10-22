@@ -7,6 +7,21 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.237.2] — 2026-10-21
+
+### Agente: si no hay a quién ofrecer, se sigue buscando
+
+- **Al cliente ya no le llega "lo ofrecimos a 0 contrapartes".** Tradefood recibió "ya estamos buscando" y una hora después "ofrecimos 200 vacas a 0 contrapartes y ninguna confirmó interés". Ahora, si no hay ningún candidato, el caso sigue en `ofreciendo`, se vuelve a buscar cada día y a José se le avisa una sola vez. El correo de "sin contraparte" sale solo después de consultas reales.
+- **Los pedidos de compra se ofrecen también a las firmas no PRO con mail de la zona** (decisión de José, 21-10), con la misma comisión del 1% y el mismo ACEPTO escrito. La hacienda que vende un productor sigue yendo solo a leads, frigoríficos y firmas PRO, salvo `AGENTE_FIRMAS=todas`.
+- **Los leads que todavía están dando datos también cuentan como contraparte** (estados `nuevo` y `pidiendo_datos`): un vendedor de vacas que no terminó de cargar puede cruzar con un comprador.
+
+## [1.237.1] — 2026-10-21
+
+### Agente: fuera las demandas de prueba
+
+- **Las demandas con mail de dominio reservado (`example.com/.org/.net`, `.test`) no entran al agente.** La sincronización de `demanda_compra` de la v1.237.0 levantó tres demandas de prueba del MCP: el agente les escribió y cada 10 minutos intentaba ofrecer a `operaciones@example.com`, que Resend rechaza. Los tres casos quedaron descartados.
+- **El workflow del agente ya no termina en rojo**: la última vuelta devolvía 1 por el `&& sleep`.
+
 ## [1.237.0] — 2026-10-21
 
 ### Agente: más contrapartes reales y corridas cada 10 minutos
