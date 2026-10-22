@@ -30,6 +30,7 @@ import { ordenarCola } from './cola'
 import { ofertaHacienda } from './mensajes-contacto'
 import { tomable } from './verificacion'
 import { esCasoDeHacienda, trabajarCampos } from './campos-agente'
+import { pedirConfirmaciones } from './confirmacion'
 import { comisionEstimada } from './tablero'
 import {
   DIAS_ESPERA_CONTRAPARTE,
@@ -589,6 +590,9 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
     candidatosCache = lista
     return lista
   }
+
+  // Pedidos de terceros sin verificar: con AGENTE_DOBLE_OPTIN=on se le pide UNA vez a la persona que confirme.
+  await pedirConfirmaciones({ db, ahora, dryRun, bajas, mandar, bitacora: (id, body) => bitacora(id, body), nota: (n) => inf.notas.push(n) })
 
   // Leads de campo (arrendamiento, tasación): solo con AGENTE_TIPOS=on, y solo al lead que consultó.
   await trabajarCampos({ db, ahora, dryRun, mandar, bitacora: (id, body) => bitacora(id, body), avisar: escalar, nota: (n) => inf.notas.push(n) })

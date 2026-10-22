@@ -28,6 +28,8 @@ export interface Estado {
   encuadreHacienda: 'comision' | 'servicio_contacto'
   /** Pedidos del MCP / demandas de compra en needs_review esperando que alguien verifique el contacto. */
   pendientesVerificacion?: number
+  /** `AGENTE_DOBLE_OPTIN` está en 'on': la persona confirma su pedido por mail (confirmacion.ts). */
+  dobleOptinActivo?: boolean
 }
 
 export function decisionesPendientes(e: Estado): Decision[] {
@@ -112,8 +114,10 @@ export function decisionesPendientes(e: Estado): Decision[] {
       gravedad: 'plata',
       titulo: `${n} ${n === 1 ? 'pedido espera' : 'pedidos esperan'} que verifiques el contacto`,
       detalle:
-        'Los cargó un agente externo (MCP) o entraron como demanda de compra: el mail puede no ser de quien dice. El agente no les escribe hasta que en /admin/leads marques "Contacto verificado → al agente", o los descartes.',
-      ref: '/admin/leads (pestaña Sin trabajar, estado A revisar)',
+        (e.dobleOptinActivo
+          ? 'Los cargó un agente externo (MCP) o entraron como demanda de compra. Ya se les pidió por mail que confirmen (doble opt-in); los que confirman pasan solos al agente. También podés marcarlos a mano en /admin/leads.'
+          : 'Los cargó un agente externo (MCP) o entraron como demanda de compra: el mail puede no ser de quien dice. El agente no les escribe hasta que en /admin/leads marques "Contacto verificado → al agente", o los descartes. Con AGENTE_DOBLE_OPTIN=on se lo pregunta a la persona con UN mail de confirmación (mail hacia afuera: lo prendés vos).'),
+      ref: e.dobleOptinActivo ? '/admin/leads · src/lib/agente/confirmacion.ts' : '/admin/leads (pestaña Sin trabajar, estado A revisar) · src/lib/agente/confirmacion.ts',
     })
   }
 
@@ -129,6 +133,7 @@ export function estadoActual(o: {
   tiposActivos: boolean
   ofertaDePrueba: (d: { precio_pedido_kg: number }) => string
   pendientesVerificacion?: number
+  dobleOptinActivo?: boolean
 }): Estado {
   const texto = o.ofertaDePrueba({ precio_pedido_kg: 9_876 })
   return {
@@ -138,5 +143,6 @@ export function estadoActual(o: {
     // El motor usa `M.oferta` (encuadre comisión); el borrador `ofertaServicioContacto` no está conectado.
     encuadreHacienda: /servicio de contacto/i.test(texto) ? 'servicio_contacto' : 'comision',
     pendientesVerificacion: o.pendientesVerificacion ?? 0,
+    dobleOptinActivo: o.dobleOptinActivo ?? false,
   }
 }
