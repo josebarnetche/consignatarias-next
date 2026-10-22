@@ -228,7 +228,11 @@ export default async function DemandaPage() {
         </p>
       </section>
 
+      {/* Anclas fijas: las plantillas con tráfico enlazan a /mercado/demanda#hacienda. Existen
+          aunque la sección quede vacía (los grupos k-anónimos aparecen y desaparecen). */}
+      <div id="hacienda" className="scroll-mt-24" />
       <Seccion titulo="Hacienda" grupos={hacienda} />
+      <div id="campos" className="scroll-mt-24" />
       <Seccion titulo="Campos" grupos={campos} />
 
       {d.grupos.length === 0 && (
