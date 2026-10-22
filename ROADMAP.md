@@ -1,6 +1,6 @@
 # Roadmap
 
-**Current:** v1.234.0 (2026-10-19) — see [CHANGELOG.md](CHANGELOG.md) for the full per-version history.
+**Current:** v1.252.0 (2026-10-22) — see [CHANGELOG.md](CHANGELOG.md) for the full per-version history.
 **Strategic frame:** [docs/strategy/PLAN-DE-NEGOCIOS-2026.md](docs/strategy/PLAN-DE-NEGOCIOS-2026.md)
 (plan de negocios v2, 36 meses — el marco canónico) + [docs/strategy/POSITIONING-THESIS.md](docs/strategy/POSITIONING-THESIS.md)
 (tesis de categoría). **Dos motores de ingreso secuenciados** sobre la capa de datos libre y citable:
@@ -16,6 +16,47 @@ MAJOR boundary, so the product stays on 1.x.
 > first dollar is **unblocked** (email-first checkout live for both B2C and Enterprise, verified to
 > reach a real Rebill payment link). The remaining gate is a real test payment + the institutional
 > sales motion — not more code.
+
+---
+
+## Estado — v1.235 → v1.252 (2026-10-22) · la mesa y el agente de operaciones
+
+> Del 19 al 22-10 trabajaron tres sesiones en paralelo. El 22-10 se integraron en un solo motor, en tres
+> rondas coordinadas y de un PR por vez. Corto: **ya existe la máquina que trabaja un pedido hasta la
+> presentación, y todavía no cerró ninguna operación. Ingreso externo: $0.**
+
+**Lo que quedó andando**
+
+| Pieza | Qué hace | Versiones |
+|---|---|---|
+| **Agente de operaciones** (`src/lib/agente/`, `/admin/agente`) | Corre cada 10 min. En hacienda pide los datos que faltan y ofrece el lote o el pedido a contrapartes como "servicio de contacto" (1% si se concreta, a cargo de quien recibe el contacto), con seguimiento a los 0, 3, 7 y 14 días. Pasa el contacto solo después de un ACEPTO escrito; nunca acuerda precio ni firma. La cola va ordenada por comisión esperada | 1.235 → 1.245 |
+| **Por tipo de operación** (`AGENTE_TIPOS=on`) | Arrendamiento y tasación: le escribe solo a quien consultó, pide los datos (incluido el plazo del contrato) y le pasa el caso a José. A contrapartes no les escribe. El tablero valúa el arrendamiento dentro de la escala legal de cada provincia | 1.242, 1.251 |
+| **Mesa de demanda** (`/mercado/demanda`, MCP `market_match`) | Contrapartes abiertas por región, en rangos y con k-anonimato (grupos de 2 o más). Nunca un conteo exacto ni un dato que identifique a alguien | 1.243 |
+| **Consentimiento y verificación** | Una demanda pasa al agente solo si la persona aceptó que la contacten. Lo que carga un tercero (MCP o demanda) queda en una cola: lo confirma la propia persona con un link firmado (`AGENTE_DOBLE_OPTIN=on`) o lo verifica José | 1.242.1, 1.244, 1.246, 1.249 |
+| **MCP 1.9.0** | 29 tools y 16 prompts, publicado en el registry oficial. Desde el primer mensaje, el modelo sabe que puede ofrecer la mesa, y las respuestas de precio, lote, remates y campos llevan el puente a `market_match`. La integración anónima de Misiones recibe el mismo texto de siempre | 1.243, 1.248, 1.250 |
+| **Embudo medido** (`/admin/agente` → "Del MCP a la operación") | Consultas reales al MCP → pedidos → verificados → en operación, contra la base del 22-10 (`docs/mcp-medicion-base.md`) | 1.247 |
+
+**El resultado, sin maquillar (22-10):** menos de diez ofertas enviadas, ninguna respuesta todavía,
+ningún ACEPTO, $0 de comisión. El MCP tiene ~1.600 consultas reales por semana y ~80 orígenes, pero
+los pedidos que entran por ahí siguen en cero. El puente y la verificación salieron hoy: medir en una semana.
+
+**Esperan decisión de José** (detalle con fuentes en `docs/agente/decisiones-2026-10-22-siocal-arrendamiento-campos.md`):
+1. **Encuadre legal de hacienda.** La investigación dice que el riesgo es el corretaje sin matrícula, no el
+   SIOCAL. Opciones: una tarifa fija por contacto o una alianza con una consignataria inscripta. Antes, validarlo con un abogado.
+2. **Arrendamiento:** quién paga y con qué corredor matriculado.
+3. **Venta de campos:** la propuesta es 2,4% + IVA al vendedor, con mínimo de USD 5.000, cobrado vía corredor.
+4. **Legales y datos:** conservar los pedidos 24 meses (propuesta), revisión de un abogado e inscripción en la AAIP.
+5. **Repo:** el PDF pago de `private/guias/` sigue en el historial público de git. Purgarlo necesita su OK.
+6. **Distribución del MCP con su cuenta:** reclamar Glama, actualizar Smithery, el directorio de conectores de
+   Claude, el mail al registry de GitHub y una licencia para el repo (sin licencia no entra al catálogo de Docker).
+
+**Próximos pasos (sin decisión pendiente)**
+- **Medir** el 29-10 y el 19-11 contra la base: llamadas a `market_match`, pedidos `mcp:*`, confirmaciones del doble opt-in.
+- **Embudo:** sumar el paso "confirmación enviada → confirmada".
+- **Agente:** seguir la primera tanda de ofertas a firmas no PRO (respuestas, bajas, ACEPTO) para decidir con José si se amplía (`AGENTE_FIRMAS`).
+- **Seguridad:** `braces` ≤3.0.3 sigue sin parche publicado (solo en dev, vía eslint-config-next). Revisarlo cuando salga.
+- **Ideas del cerrador archivado** (tag local `archivo/closer-agentico-2026-10-21`): verticales con factores, frescura del lead y
+  auditoría de anonimato de los mensajes. Las porta al agente quien lo mantenga, si valen.
 
 ---
 

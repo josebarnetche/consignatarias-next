@@ -156,6 +156,7 @@ Si lo que querés es comprar o vender hacienda:
 - [`/consignatarias`](https://www.consignatarias.com.ar/consignatarias) · el directorio: buscador por nombre o provincia, y cada firma con sus provincias y cuántos remates tiene por delante
 - [`/frigorificos`](https://www.consignatarias.com.ar/frigorificos) · 1.119 plantas con su habilitación SENASA por rubro (las que no faenan bovinos no reciben ofertas de hacienda)
 - [`/lotes`](https://www.consignatarias.com.ar/lotes) · lotes de hacienda publicados, con la referencia de lo que se pagó por esa categoría y peso, y oferta por lote
+- [`/mercado/demanda`](https://www.consignatarias.com.ar/mercado/demanda) · **la mesa de demanda**: quién busca y quién ofrece hacienda o campos hoy, por región y en rangos ("2 a 4 en el NEA"), sin identificar a nadie. Si dejás tu pedido, la mesa lo trabaja: busca la contraparte y pasa el contacto solo después de que la otra parte acepta por escrito. Nunca acuerda precio ni firma por vos
 
 **Pensado para el que entra desde el celular.** El sitio abre en un **tema claro** (blanco, letra
 legible, botones grandes) y tiene un botón para pasar al **terminal oscuro** de siempre; la elección
@@ -200,7 +201,7 @@ Facturación mensual en ARS vía Rebill (anual –15%; exterior: transferencia o
 
 También como **servidor MCP** para agentes IA: endpoint `https://www.consignatarias.com.ar/api/mcp`
 (**29 tools** con nombres en inglés y descripciones bilingües, los nombres viejos siguen como alias;
-registry oficial `ar.com.consignatarias/cattle-market` **v1.8.0**, Glama, Smithery, awesome-remote-mcp-servers y Forge; estado y envíos pendientes en [`docs/mcp-distribucion.md`](docs/mcp-distribucion.md)). Gratis y
+registry oficial `ar.com.consignatarias/cattle-market` **v1.9.0** (22-10-2026), Glama, Smithery, awesome-remote-mcp-servers y Forge; mcpservers.org, MCP Market y mcp.so en revisión; estado y envíos pendientes en [`docs/mcp-distribucion.md`](docs/mcp-distribucion.md)). Gratis y
 sin cupo para consultar; se cobra la descarga masiva (x402 / Enterprise) y la redistribución.
 Cada respuesta cierra con la cita ya redactada. Demo animada con los datos del día en [`/mcp`](https://www.consignatarias.com.ar/mcp).
 Cubre mercado (INMAG, precios por categoría, macro, **Índice de Liquidación** = % hembras, **Banda
@@ -208,6 +209,9 @@ Consignatarias**, estacionalidad, brecha contra EE. UU./Uruguay/Australia, renta
 directorio de consignatarias y frigoríficos, **valuaciones** (hacienda, arrendamiento y **valor de la
 hectárea por provincia y zona**), **sanidad SENASA** (calendario de vacunación, requisitos de movimiento,
 RENSPA, DT-e) y **Buenas Prácticas Ganaderas** — todo con la fuente citada.
+Y para **operar**, no solo para saber el precio: `market_match` dice si hay contrapartes abiertas en la
+mesa (en rangos, sin identificar a nadie) y, con el permiso explícito de la persona, deja el pedido para
+que la contacten. Lo que entra por el MCP se verifica antes de que nadie le escriba (doble opt-in).
 Catálogo completo de fuentes MAG en [`docs/mag-endpoints-catalogo.md`](docs/mag-endpoints-catalogo.md).
 
 Documentación: [`/api-docs`](https://www.consignatarias.com.ar/api-docs).
@@ -268,4 +272,4 @@ Operadores comerciales que construyen infraestructura propietaria — no agencia
 
 ---
 
-v1.234.0 · 2026-10-19 · [www.consignatarias.com.ar](https://www.consignatarias.com.ar) · [CHANGELOG](CHANGELOG.md) · API contract v1.0.0
+v1.252.0 · 2026-10-22 · [www.consignatarias.com.ar](https://www.consignatarias.com.ar) · [CHANGELOG](CHANGELOG.md) · API contract v1.0.0
