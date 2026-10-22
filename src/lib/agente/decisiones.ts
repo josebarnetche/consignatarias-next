@@ -42,6 +42,17 @@ export function decisionesPendientes(e: Estado): Decision[] {
     })
   }
 
+  else {
+    d.push({
+      id: 'siocal-abogado',
+      gravedad: 'legal',
+      titulo: 'Hacienda: el encuadre "servicio de contacto" está aplicado, falta validarlo con un abogado',
+      detalle:
+        'Desde v1.244.0 la oferta cobra el servicio de contacto (1% si se concreta), aclara que no intermediamos ni garantizamos el pago y pide verificar SIOCAL/RENSPA. Sigue sin inscripción propia en el SIOCAL: que un abogado confirme el encuadre.',
+      ref: 'docs/agente/investigacion-comisionista-hacienda.md · src/lib/agente/mensajes-contacto.ts',
+    })
+  }
+
   for (const t of Object.keys(TIPOS) as TipoOperacion[]) {
     const c = TIPOS[t]
     if (c.bloqueoLegal) {

@@ -27,6 +27,7 @@ import { enviar, leerBandeja, CASILLA, type Entrante } from './correo'
 import { triageLead, leerRespuesta } from './ia'
 import * as M from './mensajes'
 import { ordenarCola } from './cola'
+import { ofertaHacienda } from './mensajes-contacto'
 import { tomable } from './verificacion'
 import { esCasoDeHacienda, trabajarCampos } from './campos-agente'
 import { comisionEstimada } from './tablero'
@@ -36,7 +37,8 @@ import {
   MAX_RECORDATORIOS,
   MAX_TANDAS,
   OFERTAS_POR_TANDA,
-  RECORDATORIO_CONTRAPARTE_DIAS,
+  DIAS_OFERTA_VIVA,
+  tocaRecordatorio,
   SEGUIMIENTO_DIAS,
   brutoDeCierre,
   comisionArs,
@@ -641,18 +643,23 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
     const { data: ofs } = await db.from('agente_ofertas').select('*').eq('lead_id', lead.id)
     const ofertas = (ofs ?? []) as Oferta[]
     if (ofertas.some((o) => ['acepto', 'presentada'].includes(o.estado))) continue
+    // Una oferta vive DIAS_OFERTA_VIVA (17) días: recordatorios a los 3, 7 y 14 (reglas.ts).
+    // La tanda siguiente no espera a eso: sale cuando ninguna oferta tiene menos de
+    // DIAS_ESPERA_CONTRAPARTE (4) días, como antes.
+    const muerta = enDias(ahora, -DIAS_OFERTA_VIVA).toISOString()
+    for (const o of ofertas) if (o.estado === 'enviada' && o.enviada_at < muerta) await guardarOferta(o.id, { estado: 'sin_respuesta' })
+    const vivas = ofertas.filter((o) => o.estado === 'enviada' && o.enviada_at >= muerta)
     const limite = enDias(ahora, -DIAS_ESPERA_CONTRAPARTE).toISOString()
-    for (const o of ofertas) if (o.estado === 'enviada' && o.enviada_at < limite) await guardarOferta(o.id, { estado: 'sin_respuesta' })
-    const esperando = ofertas.filter((o) => o.estado === 'enviada' && o.enviada_at >= limite)
+    const esperando = vivas.filter((o) => o.enviada_at >= limite)
 
-    // Un recordatorio, uno solo, a quien no contestó en dos días. En el mismo hilo.
-    const corte = enDias(ahora, -RECORDATORIO_CONTRAPARTE_DIAS).toISOString()
-    for (const o of esperando.filter((x) => x.enviada_at < corte && x.seguimientos === 0 && !bajas.has(x.email))) {
+    // Recordatorios en el mismo hilo según la cadencia 0/3/7/14.
+    const diasDesde = (iso: string) => (ahora.getTime() - new Date(iso).getTime()) / 86_400_000
+    for (const o of vivas.filter((x) => tocaRecordatorio(x.seguimientos, diasDesde(x.enviada_at)) && !bajas.has(x.email))) {
       const { data: orig } = await db.from('agente_mensajes').select('message_id').eq('oferta_id', o.id).eq('dir', 'out').order('creado_at').limit(1)
       const id = await mandar({ leadId: lead.id, ofertaId: o.id, para: [o.email], correo: M.recordatorioOferta({ leadId: lead.id, ofertaId: o.id, lado: caso.lado, datos: caso.datos }), plantilla: 'recordatorio_oferta', enRespuestaA: orig?.[0]?.message_id ?? null, conBaja: true })
       if (id) {
-        await guardarOferta(o.id, { seguimientos: 1 })
-        await bitacora(lead.id, `Recordatorio a ${o.nombre}`, 'pendiente', { oferta_id: o.id })
+        await guardarOferta(o.id, { seguimientos: o.seguimientos + 1 })
+        await bitacora(lead.id, `Recordatorio ${o.seguimientos + 1} a ${o.nombre}`, 'pendiente', { oferta_id: o.id })
       }
     }
 
@@ -716,12 +723,12 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
 
     for (const c of elegidos) {
       if (dryRun) {
-        await mandar({ leadId: lead.id, para: [c.email], correo: M.oferta({ leadId: lead.id, ofertaId: 0, lado: caso.lado, datos: caso.datos, contraparte: c.tipo === 'lead' ? 'ustedes' : c.nombre }), plantilla: 'oferta' })
+        await mandar({ leadId: lead.id, para: [c.email], correo: ofertaHacienda({ leadId: lead.id, ofertaId: 0, lado: caso.lado, datos: caso.datos, contraparte: c.tipo === 'lead' ? 'ustedes' : c.nombre }), plantilla: 'oferta' })
         continue
       }
       const { data: nueva, error } = await db.from('agente_ofertas').insert({ lead_id: lead.id, tipo: c.tipo, ref: c.ref, nombre: c.nombre, email: c.email.toLowerCase() }).select('id').single()
       if (error || !nueva) continue
-      const correo = M.oferta({ leadId: lead.id, ofertaId: nueva.id, lado: caso.lado, datos: caso.datos, contraparte: c.tipo === 'lead' ? 'ustedes' : c.nombre })
+      const correo = ofertaHacienda({ leadId: lead.id, ofertaId: nueva.id, lado: caso.lado, datos: caso.datos, contraparte: c.tipo === 'lead' ? 'ustedes' : c.nombre })
       const bloqueo = filtraContacto(correo.texto, lead)
       if (bloqueo) {
         await db.from('agente_ofertas').delete().eq('id', nueva.id)

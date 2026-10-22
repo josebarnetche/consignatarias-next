@@ -55,3 +55,11 @@ describe('kgHaMesTipico', () => {
     expect(kgHaMesTipico('Buenos Aires')).toBeGreaterThan(0)
   })
 })
+
+describe('resumenPorTipo sin lo que el agente ya terminó', () => {
+  it('un lead descartado por el agente no suma plata ni leads', () => {
+    const valuar = () => ({ tipo: 'hacienda' as const, brutoArs: 1_000, comisionArs: 10 })
+    const f = resumenPorTipo([{ id: 1, intent: 'vender' }, { id: 2, intent: 'vender' }], new Set([1, 2]), valuar, new Set([2]))
+    expect(f[0]).toMatchObject({ leads: 1, comisionArs: 10 })
+  })
+})

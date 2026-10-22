@@ -123,18 +123,14 @@ export function primerCorreo(
   return null // hacienda la sigue manejando mensajes.ts
 }
 
-/**
- * Cadencia a una contraparte que no contestó: día del primer correo y de cada
- * seguimiento. Un inicial + 3 seguimientos en ~14 días: los seguimientos traen
- * más de la mitad de las respuestas, y del cuarto en adelante se disparan las
- * bajas y denuncias de spam (docs/agente/investigacion-cierre-broker.md).
- */
-export const CADENCIA_CONTRAPARTE_DIAS = [0, 3, 7, 14] as const
+/** La cadencia vive en reglas.ts (la usa el motor); se reexporta para los tests y el tablero. */
+export { CADENCIA_CONTRAPARTE_DIAS } from './reglas'
+import { CADENCIA_CONTRAPARTE_DIAS as CADENCIA } from './reglas'
 
 /** ¿Toca otro seguimiento? `enviados` cuenta el inicial. */
 export function tocaSeguimiento(enviados: number, diasDesdePrimero: number): boolean {
-  if (enviados >= CADENCIA_CONTRAPARTE_DIAS.length) return false
-  return diasDesdePrimero >= CADENCIA_CONTRAPARTE_DIAS[enviados]
+  if (enviados >= CADENCIA.length) return false
+  return diasDesdePrimero >= CADENCIA[enviados]
 }
 
 /**

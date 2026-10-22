@@ -34,3 +34,14 @@ describe('ofertaServicioContacto (borrador)', () => {
     expect(filtraContacto(c.texto, { email: 'juan.perez@x.com', phone: '+54 9 2281 555123', name: 'Juan Perez' })).toBeNull()
   })
 })
+
+describe('ofertaHacienda (la que usa el motor)', () => {
+  it('es el encuadre servicio de contacto', async () => {
+    const { ofertaHacienda } = await import('./mensajes-contacto')
+    expect(ofertaHacienda(base).texto).toContain('servicio de contacto')
+  })
+  it('a otro lead le habla de "ustedes"', async () => {
+    const { ofertaHacienda } = await import('./mensajes-contacto')
+    expect(ofertaHacienda({ ...base, contraparte: 'ustedes' }).texto).toContain('lo que ustedes buscan')
+  })
+})

@@ -1,6 +1,6 @@
 import { AdminSection } from '@/components/admin/kit'
 import Badge, { type BadgeTone } from '@/components/ui/Badge'
-import { oferta } from '@/lib/agente/mensajes'
+import { ofertaHacienda } from '@/lib/agente/mensajes-contacto'
 import { TIPOS_CAMPO_ACTIVOS } from '@/lib/agente/campos-agente'
 import { decisionesPendientes, estadoActual, type Gravedad } from '@/lib/agente/decisiones'
 
@@ -16,7 +16,7 @@ export default function Decisiones() {
   const estado = estadoActual({
     tiposActivos: TIPOS_CAMPO_ACTIVOS,
     ofertaDePrueba: (d) =>
-      oferta({ leadId: 0, ofertaId: 0, lado: 'vende', datos: { cabezas: 100, categoria: 'novillos', zona: 'Azul', ...d }, contraparte: 'X' }).texto,
+      ofertaHacienda({ leadId: 0, ofertaId: 0, lado: 'vende', datos: { cabezas: 100, categoria: 'novillos', zona: 'Azul', ...d }, contraparte: 'X' }).texto,
   })
   const lista = decisionesPendientes(estado)
   if (lista.length === 0) return null
