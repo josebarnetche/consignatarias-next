@@ -7,6 +7,29 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.242.0] — 2026-10-22
+
+### El agente cerrador, por tipo de operación (hacienda, arrendamiento, campo, tasación)
+
+José: «redisená el cerrador para todo lo demás, no para este caso». El agente de v1.235–1.237 trabaja solo hacienda. Esta versión le da un registro de tipos y deja listos (y frenados donde corresponde) los leads que nadie trabajaba. Bitácora de la noche e informes con fuentes en `docs/agente/`.
+
+- **Tipos de operación** (`src/lib/agente/tipos.ts`): datos mínimos, contrapartes, comisión y primer paso por tipo.
+  - **Hacienda:** 1% del bruto, sin cambios.
+  - **Arrendamiento:** 0,8 de un mes de canon (un mes de mercado con 20% off, decisión de José del 21-10), con **bloqueo legal**: CCyC arts. 1346 y 1351, la intermediación en locaciones exige corredor matriculado. Se calcula, pero no sale a contrapartes.
+  - **Venta de campo:** sin comisión definida.
+  - **Tasación:** califica si hay venta o arrendamiento detrás.
+- **Leads de campo** (`campos-agente.ts`): le escribe solo a quien consultó. Pide ha, aptitud, zona y plazo, o en tasación pregunta si es para vender o arrendar. Recuerda a los 3 días (máximo 2) y después duerme el caso. Con datos completos o respuesta, pasa a José con aviso. **Apagado salvo `AGENTE_TIPOS=on`.** Nunca escribe a contrapartes. Los casos guardan `datos.tipo` (jsonb, sin migración) y el motor de hacienda los saltea.
+- **Cola por plata esperada** (`cola.ts`): el cupo diario de contactos nuevos va primero a lo que más puede dejar (comisión estimada × peso de la etapa), no a lo más viejo.
+- **Leads del MCP sin verificar** (`verificacion.ts`): un lead con `source 'mcp:%'` o `'demanda_compra:%'` en `needs_review` no se toma hasta que una persona lo pase a `new` (un agente externo puede cargar el mail de otra persona). Aplica a hacienda y a campos. Que las demandas del MCP entren en `needs_review` lo hace el PR de `demanda.ts` (v1.242.1). Acordado entre las sesiones antes de que entre `market_match`.
+- **Un caso de campo nunca es contraparte de hacienda:** el armado de candidatos del motor saltea los casos con `datos.tipo` de campo.
+- **Correos por tipo y cadencia** (`mensajes-tipos.ts`): 1 + 3 seguimientos en 14 días (0/3/7/14) y pie de comunicación comercial con BAJA (Ley 25.326 art. 27). Borrador **sin conectar** de la oferta de hacienda con encuadre "servicio de contacto" (`mensajes-contacto.ts`), por el riesgo SIOCAL.
+- **`/admin/agente`:**
+  - **Decisiones pendientes**, leídas del código: se van solas cuando se resuelven.
+  - **Por tipo de operación:** leads abiertos, bruto de referencia, comisión y qué la frena.
+- Investigación con fuentes en `docs/agente/` (comisionista de hacienda, inmobiliaria rural, cierre de operaciones).
+
+---
+
 ## [1.241.0] — 2026-10-22
 
 ### MCP: la ficha lista para los directorios (sin publicar nada)
