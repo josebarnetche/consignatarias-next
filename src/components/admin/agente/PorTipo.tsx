@@ -3,7 +3,7 @@ import { AdminSection, AdminEmpty } from '@/components/admin/kit'
 import Badge, { type BadgeTone } from '@/components/ui/Badge'
 import { estimateOperation } from '@/lib/leads/routing'
 import { canonEnPlata } from '@/lib/valuacion-campos'
-import { tipoDeIntent, valuarLead, type Valuacion } from '@/lib/agente/tipos'
+import { plazoEnAnios, tipoDeIntent, valuarLead, type Valuacion } from '@/lib/agente/tipos'
 import { kgHaMesTipico, resumenPorTipo, type EstadoEnvio, type LeadAbierto } from '@/lib/agente/por-tipo'
 
 /**
@@ -32,7 +32,7 @@ export default async function PorTipo() {
   const db = createAdminClient()
   const [leadsQ, casosQ] = await Promise.all([
     db.from('producer_leads').select('id,intent,province,head_count,category,hectareas').in('status', ABIERTOS),
-    db.from('agente_casos').select('lead_id,estado'),
+    db.from('agente_casos').select('lead_id,estado,datos'),
   ])
   if (leadsQ.error) {
     return (
@@ -42,7 +42,8 @@ export default async function PorTipo() {
     )
   }
   const leads = (leadsQ.data ?? []) as LeadFila[]
-  const casos = (casosQ.data ?? []) as Array<{ lead_id: number; estado: string }>
+  const casos = (casosQ.data ?? []) as Array<{ lead_id: number; estado: string; datos: { plazo?: string | null } | null }>
+  const plazos = new Map(casos.map((c) => [c.lead_id, plazoEnAnios(c.datos?.plazo)]))
   const enAgente = new Set(casos.map((c) => c.lead_id))
   // Lo que el agente ya descartó o cerró no es plata a trabajar: así la tabla cuadra con "Potencial".
   const terminados = new Set(casos.filter((c) => ['descartado', 'dormido', 'retirado', 'cerrado'].includes(c.estado)).map((c) => c.lead_id))
@@ -55,7 +56,7 @@ export default async function PorTipo() {
       return { tipo: 'hacienda', brutoArs: e.estimatedValueArs, comisionArs: e.feeArs }
     }
     return valuarLead(
-      { intent: f.intent, hectareas: f.hectareas, head_count: f.head_count, category: f.category },
+      { intent: f.intent, hectareas: f.hectareas, head_count: f.head_count, category: f.category, provincia: f.province, plazoAnios: plazos.get(f.id) ?? null },
       { precioNovilloKg, pesoKg: () => 0, kgHaMesTipico: kgHaMesTipico(f.province) },
     )
   }
