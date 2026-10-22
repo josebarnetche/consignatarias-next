@@ -7,6 +7,15 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.249.1] — 2026-10-22
+
+### Seguridad
+- Cierra las 11 alertas abiertas de Dependabot (5 altas, 5 moderadas, 1 baja):
+  - `xlsx` (2 altas, sin arreglo en npm): pasa al tarball oficial de SheetJS 0.20.3 (`cdn.sheetjs.com`). Solo lo usan `scripts/build-panel-productivo.mjs` y `scripts/scrape-senasa-habilitados.mjs`; probado leer y escribir con import default y namespace.
+  - `vite` 8.1.3 → 8.3.5 (5 alertas, vía vitest): queda como devDependency directa, porque un override no alcanza a un peer de vitest.
+  - `follow-redirects` 1.16.1 (2 altas, vía axios de @coinbase/cdp-sdk), `uuid` 11.1.1 (vía svix de resend) y `postcss-selector-parser` 7.1.7 (vía tailwind/postcss-nested), por overrides. El CSS de Tailwind sale byte a byte igual que antes.
+- `pnpm audit` queda en 1 hallazgo: `braces` ≤3.0.3, sin versión arreglada publicada, solo en desarrollo (eslint-config-next → fast-glob). Se revisa cuando haya parche.
+
 ## [1.249.0] — 2026-10-22
 
 ### Agente: doble opt-in para los pedidos que cargó un tercero
