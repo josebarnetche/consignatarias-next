@@ -21,7 +21,7 @@ async function llamadasSemana(db: ReturnType<typeof createAdminClient>): Promise
   for (let i = 0; i < 20; i++) {
     const { data, error } = await db
       .from('ops_events')
-      .select('ip:metadata->>ip,ua:metadata->>ua,has_auth:metadata->has_auth,probe:metadata->>probe,tool:metadata->>tool,canonico:metadata->>canonico')
+      .select('ip:metadata->>ip,ua:metadata->>ua,has_auth:metadata->has_auth,probe:metadata->>probe,tool:metadata->>tool,canonico:metadata->>canonico,created_at')
       .eq('event_type', 'mcp_call')
       .eq('metadata->>method', 'tools/call')
       .gte('created_at', desde)
@@ -80,6 +80,7 @@ export default async function EmbudoMcp() {
   const pasos = [
     { valor: nf(e.toolsCall), label: 'consultas reales · 7 días', sub: `${signo(e.vsBase.toolsCall)} vs base` },
     { valor: nf(e.origenes), label: 'orígenes distintos', sub: `${signo(e.vsBase.origenes)} vs base · ${nf(e.anonimas)} consultas de la integración anónima` },
+    { valor: nf(e.humanas), label: 'uso humano', sub: `${nf(e.origenesHumanos)} orígenes · sin librerías, bots ni barridos` },
     { valor: nf(e.puente), label: 'pedidos de operar', sub: 'market_match + cattle_buying_request' },
     { valor: e.pedidos, label: 'pedidos cargados', sub: `desde el ${BASE_MCP.fecha} · base ${BASE_MCP.pedidos}` },
     { valor: e.confirmacionEnviada, label: 'confirmación enviada', sub: 'doble opt-in, un mail por pedido' },
@@ -101,7 +102,7 @@ export default async function EmbudoMcp() {
         ))}
       </ol>
       <p className="mt-3 text-xxs text-zinc-500 font-terminal">
-        Sin escáneres. Base: semana del 12-10 en docs/mcp-medicion-base.md (orígenes por IP). Los pedidos van en rangos, no en conteos exactos.
+        Consultas reales = sin la marca probe; uso humano además saca la integración anónima, las librerías HTTP, los bots y los orígenes que barren 15 tools o más en un día. Base: semana del 12-10 en docs/mcp-medicion-base.md (orígenes por IP). Los pedidos van en rangos, no en conteos exactos.
       </p>
     </AdminSection>
   )

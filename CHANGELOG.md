@@ -11,6 +11,7 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ### Agregado
 - **/admin/agente → "Del MCP a la operación": paso de confirmación** (doble opt-in de la v1.249.0). Entre "pedidos cargados" y "verificados" aparece "confirmación enviada" (`agente_mensajes`, dir `out`, `clasificacion.plantilla = 'confirmacion'`), y debajo de los verificados se ve cuántos confirmó la persona con el link (`lead_activity`, `actor = 'confirmacion'`); el resto los verificó José a mano. Todo en rangos, como el resto de los pedidos.
+- **Corte "uso humano"** en el mismo embudo: de las consultas reales (sin la marca `probe`) saca la integración anónima, las librerías HTTP (python-requests, httpx…), los bots y escáneres por user-agent y los orígenes que en un día llaman 15 tools distintas o más (barrido del catálogo). Hallazgo de la sesión 39 el 22-10: de ~1.600 consultas "reales" por semana, unas 40 son de un asistente con una persona detrás, y buena parte son nuestras.
 
 ### Cambiado
 - **/privacidad §4**: refleja el doble opt-in de la v1.249.0. Los pedidos del MCP se verifican con un único correo de confirmación al email cargado o por una persona del equipo; si no se confirma, no se vuelve a escribir. Antes decía que solo los verificaba el equipo.

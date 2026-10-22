@@ -18,6 +18,16 @@ export const BASE_MCP = { fecha: '22-10-2026', toolsCallSemana: 1505, origenesSe
 
 export const TOOLS_PUENTE = ['market_match', 'cattle_buying_request']
 
+/**
+ * Clientes que no son una persona detrás de un asistente: librerías HTTP y bots que
+ * barren directorios de MCP (y los que se presentan con "+https://…" en el UA, como manda la
+ * convención de bots). `probe` solo marca initialize/tools/list de escáneres;
+ * estos llegan a tools/call igual (medición de la 39, 22-10: ~350 de ~365 llamadas).
+ */
+const UA_NO_HUMANO = /python-requests|python-httpx|httpx|aiohttp|curl|wget|go-http|node-fetch|axios|okhttp|bot\b|bot\/|crawler|spider|scan|checkup|collector|evyai|mcpyp|rokmcp|probe|census|sentinel|smoke|\(\+https?:|\+mailto:/i
+/** Un origen que en un mismo día llama tantas tools distintas está barriendo el catálogo. */
+export const BARRIDO_TOOLS_DIA = 15
+
 export interface LlamadaMcp {
   ip: string | null
   ua: string | null
@@ -25,6 +35,7 @@ export interface LlamadaMcp {
   probe: string | boolean | null
   tool: string | null
   canonico: string | null
+  created_at?: string | null
 }
 
 export interface PedidoMcp {
@@ -42,6 +53,9 @@ export interface EmbudoMcp {
   origenes: number
   /** Llamadas de la integración anónima (Misiones): uso real, pero no hay a quién ofrecerle operar. */
   anonimas: number
+  /** Consultas de una persona detrás de un asistente: sin anónimas, sin librerías ni bots, sin barridos. */
+  humanas: number
+  origenesHumanos: number
   puente: number
   pedidos: string
   confirmacionEnviada: string
@@ -72,10 +86,15 @@ export function armarEmbudoMcp(llamadas: LlamadaMcp[], pedidos: PedidoMcp[]): Em
   const reales = llamadas.filter(real)
   const toolsCall = reales.length
   const origenes = new Set(reales.map((l) => l.ip).filter(Boolean)).size
+  const anonima = (l: LlamadaMcp) => esIntegracionAnonima({ ua: l.ua, has_auth: l.has_auth === true })
+  const barridos = origenesBarrido(reales)
+  const humanas = reales.filter((l) => !anonima(l) && !UA_NO_HUMANO.test(l.ua ?? '') && !barridos.has(l.ip ?? ''))
   return {
     toolsCall,
     origenes,
-    anonimas: reales.filter((l) => esIntegracionAnonima({ ua: l.ua, has_auth: l.has_auth === true })).length,
+    anonimas: reales.filter(anonima).length,
+    humanas: humanas.length,
+    origenesHumanos: new Set(humanas.map((l) => l.ip).filter(Boolean)).size,
     puente: reales.filter((l) => TOOLS_PUENTE.includes(l.canonico ?? l.tool ?? '')).length,
     pedidos: rango(pedidos.length),
     confirmacionEnviada: rango(pedidos.filter((p) => p.confirmacionEnviada).length),
@@ -84,4 +103,17 @@ export function armarEmbudoMcp(llamadas: LlamadaMcp[], pedidos: PedidoMcp[]): Em
     enOperacion: rango(pedidos.filter((p) => p.caso != null && EN_OPERACION.includes(p.caso)).length),
     vsBase: { toolsCall: pct(toolsCall, BASE_MCP.toolsCallSemana), origenes: pct(origenes, BASE_MCP.origenesSemana) },
   }
+}
+
+/** Orígenes (ip) que algún día llamaron BARRIDO_TOOLS_DIA tools distintas o más. */
+function origenesBarrido(llamadas: LlamadaMcp[]): Set<string> {
+  const porDia = new Map<string, Set<string>>()
+  for (const l of llamadas) {
+    if (!l.ip) continue
+    const k = `${l.ip}|${(l.created_at ?? '').slice(0, 10)}`
+    const tools = porDia.get(k) ?? new Set<string>()
+    tools.add(l.canonico ?? l.tool ?? '')
+    porDia.set(k, tools)
+  }
+  return new Set([...porDia].filter(([, t]) => t.size >= BARRIDO_TOOLS_DIA).map(([k]) => k.split('|')[0]))
 }
