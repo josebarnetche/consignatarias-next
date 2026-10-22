@@ -89,8 +89,10 @@ export default function PrivacidadPage() {
             </li>
             <li>
               Los pedidos que llegan a través de asistentes de IA o del servidor MCP pueden traer datos cargados
-              por otra persona: no se trabajan ni se contacta a nadie hasta que una persona de nuestro equipo los
-              verifica. Si recibiste un correo nuestro por un pedido que no hiciste, respondelo o escribí a{' '}
+              por otra persona: no se trabajan hasta que se verifican. Para eso le enviamos un único correo al email
+              cargado con un enlace para confirmar el pedido, o lo verifica una persona de nuestro equipo; si no se
+              confirma, no volvemos a escribirle por ese pedido. Si recibiste un correo nuestro por un pedido que no
+              hiciste, ignoralo, respondelo o escribí a{' '}
               <a href="mailto:legales@memola.com.ar" className="text-sky-400 hover:underline">legales@memola.com.ar</a>{' '}
               y lo eliminamos.
             </li>
