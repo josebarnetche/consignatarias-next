@@ -7,6 +7,13 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.254.1] — 2026-10-22
+
+### Corregido
+- **/admin/ops sin crons en rojo falsos.** Los 5 rojos eran crons que ya no corren solos: `post-remate-outreach` y `pro-consignataria-outreach` (workflows en `disabled/`, José bajó los envíos automáticos a las firmas), `weekly-digest` (workflow borrado) y `el-corredor-invitar` / `campos-oferta-outreach` (endpoints a mano). Sin cadencia declarada caían en el default de 24 h. Ahora van en `CRONS_RETIRADOS` (`src/lib/ops.ts`) y no se listan; `ovejero` y `alerta-novillo-usd` (lunes a viernes) quedan declarados con 72 h.
+- **Los crons mensuales ya no se "pierden".** `getCronHealth` leía las últimas 500 filas de `cron_runs`, pero el agente escribe ~140 por día: en ~3 días `monthly-close`, `el-corredor-publish`, `arrendamiento-cierre` y `faena-newsletter` iban a salir de la ventana y figurar como "nunca corrió". La última corrida del agente se lee aparte.
+- **Sesión vencida en el middleware.** Con un refresh token que ya no existe, cada request reintentaba y dejaba un `AuthApiError: refresh_token_not_found` en Vercel (16 en 48 h, 2 usuarios). Se borran las cookies `sb-*` y la persona vuelve a entrar.
+
 ## [1.254.0] — 2026-10-22
 
 ### Agregado

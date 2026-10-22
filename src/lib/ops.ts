@@ -75,10 +75,12 @@ export const EXPECTED_CRONS: Record<string, number> = {
   'gsc-fichas': 168, // semanal (lunes): búsquedas de Google por ficha
   // Diarios (24h)
   'scrape-auctions': 24,            // 14:00 ART
-  'post-remate-outreach': 24,       // ventana horaria 14-22h
   'price-alerts': 24,               // 21:17
   'trial-nudges': 24,               // 13:17
   'mcp-consumption-alert': 24,      // 09:00 ART — primer tools/call identificado
+  // Lunes a viernes → hueco máx ~72h (Vie→Lun)
+  ovejero: 72,                      // 09:00 ART
+  'alerta-novillo-usd': 72,         // 17:30 ART
   // data-freshness-alert NO va acá: es un alert GitHub-native (::error::), no loguea a
   // cron_runs → mostraba falso "nunca corrió". Su falla es visible en GitHub Actions.
   // Días laborables / parciales — tolerancia mayor para no marcar overdue el finde
@@ -99,6 +101,22 @@ export const EXPECTED_CRONS: Record<string, number> = {
   'faena-newsletter': 720,          // día 3
   'monthly-close': 720,             // día 1
 }
+
+/**
+ * Nombres que siguen en cron_runs pero ya no corren solos: el workflow está en
+ * .github/workflows/disabled/ (post-remate-outreach, pro-consignataria-outreach:
+ * José bajó los envíos automáticos a las firmas), no existe más (weekly-digest)
+ * o es un endpoint que se dispara a mano (el-corredor-invitar,
+ * campos-oferta-outreach). Sin cadencia declarada caían en el default de 24 h y
+ * /admin/ops los pintaba en rojo para siempre (22-10-2026: 5 de 5 rojos eran estos).
+ */
+export const CRONS_RETIRADOS: ReadonlySet<string> = new Set([
+  'post-remate-outreach',
+  'pro-consignataria-outreach',
+  'weekly-digest',
+  'el-corredor-invitar',
+  'campos-oferta-outreach',
+])
 
 /* ------------------------------------------------------------------ */
 /*  logEvent — fire-and-forget                                         */
@@ -265,13 +283,16 @@ export async function trackCron(
 export async function getCronHealth(): Promise<CronHealthRow[]> {
   const admin = createAdminClient()
 
-  // Pull the latest 500 rows; that's plenty to compute a per-workflow last_run.
-  // For volumes >>500 runs/day the right move is a DB view; flat for now.
-  const { data, error } = await admin
-    .from('cron_runs')
-    .select('workflow_name, started_at, status')
-    .order('started_at', { ascending: false })
-    .limit(500)
+  // El agente escribe ~140 filas por día: con un solo límite de 500 los mensuales
+  // salían de la ventana en ~3 días y quedaban como "nunca corrió". Se lee su
+  // última corrida aparte y el resto (~10/día → 500 ≈ 50 días > 720 h) por su lado.
+  const cols = 'workflow_name, started_at, status'
+  const [agenteQ, restoQ] = await Promise.all([
+    admin.from('cron_runs').select(cols).eq('workflow_name', 'agente').order('started_at', { ascending: false }).limit(1),
+    admin.from('cron_runs').select(cols).neq('workflow_name', 'agente').order('started_at', { ascending: false }).limit(500),
+  ])
+  const error = agenteQ.error ?? restoQ.error
+  const data = [...(agenteQ.data ?? []), ...(restoQ.data ?? [])]
 
   if (error) {
     console.error('[ops.getCronHealth] select error:', error.message)
@@ -287,6 +308,7 @@ export async function getCronHealth(): Promise<CronHealthRow[]> {
 
   const latestByWorkflow = new Map<string, { started_at: string; status: CronStatus }>()
   for (const row of data ?? []) {
+    if (CRONS_RETIRADOS.has(row.workflow_name)) continue
     if (!latestByWorkflow.has(row.workflow_name)) {
       latestByWorkflow.set(row.workflow_name, {
         started_at: row.started_at as string,

@@ -167,7 +167,15 @@ export async function middleware(request: NextRequest) {
   )
 
   // Refresh session — do NOT remove this
-  await supabase.auth.getUser()
+  const { error } = await supabase.auth.getUser()
+  // Refresh token que ya no existe (sesión revocada o de otro proyecto): sin borrar las
+  // cookies sb-* cada request vuelve a intentarlo y deja un AuthApiError en los logs de
+  // Vercel (16 en 48 h de 2 usuarios, 22-10-2026). Se borran y la persona entra de nuevo.
+  if (error?.code === 'refresh_token_not_found') {
+    for (const c of request.cookies.getAll()) {
+      if (c.name.startsWith('sb-')) supabaseResponse.cookies.delete(c.name)
+    }
+  }
 
   return conVisitorId(request, supabaseResponse)
 }
