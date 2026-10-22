@@ -7,6 +7,31 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.250.0] — 2026-10-22
+
+### MCP: la mesa se ofrece desde el primer mensaje
+
+Ronda 3 entre sesiones, frente del MCP. El puente (v1.248.0) aparece después de una consulta de precio; esto hace que el modelo sepa de la mesa desde que se conecta.
+
+- **`instructions` del initialize:** la línea OPERAR pasa a ser la primera. Le dice al modelo que quien pregunta un precio muchas veces quiere vender o comprar, y que en ese caso ofrezca `market_match`.
+- **Corregido:** la última línea decía que solo `create_price_alert` escribe. Ahora nombra también `cattle_buying_request` y `market_match` con `registrar: true`, siempre con permiso de la persona. Además, `cattle_buying_request` explica `contacto_para_operar` (consentimiento, v1.244.0).
+- **Prompts:** `value_cattle_lot` sigue con `market_match` si la persona quiere operar; `arrendar_campo` busca campos ofrecidos (`arrendar_busco`); `comprar_hacienda` pide el consentimiento antes de `contacto_para_operar`.
+- El test de prompts acepta parámetros reales por nombre y verifica que existan en los tools.
+- Sin cambios en tools, parámetros ni manifiestos. El MCP sigue en 1.9.0.
+
+---
+## [1.249.1] — 2026-10-22
+
+### Seguridad
+- Cierra las 11 alertas abiertas de Dependabot (5 altas, 5 moderadas, 1 baja):
+  - `xlsx` (2 altas, sin arreglo en npm): pasa al tarball oficial de SheetJS 0.20.3 (`cdn.sheetjs.com`). Solo lo usan `scripts/build-panel-productivo.mjs` y `scripts/scrape-senasa-habilitados.mjs`; probado leer y escribir con import default y namespace.
+  - `vite` 8.1.3 → 8.3.5 (5 alertas, vía vitest): queda como devDependency directa, porque un override no alcanza a un peer de vitest.
+  - `follow-redirects` 1.16.1 (2 altas, vía axios de @coinbase/cdp-sdk), `uuid` 11.1.1 (vía svix de resend) y `postcss-selector-parser` 7.1.7 (vía tailwind/postcss-nested), por overrides. El CSS de Tailwind sale byte a byte igual que antes.
+- `pnpm audit` queda en 1 hallazgo: `braces` ≤3.0.3, sin versión arreglada publicada, solo en desarrollo (eslint-config-next → fast-glob). Se revisa cuando haya parche.
+
+---
+
+
 ## [1.249.0] — 2026-10-22
 
 ### Agente: doble opt-in para los pedidos que cargó un tercero

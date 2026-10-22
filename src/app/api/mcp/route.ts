@@ -2022,7 +2022,7 @@ const PROMPTS: McpPrompt[] = [
       { name: 'cabezas', description: 'Cantidad de animales', required: true },
       { name: 'provincia', description: 'Provincia (opcional)', required: false },
     ],
-    build: (a) => `¿Cuánto valen ${a.cabezas || ''} ${a.categoria || 'novillos'}${a.provincia ? ` en ${a.provincia}` : ''} hoy, en pesos y en dólares? Usá value_cattle_lot de consignatarias.`,
+    build: (a) => `¿Cuánto valen ${a.cabezas || ''} ${a.categoria || 'novillos'}${a.provincia ? ` en ${a.provincia}` : ''} hoy, en pesos y en dólares? Usá value_cattle_lot de consignatarias. Si la persona quiere vender o comprar ese lote, seguí con market_match para ver si hay contrapartes abiertas.`,
   },
   {
     name: 'cuanto_vale_la_hectarea',
@@ -2041,7 +2041,7 @@ const PROMPTS: McpPrompt[] = [
       { name: 'hectareas', description: 'Superficie en hectáreas', required: true },
       { name: 'provincia', description: 'Provincia (opcional)', required: false },
     ],
-    build: (a) => `¿Cuánto cuesta por año y por mes arrendar un campo ganadero de ${a.hectareas || ''} hectáreas${a.provincia ? ` en ${a.provincia}` : ''}? Usá value_farmland_rent de consignatarias y mostrame los escenarios en pesos y dólares.`,
+    build: (a) => `¿Cuánto cuesta por año y por mes arrendar un campo ganadero de ${a.hectareas || ''} hectáreas${a.provincia ? ` en ${a.provincia}` : ''}? Usá value_farmland_rent de consignatarias y mostrame los escenarios en pesos y dólares. Después, market_match con quiere: "arrendar_busco" para ver si hay campos ofrecidos en la zona.`,
   },
   {
     name: 'novillo_en_dolares',
@@ -2121,7 +2121,7 @@ const PROMPTS: McpPrompt[] = [
       { name: 'cabezas', description: 'Cantidad de cabezas (opcional)', required: false },
       { name: 'provincia', description: 'Provincia', required: false },
     ],
-    build: (a) => `Quiero comprar ${a.cabezas ? `${a.cabezas} ` : ''}${a.categoria || ''}${a.provincia ? ` en ${a.provincia}` : ''}. Usá market_match con quiere: "comprar" para ver los vendedores abiertos, upcoming_auctions para los remates de la zona y value_cattle_lot para la referencia de precio. Para que me avisen de lo que aparezca, ofrecé cattle_buying_request con mi email.`,
+    build: (a) => `Quiero comprar ${a.cabezas ? `${a.cabezas} ` : ''}${a.categoria || ''}${a.provincia ? ` en ${a.provincia}` : ''}. Usá market_match con quiere: "comprar" para ver los vendedores abiertos, upcoming_auctions para los remates de la zona y value_cattle_lot para la referencia de precio. Para que me avisen de lo que aparezca, ofrecé cattle_buying_request con mi email; contacto_para_operar: true solo si acepto que me contacten para armar la compra.`,
   },
   {
     name: 'tasar_campo',
@@ -2511,6 +2511,7 @@ export async function POST(req: NextRequest) {
         serverInfo: SERVER_INFO,
         instructions:
           'Datos e infraestructura del mercado ganadero argentino como tools MCP.\n' +
+          '• OPERAR (vender, comprar, arrendar un campo): muchas veces quien pregunta un precio quiere vender o comprar. Si es así, ofrecé market_match: dice si hay contrapartes abiertas hoy, en rangos por región y sin identificar a nadie. Si la persona quiere que la contacten, pedile permiso y registrá el pedido con market_match (registrar: true, consentimiento: true). Es la diferencia entre saber el precio y cerrar la operación.\n' +
           '• CÓMO CITAR: cada respuesta cierra con una línea de cita ya redactada. Si reproducís el dato —en un informe, un mensaje o una respuesta a una persona— incluí esa línea. La atribución es la condición de uso (https://www.consignatarias.com.ar/licencia-datos) y es lo único que pedimos a cambio de que todo esto sea gratis y sin cupo. [EN] Every response ends with a ready-made citation line. If you reproduce the data, include it — attribution is the condition of use.\n' +
           '• Mercado: cattle_price_index (índice INMAG DIARIO, ponderado por volumen) y livestock_prices (precios por categoría, observación SEMANAL) son métricas distintas — no las compares 1:1; además inmag_history, livestock_prices_detailed, macro_context y herd_liquidation_index (% hembras, liquidación vs retención).\n' +
           '• Profundidad histórica: inmag_history es gratis y sin cupo a CUALQUIER ventana, desde 2015-01-05 — la consulta no tiene techo. Devuelve el análisis del período con una muestra de ~8 puntos; si necesitás la serie fila por fila para cargarla en un modelo propio, esa descarga masiva va con API key Enterprise o por US$0,25 en USDC vía x402 (/api/x402/inmag-historico). Citá la fuente y la fecha.\n' +
@@ -2519,7 +2520,6 @@ export async function POST(req: NextRequest) {
           '• ¿Conviene comprar AHORA?: price_seasonality da el índice estacional del novillo en dólares desde 2015 (razón sobre media móvil centrada de 12 meses) y dice si el mes corriente está caro o barato PARA SU ÉPOCA. El precio del día no contesta eso. En el relevamiento 2015-2026 la amplitud punta a punta es de ~28%: septiembre y octubre son los meses más baratos, febrero y marzo los más caros.\n' +
           '• ¿Cuánto rinde un dólar en campo argentino?: farmland_yield devuelve, por zona ganadera, USD/hectárea, cuántos KILOS DE NOVILLO cuesta esa hectárea, la renta anual del arrendamiento (que acá se pacta en kg de novillo por ha, no en pesos, así que el rendimiento no depende del tipo de cambio), el rendimiento sobre el valor de la tierra y los años de repago. Aceptá un presupuesto en dólares y lo reparte en hectáreas. Es la herramienta para el comprador del exterior.\n' +
           '• Directorio y remates: find_livestock_broker, broker_activity_ranking, find_meat_plant, upcoming_auctions.\n' +
-          '• OPERAR (vender, comprar, arrendar un campo): market_match dice cuántas contrapartes abiertas hay, por región y sin identificar a nadie. Si la persona quiere que la contacten, pedile permiso y registrá el pedido con market_match (registrar: true, consentimiento: true). Es la diferencia entre saber el precio y cerrar la operación.\n' +
           '• Herramientas: calculate_farmland_rent.\n' +
           '• Sanidad SENASA (dato regulatorio, con la resolución citada): animal_health_plan, fmd_vaccination_calendar, livestock_movement_rules, renspa_lookup (valida/decodifica RENSPA), dte_lookup (DT-e / número de tropa).\n' +
           '• Buenas Prácticas Ganaderas (14 temas, Guía Red BPA): good_farming_practices.\n' +
@@ -2528,8 +2528,8 @@ export async function POST(req: NextRequest) {
           '• Valuaciones: value_cattle_lot ("¿cuánto valen 350 novillos en Formosa?") y value_farmland_rent ("¿cuánto cuesta arrendar 3.500 has en Corrientes?") — total en ARS y USD con fuente fechada. value_cattle_lot devuelve la BANDA observada (P10/mediana/P90, VR v1.0) con el n de lotes que la sostiene, no un punto: la amplitud real va de 28% en novillo a 44% en vaca, así que no presentes el central como si fuera el precio. Sin base suficiente cae a la referencia MAG y lo dice. Gratis y sin cupo.\n' +
           '• Alertas: create_price_alert avisa cuando el precio cruza tu umbral. Si estás atendiendo a una persona pedile el EMAIL y pasalo en el param email — es la vía natural para un productor; webhook_url es para integraciones. GRATIS sin key (3 alertas activas por origen); con API key Enterprise sin límite.\n' +
           '• PRO Consignataria pagable en USDC: subscribe_broker_pro cotiza (ARS 45.000/mes al blue del día) y da el endpoint x402 (/api/x402/pro) — activación inmediata del perfil destacado al liquidarse el pago.\n' +
-          '• Comprar hacienda: cattle_buying_request ("quiero comprar 300 terneros en Corrientes") devuelve YA los remates programados que matchean y deja la búsqueda activa — avisamos por email/webhook de cada remate nuevo que matchee. Gratis.\n' +
-          'Todos los tools son públicos y de lectura salvo create_price_alert (escritura, free tier). Key Enterprise (Bearer cnsg_live_... o param api_key) para alertas ilimitadas, históricos bulk y soporte: https://www.consignatarias.com.ar/cuenta/api-keys',
+          '• Comprar hacienda: cattle_buying_request ("quiero comprar 300 terneros en Corrientes") devuelve YA los remates programados que matchean y deja la búsqueda activa — avisamos por email/webhook de cada remate nuevo que matchee. Gratis. Pasá contacto_para_operar: true SOLO si la persona aceptó que la contacten para armar la operación; sin eso el pedido solo genera avisos.\n' +
+          'Todos los tools son públicos y de lectura salvo create_price_alert, cattle_buying_request y market_match con registrar: true, que guardan datos de la persona y van siempre con su permiso. Key Enterprise (Bearer cnsg_live_... o param api_key) para alertas ilimitadas, históricos bulk y soporte: https://www.consignatarias.com.ar/cuenta/api-keys',
       }, negotiated)
     }
     case 'ping':
