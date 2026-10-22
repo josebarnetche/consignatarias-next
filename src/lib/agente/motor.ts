@@ -481,7 +481,7 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
 
   // Las demandas de compra entran como leads de compra (una vez cada una).
   {
-    const { data: demandas } = await db.from('demanda_compra').select('id,categoria,cabezas,provincia,email,origen,status,notas,created_at').eq('status', 'active')
+    const { data: demandas } = await db.from('demanda_compra').select('*').eq('status', 'active')
     if (demandas?.length) {
       const fuentes = demandas.map((d) => `demanda_compra:${d.id}`)
       const { data: ya } = await db.from('producer_leads').select('source').in('source', fuentes)

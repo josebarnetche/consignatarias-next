@@ -201,7 +201,7 @@ describe('mensajes', () => {
 })
 
 describe('demandas de compra', () => {
-  const d = { id: 3, categoria: 'vaca_gorda', cabezas: 200, provincia: 'santa fe', email: 'Compras@Tradefood.com.ar', origen: 'web', status: 'active', notas: null, created_at: '2026-10-20T12:48:55Z' }
+  const d = { id: 3, categoria: 'vaca_gorda', cabezas: 200, provincia: 'santa fe', email: 'Compras@Tradefood.com.ar', origen: 'web', status: 'active', notas: null, consiente_contacto: true, created_at: '2026-10-20T12:48:55Z' }
 
   it('se vuelven leads de compra con categoría y provincia normalizadas', () => {
     const f = leadDeDemanda(d, [])!
@@ -220,6 +220,9 @@ describe('demandas de compra', () => {
     expect(leadDeDemanda({ ...d, email: 'ganaderia+alerts@example.org' }, [])).toBeNull()
     expect(leadDeDemanda({ ...d, email: 'compras@campo.test' }, [])).toBeNull()
     expect(leadDeDemanda({ ...d, origen: 'mcp' }, [])).toMatchObject({ status: 'needs_review' })
+    // Solo avisos de remates: no entra al agente
+    expect(leadDeDemanda({ ...d, consiente_contacto: false }, [])).toBeNull()
+    expect(leadDeDemanda({ ...d, consiente_contacto: undefined }, [])).toBeNull()
   })
 
   it('un comprador de terneros en Entre Ríos cruza con un vendedor de Santa Fe', () => {
