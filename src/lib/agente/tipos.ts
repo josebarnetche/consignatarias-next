@@ -74,9 +74,16 @@ export const TIPOS: Record<TipoOperacion, ConfigTipo> = {
     label: 'Venta de campo',
     datosMinimos: ['hectareas', 'zona', 'aptitud'],
     contrapartes: ['leads que buscan campo', 'campos publicados en venta'],
-    comisionPct: null,
-    baseComision: 'precio de venta del campo',
+    // PROPUESTA (ESTIMADO), investigación del 22-10-2026
+    // (docs/agente/decisiones-2026-10-22-siocal-arrendamiento-campos.md): el mercado
+    // cobra 3% + 3%; con el mismo 20% off que el arrendamiento queda 2,4% + IVA al
+    // vendedor. El mínimo de USD 5.000 es criterio propio, sin fuente. Lo cobra y lo
+    // factura un corredor matriculado: por eso lleva bloqueo legal y no sale.
+    comisionPct: 2.4,
+    baseComision: '2,4% + IVA al vendedor sobre el precio total en USD (boleto o escritura), mínimo USD 5.000 (ESTIMADO); al comprador no se le cobra',
     primerPaso: 'pedir_datos',
+    bloqueoLegal:
+      'cobrar comisión por la venta de un campo exige corredor matriculado en la provincia del campo (CCyC arts. 1345-1346 y leyes provinciales): la factura el corredor y al sitio solo le puede pagar un fee fijo',
   },
   tasacion: {
     tipo: 'tasacion',

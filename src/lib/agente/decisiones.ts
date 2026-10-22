@@ -30,6 +30,8 @@ export interface Estado {
   pendientesVerificacion?: number
   /** `AGENTE_DOBLE_OPTIN` está en 'on': la persona confirma su pedido por mail (confirmacion.ts). */
   dobleOptinActivo?: boolean
+  /** Cómo cobra hoy la oferta de hacienda (mensajes-contacto.ts). */
+  cobroHacienda?: 'exito' | 'tarifa'
 }
 
 export function decisionesPendientes(e: Estado): Decision[] {
@@ -50,10 +52,15 @@ export function decisionesPendientes(e: Estado): Decision[] {
     d.push({
       id: 'siocal-abogado',
       gravedad: 'legal',
-      titulo: 'Hacienda: el encuadre "servicio de contacto" está aplicado, falta validarlo con un abogado',
+      titulo:
+        e.cobroHacienda === 'tarifa'
+          ? 'Hacienda: tarifa fija por contacto aplicada, falta validarla con un abogado'
+          : 'Hacienda: cobro a éxito (1%) o tarifa fija por contacto — y validarlo con un abogado',
       detalle:
-        'Desde v1.244.0 la oferta cobra el servicio de contacto (1% si se concreta), aclara que no intermediamos ni garantizamos el pago y pide verificar SIOCAL/RENSPA. Sigue sin inscripción propia en el SIOCAL: que un abogado confirme el encuadre.',
-      ref: 'docs/agente/investigacion-comisionista-hacienda.md · src/lib/agente/mensajes-contacto.ts',
+        e.cobroHacienda === 'tarifa'
+          ? 'La oferta cobra una tarifa fija por contacto entregado, sin condición de éxito: es la salida que recomendó la investigación del 22-10. Falta que un abogado confirme el encuadre (las 5 preguntas están en el doc).'
+          : 'La oferta cobra el servicio de contacto como 1% del bruto si se concreta. Según la investigación del 22-10, el riesgo real es que un % a éxito se lea como corretaje sin matrícula, no el SIOCAL. Ya está listo el cambio a tarifa fija por contacto: AGENTE_COBRO_HACIENDA=tarifa en Vercel (ARS 45.000 + IVA, ESTIMADO). Que un abogado confirme el encuadre igual.',
+      ref: 'docs/agente/decisiones-2026-10-22-siocal-arrendamiento-campos.md · src/lib/agente/mensajes-contacto.ts',
     })
   }
 
@@ -142,6 +149,7 @@ export function estadoActual(o: {
     ofertaConPieComercial: /comunicaci[oó]n comercial/i.test(texto),
     // El motor usa `M.oferta` (encuadre comisión); el borrador `ofertaServicioContacto` no está conectado.
     encuadreHacienda: /servicio de contacto/i.test(texto) ? 'servicio_contacto' : 'comision',
+    cobroHacienda: /por contacto entregado/i.test(texto) ? 'tarifa' : 'exito',
     pendientesVerificacion: o.pendientesVerificacion ?? 0,
     dobleOptinActivo: o.dobleOptinActivo ?? false,
   }

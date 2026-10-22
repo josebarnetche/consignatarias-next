@@ -8,7 +8,7 @@ describe('decisionesPendientes', () => {
   it('con el estado de hoy lista lo legal primero', () => {
     const d = decisionesPendientes(hoy)
     const ids = d.map((x) => x.id)
-    expect(ids).toEqual(expect.arrayContaining(['siocal', 'bloqueo-arrendamiento', 'comision-campo', 'arrendamiento-quien-paga', 'precio-pedido', 'pie-comercial', 'agente-tipos']))
+    expect(ids).toEqual(expect.arrayContaining(['siocal', 'bloqueo-arrendamiento', 'bloqueo-campo', 'arrendamiento-quien-paga', 'precio-pedido', 'pie-comercial', 'agente-tipos']))
     expect(d[0].gravedad).toBe('legal')
     expect(d.at(-1)!.gravedad).toBe('producto')
   })
@@ -31,6 +31,7 @@ describe('el estado se lee de la oferta que usa el motor', () => {
       ofertaMuestraPrecioPedido: false,
       ofertaConPieComercial: true,
       encuadreHacienda: 'servicio_contacto',
+      cobroHacienda: 'exito',
       pendientesVerificacion: 0,
       dobleOptinActivo: false,
     })
@@ -60,5 +61,23 @@ describe('verificar-contactos con doble opt-in', () => {
     const d = decisionesPendientes({ ...base, dobleOptinActivo: true }).find((x) => x.id === 'verificar-contactos')!
     expect(d.detalle).toContain('doble opt-in')
     expect(d.detalle).not.toContain('AGENTE_DOBLE_OPTIN=on')
+  })
+})
+
+describe('cobro de hacienda', () => {
+  const base = { tiposActivos: true, ofertaMuestraPrecioPedido: false, ofertaConPieComercial: true, encuadreHacienda: 'servicio_contacto' as const }
+  it('a éxito: la tarjeta dice cómo pasar a tarifa fija', () => {
+    const d = decisionesPendientes(base).find((x) => x.id === 'siocal-abogado')!
+    expect(d.detalle).toContain('AGENTE_COBRO_HACIENDA=tarifa')
+  })
+  it('con tarifa: solo falta el abogado', () => {
+    const d = decisionesPendientes({ ...base, cobroHacienda: 'tarifa' }).find((x) => x.id === 'siocal-abogado')!
+    expect(d.titulo).toContain('tarifa fija')
+    expect(d.detalle).not.toContain('AGENTE_COBRO_HACIENDA')
+  })
+  it('venta de campo: ya tiene propuesta, queda como bloqueo legal y no sale', () => {
+    const ids = decisionesPendientes(base).map((x) => x.id)
+    expect(ids).toContain('bloqueo-campo')
+    expect(ids).not.toContain('comision-campo')
   })
 })
