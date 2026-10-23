@@ -19815,7 +19815,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1044,
-    "status": "live"
+    "status": "completed"
   },
   {
     "title": "Haciendas Generales",
@@ -19834,45 +19834,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1045,
-    "status": "live"
-  },
-  {
-    "title": "Pampa Húmeda Remate General INVERNADA, FAENA y CRÍA",
-    "consignatariaName": "COLOMBO Y MAGLIANO S.A.",
-    "consignatariaSlug": "colombo-y-magliano-s-a",
-    "date": "2026-10-22",
-    "time": null,
-    "location": "BAHIA BLANCA, BUENOS AIRES",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "mixto",
-    "estimatedHeads": 1500,
-    "description": "Pampa Húmeda\r\nRemate General\r\nINVERNADA, FAENA y CRÍA",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.colomboymagliano.com.ar",
-    "id": 1046,
-    "status": "live"
-  },
-  {
-    "title": "HACIENDA GORDA e INVERNADA",
-    "consignatariaName": "DARWASH S.A.",
-    "consignatariaSlug": "darwash-s-a",
-    "date": "2026-10-22",
-    "time": null,
-    "location": "CARLOS CASARES, BUENOS AIRES",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "HACIENDA GORDA e INVERNADA",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://cacg.org.ar/remates",
-    "id": 1047,
-    "status": "live"
+    "status": "completed"
   },
   {
     "title": "Remate por Internet - 9.30hs.",
@@ -19890,8 +19852,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1048,
-    "status": "live"
+    "id": 1046,
+    "status": "completed"
   },
   {
     "title": "314º Remate Virtual - 9.30hs.",
@@ -19909,27 +19871,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1049,
-    "status": "live"
-  },
-  {
-    "title": "209º Remate por Internet",
-    "consignatariaName": "VITTORI ERCAZTI S.A.",
-    "consignatariaSlug": "vittori-ercazti-s-a",
-    "date": "2026-10-22",
-    "time": "09:30",
-    "location": "BUENOS AIRES",
-    "province": "BUENOS AIRES",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "700 Novillos, Novillitos y terneros. 350 Vaqs y Terneras. 150 Vaqs preñadas. 150/150 Vacas c/cría y usadas.",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.edgardovittori.com.ar",
-    "id": 1050,
-    "status": "live"
+    "id": 1047,
+    "status": "completed"
   },
   {
     "title": "Faena, Invernada y Cria - 11.00hs.",
@@ -19947,46 +19890,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1051,
-    "status": "live"
-  },
-  {
-    "title": "Gordo, invernada y cría",
-    "consignatariaName": "DANIEL BLANCO Y CÍA. S.A.",
-    "consignatariaSlug": "daniel-blanco-y-cia-s-a",
-    "date": "2026-10-22",
-    "time": "11:00",
-    "location": "LONQUIMAY, LA PAMPA",
-    "province": "LA PAMPA",
-    "type": "invernada",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": null,
-    "description": "Gordo, invernada y cría",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.danielblancosa.com.ar",
-    "id": 1052,
-    "status": "live"
-  },
-  {
-    "title": "HACIENDA GORDA",
-    "consignatariaName": "EDUARDO A. TRAVAGLIA Y CIA. S.A.",
-    "consignatariaSlug": "eduardo-a-travaglia-y-cia-s-a",
-    "date": "2026-10-22",
-    "time": "11:00",
-    "location": "SAMPACHO, CORDOBA",
-    "province": "CORDOBA",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "HACIENDA GORDA",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1053,
-    "status": "live"
+    "id": 1048,
+    "status": "completed"
   },
   {
     "title": "UMC HV — Remate Feria",
@@ -20004,8 +19909,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/d6524930-4e43-4cb9-bbc2-4c4b3f52a4a6",
-    "id": 1054,
-    "status": "live"
+    "id": 1049,
+    "status": "completed"
   },
   {
     "title": "Jauregui Lorda | Invernada y Cría.",
@@ -20023,8 +19928,8 @@
     "catalogUrl": "https://remates.elrural.com/remate/6682-jauregui-lorda-invernada-y-cria",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "live",
-    "id": 1055
+    "status": "completed",
+    "id": 1050
   },
   {
     "title": "Remate Televisado por Canal Rural INVERNADA y CRÍA",
@@ -20042,46 +19947,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.jaureguilorda.com.ar",
-    "id": 1056,
-    "status": "live"
-  },
-  {
-    "title": "GORDO, INVERNADA y CRÍA",
-    "consignatariaName": "SÁENZ VALIENTE, BULLRICH Y CIA. S.A.",
-    "consignatariaSlug": "saenz-valiente-bullrich-y-cia-s-a",
-    "date": "2026-10-22",
-    "time": "14:00",
-    "location": "CASTELLI, BUENOS AIRES",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": 600,
-    "description": "GORDO, INVERNADA y CRÍA",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1057,
-    "status": "live"
-  },
-  {
-    "title": "Televisado - Invernada y Cria - 14.00hs.",
-    "consignatariaName": "Colombo y Magliano S.A.",
-    "consignatariaSlug": "colombo-y-magliano-s-a",
-    "date": "2026-10-22",
-    "time": "14:00",
-    "location": "Concordia, Entre Rios",
-    "province": "ENTRE RIOS",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": 8000,
-    "description": "Concordia Televisado - Invernada y Cria - 14.00hs.",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1058,
-    "status": "live"
+    "id": 1051,
+    "status": "completed"
   },
   {
     "title": ". Faena, Invernada y Cria - 14.30hs.",
@@ -20099,27 +19966,8 @@
     "catalogUrl": "https://remates.elrural.com/remate/6701-colombo-y-magliano-bahia-blanca-inv-y-cria",
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1059,
-    "status": "live"
-  },
-  {
-    "title": "GORDO, INVERNADA y CRÍA",
-    "consignatariaName": "CONSIGNATARIA HASENKAMP S.R.L.",
-    "consignatariaSlug": "consignataria-hasenkamp-s-r-l",
-    "date": "2026-10-22",
-    "time": "15:00",
-    "location": "GUALEGUAY, ENTRE RÍOS",
-    "province": "ENTRE RIOS",
-    "type": "invernada",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": null,
-    "description": "GORDO, INVERNADA y CRÍA\r\n",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.chsrl.com.ar",
-    "id": 1060,
-    "status": "live"
+    "id": 1052,
+    "status": "completed"
   },
   {
     "title": "Remate Especial de Overos",
@@ -20137,8 +19985,8 @@
     "catalogUrl": "https://remates.elrural.com/remate/6738-carlos-j-lanser-coronel-moldes",
     "source": "web",
     "sourceUrl": "www.facebook.com/Carlosjlansersa",
-    "id": 1061,
-    "status": "live"
+    "id": 1053,
+    "status": "completed"
   },
   {
     "title": "Especial ARGANCARNE - 17.00hs.",
@@ -20156,8 +20004,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1062,
-    "status": "live"
+    "id": 1054,
+    "status": "completed"
   },
   {
     "title": "Remate CyC",
@@ -20175,8 +20023,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "id": 1063,
-    "status": "scheduled"
+    "id": 1055,
+    "status": "live"
   },
   {
     "title": "AFA | Feria Río Cuarto | Especial de Invernada y Cría",
@@ -20194,8 +20042,8 @@
     "catalogUrl": "https://remates.elrural.com/remate/6735-afa-feria-rio-cuarto-especial-de-invernada-y-cria",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled",
-    "id": 1064
+    "status": "live",
+    "id": 1056
   },
   {
     "title": "Argencarne - Sociedad Rural de Río Cuarto",
@@ -20213,8 +20061,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.arielsaenzycia.com",
-    "id": 1065,
-    "status": "scheduled"
+    "id": 1057,
+    "status": "live"
   },
   {
     "title": "ArgenCarnes Especial de INVERNADA y CRÍA",
@@ -20232,8 +20080,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.afascl.com",
-    "id": 1066,
-    "status": "scheduled"
+    "id": 1058,
+    "status": "live"
   },
   {
     "title": ". Remate Virtual - 11.00hs",
@@ -20251,8 +20099,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1067,
-    "status": "scheduled"
+    "id": 1059,
+    "status": "live"
   },
   {
     "title": "Faena, Invernada y Cria - 13.00hs.",
@@ -20270,8 +20118,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1068,
-    "status": "scheduled"
+    "id": 1060,
+    "status": "live"
   },
   {
     "title": "Especial REPRODUCTORES Angus y Limangus controlados Toros y Vientres",
@@ -20289,8 +20137,8 @@
     "catalogUrl": "https://remates.elrural.com/remate/6683-alfredo-s-mondino-especial-buena-esperanza",
     "source": "web",
     "sourceUrl": "alfredosmondino.com",
-    "id": 1069,
-    "status": "scheduled"
+    "id": 1061,
+    "status": "live"
   },
   {
     "title": "GORDO, INVERNADA y CRÍA",
@@ -20308,8 +20156,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1070,
-    "status": "scheduled"
+    "id": 1062,
+    "status": "live"
   },
   {
     "title": "Argen Carne 2026",
@@ -20327,8 +20175,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.vicar.com.ar",
-    "id": 1071,
-    "status": "scheduled"
+    "id": 1063,
+    "status": "live"
   },
   {
     "title": "Faena, Invernada y Cria - 14.30hs.",
@@ -20346,8 +20194,8 @@
     "catalogUrl": "https://remates.elrural.com/remate/6702-colombo-y-magliano-invernada-y-cria",
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1072,
-    "status": "scheduled"
+    "id": 1064,
+    "status": "live"
   },
   {
     "title": "Haciendas Generales - 15.00hs.",
@@ -20365,8 +20213,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1074,
-    "status": "scheduled"
+    "id": 1066,
+    "status": "live"
   },
   {
     "title": "GORDO, INVERNADA y CRÍA",
@@ -20384,8 +20232,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.chsrl.com.ar",
-    "id": 1075,
-    "status": "scheduled"
+    "id": 1067,
+    "status": "live"
   },
   {
     "title": "\"REMATE ESPECIAL\"",
@@ -20403,7 +20251,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.feriaslitoaraneta.com.ar",
-    "id": 1077,
+    "id": 1069,
     "status": "scheduled"
   },
   {
@@ -20422,7 +20270,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6684-pedro-noel-irey-invernada-y-cria",
     "source": "web",
     "sourceUrl": "www.pedronoelireysrl.com.ar",
-    "id": 1078,
+    "id": 1070,
     "status": "scheduled"
   },
   {
@@ -20441,7 +20289,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/0e0817c1-c271-4800-a14a-a7f7eba12ac4",
-    "id": 1079,
+    "id": 1071,
     "status": "scheduled"
   },
   {
@@ -20460,7 +20308,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1080,
+    "id": 1072,
     "status": "scheduled"
   },
   {
@@ -20479,7 +20327,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1081,
+    "id": 1073,
     "status": "scheduled"
   },
   {
@@ -20498,7 +20346,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1082,
+    "id": 1074,
     "status": "scheduled"
   },
   {
@@ -20518,7 +20366,7 @@
     "source": "tv",
     "sourceUrl": "https://clicrural.com.ar/remate/29277",
     "status": "scheduled",
-    "id": 1083
+    "id": 1075
   },
   {
     "title": "Remate por Internet - 9.30hs.",
@@ -20536,7 +20384,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1084,
+    "id": 1076,
     "status": "scheduled"
   },
   {
@@ -20556,7 +20404,7 @@
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
     "status": "scheduled",
-    "id": 1085
+    "id": 1077
   },
   {
     "title": "GORDOS, CONSERVA e INVERNADA",
@@ -20574,7 +20422,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.afascl.com",
-    "id": 1086,
+    "id": 1078,
     "status": "scheduled"
   },
   {
@@ -20593,7 +20441,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.pedronoelireysrl.com.ar",
-    "id": 1087,
+    "id": 1079,
     "status": "scheduled"
   },
   {
@@ -20612,7 +20460,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "pkf.com.ar/",
-    "id": 1088,
+    "id": 1080,
     "status": "scheduled"
   },
   {
@@ -20628,10 +20476,10 @@
     "estimatedHeads": 5500,
     "description": "Remate Televisado por Canal Rural",
     "youtubeUrl": null,
-    "catalogUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6717-ofarrell-santiago-del-estero",
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 1089,
+    "id": 1081,
     "status": "scheduled"
   },
   {
@@ -20651,7 +20499,7 @@
     "source": "web",
     "sourceUrl": "https://reggiycia.com/remate/31808",
     "status": "scheduled",
-    "id": 1090
+    "id": 1082
   },
   {
     "title": "Haciendas Generales - 15.00hs.",
@@ -20669,7 +20517,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1091,
+    "id": 1083,
     "status": "scheduled"
   },
   {
@@ -20688,7 +20536,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1092,
+    "id": 1084,
     "status": "scheduled"
   },
   {
@@ -20707,7 +20555,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://cacg.org.ar/remates",
-    "id": 1093,
+    "id": 1085,
     "status": "scheduled"
   },
   {
@@ -20726,7 +20574,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1094,
+    "id": 1086,
     "status": "scheduled"
   },
   {
@@ -20745,7 +20593,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1095,
+    "id": 1087,
     "status": "scheduled"
   },
   {
@@ -20764,7 +20612,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1096,
+    "id": 1088,
     "status": "scheduled"
   },
   {
@@ -20783,7 +20631,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1097,
+    "id": 1089,
     "status": "scheduled"
   },
   {
@@ -20802,7 +20650,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/1cbc9d61-997b-4d4b-b81e-1be868f6edfd",
-    "id": 1098,
+    "id": 1090,
     "status": "scheduled"
   },
   {
@@ -20821,7 +20669,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1099,
+    "id": 1091,
     "status": "scheduled"
   },
   {
@@ -20837,10 +20685,10 @@
     "estimatedHeads": 1000,
     "description": "Chascomús Faena, Invernada y Cria - 14.30hs.",
     "youtubeUrl": null,
-    "catalogUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6707-colombo-y-magliano-origen-formosa",
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1100,
+    "id": 1092,
     "status": "scheduled"
   },
   {
@@ -20859,7 +20707,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1101,
+    "id": 1093,
     "status": "scheduled"
   },
   {
@@ -20878,7 +20726,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.chsrl.com.ar",
-    "id": 1102,
+    "id": 1094,
     "status": "scheduled"
   },
   {
@@ -20897,7 +20745,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1103,
+    "id": 1095,
     "status": "scheduled"
   },
   {
@@ -20916,11 +20764,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1104,
+    "id": 1096,
     "status": "scheduled"
   },
   {
-    "id": 1105,
+    "id": 1097,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -20954,7 +20802,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1106,
+    "id": 1098,
     "status": "scheduled"
   },
   {
@@ -20973,7 +20821,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1107,
+    "id": 1099,
     "status": "scheduled"
   },
   {
@@ -20992,7 +20840,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.feriasrauch.com",
-    "id": 1108,
+    "id": 1100,
     "status": "scheduled"
   },
   {
@@ -21011,7 +20859,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.danielblancosa.com.ar",
-    "id": 1109,
+    "id": 1101,
     "status": "scheduled"
   },
   {
@@ -21030,7 +20878,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.vicar.com.ar",
-    "id": 1110,
+    "id": 1102,
     "status": "scheduled"
   },
   {
@@ -21049,7 +20897,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1111,
+    "id": 1103,
     "status": "scheduled"
   },
   {
@@ -21068,7 +20916,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1112,
+    "id": 1104,
     "status": "scheduled"
   },
   {
@@ -21084,10 +20932,10 @@
     "estimatedHeads": null,
     "description": "Saladillo Faena, Invernada y Cria - 14.30hs.",
     "youtubeUrl": null,
-    "catalogUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6703-colombo-y-magliano-invernada-y-faena",
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1113,
+    "id": 1105,
     "status": "scheduled"
   },
   {
@@ -21106,7 +20954,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1114,
+    "id": 1106,
     "status": "scheduled"
   },
   {
@@ -21125,7 +20973,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1115,
+    "id": 1107,
     "status": "scheduled"
   },
   {
@@ -21144,7 +20992,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1116,
+    "id": 1108,
     "status": "scheduled"
   },
   {
@@ -21163,7 +21011,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1117,
+    "id": 1109,
     "status": "scheduled"
   },
   {
@@ -21182,7 +21030,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1118,
+    "id": 1110,
     "status": "scheduled"
   },
   {
@@ -21198,10 +21046,10 @@
     "estimatedHeads": null,
     "description": "2da. edición SAN ANTONIO DE ARECO\r\n- Faenar TV\r\n- Remate de Invernada y Cría\r\nPor Canal Rural",
     "youtubeUrl": null,
-    "catalogUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6685-alfredo-s-mondino-faenartv",
     "source": "web",
     "sourceUrl": "alfredosmondino.com",
-    "id": 1119,
+    "id": 1111,
     "status": "scheduled"
   },
   {
@@ -21220,7 +21068,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/559fbd3b-9fe2-4446-86d0-c74130197efe",
-    "id": 1120,
+    "id": 1112,
     "status": "scheduled"
   },
   {
@@ -21239,7 +21087,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 1121,
+    "id": 1113,
     "status": "scheduled"
   },
   {
@@ -21258,7 +21106,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/83f0155f-7b1d-406b-9c05-b4fcabe93c9d",
-    "id": 1122,
+    "id": 1114,
     "status": "scheduled"
   },
   {
@@ -21277,7 +21125,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1123,
+    "id": 1115,
     "status": "scheduled"
   },
   {
@@ -21296,7 +21144,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1124,
+    "id": 1116,
     "status": "scheduled"
   },
   {
@@ -21315,7 +21163,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1125,
+    "id": 1117,
     "status": "scheduled"
   },
   {
@@ -21335,7 +21183,7 @@
     "source": "tv",
     "sourceUrl": "https://clicrural.com.ar/remate/29278",
     "status": "scheduled",
-    "id": 1126
+    "id": 1118
   },
   {
     "title": "Remate Aniversario",
@@ -21353,7 +21201,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1127,
+    "id": 1119,
     "status": "scheduled"
   },
   {
@@ -21372,7 +21220,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1128,
+    "id": 1120,
     "status": "scheduled"
   },
   {
@@ -21391,7 +21239,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1129,
+    "id": 1121,
     "status": "scheduled"
   },
   {
@@ -21410,7 +21258,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 1130,
+    "id": 1122,
     "status": "scheduled"
   },
   {
@@ -21429,7 +21277,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/b04cf6cf-a036-457f-88b8-a0f72463b259",
-    "id": 1131,
+    "id": 1123,
     "status": "scheduled"
   },
   {
@@ -21448,7 +21296,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "id": 1132,
+    "id": 1124,
     "status": "scheduled"
   },
   {
@@ -21467,7 +21315,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1133,
+    "id": 1125,
     "status": "scheduled"
   },
   {
@@ -21486,11 +21334,30 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "consignatariaserrano.com",
-    "id": 1134,
+    "id": 1126,
     "status": "scheduled"
   },
   {
-    "id": 1135,
+    "title": "Faena - 10.30hs.",
+    "consignatariaName": "Martin Y Alonso",
+    "consignatariaSlug": "martin-y-alonso",
+    "date": "2026-11-04",
+    "time": "10:30",
+    "location": "Coronel Suarez, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Coronel Suarez Faena - 10.30hs.",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1127,
+    "status": "scheduled"
+  },
+  {
+    "id": 1128,
     "title": "Haciendas Generales",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -21524,7 +21391,26 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.afascl.com",
-    "id": 1136,
+    "id": 1129,
+    "status": "scheduled"
+  },
+  {
+    "title": "10:00 - Faena 13:00 - Invernada y Cría",
+    "consignatariaName": "VITTORI ERCAZTI S.A.",
+    "consignatariaSlug": "vittori-ercazti-s-a",
+    "date": "2026-11-05",
+    "time": "10:00",
+    "location": "BAHIA BLANCA, BUENOS AIRES",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "10:00 - Faena\r\n13:00 - Invernada y Cría",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "www.edgardovittori.com.ar",
+    "id": 1130,
     "status": "scheduled"
   },
   {
@@ -21543,7 +21429,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1137,
+    "id": 1131,
     "status": "scheduled"
   },
   {
@@ -21562,7 +21448,26 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1138,
+    "id": 1132,
+    "status": "scheduled"
+  },
+  {
+    "title": "GORDO, INVERNADA Y CRÍA",
+    "consignatariaName": "FERIAS RAUCH S.A.",
+    "consignatariaSlug": "ferias-rauch-s-a",
+    "date": "2026-11-05",
+    "time": "11:30",
+    "location": "NAVARRO, BUENOS AIRES",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "vaca_gorda",
+    "estimatedHeads": null,
+    "description": "GORDO, INVERNADA Y CRÍA",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "www.feriasrauch.com",
+    "id": 1133,
     "status": "scheduled"
   },
   {
@@ -21581,7 +21486,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1139,
+    "id": 1134,
     "status": "scheduled"
   },
   {
@@ -21600,7 +21505,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 1140,
+    "id": 1135,
     "status": "scheduled"
   },
   {
@@ -21619,7 +21524,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1141,
+    "id": 1136,
     "status": "scheduled"
   },
   {
@@ -21638,7 +21543,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1142,
+    "id": 1137,
     "status": "scheduled"
   },
   {
@@ -21657,7 +21562,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1143,
+    "id": 1138,
     "status": "scheduled"
   },
   {
@@ -21676,7 +21581,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1144,
+    "id": 1139,
     "status": "scheduled"
   },
   {
@@ -21695,11 +21600,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/32b49286-4349-4465-ba1e-840dc533fcfd",
-    "id": 1145,
+    "id": 1140,
     "status": "scheduled"
   },
   {
-    "id": 1146,
+    "id": 1141,
     "title": "Rosgan Remate Habitual",
     "consignatariaName": "Rosgan",
     "consignatariaSlug": "rosgan",
@@ -21734,7 +21639,7 @@
     "source": "tv",
     "sourceUrl": "https://clicrural.com.ar/remate/29279",
     "status": "scheduled",
-    "id": 1147
+    "id": 1142
   },
   {
     "title": "GORDOS, CONSERVA e INVERNADA",
@@ -21752,7 +21657,26 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.afascl.com",
-    "id": 1148,
+    "id": 1143,
+    "status": "scheduled"
+  },
+  {
+    "title": "Faena, Invernada y Cria - 10.30hs.",
+    "consignatariaName": "Martin Y Alonso",
+    "consignatariaSlug": "martin-y-alonso",
+    "date": "2026-11-10",
+    "time": "10:30",
+    "location": "Huanguelen, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Huanguelen Faena, Invernada y Cria - 10.30hs.",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1144,
     "status": "scheduled"
   },
   {
@@ -21771,7 +21695,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1149,
+    "id": 1145,
     "status": "scheduled"
   },
   {
@@ -21790,7 +21714,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1150,
+    "id": 1146,
     "status": "scheduled"
   },
   {
@@ -21809,7 +21733,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1151,
+    "id": 1147,
     "status": "scheduled"
   },
   {
@@ -21828,11 +21752,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1152,
+    "id": 1148,
     "status": "scheduled"
   },
   {
-    "id": 1153,
+    "id": 1149,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -21866,7 +21790,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1154,
+    "id": 1150,
     "status": "scheduled"
   },
   {
@@ -21885,7 +21809,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1155,
+    "id": 1151,
     "status": "scheduled"
   },
   {
@@ -21904,7 +21828,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1156,
+    "id": 1152,
     "status": "scheduled"
   },
   {
@@ -21923,7 +21847,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1157,
+    "id": 1153,
     "status": "scheduled"
   },
   {
@@ -21942,7 +21866,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1158,
+    "id": 1154,
     "status": "scheduled"
   },
   {
@@ -21961,11 +21885,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.afascl.com",
-    "id": 1159,
+    "id": 1155,
     "status": "scheduled"
   },
   {
-    "id": 1160,
+    "id": 1156,
     "title": "Gordo, Invernada y Cria",
     "consignatariaName": "Ferias Rauch SA",
     "consignatariaSlug": "ferias-rauch",
@@ -21999,7 +21923,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1161,
+    "id": 1157,
     "status": "scheduled"
   },
   {
@@ -22018,7 +21942,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 1162,
+    "id": 1158,
     "status": "scheduled"
   },
   {
@@ -22034,10 +21958,10 @@
     "estimatedHeads": null,
     "description": "REMATES DEL LITORAL\r\n92 ° Remate por Pantalla",
     "youtubeUrl": null,
-    "catalogUrl": null,
+    "catalogUrl": "https://www.aguerresrl.com.ar/wp-content/uploads/2026/10/WhatsApp-Image-2026-10-19-at-08.14.47.jpeg",
     "source": "web",
     "sourceUrl": "www.aguerresrl.com.ar",
-    "id": 1163,
+    "id": 1159,
     "status": "scheduled"
   },
   {
@@ -22056,7 +21980,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://cacg.org.ar/remates",
-    "id": 1164,
+    "id": 1160,
     "status": "scheduled"
   },
   {
@@ -22075,11 +21999,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1165,
+    "id": 1161,
     "status": "scheduled"
   },
   {
-    "id": 1166,
+    "id": 1162,
     "title": "9° Remate Aniversario Federal",
     "consignatariaName": "Etchevehere Rural SRL",
     "consignatariaSlug": "etchevehere-rural",
@@ -22113,7 +22037,26 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1167,
+    "id": 1163,
+    "status": "scheduled"
+  },
+  {
+    "title": "Faena, Invernada y Cria",
+    "consignatariaName": "Martin Y Alonso",
+    "consignatariaSlug": "martin-y-alonso",
+    "date": "2026-11-13",
+    "time": null,
+    "location": "Laprida, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Laprida Faena, Invernada y Cria",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1164,
     "status": "scheduled"
   },
   {
@@ -22132,11 +22075,30 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.afascl.com",
-    "id": 1168,
+    "id": 1165,
     "status": "scheduled"
   },
   {
-    "id": 1169,
+    "title": "67° Remate por Pantalla e Internet",
+    "consignatariaName": "HRE",
+    "consignatariaSlug": "hre",
+    "date": "2026-11-13",
+    "time": "14:00",
+    "location": "Curuzú-Cuatiá, CORRIENTES",
+    "province": "CORRIENTES",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Sociedad Rural de Curuzú Cuatiá",
+    "youtubeUrl": null,
+    "catalogUrl": "https://almoby-consignataria-resources.s3.amazonaws.com/app/8409a259-2a66-48a9-825a-9e1e131c2501.png",
+    "source": "tv",
+    "sourceUrl": "https://www.hre.com.ar",
+    "status": "scheduled",
+    "id": 1166
+  },
+  {
+    "id": 1167,
     "title": "Invernada y Cria",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -22171,7 +22133,7 @@
     "source": "tv",
     "sourceUrl": "https://clicrural.com.ar/remate/29280",
     "status": "scheduled",
-    "id": 1170
+    "id": 1168
   },
   {
     "title": "17:00 - 67ª Remate VACUNOS por Pantalla e Internet. A/cont. Remate LANARES Raza Ideal Cabaña Aguay Rincón de Aranguren 20:00 - 12 Caballos Poleros de Ricardo Justo Ocampo y 8 montados de trabajo",
@@ -22189,7 +22151,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.hre.com.ar",
-    "id": 1171,
+    "id": 1169,
     "status": "scheduled"
   },
   {
@@ -22209,7 +22171,7 @@
     "source": "tv",
     "sourceUrl": "https://clicrural.com.ar/remate/29281",
     "status": "scheduled",
-    "id": 1172
+    "id": 1170
   },
   {
     "title": "HACIENDA GORDA, INVERNADA y CRIA",
@@ -22227,7 +22189,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1173,
+    "id": 1171,
     "status": "scheduled"
   },
   {
@@ -22246,7 +22208,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1174,
+    "id": 1172,
     "status": "scheduled"
   },
   {
@@ -22265,7 +22227,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1175,
+    "id": 1173,
     "status": "scheduled"
   },
   {
@@ -22284,7 +22246,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1176,
+    "id": 1174,
     "status": "scheduled"
   },
   {
@@ -22303,7 +22265,26 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1177,
+    "id": 1175,
+    "status": "scheduled"
+  },
+  {
+    "title": "Faena - 10.30hs.",
+    "consignatariaName": "Martin Y Alonso",
+    "consignatariaSlug": "martin-y-alonso",
+    "date": "2026-11-18",
+    "time": "10:30",
+    "location": "Huanguelen, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Huanguelen Faena - 10.30hs.",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1176,
     "status": "scheduled"
   },
   {
@@ -22322,7 +22303,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1178,
+    "id": 1177,
     "status": "scheduled"
   },
   {
@@ -22341,11 +22322,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 1179,
+    "id": 1178,
     "status": "scheduled"
   },
   {
-    "id": 1180,
+    "id": 1179,
     "title": "Haciendas Generales",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -22379,7 +22360,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://cacg.org.ar/remates",
-    "id": 1181,
+    "id": 1180,
     "status": "scheduled"
   },
   {
@@ -22398,7 +22379,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.afascl.com",
-    "id": 1182,
+    "id": 1181,
     "status": "scheduled"
   },
   {
@@ -22417,7 +22398,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1183,
+    "id": 1182,
     "status": "scheduled"
   },
   {
@@ -22436,7 +22417,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 1184,
+    "id": 1183,
     "status": "scheduled"
   },
   {
@@ -22456,7 +22437,7 @@
     "source": "tv",
     "sourceUrl": "https://clicrural.com.ar/remate/29282",
     "status": "scheduled",
-    "id": 1185
+    "id": 1184
   },
   {
     "title": "GORDOS, CONSERVA e INVERNADA",
@@ -22474,7 +22455,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.afascl.com",
-    "id": 1186,
+    "id": 1185,
     "status": "scheduled"
   },
   {
@@ -22493,11 +22474,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 1187,
+    "id": 1186,
     "status": "scheduled"
   },
   {
-    "id": 1188,
+    "id": 1187,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -22531,7 +22512,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.afascl.com",
-    "id": 1189,
+    "id": 1188,
     "status": "scheduled"
   },
   {
@@ -22546,6 +22527,25 @@
     "mainCategory": "mixto",
     "estimatedHeads": null,
     "description": "General Acha Haciendas Generales",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1189,
+    "status": "scheduled"
+  },
+  {
+    "title": "Especial de Invernada y Cria por Internet",
+    "consignatariaName": "Martin Y Alonso",
+    "consignatariaSlug": "martin-y-alonso",
+    "date": "2026-11-26",
+    "time": null,
+    "location": "Huanguelen, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Huanguelen Especial de Invernada y Cria por Internet",
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
