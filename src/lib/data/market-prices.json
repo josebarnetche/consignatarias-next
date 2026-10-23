@@ -1888,9 +1888,9 @@
     }
   },
   "corn": {
-    "current": 229.5,
-    "prev": 228,
-    "change": 0.7,
+    "current": 226.17,
+    "prev": 229.5,
+    "change": -1.5,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
@@ -2616,9 +2616,9 @@
     "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)"
   },
   "soy": {
-    "current": 411.5,
-    "prev": 490,
-    "change": -16,
+    "current": 492.33,
+    "prev": 411.5,
+    "change": 19.6,
     "unit": "USD/tn",
     "source": "MAGYP FOB API",
     "date": "2026-10-23"
