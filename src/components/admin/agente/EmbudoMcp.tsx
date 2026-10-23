@@ -21,7 +21,7 @@ async function llamadasSemana(db: ReturnType<typeof createAdminClient>): Promise
   for (let i = 0; i < 20; i++) {
     const { data, error } = await db
       .from('ops_events')
-      .select('ip:metadata->>ip,ua:metadata->>ua,has_auth:metadata->has_auth,probe:metadata->>probe,tool:metadata->>tool,canonico:metadata->>canonico,created_at')
+      .select('ip:metadata->>ip,ua:metadata->>ua,has_auth:metadata->has_auth,probe:metadata->>probe,tool:metadata->>tool,canonico:metadata->>canonico,created_at,status')
       .eq('event_type', 'mcp_call')
       .eq('metadata->>method', 'tools/call')
       .gte('created_at', desde)

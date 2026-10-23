@@ -36,6 +36,8 @@ export interface LlamadaMcp {
   tool: string | null
   canonico: string | null
   created_at?: string | null
+  /** `ops_events.status`: 'probe' también marca tools inexistentes (unknown_tool), que no llevan metadata.probe. */
+  status?: string | null
 }
 
 export interface PedidoMcp {
@@ -76,7 +78,7 @@ export function rango(n: number): string {
   return '50+'
 }
 
-const real = (l: LlamadaMcp) => String(l.probe ?? 'false') !== 'true'
+const real = (l: LlamadaMcp) => l.status !== 'probe' && String(l.probe ?? 'false') !== 'true'
 const VERIFICADO = ['new', 'routed', 'contacted', 'won']
 const EN_OPERACION = ['ofreciendo', 'presentado', 'cerrado']
 const pct = (a: number, b: number) => (b ? Math.round(((a - b) / b) * 100) : 0)

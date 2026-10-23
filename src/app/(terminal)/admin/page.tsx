@@ -2,7 +2,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import Stat from '@/components/ui/Stat'
 import { AdminPageHeader, AdminSection, KpiRow, KpiCell, TodoRow, AdminEmpty } from '@/components/admin/kit'
-import { getAdminPendientes } from '@/lib/admin/pendientes'
+import { getAdminPendientes, idsLeadsSinTrabajar } from '@/lib/admin/pendientes'
 import { getFeaturedSlugs } from '@/lib/featured'
 import { createServiceClient } from '@/lib/supabase'
 
@@ -68,10 +68,14 @@ interface LeadRow {
 
 async function getLeadsSinTrabajar(db: Db | null): Promise<LeadRow[] | null> {
   if (!db) return null
+  // Mismo criterio que el contador: sin caso del agente o escalado (src/lib/admin/pendientes.ts).
+  const ids = await idsLeadsSinTrabajar(db)
+  if (ids == null) return null
+  if (ids.length === 0) return []
   const { data, error } = await db
     .from('producer_leads')
     .select('id, name, intent, head_count, hectareas, category, province, created_at, status')
-    .in('status', ['new', 'needs_review'])
+    .in('id', ids)
     .order('created_at', { ascending: false })
     .limit(6)
   return error ? null : ((data ?? []) as LeadRow[])
@@ -114,7 +118,7 @@ export default async function AdminHoyPage() {
             hint="Frigoríficos que reclaman su ficha"
             count={p.claimsFrigorificos}
           />
-          <TodoRow href="/admin/leads" label="Leads sin trabajar" hint="Nuevos o a revisar: rutear, contactar o descartar" count={p.leadsSinTrabajar} />
+          <TodoRow href="/admin/leads" label="Leads sin trabajar" hint="Sin caso del agente o escalados a vos" count={p.leadsSinTrabajar} />
           <TodoRow href="/admin/campos" label="Campos por publicar" hint="Avisos cargados esperando revisión" count={p.campos} />
           <TodoRow href="/admin/reviews" label="Reseñas por moderar" count={p.reviews} />
         </AdminSection>

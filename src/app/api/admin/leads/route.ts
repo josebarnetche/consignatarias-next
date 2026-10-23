@@ -56,12 +56,22 @@ export async function GET(_req: NextRequest) {
   }
 
   const rows = (data || []) as Array<{ id: number; status: string; estimated_value_ars: number | null; fee_ars: number | null }>
+  // Lo que el agente descartó o cerró no es plata a trabajar aunque el status siga en
+  // 'new' (mismo criterio que PorTipo en /admin/agente; sin esto sumaba ~$6,5M de más).
+  const { data: casos } = rows.length
+    ? await db().from('agente_casos').select('lead_id, estado').in('lead_id', rows.map((r) => r.id))
+    : { data: [] }
+  const terminados = new Set(
+    ((casos ?? []) as Array<{ lead_id: number; estado: string }>)
+      .filter((c) => ['descartado', 'dormido', 'retirado', 'cerrado'].includes(c.estado))
+      .map((c) => c.lead_id),
+  )
   const byStatus: Record<string, number> = {}
   let openFeePotential = 0 // fee potencial de leads aún vivos (new/routed/contacted)
   let wonFee = 0
   for (const r of rows) {
     byStatus[r.status] = (byStatus[r.status] || 0) + 1
-    if (['new', 'routed', 'contacted'].includes(r.status)) openFeePotential += Number(r.fee_ars || 0)
+    if (['new', 'routed', 'contacted'].includes(r.status) && !terminados.has(r.id)) openFeePotential += Number(r.fee_ars || 0)
     if (r.status === 'won') wonFee += Number(r.fee_ars || 0)
   }
 

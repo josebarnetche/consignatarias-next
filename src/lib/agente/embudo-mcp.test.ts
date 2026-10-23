@@ -21,6 +21,11 @@ describe('armarEmbudoMcp', () => {
     expect(e.origenes).toBe(2)
   })
 
+  it('una tool inexistente (status probe sin metadata.probe) no es consulta real', () => {
+    const e = armarEmbudoMcp([llamada(), llamada({ ip: '4.4.4.4', tool: 'no_existe', status: 'probe' })], [])
+    expect(e.toolsCall).toBe(1)
+  })
+
   it('separa la integración anónima (sin auth y sin UA)', () => {
     const e = armarEmbudoMcp([llamada({ ua: null }), llamada({ ua: '' }), llamada({ ua: null, has_auth: true }), llamada()], [])
     expect(e.anonimas).toBe(2)

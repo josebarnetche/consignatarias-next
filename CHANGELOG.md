@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.254.3] — 2026-10-23
+
+### Corregido
+- **"Leads sin trabajar" cuenta solo lo que espera a una persona.** El agente descarta y trabaja sin tocar `producer_leads.status`, así que el contador (badge del menú y bandeja de /admin) mostraba 30 cuando eran 5: 12 descartados, 9 pidiendo datos y 4 ofreciendo los lleva el agente solo. Ahora cuenta los que no tienen caso o están `escalado` (`idsLeadsSinTrabajar` en `src/lib/admin/pendientes.ts`), y la lista de la portada usa el mismo criterio.
+- **"Potencial de fee" de /admin/leads** excluye los leads que el agente descartó, durmió, retiró o cerró, igual que `PorTipo` en /admin/agente. Sumaba ~$6,5M de más.
+- **Cobros de Rebill:** la línea de /admin/dashboard decía "no hubo cobros, altas ni bajas" porque solo miraba `processed_webhook_events`. En octubre Rebill mandó webhooks que rechazamos por `firma_invalida` (5) y una compra entró solo por la reconciliación. Ahora muestra los webhooks rechazados de los últimos 30 días.
+- **Latencia de /admin/ops = la de la API paga.** Mezclaba todo `ops_events`: el 99% eran `mcp_call` con 0 ms y el tope de 1.000 filas cubría ~9 h, no 24. El p50 daba 0 ms; ahora mide `api_call`.
+- **Embudo del MCP:** las tools inexistentes (`unknown_tool`, `status='probe'` sin `metadata.probe`) ya no cuentan como consultas reales. Hallazgo de la sesión 39.
+- **MCP `value_farmland`:** el total del campo trae su propio valor por hectárea (60% renta del canon, 40% comparables). Antes el titular era el relevamiento de la zona y US$3.400 × 500 ha no daba el total.
+
 ## [1.254.2] — 2026-10-23
 
 ### Corregido

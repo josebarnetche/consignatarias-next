@@ -444,7 +444,15 @@ export function valuarCampoTexto(opts: {
   const lineas: string[] = []
   lineas.push(`Valor de la hectárea en ${ref}: ${usd(t.usd_ha)}.`)
   lineas.push(`Rango de referencia: ${usd(t.p25)} a ${usd(t.p75)} por hectárea.`)
-  if (ha) lineas.push(`Un campo de ${ha.toLocaleString('es-AR')} ha: ${usd(v.usdHa * ha)} estimados.`)
+  // El titular es el relevamiento de la zona; el total es la valuación de ESTE campo
+  // (60% renta del canon, 40% comparables). Sin el por-hectárea propio parecía que
+  // US$3.400 × 500 ha no daba el total (smoke del MCP, 23-10-2026).
+  if (ha) {
+    const mezcla = v.porRenta && v.porComparables ? ' (60% por la renta del canon, 40% por comparables)' : ''
+    lineas.push(
+      `Un campo de ${ha.toLocaleString('es-AR')} ha: ${usd(v.usdHa * ha)} estimados, a ${usd(v.usdHa)} por hectárea${mezcla}.`,
+    )
+  }
 
   if (v.esAgricola) {
     if (t.qq_soja_ha_anio) {
