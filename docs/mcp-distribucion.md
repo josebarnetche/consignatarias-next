@@ -154,7 +154,7 @@ enlaza a la ficha de Smithery, así que puede servir como `backlinkUrl`:
 
 Es el envío con más uso real potencial, porque el server aparece dentro de Claude.
 
-> **Por qué va primero (medido el 22-10):** de las ~365 llamadas semanales a las tools de precio, lote, remates y campos que no vienen de la integración anónima, ~350 son escáneres (python-requests, que barre 23 tools en una hora desde un origen nuevo cada vez, y BrickBlueBot). Clientes humanos: unos 5 por semana. Mejorar el texto de las respuestas no llega a nadie si no hay humanos del otro lado. Lo que trae humanos es estar dentro del cliente.
+> **Por qué va primero (medido el 22-10):** de las llamadas semanales a las tools de precio, lote, remates y campos que no vienen de la integración anónima, la gran mayoría son escáneres (python-requests, que barre 23 tools en una hora desde un origen nuevo cada vez, y BrickBlueBot). Clientes humanos: entre 2 y 10 por semana. Mejorar el texto de las respuestas no llega a nadie si no hay humanos del otro lado. Lo que trae humanos es estar dentro del cliente.
 
 **Requisitos** (`https://www.claude.com/docs/connectors/building/submission`). Este PR deja todo
 cumplido salvo lo que es de cuenta:
@@ -196,7 +196,7 @@ Authentication ("no authentication"), Data handling, Test & launch, Compliance y
   - Las tools de lectura no guardan datos personales; el origen se agrupa por un hash, no por IP.
   - `create_price_alert` y `cattle_buying_request` guardan el email que el usuario da para avisarle.
   - `market_match` con `registrar: true` y `consentimiento: true` guarda nombre y email o teléfono para que una persona lo contacte. Nadie le escribe hasta que la persona confirma desde un link firmado que le llega por mail (doble opt-in, v1.249.0) o hasta que alguien verifica el contacto.
-  - `cattle_buying_request` pasa a operación solo con `contacto_para_operar: true` (consentimiento explícito, v1.244.0); sin eso, solo manda avisos de remates.
+  - `cattle_buying_request` pasa a operación solo con `contacto_para_operar: true` (consentimiento explícito, v1.244.0); sin eso, solo manda avisos de remates. Con `contacto_para_operar: true` rige el mismo doble opt-in que en `market_match`.
 
 **Qué aprueba José:**
 - Enviar con la cuenta de Memola.
