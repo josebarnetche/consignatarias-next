@@ -1769,7 +1769,7 @@ const TOOLS: Tool[] = [
   {
     name: 'create_price_alert',
     description:
-      'Crea una alerta: cuando el precio de una categoría cruza el umbral, avisa POR EMAIL al productor (o a un webhook https, para integraciones). Única tool de escritura (el resto lee). GRATIS sin API key (hasta 3 alertas activas por origen); con key Enterprise (Bearer cnsg_live_… o param api_key) sin límite. Params: categoria (inmag=índice diario; resto semanal), umbral ARS/kg vivo, direccion above|below (def above), y email O webhook_url (al menos uno; para una persona usá email). Devuelve id y precio. [EN] Create a price alert: get notified by email or webhook when the Argentine cattle price crosses your threshold.',
+      'Crea una alerta: cuando el precio de una categoría cruza el umbral, avisa POR EMAIL al productor (o a un webhook https, para integraciones). Una de las tres tools que guardan datos (con cattle_buying_request y market_match con registrar: true); el resto lee. GRATIS sin API key (hasta 3 alertas activas por origen); con key Enterprise (Bearer cnsg_live_… o param api_key) sin límite. Params: categoria (inmag=índice diario; resto semanal), umbral ARS/kg vivo, direccion above|below (def above), y email O webhook_url (al menos uno; para una persona usá email). Devuelve id y precio. [EN] Create a price alert: get notified by email or webhook when the Argentine cattle price crosses your threshold.',
     inputSchema: {
       type: 'object',
       properties: {

@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.254.2] — 2026-10-23
+
+### Corregido
+- **MCP: la descripción de `create_price_alert` decía "Única tool de escritura".** Hay tres que guardan datos (`create_price_alert`, `cattle_buying_request` y `market_match` con `registrar: true`), como ya dicen las instrucciones del server. Los revisores del directorio de conectores de Claude leen las descripciones, y no tienen que contradecirse.
+- **`docs/mcp-distribucion.md`:** el texto de manejo de datos ahora dice que `cattle_buying_request` con `contacto_para_operar: true` tiene el mismo doble opt-in que `market_match`. La medición del uso se da en rangos.
+
 ## [1.254.1] — 2026-10-22
 
 ### Corregido
