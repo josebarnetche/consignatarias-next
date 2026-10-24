@@ -60,17 +60,23 @@ async function fetchRecentEvents(limit: number, errorsOnly = false): Promise<Ops
   return (data ?? []) as OpsEventRow[]
 }
 
-/** Latencias de las últimas 24 h (sin probes): base de p50/p95. `null` = la query falló. */
+/**
+ * Latencias de la API paga (`api_call`) en las últimas 24 h, sin probes: base de p50/p95.
+ * Antes mezclaba todo `ops_events`: el 99% eran mcp_call (initialize/tools/list en 0 ms)
+ * y el tope de 1.000 filas de PostgREST cubría ~9 h, no 24 → un p50 de 0 ms que tapaba
+ * los ~800 ms reales de la API (auditoría 23-10-2026). `null` = la query falló.
+ */
 async function fetchLatencias24h(): Promise<number[] | null> {
   const admin = createAdminClient()
   const { data, error } = await admin
     .from('ops_events')
     .select('latency_ms')
+    .eq('event_type', 'api_call')
     .gte('created_at', new Date(Date.now() - D).toISOString())
     .neq('status', 'probe')
     .not('latency_ms', 'is', null)
     .order('created_at', { ascending: false })
-    .limit(2000)
+    .limit(1000)
   if (error) {
     console.error('[admin/ops] fetchLatencias24h error:', error.message)
     return null
@@ -358,7 +364,7 @@ export default async function AdminOpsPage() {
         </KpiCell>
         <KpiCell>
           <Stat
-            label="Latencia p50 · 24 h"
+            label="Latencia API p50 · 24 h"
             value={p50 != null ? `${fmtInt(p50)} ms` : null}
             sub={
               latSorted == null

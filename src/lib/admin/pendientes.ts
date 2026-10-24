@@ -25,7 +25,7 @@ export interface AdminPendientes {
   claimsFrigorificos: number | null
   reviews: number | null
   campos: number | null
-  /** Leads `new` + `needs_review`: los que nadie trabajó todavía. */
+  /** Leads `new` + `needs_review` que esperan a una persona: sin caso del agente o con caso `escalado`. */
   leadsSinTrabajar: number | null
   opsErrores24h: number | null
   cronsEnRojo: CronHealthRow[] | null
@@ -40,6 +40,27 @@ async function contar(
     const { count, error } = await run()
     if (error || count == null) return null
     return count
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Ids de los leads `new`/`needs_review` que esperan a José. El agente descarta o
+ * trabaja sin tocar `producer_leads.status`, así que contar por status mostraba 30
+ * "sin trabajar" cuando eran 5 (22-10-2026: 12 descartados, 9 pidiendo datos y 4
+ * ofreciendo los lleva el agente solo). Queda lo que no tiene caso o está `escalado`.
+ */
+export async function idsLeadsSinTrabajar(db: Client): Promise<number[] | null> {
+  try {
+    const { data: leads, error } = await db.from('producer_leads').select('id').in('status', ['new', 'needs_review'])
+    if (error) return null
+    const ids = (leads ?? []).map((l) => l.id as number)
+    if (ids.length === 0) return []
+    const { data: casos, error: e2 } = await db.from('agente_casos').select('lead_id, estado').in('lead_id', ids)
+    if (e2) return null
+    const enAgente = new Set((casos ?? []).filter((c) => c.estado !== 'escalado').map((c) => c.lead_id as number))
+    return ids.filter((id) => !enAgente.has(id))
   } catch {
     return null
   }
@@ -61,9 +82,7 @@ export const getAdminPendientes = cache(async (): Promise<AdminPendientes> => {
       contar(() => db.from('frigorifico_claims').select('id', { count: 'exact', head: true }).eq('status', 'pending')),
       contar(() => db.from('consignataria_reviews').select('id', { count: 'exact', head: true }).eq('status', 'pending')),
       contar(() => db.from('campos').select('id', { count: 'exact', head: true }).eq('status', 'pendiente')),
-      contar(() =>
-        db.from('producer_leads').select('id', { count: 'exact', head: true }).in('status', ['new', 'needs_review']),
-      ),
+      idsLeadsSinTrabajar(db).then((ids) => (ids ? ids.length : null)),
       contar(() =>
         db.from('ops_events').select('*', { count: 'exact', head: true }).eq('status', 'error').gte('created_at', since24h),
       ),
