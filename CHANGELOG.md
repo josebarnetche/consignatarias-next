@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.254.4] — 2026-10-23
+
+### Corregido
+- **MCP: los dos tools de arrendamiento dan el mismo canon.** `calculate_farmland_rent` usaba el índice oficial del día y `value_farmland_rent` el promedio del período vigente, con una diferencia de ~6% para el mismo canon. Ahora los dos usan el promedio del período, igual que `/mercado/arrendamiento`.
+- **MCP: `price_seasonality` sin `mes` contesta por el mes corriente.** Por defecto mide el último mes con índice, unos 6 meses atrás porque la media móvil centrada necesita medio año por delante. Ahora suma una línea con la norma estacional del mes en curso y explica el rezago. Las instrucciones del server dicen lo mismo.
+
 ## [1.254.3] — 2026-10-23
 
 ### Corregido
