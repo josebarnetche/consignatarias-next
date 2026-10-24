@@ -22973,7 +22973,7 @@
     "firmaAuctionId": 8,
     "source": "manual",
     "sourceUrl": null,
-    "status": "live"
+    "status": "completed"
   },
   {
     "id": 100009,
@@ -22994,6 +22994,6 @@
     "firmaAuctionId": 9,
     "source": "manual",
     "sourceUrl": null,
-    "status": "live"
+    "status": "completed"
   }
 ]
