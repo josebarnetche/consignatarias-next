@@ -987,10 +987,18 @@ const TOOLS: Tool[] = [
       const lectura = m
         ? `\n${m.nombre} de ${m.ym.slice(0, 4)}: índice ${m.indiceActual.toFixed(3)} contra ${m.indiceTipico.toFixed(3)} típico → ${m.desvioPct > 0 ? '+' : ''}${m.desvioPct}%, la hacienda está ${m.lectura === 'barata' ? 'más barata que lo normal para esa época' : m.lectura === 'cara' ? 'más cara que lo normal para esa época' : 'en su nivel estacional'}.`
         : ''
+      // Sin `mes` se evalúa el último con índice (~6 meses atrás). Se agrega la norma del
+      // mes corriente para que la respuesta conteste "¿conviene ahora?".
+      let corriente = ''
+      if (typeof args.mes !== 'string') {
+        const hoy = e.indicePorMes.find((x) => x.mes === new Date().getMonth() + 1)
+        if (hoy)
+          corriente = `\nEste mes (${hoy.nombre}) es típicamente ${hoy.indice <= 0.97 ? 'barato' : hoy.indice >= 1.03 ? 'caro' : 'neutro'} para su época (índice ${hoy.indice.toFixed(3)}). El índice del mes en curso recién se puede medir unos 6 meses después: por eso el desvío de arriba es del último mes medido.`
+      }
       return ok(
         `Índice estacional del novillo (INMAG en USD, ${e.aniosBase} años):\n${filas.join('\n')}\n` +
           `\nMes más barato: ${barato.nombre} (${barato.indice.toFixed(3)}). Más caro: ${caro.nombre} (${caro.indice.toFixed(3)}). ` +
-          `Amplitud estacional: ${amplitud}% entre punta y punta.${lectura}\n\n${e.nota}`,
+          `Amplitud estacional: ${amplitud}% entre punta y punta.${lectura}${corriente}\n\n${e.nota}`,
       )
     },
   },
@@ -1172,11 +1180,13 @@ const TOOLS: Tool[] = [
       // Índice oficial del MAG para arrendamientos (haciinfo000013), si el scrape lo trajo.
       const oficial = (prices as { arrendamientoOficial?: { index: number; date: string; periodIndex?: number | null } }).arrendamientoOficial
       const custom = Number.isFinite(Number(args.precio_novillo)) && Number(args.precio_novillo) > 0
-      const precio = custom ? Number(args.precio_novillo) : (oficial?.index ?? prices.inmag.current)
+      // Mismo índice que value_farmland_rent y /mercado/arrendamiento: el promedio del período
+      // vigente, no el valor del día (difieren ~6% y el mismo canon daba dos montos).
+      const precio = custom ? Number(args.precio_novillo) : (oficial?.periodIndex ?? oficial?.index ?? prices.inmag.current)
       const fuentePrecio = custom
         ? 'precio provisto'
         : oficial
-          ? `índice oficial de arrendamiento MAG ${oficial.date}`
+          ? `índice oficial de arrendamiento MAG${oficial.periodIndex ? ', promedio del período vigente' : ''} ${oficial.date}`
           : 'INMAG del día'
       if (!Number.isFinite(kgHaEntrada) || kgHaEntrada <= 0 || !Number.isFinite(hectareas) || hectareas <= 0)
         return fail('kg_ha y hectareas deben ser números positivos.')
@@ -2517,7 +2527,7 @@ export async function POST(req: NextRequest) {
           '• Profundidad histórica: inmag_history es gratis y sin cupo a CUALQUIER ventana, desde 2015-01-05 — la consulta no tiene techo. Devuelve el análisis del período con una muestra de ~8 puntos; si necesitás la serie fila por fila para cargarla en un modelo propio, esa descarga masiva va con API key Enterprise o por US$0,25 en USDC vía x402 (/api/x402/inmag-historico). Citá la fuente y la fecha.\n' +
           '• EL NÚMERO PROPIO: consignatarias_band devuelve la BANDA CONSIGNATARIAS, cuánto se abre el precio de la hacienda en la semana — la distancia entre el decil que menos cobró y el que más, por la misma categoría. No existe en ninguna otra fuente: el resto del mercado publica el promedio y se reserva la dispersión. Viene con la cita ya redactada para publicar; si la usás, reproducila tal cual.\n' +
           '• LA BRECHA CONTRA EL MUNDO: international_price_gap compara el novillo argentino con Estados Unidos, Uruguay y Australia en dólares por kilo VIVO, sin estimar rendimiento de carcasa en ningún país. Es la pregunta del comprador del exterior. OJO: Argentina opera POR ENCIMA de Brasil, así que no afirmes que es la más barata de la región — la brecha que se sostiene es contra el hemisferio norte y Uruguay.\n' +
-          '• ¿Conviene comprar AHORA?: price_seasonality da el índice estacional del novillo en dólares desde 2015 (razón sobre media móvil centrada de 12 meses) y dice si el mes corriente está caro o barato PARA SU ÉPOCA. El precio del día no contesta eso. En el relevamiento 2015-2026 la amplitud punta a punta es de ~28%: septiembre y octubre son los meses más baratos, febrero y marzo los más caros.\n' +
+          '• ¿Conviene comprar AHORA?: price_seasonality da el índice estacional del novillo en dólares desde 2015 (razón sobre media móvil centrada de 12 meses) y dice si el mes corriente es típicamente caro o barato PARA SU ÉPOCA (el desvío real se mide con ~6 meses de rezago). El precio del día no contesta eso. En el relevamiento 2015-2026 la amplitud punta a punta es de ~28%: septiembre y octubre son los meses más baratos, febrero y marzo los más caros.\n' +
           '• ¿Cuánto rinde un dólar en campo argentino?: farmland_yield devuelve, por zona ganadera, USD/hectárea, cuántos KILOS DE NOVILLO cuesta esa hectárea, la renta anual del arrendamiento (que acá se pacta en kg de novillo por ha, no en pesos, así que el rendimiento no depende del tipo de cambio), el rendimiento sobre el valor de la tierra y los años de repago. Aceptá un presupuesto en dólares y lo reparte en hectáreas. Es la herramienta para el comprador del exterior.\n' +
           '• Directorio y remates: find_livestock_broker, broker_activity_ranking, find_meat_plant, upcoming_auctions.\n' +
           '• Herramientas: calculate_farmland_rent.\n' +
