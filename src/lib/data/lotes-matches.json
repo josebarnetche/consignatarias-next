@@ -1,5 +1,5 @@
 {
-  "generado": "2026-10-24T19:14:48.968Z",
+  "generado": "2026-10-24T21:28:14.062Z",
   "leads_de_compra": 11,
   "matches": [
     {
@@ -410,6 +410,16 @@
       },
       "lotes": [
         {
+          "sku": "34382",
+          "titulo": "105 Terneros Aberdeen Angus Negro y Colorado de 165kg",
+          "score": 50,
+          "motivos": [
+            "el lead no declaró categoría",
+            "misma provincia"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/105-Terneros-165kg-invernada-34382"
+        },
+        {
           "sku": "34336",
           "titulo": "90 Novillitos Aberdeen Angus Colorado de 260kg",
           "score": 50,
@@ -430,34 +440,24 @@
           "url": "https://www.decampoacampo.com/__dcac/95-Terneros-y-Terneras-255kg-invernada-34330"
         },
         {
-          "sku": "34288",
-          "titulo": "100 Novillitos y Vaquillonas Aberdeen Angus Negro y Colorado",
+          "sku": "34329",
+          "titulo": "55 Novillitos Aberdeen Angus Negro de 270kg",
           "score": 50,
           "motivos": [
             "el lead no declaró categoría",
             "misma provincia"
           ],
-          "url": "https://www.decampoacampo.com/__dcac/100-Novillitos-y-Vaquillonas-275kg-invernada-34288"
+          "url": "https://www.decampoacampo.com/__dcac/55-Novillitos-270kg-invernada-34329"
         },
         {
-          "sku": "34261",
-          "titulo": "115 Vacas preñadas Aberdeen Angus Negro de 450kg",
+          "sku": "34290",
+          "titulo": "50 Vaquillonas para madre Aberdeen Angus Negro y Colorado 250kg",
           "score": 50,
           "motivos": [
             "el lead no declaró categoría",
             "misma provincia"
           ],
-          "url": "https://www.decampoacampo.com/__dcac/115-Vacas-prenadas-450kg-invernada-34261"
-        },
-        {
-          "sku": "34260",
-          "titulo": "35 Vaquillonas Preñadas Aberdeen Angus Negro y Colorado de 420kg",
-          "score": 50,
-          "motivos": [
-            "el lead no declaró categoría",
-            "misma provincia"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/35-Vaquillonas-Prenadas-420kg-invernada-34260"
+          "url": "https://www.decampoacampo.com/__dcac/50-Vaquillonas-para-madre-250kg-invernada-34290"
         }
       ]
     },
