@@ -1,5 +1,5 @@
 {
-  "generado": "2026-10-25T21:34:44.473Z",
+  "generado": "2026-10-25T23:08:10.631Z",
   "leads_de_compra": 11,
   "matches": [
     {
@@ -287,6 +287,17 @@
           "url": "https://www.decampoacampo.com/__dcac/75-Terneros-y-Terneras-195kg-invernada-34306"
         },
         {
+          "sku": "34286",
+          "titulo": "80 Novillitos Braford de 245kg",
+          "score": 50,
+          "motivos": [
+            "el lead no declaró categoría",
+            "misma provincia",
+            "el lote es grande (80 contra 11 pedidas)"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/80-Novillitos-245kg-invernada-34286"
+        },
+        {
           "sku": "34378",
           "titulo": "70 Vaquillonas para madre Bubalinos de 310kg",
           "score": 50,
@@ -307,17 +318,6 @@
             "el lote es grande (35 contra 11 pedidas)"
           ],
           "url": "https://www.decampoacampo.com/__dcac/35-Vacas-de-invernada-440kg-invernada-34343"
-        },
-        {
-          "sku": "34286",
-          "titulo": "80 Novillitos Braford de 245kg",
-          "score": 50,
-          "motivos": [
-            "el lead no declaró categoría",
-            "misma provincia",
-            "el lote es grande (80 contra 11 pedidas)"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/80-Novillitos-245kg-invernada-34286"
         },
         {
           "sku": "34193",
@@ -450,14 +450,14 @@
           "url": "https://www.decampoacampo.com/__dcac/60-Novillitos-y-Vaquillonas-280kg-invernada-34355"
         },
         {
-          "sku": "34340",
-          "titulo": "100 Vaquillonas Preñadas Aberdeen Angus Colorado de 400kg",
+          "sku": "34345",
+          "titulo": "85 Novillitos Aberdeen Angus Negro y Colorado de 260kg",
           "score": 50,
           "motivos": [
             "el lead no declaró categoría",
             "misma provincia"
           ],
-          "url": "https://www.decampoacampo.com/__dcac/100-Vaquillonas-Prenadas-400kg-invernada-34340"
+          "url": "https://www.decampoacampo.com/__dcac/85-Novillitos-260kg-invernada-34345"
         }
       ]
     },
