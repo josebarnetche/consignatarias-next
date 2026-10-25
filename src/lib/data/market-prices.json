@@ -2616,11 +2616,11 @@
     "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)"
   },
   "soy": {
-    "current": 489,
-    "prev": 492.33,
-    "change": -0.7,
+    "current": 492.33,
+    "prev": 489,
+    "change": 0.7,
     "unit": "USD/tn",
     "source": "MAGYP FOB API",
-    "date": "2026-10-20"
+    "date": "2026-10-23"
   }
 }

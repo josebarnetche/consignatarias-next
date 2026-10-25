@@ -1,5 +1,5 @@
 {
-  "generado": "2026-10-25T19:27:19.116Z",
+  "generado": "2026-10-25T21:34:44.473Z",
   "leads_de_compra": 11,
   "matches": [
     {
@@ -410,6 +410,16 @@
       },
       "lotes": [
         {
+          "sku": "34383",
+          "titulo": "45 Novillos Aberdeen Angus Negro y Colorado de 395kg",
+          "score": 50,
+          "motivos": [
+            "el lead no declaró categoría",
+            "misma provincia"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/45-Novillos-395kg-invernada-34383"
+        },
+        {
           "sku": "34382",
           "titulo": "105 Terneros Aberdeen Angus Negro y Colorado de 165kg",
           "score": 50,
@@ -448,16 +458,6 @@
             "misma provincia"
           ],
           "url": "https://www.decampoacampo.com/__dcac/100-Vaquillonas-Prenadas-400kg-invernada-34340"
-        },
-        {
-          "sku": "34273",
-          "titulo": "100 Vacas con cría Aberdeen Angus Negro de 440kg",
-          "score": 50,
-          "motivos": [
-            "el lead no declaró categoría",
-            "misma provincia"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/100-Vacas-con-cria-440kg-invernada-34273"
         }
       ]
     },
@@ -550,6 +550,17 @@
           "url": "https://www.decampoacampo.com/__dcac/325-Terneros-y-Terneras-210kg-invernada-34121"
         },
         {
+          "sku": "34383",
+          "titulo": "45 Novillos Aberdeen Angus Negro y Colorado de 395kg",
+          "score": 35,
+          "motivos": [
+            "el lead no declaró categoría",
+            "otra provincia (Buenos Aires)",
+            "cantidad compatible"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/45-Novillos-395kg-invernada-34383"
+        },
+        {
           "sku": "34355",
           "titulo": "60 Novillitos y Vaquillonas Aberdeen Angus Negro y Colorado 280kg",
           "score": 35,
@@ -559,17 +570,6 @@
             "cantidad compatible"
           ],
           "url": "https://www.decampoacampo.com/__dcac/60-Novillitos-y-Vaquillonas-280kg-invernada-34355"
-        },
-        {
-          "sku": "34342",
-          "titulo": "70 Terneros Hereford de 190kg",
-          "score": 35,
-          "motivos": [
-            "el lead no declaró categoría",
-            "otra provincia (Entre Ríos)",
-            "cantidad compatible"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/70-Terneros-190kg-invernada-34342"
         }
       ]
     },
