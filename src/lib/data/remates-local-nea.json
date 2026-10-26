@@ -387,7 +387,7 @@
     "province": "BUENOS AIRES",
     "type": "general",
     "mainCategory": "mixto",
-    "estimatedHeads": null,
+    "estimatedHeads": 10000,
     "description": "San Antonio de Areco Faena, Invernada y Cria",
     "youtubeUrl": null,
     "catalogUrl": null,
@@ -1551,7 +1551,7 @@
     "title": "Sociedad Rural de Jesús María | Consignaciones Córdoba",
     "consignatariaName": "Sociedad Rural de Jesús Maria",
     "consignatariaSlug": "sociedad-rural-de-jesus-maria",
-    "date": "2026-10-25",
+    "date": "2026-10-26",
     "time": "10:30",
     "location": "",
     "province": "CORDOBA",
@@ -1581,7 +1581,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6684-pedro-noel-irey-invernada-y-cria",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "AFA | Totoras | Gordos, Conserva e Invernada",
@@ -1743,7 +1743,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6734-sociedad-rural-de-jesus-maria-consignaciones-cordoba",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Pedro Noel Irey | Invernada y Cría",
@@ -1761,7 +1761,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6684-pedro-noel-irey-invernada-y-cria",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "AFA | Totoras | Gordos, Conserva e Invernada",
