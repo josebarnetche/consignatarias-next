@@ -27,6 +27,11 @@
   },
   "redirects": [
     {
+      "source": "/campos/valor-hectarea",
+      "destination": "/campos",
+      "permanent": false
+    },
+    {
       "source": "/alertas",
       "destination": "/planes",
       "permanent": false
