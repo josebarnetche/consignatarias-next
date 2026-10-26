@@ -7,6 +7,15 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.255.0] — 2026-10-26
+
+### Agregado
+- **Agente: las ventas de campo se ofrecen a consignatarias de la zona.** Decisión de José del 26-10: las consignatarias tienen la matrícula y saben cómo manejarse con el sitio, que es un portal que no intermedia y solo ofrece el contacto. Un caso de venta de campo con superficie, aptitud y zona pasa a `ofreciendo` y `ofrecerCampos` (`src/lib/agente/campos-agente.ts`) se lo ofrece a consignatarias de la misma provincia y después a las de provincias limítrofes. Son 3 por tanda, una tanda cada 4 días y hasta 3 tandas. Se mantienen las reglas de hacienda: solo días hábiles de 8 a 19, cupo de 20 contactos nuevos por día compartido con hacienda, nadie dos veces en 24 h, BAJA para siempre. Si se acaban las firmas, el caso pasa a José.
+- **Plantillas `ofertaCampo` y `presentacionCampo`** (`mensajes-tipos.ts`). La oferta muestra superficie, aptitud, zona y una línea de detalle escrita por una persona. No lleva el nombre ni el contacto del dueño, ni un porcentaje, y tiene pie comercial con BAJA. El contacto del dueño sale solo cuando la firma responde ACEPTO por escrito: el motor manda la presentación a los dos y le avisa a José. Las demás respuestas de una firma le llegan a José sin frenar la oferta a las demás. Las presentaciones de campo no tienen seguimiento automático, porque el de hacienda habla de cabezas.
+
+### Cambiado
+- **`TIPOS.campo` ya no tiene bloqueo legal.** El 2,4% queda solo como referencia interna (ESTIMADO) para valuar el caso en el tablero: el mail no menciona comisión. Arrendamiento sigue bloqueado y sin oferta.
+
 ## [1.254.6] — 2026-10-26
 
 ### Seguridad

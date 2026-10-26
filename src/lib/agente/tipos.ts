@@ -11,7 +11,8 @@
  *  · ARRENDAMIENTO (21-10-2026): un mes de canon completo es la referencia de
  *    mercado; se ofrece con 20% off → 0,8 de un mes de canon. Se presenta como
  *    servicio cerrado ("llave en mano"), con el software trabajando atrás.
- *  · CAMPO (venta) y TASACIÓN: sin comisión definida → se calculan, no salen.
+ *  · CAMPO (venta, 26-10-2026): se ofrece el contacto a consignatarias de la zona,
+ *    como portal que no intermedia. TASACIÓN: no sale; se califica.
  * Inventar una comisión y mandarla por mail sería comprometer a la empresa con
  * una condición que nadie aprobó.
  */
@@ -73,17 +74,15 @@ export const TIPOS: Record<TipoOperacion, ConfigTipo> = {
     tipo: 'campo',
     label: 'Venta de campo',
     datosMinimos: ['hectareas', 'zona', 'aptitud'],
-    contrapartes: ['leads que buscan campo', 'campos publicados en venta'],
-    // PROPUESTA (ESTIMADO), investigación del 22-10-2026
-    // (docs/agente/decisiones-2026-10-22-siocal-arrendamiento-campos.md): el mercado
-    // cobra 3% + 3%; con el mismo 20% off que el arrendamiento queda 2,4% + IVA al
-    // vendedor. El mínimo de USD 5.000 es criterio propio, sin fuente. Lo cobra y lo
-    // factura un corredor matriculado: por eso lleva bloqueo legal y no sale.
+    // José, 26-10-2026: se ofrece a consignatarias de la zona, que tienen la
+    // matrícula y saben cómo manejarse con nosotros. El sitio es un portal: no
+    // intermedia, solo ofrece el contacto (campos-agente.ts, ofertaCampo). El mail
+    // no menciona un %: el 2,4% es la PROPUESTA (ESTIMADO) del 22-10 para valuar el
+    // caso en el tablero (3% + 3% de mercado con 20% off), no una condición enviada.
+    contrapartes: ['consignatarias de la provincia y limítrofes'],
     comisionPct: 2.4,
-    baseComision: '2,4% + IVA al vendedor sobre el precio total en USD (boleto o escritura), mínimo USD 5.000 (ESTIMADO); al comprador no se le cobra',
+    baseComision: 'referencia interna: 2,4% sobre el precio total en USD (ESTIMADO); el mail a la consignataria no menciona comisión',
     primerPaso: 'pedir_datos',
-    bloqueoLegal:
-      'cobrar comisión por la venta de un campo exige corredor matriculado en la provincia del campo (CCyC arts. 1345-1346 y leyes provinciales): la factura el corredor y al sitio solo le puede pagar un fee fijo',
   },
   tasacion: {
     tipo: 'tasacion',
