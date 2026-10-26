@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.254.6] — 2026-10-26
+
+### Seguridad
+- **Next.js 15.5.27 → 15.5.28.** Cierra dos avisos de Dependabot de runtime: GHSA-2464-fhr4-w9xw (crítico: ejecución remota en la optimización de imágenes con SVG, por la versión de `sharp`, que ahora es 0.35.5) y GHSA-p3m5-59mp-jv5r (alto: denegación de servicio con Server Actions en el App Router). En Vercel la optimización de imágenes la hace la plataforma, así que la exposición real era baja, pero el parche es de la misma rama 15.5.
+- **zod ^4.3.6 → ^4.6.7** (GHSA-mrhx-c7xc-m3w5, alto: memoria agotada al validar colecciones muy grandes). Queda una copia de zod 3.25.76 que trae `@coinbase/cdp-sdk` (x402): no tiene parche en la rama 3 y forzarla a la 4 rompe ese SDK, así que esa alerta sigue abierta hasta que Coinbase actualice.
+
 ## [1.254.5] — 2026-10-26
 
 ### Corregido
