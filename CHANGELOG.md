@@ -7,6 +7,11 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.254.5] — 2026-10-26
+
+### Corregido
+- **Agente: un caso cuyo email está dado de baja se retira.** Si el email del lead estaba en `agente_bajas` (por ejemplo, porque respondió BAJA como contraparte de otro caso), `mandar()` no lo dejaba salir, como corresponde, pero el caso quedaba vencido sin cambiar de estado y se reevaluaba cada 10 minutos para siempre, ocupando lugar en el cupo de 30 vencidos por corrida. Ahora pasa a `retirado` con motivo "el email está dado de baja". En producción había uno solo (caso 27). Hallazgo de la sesión 39.
+
 ## [1.254.4] — 2026-10-23
 
 ### Corregido

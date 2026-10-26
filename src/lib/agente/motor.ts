@@ -610,6 +610,13 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
   for (const caso of ordenarCola(aMirar as Caso[], (c) => comisionEstimada(c.datos))) {
     const lead = await leerLead(caso.lead_id)
     if (!lead?.email) continue
+    // Un email dado de baja (también como contraparte de otro caso) no recibe nada: mandar()
+    // no sale, el caso quedaba vencido y se reevaluaba cada 10 min ocupando el cupo de 30.
+    if (bajas.has(lead.email.trim().toLowerCase())) {
+      await guardarCaso(lead.id, { estado: 'retirado', motivo: 'el email está dado de baja' })
+      await bitacora(lead.id, 'Caso retirado: el email del lead está dado de baja', 'no_interesa')
+      continue
+    }
     const falta = faltantes(caso.datos)
 
     const vencido = new Date(caso.proximo_at) <= ahora && caso.estado !== 'sin_contraparte'
