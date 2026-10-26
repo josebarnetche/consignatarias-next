@@ -1,13 +1,13 @@
 {
-  "scrapedAt": "2026-10-19T14:45:06.400Z",
+  "scrapedAt": "2026-10-26T14:23:08.859Z",
   "source": "https://aps2.senasa.gov.ar/registros/faces/publico/establecimientos/tc_frigorificospublico.jsp",
   "ciclos": [
     "CICLO I - MAT.FRIG.",
     "CICLO II - ELABORADOR",
     "CICLO III - DADOR DE FRIO"
   ],
-  "totalRowsScraped": 1006,
-  "distinctCuits": 868,
+  "totalRowsScraped": 1008,
+  "distinctCuits": 870,
   "unparsableCuits": 0,
   "byCuit": {
     "30707283250": {
@@ -157,8 +157,8 @@
         "II - 5. SOLO ELABORACIÓN MORCILLAS",
         "XXX -  DEPOSITO PRODUCTOS CARNEOS",
         "LI D - 7. ELABORACION DE MILANESAS ENFRIADAS Y CONGELADAS DE PROPIA FAENA",
-        "LI H - 24. ELABORACION DE HARINA DE VISCERAS DE CERDO Y ACEITES DE CERDO",
-        "LI E - 10. MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS COCIDAS"
+        "LI E - 10. MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS COCIDAS",
+        "LI H - 24. ELABORACION DE HARINA DE VISCERAS DE CERDO Y ACEITES DE CERDO"
       ],
       "ciclos": [
         "CICLO I - MAT.FRIG."
@@ -984,6 +984,7 @@
       "nroOficial": "4205",
       "actividades": [
         "I C - CABEZA DE OVINO FAENADO",
+        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
         "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
         "I G - 1. FAENA DE CAPRINOS",
         "I G - 3. FAENA DE CORDERITOS",
@@ -1714,10 +1715,10 @@
         "I G - 3. FAENA DE CORDERITOS",
         "II - 11. ELABORACIÓN DE CHACINADOS CRUDOS, SECOS, COCIDOS Y HAMBURGUESAS",
         "XII - 2. DESPOSTADA BOVINA Y PORCINA",
+        "I C - 1. CABEZA DE CABRA ADULTA FAENADA",
         "II - 19. ELABORACION DE MILANESAS ENFRIADAS Y CONGELADAS",
         "II - 23. ELABORACION DE CHACINADOS COCIDOS Y SALAZONES COCIDAS",
-        "XII - 15. ELABORACION DE CARNE PICADA",
-        "I C - 1. CABEZA DE CABRA ADULTA FAENADA"
+        "XII - 15. ELABORACION DE CARNE PICADA"
       ],
       "ciclos": [
         "CICLO I - MAT.FRIG."
@@ -4092,6 +4093,7 @@
         "I A - CABEZA DE BOVINO FAENADO",
         "I D - CABEZA DE EQUINO FAENADO",
         "XII - CARNES EN TROZOS O CORTES",
+        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
         "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
         "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
         "XXVIII - 1. SALADERO DE CUEROS",
@@ -4525,6 +4527,24 @@
       "actividades": [
         "VIII - 2. ELABORACION DE CARNE DESHIDRATADA DE BOVINOS",
         "VIII - 4. ELABORACION DE CARNE DESHIDRATADA DE PORCINOS"
+      ],
+      "ciclos": [
+        "CICLO II - ELABORADOR"
+      ]
+    },
+    "33717582549": {
+      "cuit": "33717582549",
+      "tipo": "CICLO II - ELABORADOR",
+      "propietario": "ALTO CORTE PRODUCCIONES",
+      "nombre": "ALTO CORTE PRODUCCIONES",
+      "provincia": "BUENOS AIRES",
+      "partido": "SAN PEDRO",
+      "localidad": "SAN PEDRO",
+      "nroOficial": "5726",
+      "actividades": [
+        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+        "XII - 10. DESPOSTADA BOVINA (CUARTOS)",
+        "XII - 15. ELABORACION DE CARNE PICADA"
       ],
       "ciclos": [
         "CICLO II - ELABORADOR"
@@ -6925,7 +6945,7 @@
     "30708142677": {
       "cuit": "30708142677",
       "tipo": "CICLO II - ELABORADOR",
-      "propietario": "FADEL  SA",
+      "propietario": "FADEL SA",
       "nombre": "FADEL S.A.",
       "provincia": "SANTA FE",
       "partido": "LA CAPITAL",
@@ -12947,7 +12967,9 @@
         "LXII - IMPORTACION DE POLLOS",
         "LXIII - IMPORTACION PRODUCTOS DE LA PESCA EN CONSERVAS",
         "LXIV - IMPORTACION DE CARNE PORCINA",
-        "XXXIII - 6. DEPÓSITO FRIGORÍFICO DE PESCADOS Y MARISCOS FRESCOS Y CONGELADOS"
+        "XXXIII - 6. DEPÓSITO FRIGORÍFICO DE PESCADOS Y MARISCOS FRESCOS Y CONGELADOS",
+        "LXVII - IMPORTACION DE CARNE BOVINA",
+        "LXVII - 1. IMPORTACIÓN DE MENUDENCIAS BOVINAS - CONSUMO HUMANO"
       ],
       "ciclos": [
         "CICLO III - DADOR DE FRIO"
@@ -13398,7 +13420,7 @@
     "30672812808": {
       "cuit": "30672812808",
       "tipo": "CICLO III - DADOR DE FRIO",
-      "propietario": "CEDISUR S A",
+      "propietario": "CEDISUR S. A. S.",
       "nombre": "CEDISUR S A",
       "provincia": "RIO NEGRO",
       "partido": "GENERAL ROCA",
@@ -14858,6 +14880,25 @@
         "XXX - 1. DEPOSITO Y TRANSBORDO DE MERCADERIAS",
         "XXXIII - 6. DEPÓSITO FRIGORÍFICO DE PESCADOS Y MARISCOS FRESCOS Y CONGELADOS",
         "XXXIII - 8. CAMARA FRIGORIFICA PARA DEPOSITO A TERCEROS"
+      ],
+      "ciclos": [
+        "CICLO III - DADOR DE FRIO"
+      ]
+    },
+    "30715939297": {
+      "cuit": "30715939297",
+      "tipo": "CICLO III - DADOR DE FRIO",
+      "propietario": "GRANJA PICO DORADO S.R.L.",
+      "nombre": "GRANJA PICO DORADO S.R.L.",
+      "provincia": "MISIONES",
+      "partido": "IGUAZU",
+      "localidad": "PUERTO ESPERANZA",
+      "nroOficial": "5734",
+      "actividades": [
+        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+        "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
+        "LXII - IMPORTACION DE POLLOS",
+        "XXXIII - 6. DEPÓSITO FRIGORÍFICO DE PESCADOS Y MARISCOS FRESCOS Y CONGELADOS"
       ],
       "ciclos": [
         "CICLO III - DADOR DE FRIO"
