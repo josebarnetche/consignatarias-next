@@ -16,6 +16,11 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 ### Cambiado
 - **`TIPOS.campo` ya no tiene bloqueo legal.** El 2,4% queda solo como referencia interna (ESTIMADO) para valuar el caso en el tablero: el mail no menciona comisión. Arrendamiento sigue bloqueado y sin oferta.
 
+## [1.254.7] — 2026-10-26
+
+### Corregido
+- **`/campos/valor-hectarea` daba 404.** El mail de tasación del agente (`mensajes-tipos.ts`) manda a esa dirección como "referencia de valor por zona", pero solo existen las páginas por provincia y zona. Ya les llegó a dueños de campo que respondieron. Ahora redirige (302) a `/campos`, que lista el valor por hectárea provincia por provincia. Es temporal para que una futura página índice lo reemplace. Hallazgo del smoke post v1.254.6 (sesión 39).
+
 ## [1.254.6] — 2026-10-26
 
 ### Seguridad
