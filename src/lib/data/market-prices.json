@@ -1882,15 +1882,15 @@
     },
     "terneros": {
       "current": 4642,
-      "prev": 4319,
-      "change": 7.5,
+      "prev": 4642,
+      "change": 0,
       "source": "MAG (derived from INMAG)"
     }
   },
   "corn": {
     "current": 224,
-    "prev": 226.5,
-    "change": -1.1,
+    "prev": 224,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
@@ -2636,8 +2636,8 @@
   },
   "soy": {
     "current": 483.33,
-    "prev": 487.67,
-    "change": -0.9,
+    "prev": 483.33,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API",
     "date": "2026-10-27"

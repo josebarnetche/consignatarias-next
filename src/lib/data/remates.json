@@ -20255,6 +20255,25 @@
     "status": "live"
   },
   {
+    "title": "O'farrell | Santiago del Estero",
+    "consignatariaName": "O'Farrell",
+    "consignatariaSlug": "o-farrell",
+    "date": "2026-10-27",
+    "time": "14:00",
+    "location": "",
+    "province": "SANTIAGO DEL ESTERO",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "O'farrell | Santiago del Estero",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6717-ofarrell-santiago-del-estero",
+    "source": "tv",
+    "sourceUrl": "https://remates.elrural.com/",
+    "status": "live",
+    "id": 1070
+  },
+  {
     "title": "Invernada, cría y consumo",
     "consignatariaName": "PEDRO NOEL IREY S.R.L.",
     "consignatariaSlug": "pedro-noel-irey-s-r-l",
@@ -20270,7 +20289,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.pedronoelireysrl.com.ar",
-    "id": 1070,
+    "id": 1071,
     "status": "live"
   },
   {
@@ -20289,27 +20308,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "pkf.com.ar/",
-    "id": 1071,
+    "id": 1072,
     "status": "live"
-  },
-  {
-    "title": "O'farrell | Santiago del Estero",
-    "consignatariaName": "O'Farrell",
-    "consignatariaSlug": "o-farrell",
-    "date": "2026-10-27",
-    "time": "14:00",
-    "location": "",
-    "province": "SANTIAGO DEL ESTERO",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "O'farrell | Santiago del Estero",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6717-ofarrell-santiago-del-estero",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
-    "status": "live",
-    "id": 1072
   },
   {
     "title": "Haciendas generales de Santo Tomé",
@@ -20464,6 +20464,25 @@
     "status": "scheduled"
   },
   {
+    "title": "Campos Bajos SRL | Gordos, invernada y cría",
+    "consignatariaName": "Campos Bajos SRL",
+    "consignatariaSlug": "campos-bajos-srl",
+    "date": "2026-10-28",
+    "time": "14:00",
+    "location": "",
+    "province": "",
+    "type": "invernada",
+    "mainCategory": "vaca_gorda",
+    "estimatedHeads": null,
+    "description": "Campos Bajos SRL | Gordos, invernada y cría",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6754-campos-bajos-srl-gordos-invernada-y-cria",
+    "source": "tv",
+    "sourceUrl": "https://remates.elrural.com/",
+    "status": "scheduled",
+    "id": 1081
+  },
+  {
     "title": "GORDO, INVERNADA y CRÍA",
     "consignatariaName": "SÁENZ VALIENTE, BULLRICH Y CIA. S.A.",
     "consignatariaSlug": "saenz-valiente-bullrich-y-cia-s-a",
@@ -20479,7 +20498,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1081,
+    "id": 1082,
     "status": "scheduled"
   },
   {
@@ -20498,7 +20517,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/1cbc9d61-997b-4d4b-b81e-1be868f6edfd",
-    "id": 1082,
+    "id": 1083,
     "status": "scheduled"
   },
   {
@@ -20517,7 +20536,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1083,
+    "id": 1084,
     "status": "scheduled"
   },
   {
@@ -20536,27 +20555,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1084,
+    "id": 1085,
     "status": "scheduled"
-  },
-  {
-    "title": "Campos Bajos SRL | Gordos, invernada y cría",
-    "consignatariaName": "Campos Bajos SRL",
-    "consignatariaSlug": "campos-bajos-srl",
-    "date": "2026-10-28",
-    "time": "14:00",
-    "location": "",
-    "province": "",
-    "type": "invernada",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": null,
-    "description": "Campos Bajos SRL | Gordos, invernada y cría",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6754-campos-bajos-srl-gordos-invernada-y-cria",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled",
-    "id": 1085
   },
   {
     "title": "Faena, Invernada y Cria - 14.30hs.",
@@ -22611,25 +22611,6 @@
     "status": "scheduled"
   },
   {
-    "title": "GORDO, INVERNADA y CRÍA",
-    "consignatariaName": "SÁENZ VALIENTE, BULLRICH Y CIA. S.A.",
-    "consignatariaSlug": "saenz-valiente-bullrich-y-cia-s-a",
-    "date": "2026-11-17",
-    "time": null,
-    "location": "SAN ANDRES DE GILES, BUENOS AIRES",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": null,
-    "description": "GORDO, INVERNADA y CRÍA",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1194,
-    "status": "scheduled"
-  },
-  {
     "title": "Especial Vacas",
     "consignatariaName": "Mondino",
     "consignatariaSlug": "mondino",
@@ -22645,6 +22626,25 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1194,
+    "status": "scheduled"
+  },
+  {
+    "title": "GORDO, INVERNADA y CRÍA",
+    "consignatariaName": "SÁENZ VALIENTE, BULLRICH Y CIA. S.A.",
+    "consignatariaSlug": "saenz-valiente-bullrich-y-cia-s-a",
+    "date": "2026-11-17",
+    "time": null,
+    "location": "SAN ANDRES DE GILES, BUENOS AIRES",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "vaca_gorda",
+    "estimatedHeads": null,
+    "description": "GORDO, INVERNADA y CRÍA",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "www.saenz-valiente.com.ar",
     "id": 1195,
     "status": "scheduled"
   },
