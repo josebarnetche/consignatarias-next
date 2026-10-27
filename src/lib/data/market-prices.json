@@ -1908,7 +1908,7 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-10-26",
+  "lastUpdate": "2026-10-27",
   "provinceEntry": {
     "date": "2026-10-23",
     "totalCabezas": 2851,
@@ -2610,9 +2610,9 @@
   "arrendamientoOficial": {
     "date": "2026-10-21",
     "index": 3969.528,
-    "periodStart": "2026-10-16",
+    "periodStart": "2026-10-20",
     "periodEnd": "2026-10-21",
-    "periodIndex": 4114.133,
+    "periodIndex": 4070.633,
     "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)"
   },
   "soy": {
