@@ -1865,7 +1865,7 @@
     },
     "vacas": {
       "current": 2981.5,
-      "prev": 2981.12,
+      "prev": 2981.5,
       "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "latestVolume": 1726,
@@ -1882,22 +1882,22 @@
     },
     "terneros": {
       "current": 4505,
-      "prev": 4642,
-      "change": -3,
+      "prev": 4505,
+      "change": 0,
       "source": "MAG (derived from INMAG)"
     }
   },
   "corn": {
     "current": 223.7,
-    "prev": 224,
-    "change": -0.1,
+    "prev": 223.7,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
     "current": 1565,
-    "prev": 1575,
-    "change": -0.6,
+    "prev": 1565,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
@@ -2599,8 +2599,8 @@
   },
   "soy": {
     "current": 480.33,
-    "prev": 483.33,
-    "change": -0.6,
+    "prev": 480.33,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API",
     "date": "2026-10-28"
