@@ -20157,7 +20157,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1064,
-    "status": "live"
+    "status": "completed"
   },
   {
     "title": "GORDO, INVERNADA y CRÍA",
@@ -20176,7 +20176,7 @@
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
     "id": 1065,
-    "status": "live"
+    "status": "completed"
   },
   {
     "title": "Feria Maria Dolores",
@@ -20194,7 +20194,7 @@
     "catalogUrl": "https://ftp.rural-server.com/remates/images/2vlgLinMrfaSSxkZ.jpg",
     "source": "tv",
     "sourceUrl": "https://clicrural.com.ar/remate/29277",
-    "status": "live",
+    "status": "completed",
     "id": 1066
   },
   {
@@ -20214,7 +20214,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1067,
-    "status": "live"
+    "status": "completed"
   },
   {
     "title": "AFA | Totoras | Gordos, Conserva e Invernada",
@@ -20232,7 +20232,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6658-afa-totoras-gordos-conserva-e-invernada",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "live",
+    "status": "completed",
     "id": 1068
   },
   {
@@ -20252,7 +20252,7 @@
     "source": "web",
     "sourceUrl": "www.afascl.com",
     "id": 1069,
-    "status": "live"
+    "status": "completed"
   },
   {
     "title": "O'farrell | Santiago del Estero",
@@ -20270,7 +20270,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6717-ofarrell-santiago-del-estero",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "live",
+    "status": "completed",
     "id": 1070
   },
   {
@@ -20290,7 +20290,7 @@
     "source": "web",
     "sourceUrl": "www.pedronoelireysrl.com.ar",
     "id": 1071,
-    "status": "live"
+    "status": "completed"
   },
   {
     "title": "GORDOS, CONSERVA e INVERNADA",
@@ -20309,7 +20309,7 @@
     "source": "web",
     "sourceUrl": "pkf.com.ar/",
     "id": 1072,
-    "status": "live"
+    "status": "completed"
   },
   {
     "title": "Haciendas generales de Santo Tomé",
@@ -20327,7 +20327,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://reggiycia.com/remate/31808",
-    "status": "live",
+    "status": "completed",
     "id": 1073
   },
   {
@@ -20347,7 +20347,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1074,
-    "status": "live"
+    "status": "completed"
   },
   {
     "title": "Hacienda GORDA e INVERNADA",
@@ -20366,7 +20366,7 @@
     "source": "web",
     "sourceUrl": "https://cacg.org.ar/remates",
     "id": 1075,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Especial de Invernada y Cria por Internet - 10.30hs.",
@@ -20385,7 +20385,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1076,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Faena, Invernada y Cria",
@@ -20404,7 +20404,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1077,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Faena, Invernada y Cria- 11.00hs.",
@@ -20423,7 +20423,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1078,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Alfredo S. Mondino | Feria Mensual Olavarría",
@@ -20441,7 +20441,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6741-alfredo-s-mondino-feria-mensual-olavarria",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled",
+    "status": "live",
     "id": 1079
   },
   {
@@ -20461,7 +20461,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1080,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Campos Bajos SRL | Gordos, invernada y cría",
@@ -20479,7 +20479,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6754-campos-bajos-srl-gordos-invernada-y-cria",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled",
+    "status": "live",
     "id": 1081
   },
   {
@@ -20499,7 +20499,7 @@
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
     "id": 1082,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "UMC HV — Remate Feria",
@@ -20518,7 +20518,7 @@
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/1cbc9d61-997b-4d4b-b81e-1be868f6edfd",
     "id": 1083,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Invernada, Cria y Consumo - 14.00hs.",
@@ -20537,7 +20537,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1084,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": ". Consumo y Conserva - 14.00hs.",
@@ -20556,7 +20556,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1085,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Faena, Invernada y Cria - 14.30hs.",
@@ -20575,7 +20575,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1086,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Faena, Invernada y Cria - 14.30hs.",
@@ -20594,7 +20594,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1087,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "CHASCOMÚS Remate General Estancias BOUVIER, CLARÍN y SAN JUAN Brangus Colorado",
@@ -20613,7 +20613,7 @@
     "source": "web",
     "sourceUrl": "www.colomboymagliano.com.ar",
     "id": 1088,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "GORDO, INVERNADA y CRÍA",
@@ -20632,7 +20632,7 @@
     "source": "web",
     "sourceUrl": "www.chsrl.com.ar",
     "id": 1089,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Haciendas Generales",

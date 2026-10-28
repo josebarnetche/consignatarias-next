@@ -1833,52 +1833,52 @@
       }
     ],
     "latestVolume": 4980,
-    "periodVolume": 145602
+    "periodVolume": 142204
   },
   "categories": {
     "novillos": {
-      "current": 4010.69,
+      "current": 4220.28,
       "prev": 4010.69,
-      "change": 0,
+      "change": 5.2,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 221,
-      "observedDate": "23/10/2026"
+      "latestVolume": 565,
+      "observedDate": "27/10/2026"
     },
     "novillitos": {
-      "current": 4538.85,
+      "current": 4595.1,
       "prev": 4538.85,
-      "change": 0,
+      "change": 1.2,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 833,
-      "observedDate": "23/10/2026"
+      "latestVolume": 1201,
+      "observedDate": "27/10/2026"
     },
     "vaquillonas": {
-      "current": 4298.58,
+      "current": 4290.77,
       "prev": 4298.58,
-      "change": 0,
+      "change": -0.2,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 449,
-      "observedDate": "23/10/2026"
+      "latestVolume": 1100,
+      "observedDate": "27/10/2026"
     },
     "vacas": {
-      "current": 2916.26,
+      "current": 2981.12,
       "prev": 2916.26,
-      "change": 0,
+      "change": 2.2,
       "source": "mercadoagroganadero.com.ar (observed)",
-      "latestVolume": 1239,
-      "observedDate": "23/10/2026"
+      "latestVolume": 1727,
+      "observedDate": "27/10/2026"
     },
     "toros": {
-      "current": 3375.08,
+      "current": 3403.52,
       "prev": 3375.08,
-      "change": 0,
+      "change": 0.8,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 121,
-      "observedDate": "23/10/2026"
+      "latestVolume": 122,
+      "observedDate": "27/10/2026"
     },
     "terneros": {
       "current": 4642,
@@ -1908,9 +1908,9 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-10-27",
+  "lastUpdate": "2026-10-28",
   "provinceEntry": {
-    "date": "2026-10-27",
+    "date": "2026-10-28",
     "totalCabezas": 4950,
     "provinces": [
       {
@@ -1952,7 +1952,7 @@
     ]
   },
   "detailedCategories": {
-    "date": "2026-10-27",
+    "date": "2026-10-28",
     "categories": [
       {
         "category": "NOVILLOS Esp.Joven + 430",
@@ -2090,129 +2090,80 @@
     ]
   },
   "auctionDayEntries": {
-    "date": "2026-10-23",
+    "date": "2026-10-28",
     "consignatarias": {
-      "colombo-y-colombo": {
-        "magId": "18",
-        "totalCabezas": 435,
+      "colombo-y-magliano": {
+        "magId": "165",
+        "totalCabezas": 428,
         "entries": [
           {
-            "remitente": "AGROP. RIO MANSO S.A.",
-            "localidad": "PERGAMINO",
+            "remitente": "AGROP. SAN JOAQUIN S.A",
+            "localidad": "BOLIVAR",
             "provincia": "BUE",
-            "cabezas": 35
+            "cabezas": 33
           },
           {
-            "remitente": "AGROP. RIO MANSO S.A.",
-            "localidad": "PERGAMINO",
+            "remitente": "BELLAMAR ESTANCIAS S.A.",
+            "localidad": "GRAL. ALVARADO",
             "provincia": "BUE",
-            "cabezas": 36
+            "cabezas": 28
           },
           {
-            "remitente": "AGROP.CVITANICH S.A.",
-            "localidad": "LINCOLN",
+            "remitente": "CALMET ANA MARIA",
+            "localidad": "CNEL. SUAREZ",
             "provincia": "BUE",
-            "cabezas": 40
+            "cabezas": 52
           },
           {
-            "remitente": "AGROPIRO S.A.",
-            "localidad": "SALADILLO",
-            "provincia": "BUE",
-            "cabezas": 18
-          },
-          {
-            "remitente": "CARLOS ENRIQUE RAMOS",
-            "localidad": "SALTO",
-            "provincia": "BUE",
-            "cabezas": 13
-          },
-          {
-            "remitente": "COLOMBO Y COLOMBO S.A.",
-            "localidad": "LEZAMA",
-            "provincia": "BUE",
-            "cabezas": 50
-          },
-          {
-            "remitente": "FALCO ARIEL ALBERTO",
-            "localidad": "RIVADAVIA         B",
-            "provincia": "BUE",
-            "cabezas": 48
-          },
-          {
-            "remitente": "FORMAR S.A.",
-            "localidad": "LINCOLN",
-            "provincia": "BUE",
-            "cabezas": 47
-          },
-          {
-            "remitente": "GAZTAMBIDE M.Y ETCHEBEHERE S.",
-            "localidad": "RAUCH",
-            "provincia": "BUE",
-            "cabezas": 8
-          },
-          {
-            "remitente": "GAZTAMBIDE MARCELO",
-            "localidad": "RAUCH",
+            "remitente": "INDUSTRIAS C.E.P. S.A.",
+            "localidad": "TORNQUIST",
             "provincia": "BUE",
             "cabezas": 44
           },
           {
-            "remitente": "GAZTAMBIDE MARCELO",
-            "localidad": "RAUCH",
+            "remitente": "LAUCIRICA ELBIO NESTOR",
+            "localidad": "AYACUCHO           B",
             "provincia": "BUE",
-            "cabezas": 36
+            "cabezas": 9
           },
           {
-            "remitente": "NORDHEIMER S.R.L.",
-            "localidad": "CA�UELAS",
+            "remitente": "OLAZUL S.A.",
+            "localidad": "PUAN",
             "provincia": "BUE",
-            "cabezas": 35
+            "cabezas": 60
           },
           {
-            "remitente": "SANTA JUANA ESTANCIAS S.A.",
-            "localidad": "MONTE",
+            "remitente": "SIMON MARCELO ALBERTO",
+            "localidad": "BENITO JUAREZ",
             "provincia": "BUE",
-            "cabezas": 25
+            "cabezas": 38
+          },
+          {
+            "remitente": "TRAPALCO SA",
+            "localidad": "TRENQUE LAUQUEN",
+            "provincia": "BUE",
+            "cabezas": 53
+          },
+          {
+            "remitente": "VAQUERO LORENZO VICTOR",
+            "localidad": "BOLIVAR",
+            "provincia": "BUE",
+            "cabezas": 34
+          },
+          {
+            "remitente": "YAMAIDA S.A.",
+            "localidad": "DAIREAUX",
+            "provincia": "BUE",
+            "cabezas": 29
+          },
+          {
+            "remitente": "ZAMEMA S,A,",
+            "localidad": "MAIPU",
+            "provincia": "BUE",
+            "cabezas": 48
           }
         ],
-        "period": "23/09/2026 - 23/10/2026"
-      },
-      "colombo-y-magliano": {
-        "magId": "165",
-        "totalCabezas": 185,
-        "entries": [
-          {
-            "remitente": "BELLAMAR ESTANCIAS S.A.",
-            "localidad": "GRAL. ALVARADO",
-            "provincia": "BUE",
-            "cabezas": 36
-          },
-          {
-            "remitente": "BELLAMAR ESTANCIAS S.A.",
-            "localidad": "GRAL. ALVARADO",
-            "provincia": "BUE",
-            "cabezas": 36
-          },
-          {
-            "remitente": "ESTABLECIMIENTO MARALJO S.A.",
-            "localidad": "URUGUAY",
-            "provincia": "ERI",
-            "cabezas": 47
-          },
-          {
-            "remitente": "HIJOS DE EMILIO BARRETO",
-            "localidad": "BALCARCE",
-            "provincia": "BUE",
-            "cabezas": 26
-          },
-          {
-            "remitente": "LA AREQUIPE�A S.R.L.",
-            "localidad": "25 DE MAYO",
-            "provincia": "BUE",
-            "cabezas": 40
-          }
-        ],
-        "period": "23/09/2026 - 23/10/2026"
+        "period": "28/09/2026 - 28/10/2026"
       }
     }
   },
