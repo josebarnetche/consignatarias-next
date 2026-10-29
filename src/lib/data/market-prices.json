@@ -1837,48 +1837,48 @@
   },
   "categories": {
     "novillos": {
-      "current": 4220.28,
+      "current": 4095.65,
       "prev": 4220.28,
-      "change": 0,
+      "change": -3,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 565,
-      "observedDate": "27/10/2026"
+      "latestVolume": 566,
+      "observedDate": "28/10/2026"
     },
     "novillitos": {
-      "current": 4595.1,
+      "current": 4412.77,
       "prev": 4595.1,
-      "change": 0,
+      "change": -4,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 1201,
-      "observedDate": "27/10/2026"
+      "latestVolume": 939,
+      "observedDate": "28/10/2026"
     },
     "vaquillonas": {
-      "current": 4290.77,
+      "current": 4068.94,
       "prev": 4290.77,
-      "change": 0,
+      "change": -5.2,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 1100,
-      "observedDate": "27/10/2026"
+      "latestVolume": 1017,
+      "observedDate": "28/10/2026"
     },
     "vacas": {
-      "current": 2981.5,
+      "current": 2931.54,
       "prev": 2981.5,
-      "change": 0,
+      "change": -1.7,
       "source": "mercadoagroganadero.com.ar (observed)",
-      "latestVolume": 1726,
-      "observedDate": "27/10/2026"
+      "latestVolume": 1856,
+      "observedDate": "28/10/2026"
     },
     "toros": {
-      "current": 3403.52,
+      "current": 3385.11,
       "prev": 3403.52,
-      "change": 0,
+      "change": -0.5,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 122,
-      "observedDate": "27/10/2026"
+      "latestVolume": 154,
+      "observedDate": "28/10/2026"
     },
     "terneros": {
       "current": 4505,
@@ -1908,9 +1908,9 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-10-28",
+  "lastUpdate": "2026-10-29",
   "provinceEntry": {
-    "date": "2026-10-28",
+    "date": "2026-10-29",
     "totalCabezas": 4669,
     "provinces": [
       {
@@ -1958,7 +1958,7 @@
     ]
   },
   "detailedCategories": {
-    "date": "2026-10-28",
+    "date": "2026-10-29",
     "categories": [
       {
         "category": "NOVILLOS Esp.Joven + 430",
@@ -2096,8 +2096,21 @@
     ]
   },
   "auctionDayEntries": {
-    "date": "2026-10-28",
+    "date": "2026-10-29",
     "consignatarias": {
+      "umc-haciendas-villaguay": {
+        "magId": "48",
+        "totalCabezas": 59,
+        "entries": [
+          {
+            "remitente": "CALYX TIERRA S.A.",
+            "localidad": "GRAL. VIAMONTE",
+            "provincia": "BUE",
+            "cabezas": 59
+          }
+        ],
+        "period": "29/09/2026 - 29/10/2026"
+      },
       "colombo-y-magliano": {
         "magId": "165",
         "totalCabezas": 330,
@@ -2175,7 +2188,7 @@
             "cabezas": 8
           }
         ],
-        "period": "28/09/2026 - 28/10/2026"
+        "period": "29/09/2026 - 29/10/2026"
       }
     }
   },
