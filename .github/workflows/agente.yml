@@ -18,7 +18,9 @@ name: Agente de operaciones
 # a 30 minutos el mismo día, por pedido de José.
 #
 # ⚠️ Un workflow_dispatch también queda en espera detrás de la corrida viva (hasta
-# ~5 h). Para probar en seco: curl -X POST /api/cron/agente?dryRun=1 con el
+# ~5 h) y además DESPLAZA a la corrida del cron que estaba esperando: si es un
+# dry_run hace una vuelta y deja un hueco de hasta 2 h. No usar dispatch salvo para
+# relanzar. Para probar en seco: curl -X POST /api/cron/agente?dryRun=1 con el
 # CRON_SECRET, no este workflow.
 on:
   schedule:
