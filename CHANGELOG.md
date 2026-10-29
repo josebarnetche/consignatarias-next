@@ -7,6 +7,15 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.254.8] — 2026-10-28
+
+### Corregido
+- **El agente ya no queda parado entre corridas.** `agente.yml` pasa a `cancel-in-progress: false`: la corrida que larga el cron queda en espera y arranca apenas termina la viva, en vez de cancelarla. Antes, cuando la viva terminaba sola, el agente quedaba quieto hasta que GitHub largaba el cron tarde: hasta 2 h 26 min el 28-10, y de 113 a 141 vueltas por día contra las 144 previstas.
+
+### Cambiado
+- **Ritmo del agente: cada 30 minutos en vez de cada 10** (10 vueltas por corrida, ~5 h). Los horarios de envío no cambian: los decide el código.
+- Un `workflow_dispatch` de `agente.yml` ahora queda en espera detrás de la corrida viva. Para probar en seco se usa `POST /api/cron/agente?dryRun=1`.
+
 ## [1.254.7] — 2026-10-26
 
 ### Corregido
