@@ -52,7 +52,9 @@ jobs:
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run agente.yml -R "$GITHUB_REPOSITORY" --ref main -f dry_run=false
+        run: |
+          echo "T0=$(date +%s)" >> "$GITHUB_ENV"
+          gh workflow run agente.yml -R "$GITHUB_REPOSITORY" --ref main -f dry_run=false
       - name: Correr el agente cada 30 minutos
         run: |
           Q=""; VUELTAS=10
@@ -67,3 +69,21 @@ jobs:
             # Con `&&` la última vuelta devolvía 1 y la corrida quedaba en rojo.
             if [ "$i" -lt "$VUELTAS" ]; then sleep 1800; fi
           done
+      # Freno: si la corrida duró menos de 20 min algo falló antes de trabajar
+      # (shell, runner, secret). Sin esto la cadena se vuelve un lazo de corridas
+      # de segundos; se cancela la pendiente y queda el cron de respaldo. El
+      # dry_run hace una sola vuelta corta a propósito: no frena.
+      - name: Frenar la cadena si la corrida fue corta
+        if: ${{ always() && github.event.inputs.dry_run != 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          DUR=$(( $(date +%s) - ${T0:-0} ))
+          echo "duración: $((DUR / 60)) min"
+          if [ -n "$T0" ] && [ "$DUR" -lt 1200 ]; then
+            # La que espera por concurrency figura como pending; queued por las dudas.
+            for S in pending queued; do
+              gh run list -R "$GITHUB_REPOSITORY" -w agente.yml -s $S --json databaseId -q '.[].databaseId' \
+                | xargs -r -n1 gh run cancel -R "$GITHUB_REPOSITORY" || true
+            done
+          fi
