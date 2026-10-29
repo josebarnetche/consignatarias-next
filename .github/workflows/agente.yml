@@ -1,15 +1,27 @@
 name: Agente de operaciones
 
-# Llama al agente cada 10 minutos: lee la casilla agente@consignatarias.com y
+# Llama al agente cada 30 minutos: lee la casilla agente@consignatarias.com y
 # avanza los casos. Los horarios de envío los decide el código (días hábiles 8-19
 # para contactos nuevos, 7-22 para responder), no este workflow. Ver
 # src/lib/agente/motor.ts.
 #
 # El cron de GitHub con */15 en la práctica corría cada ~3 horas (20/21-10-2026:
-# 13:01, 17:59, 21:32, 00:09 UTC), y una respuesta de "ACEPTO" no puede esperar
-# tres horas. Por eso cada corrida se queda viva casi 6 horas llamando cada 10
-# minutos, y el cron solo la relanza: la nueva cancela a la anterior. El repo es
-# público, así que los minutos de Actions no se cobran.
+# 13:01, 17:59, 21:32, 00:09 UTC). Por eso cada corrida se queda viva ~5 horas
+# llamando cada 30 minutos, y el cron la va reemplazando. El repo es público, así
+# que los minutos de Actions no se cobran.
+#
+# Sin cancel-in-progress (28-10-2026): antes la corrida nueva cancelaba a la viva,
+# y cuando la viva terminaba sola quedaba un hueco hasta que GitHub largaba el cron
+# tarde (hasta 2 h 26 min el 28-10). Ahora la corrida que llega queda EN ESPERA y
+# arranca apenas termina la viva: GitHub guarda una sola pendiente por grupo (la
+# más nueva), así que la cadena no se corta y nunca hay dos a la vez. Bajado de 10
+# a 30 minutos el mismo día, por pedido de José.
+#
+# ⚠️ Un workflow_dispatch también queda en espera detrás de la corrida viva (hasta
+# ~5 h) y además DESPLAZA a la corrida del cron que estaba esperando: si es un
+# dry_run hace una vuelta y deja un hueco de hasta 2 h. No usar dispatch salvo para
+# relanzar. Para probar en seco: curl -X POST /api/cron/agente?dryRun=1 con el
+# CRON_SECRET, no este workflow.
 on:
   schedule:
     - cron: '23 */2 * * *'
@@ -23,16 +35,16 @@ permissions: {}
 
 concurrency:
   group: agente
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   agente:
     runs-on: ubuntu-latest
     timeout-minutes: 355
     steps:
-      - name: Correr el agente cada 10 minutos
+      - name: Correr el agente cada 30 minutos
         run: |
-          Q=""; VUELTAS=34
+          Q=""; VUELTAS=10
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then Q="?dryRun=1"; VUELTAS=1; fi
           for i in $(seq 1 $VUELTAS); do
             RESP=$(curl -sS -m 320 -w $'\n%{http_code}' -X POST \
@@ -42,5 +54,5 @@ jobs:
             BODY=$(printf '%s' "$RESP" | sed '$d')
             echo "$(date -u +%H:%M) vuelta $i · HTTP $CODE — $(printf '%s' "$BODY" | head -c 400)"
             # Con `&&` la última vuelta devolvía 1 y la corrida quedaba en rojo.
-            if [ "$i" -lt "$VUELTAS" ]; then sleep 600; fi
+            if [ "$i" -lt "$VUELTAS" ]; then sleep 1800; fi
           done
