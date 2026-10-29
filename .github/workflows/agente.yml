@@ -10,18 +10,21 @@ name: Agente de operaciones
 # llamando cada 30 minutos, y el cron la va reemplazando. El repo es público, así
 # que los minutos de Actions no se cobran.
 #
-# Sin cancel-in-progress (28-10-2026): antes la corrida nueva cancelaba a la viva,
-# y cuando la viva terminaba sola quedaba un hueco hasta que GitHub largaba el cron
-# tarde (hasta 2 h 26 min el 28-10). Ahora la corrida que llega queda EN ESPERA y
-# arranca apenas termina la viva: GitHub guarda una sola pendiente por grupo (la
-# más nueva), así que la cadena no se corta y nunca hay dos a la vez. Bajado de 10
-# a 30 minutos el mismo día, por pedido de José.
+# Cada corrida encola a la siguiente (29-10-2026). En la práctica el cron de abajo
+# no larga cada 2 h sino cada 6-7 h (08:05, 14:43, 20:48, 01:29, 08:45, 16:44,
+# 22:43, 06:05, 13:25 entre el 27 y el 29-10), y la corrida dura ~5 h: quedaba un
+# hueco de 30 min a 2 h entre una y otra. Por eso el primer paso hace un
+# workflow_dispatch de este mismo workflow: con `cancel-in-progress: false` esa
+# corrida queda EN ESPERA y arranca apenas termina la viva, aunque la viva muera
+# por timeout. GitHub guarda una sola pendiente por grupo (la más nueva), así que
+# la cadena no se multiplica y nunca hay dos a la vez. El cron queda de respaldo
+# por si la cadena se corta. Bajado de 10 a 30 minutos el 28-10, por pedido de José.
 #
-# ⚠️ Un workflow_dispatch también queda en espera detrás de la corrida viva (hasta
-# ~5 h) y además DESPLAZA a la corrida del cron que estaba esperando: si es un
-# dry_run hace una vuelta y deja un hueco de hasta 2 h. No usar dispatch salvo para
-# relanzar. Para probar en seco: curl -X POST /api/cron/agente?dryRun=1 con el
-# CRON_SECRET, no este workflow.
+# Para FRENAR el agente: `gh workflow disable agente.yml` (cancelar la corrida viva
+# no alcanza, porque la siguiente ya está en espera). Para probar en seco:
+# curl -X POST /api/cron/agente?dryRun=1 con el CRON_SECRET, no este workflow.
+# Un dispatch con dry_run también encola una corrida normal detrás, así que no
+# corta la cadena.
 on:
   schedule:
     - cron: '23 */2 * * *'
@@ -41,7 +44,17 @@ jobs:
   agente:
     runs-on: ubuntu-latest
     timeout-minutes: 355
+    permissions:
+      actions: write
     steps:
+      - name: Encolar la corrida siguiente
+        # Si falla, el agente corre igual y el cron queda de respaldo.
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "T0=$(date +%s)" >> "$GITHUB_ENV"
+          gh workflow run agente.yml -R "$GITHUB_REPOSITORY" --ref main -f dry_run=false
       - name: Correr el agente cada 30 minutos
         run: |
           Q=""; VUELTAS=10
@@ -56,3 +69,21 @@ jobs:
             # Con `&&` la última vuelta devolvía 1 y la corrida quedaba en rojo.
             if [ "$i" -lt "$VUELTAS" ]; then sleep 1800; fi
           done
+      # Freno: si la corrida duró menos de 20 min algo falló antes de trabajar
+      # (shell, runner, secret). Sin esto la cadena se vuelve un lazo de corridas
+      # de segundos; se cancela la pendiente y queda el cron de respaldo. El
+      # dry_run hace una sola vuelta corta a propósito: no frena.
+      - name: Frenar la cadena si la corrida fue corta
+        if: ${{ always() && github.event.inputs.dry_run != 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          DUR=$(( $(date +%s) - ${T0:-0} ))
+          echo "duración: $((DUR / 60)) min"
+          if [ -n "$T0" ] && [ "$DUR" -lt 1200 ]; then
+            # La que espera por concurrency figura como pending; queued por las dudas.
+            for S in pending queued; do
+              gh run list -R "$GITHUB_REPOSITORY" -w agente.yml -s $S --json databaseId -q '.[].databaseId' \
+                | xargs -r -n1 gh run cancel -R "$GITHUB_REPOSITORY" || true
+            done
+          fi
