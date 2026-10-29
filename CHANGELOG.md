@@ -7,6 +7,14 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.254.9] — 2026-10-29
+
+### Corregido
+- **El agente ya no queda parado entre corridas, ahora sí.** La 1.254.8 suponía que el cron de GitHub larga cada 2 h y que su corrida quedaba en espera detrás de la viva. En la práctica larga cada 6-7 h: el 29-10 la corrida de las 06:05 terminó a las 11:37 y la siguiente arrancó a las 13:25. Ahora el primer paso de cada corrida hace un `workflow_dispatch` de `agente.yml`, que queda en espera y arranca apenas termina la viva. El cron queda de respaldo.
+
+### Cambiado
+- Para frenar el agente hay que deshabilitar el workflow (`gh workflow disable agente.yml`): cancelar la corrida viva no alcanza.
+
 ## [1.254.8] — 2026-10-28
 
 ### Corregido
