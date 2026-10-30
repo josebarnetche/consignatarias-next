@@ -7,6 +7,11 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.254.11] — 2026-10-30
+
+### Corregido
+- **La presentación del agente dice quién es quién.** El correo que sale cuando la contraparte responde ACEPTO rotulaba a la otra parte "un productor de Rosario" al lado de su email, y se leía como si hubiera dos productores. Ahora cada renglón de contacto lleva el rol según el lado del caso (vende / compra) y qué es esa parte según el tipo de la oferta (productor, frigorífico, consignataria), con su nombre si lo tenemos. Cuando la contraparte es otro lead, el agente lee su nombre y teléfono en vez de usar el rótulo interno.
+
 ## [1.254.10] — 2026-10-30
 
 ### Corregido
@@ -185,6 +190,7 @@ Ronda 3 entre sesiones, frente del MCP. El puente (v1.248.0) aparece después de
 - Sin cambios en tools, parámetros ni manifiestos. El MCP sigue en 1.9.0.
 
 ---
+
 ## [1.249.1] — 2026-10-22
 
 ### Seguridad
@@ -377,6 +383,7 @@ El uso del MCP viene casi todo de escáneres y la palanca es la distribución. A
 - **`docs/mcp-distribucion.md`**: estado en cada directorio, verificado el 21-10, y el paso a paso de cada envío con el texto en inglés y en castellano. Nada se envió: cada paso espera el OK de José.
 
 ---
+
 ## [1.240.0] — 2026-10-21
 
 ### Prospectos PRO: a qué firma escribirle y qué decirle, con los números de la base
@@ -388,6 +395,7 @@ El uso del MCP viene casi todo de escáneres y la palanca es la distribución. A
 - WhatsApp con el guion ya escrito para las firmas que no contestan mails.
 
 ---
+
 ## [1.239.0] — 2026-10-21
 
 ### SEO de plantillas: cada búsqueda a su página, y del precio al formulario que convierte
@@ -435,6 +443,7 @@ Línea de base (30 días al 21-10, vistas = `value_events.time_on_page` por plan
 - Una sola lista de provincias para todos los formularios (`PROVINCIAS_FORM`, suma Tierra del Fuego).
 
 ---
+
 ## [1.237.2] — 2026-10-21
 
 ### Agente: si no hay a quién ofrecer, se sigue buscando
