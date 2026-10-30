@@ -89,11 +89,11 @@ const FROM = process.env.RESEND_FROM_EMAIL || 'Consignatarias <noreply@consignat
 // Any from: address must end in @consignatarias.com or Resend rejects the send.
 const FROM_PERSONAL = process.env.RESEND_FROM_PERSONAL || 'José Barnetche <hola@consignatarias.com>'
 /**
- * La casilla que SE LEE. `hola@consignatarias.com` existe solo como remitente
- * (consignatarias.com es el único dominio verificado en Resend), pero **no hay
- * buzón detrás**: todo lo que respondieran ahí se perdía. Cada correo que sale
- * con FROM_PERSONAL tiene que llevar este replyTo, o estamos preguntando algo y
- * tirando la respuesta. Verificado el 05-10-2026: seis envíos lo tenían mal.
+ * La casilla que SE LEE. Desde el 18-10-2026 `hola@consignatarias.com` tiene
+ * buzón en Hostinger y reenvía a agro@ (guarda copia), pero agro@ sigue siendo la
+ * que se lee: cada correo que sale con FROM_PERSONAL lleva este replyTo. Antes del
+ * 18-10 hola@ no tenía buzón y lo que respondían ahí se perdía (05-10-2026: seis
+ * envíos lo tenían mal).
  */
 const REPLY_TO = process.env.REPLY_TO_EMAIL || 'agro@memola.com.ar'
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.consignatarias.com.ar'
