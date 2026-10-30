@@ -7,6 +7,13 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.254.10] — 2026-10-30
+
+### Corregido
+- **El agente ya no le escribe a dominios que no reciben correo.** Antes de mandar, `mandar()` consulta el MX de cada destinatario (`src/lib/agente/dominios.ts`, una consulta por dominio por corrida) y saltea los dominios inexistentes o sin MX. El salteo queda anotado en las notas de la corrida. Pasaba con @arnet.com.ar: la consulta del kosher a Logros (20-10) y C-49-47 (26-10) quedaron en "entrega demorada" y nunca llegaron. Un error o timeout del DNS no frena el envío.
+- Directorio: se quitó el mail de Swift Argentina en `consignatarias.json`, que apuntaba a `swiftargentinasa-ar.com`, un dominio estacionado y sin MX.
+- `src/lib/email.ts`: el comentario decía que hola@ no tenía buzón; lo tiene desde el 18-10 y reenvía a agro@.
+
 ## [1.254.9] — 2026-10-29
 
 ### Corregido

@@ -32,6 +32,7 @@ import { tomable } from './verificacion'
 import { esCasoDeHacienda, trabajarCampos } from './campos-agente'
 import { pedirConfirmaciones } from './confirmacion'
 import { comisionEstimada } from './tablero'
+import { crearChequeoMx } from './dominios'
 import {
   DIAS_ESPERA_CONTRAPARTE,
   MAX_CONTACTOS_NUEVOS_DIA,
@@ -154,6 +155,8 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
     for (const r of data ?? []) bajas.add(String(r.email).toLowerCase())
   }
 
+  const tieneMx = crearChequeoMx()
+
   /** Manda y registra. Devuelve el Message-ID, o null si no salió. */
   const mandar = async (o: {
     leadId: number
@@ -164,7 +167,10 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
     enRespuestaA?: string | null
     conBaja?: boolean
   }): Promise<string | null> => {
-    const para = o.para.map((p) => p.trim().toLowerCase()).filter((p) => p && !bajas.has(p))
+    const candidatos = o.para.map((p) => p.trim().toLowerCase()).filter((p) => p && !bajas.has(p))
+    const recibe = await Promise.all(candidatos.map(tieneMx))
+    const para = candidatos.filter((_, i) => recibe[i])
+    for (const p of candidatos.filter((_, i) => !recibe[i])) inf.notas.push(`no mandé ${o.plantilla} a ${p}: el dominio no recibe correo (sin MX)`)
     if (para.length === 0) return null
     if (dryRun) {
       inf.notas.push(`[seco] ${o.plantilla} → ${para.join(', ')} · ${o.correo.asunto}`)
