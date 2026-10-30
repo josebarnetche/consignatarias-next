@@ -7,6 +7,11 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.254.14] — 2026-10-30
+
+### Seguridad
+- **`visitor_stats()` deja de ser pública**: la función SQL que alimenta el panel VISITANTES de `/admin/ops` es `SECURITY DEFINER` y se podía ejecutar con la clave anon por `/rest/v1/rpc/visitor_stats` (advisor de Supabase, lints 0028/0029), exponiendo totales, fuentes y los últimos 12 visitantes. Migración `20261030_visitor_stats_revocar_anon.sql`: revoca `EXECUTE` a `PUBLIC`, `anon` y `authenticated`; queda sólo `service_role`, que es lo único que la usa (`createAdminClient()` en `/admin/ops`). Pendiente de aplicar en producción con el OK del dueño; el rollback está en la misma migración.
+
 ## [1.254.13] — 2026-10-30
 
 ### Corregido
