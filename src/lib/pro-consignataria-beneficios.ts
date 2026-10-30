@@ -22,7 +22,6 @@ export const BENEFICIOS_PRO_CONSIGNATARIA = [
   'Sello ★ PRO y primer lugar en el directorio, las provincias y el muro de la portada',
   'Tus remates resaltados en el calendario y en sus fichas',
   'Tus remates primero en el newsletter semanal, con el registro de a cuántos les llegó',
-  'Primera en el directorio que consultan los asistentes de IA',
   'Los productores que te consultan, con nombre y contacto',
   'Quién mira tu perfil: cuándo y desde dónde (Google, el calendario, una IA)',
   'Si operás en Cañuelas: tu cartera, tu precio y tu cuota contra las 22 casas',
