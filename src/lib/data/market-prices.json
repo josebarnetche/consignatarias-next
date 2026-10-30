@@ -1908,9 +1908,9 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-10-29",
+  "lastUpdate": "2026-10-30",
   "provinceEntry": {
-    "date": "2026-10-29",
+    "date": "2026-10-30",
     "totalCabezas": 73,
     "provinces": [
       {
