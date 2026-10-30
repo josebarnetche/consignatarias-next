@@ -173,10 +173,37 @@ describe('mensajes', () => {
   })
 
   it('la presentación sí lleva el contacto de las dos partes', () => {
-    const c = M.presentacion({ leadId: 12, ofertaId: 34, lado: 'vende', datos, productor: { nombre: productor.name, email: productor.email, phone: productor.phone }, contraparte: { nombre: 'Frigorífico X', email: 'hacienda@x.com' } })
+    const c = M.presentacion({ leadId: 12, ofertaId: 34, lado: 'vende', datos, productor: { nombre: productor.name, email: productor.email, phone: productor.phone }, contraparte: { tipo: 'frigorifico', nombre: 'Frigorífico X', email: 'hacienda@x.com' } })
     expect(c.texto).toContain(productor.email)
     expect(c.texto).toContain('hacienda@x.com')
     expect(c.texto).toMatch(/directamente entre ustedes/)
+  })
+
+  it('la presentación de una venta dice quién vende y quién compra', () => {
+    const c = M.presentacion({ leadId: 12, ofertaId: 34, lado: 'vende', datos, productor: { nombre: productor.name, email: productor.email, phone: productor.phone }, contraparte: { tipo: 'frigorifico', nombre: 'Frigorífico X', email: 'hacienda@x.com' } })
+    expect(c.texto).toContain('Frigorífico X (frigorífico, interesado en comprar) confirmó que le interesa la hacienda:')
+    expect(c.texto).toContain(`· Vende — productor que nos escribió: ${productor.name} · ${productor.email} · ${productor.phone}`)
+    expect(c.texto).toContain('· Compra — frigorífico: Frigorífico X · hacienda@x.com')
+    expect(c.texto).toMatch(/Equipo de consignatarias\.com/)
+  })
+
+  it('la presentación de un pedido de compra dice quién vende y quién compra', () => {
+    const c = M.presentacion({ leadId: 12, ofertaId: 34, lado: 'compra', datos, productor: { nombre: productor.name, email: productor.email, phone: productor.phone }, contraparte: { tipo: 'firma', nombre: 'Consignataria Ejemplo SA', email: 'ventas@ejemplo.com' } })
+    expect(c.texto).toContain('Consignataria Ejemplo SA (consignataria, con hacienda para vender) confirmó que le interesa el pedido:')
+    expect(c.texto).toContain(`· Compra — productor que nos escribió: ${productor.name}`)
+    expect(c.texto).toContain('· Vende — consignataria: Consignataria Ejemplo SA · ventas@ejemplo.com')
+  })
+
+  it('una contraparte lead se nombra por su rol, nunca como "un productor de X"', () => {
+    const sinNombre = M.presentacion({ leadId: 12, ofertaId: 34, lado: 'vende', datos, productor: { nombre: productor.name, email: productor.email, phone: null }, contraparte: { tipo: 'lead', nombre: 'un productor de Rosario', email: 'otro@ejemplo.com' } })
+    expect(sinNombre.texto).not.toMatch(/un productor de/i)
+    expect(sinNombre.texto).toContain('El productor que busca hacienda confirmó que le interesa la hacienda:')
+    expect(sinNombre.texto).toContain('· Compra — productor: otro@ejemplo.com')
+
+    const conNombre = M.presentacion({ leadId: 12, ofertaId: 34, lado: 'compra', datos, productor: { nombre: productor.name, email: productor.email, phone: null }, contraparte: { tipo: 'lead', nombre: 'Ana Gómez', email: 'otro@ejemplo.com', phone: '+54 9 341 000000' } })
+    expect(conNombre.texto).toContain('Ana Gómez (productor, con hacienda para vender) confirmó que le interesa el pedido:')
+    expect(conNombre.texto).toContain('· Vende — productor: Ana Gómez · otro@ejemplo.com · +54 9 341 000000')
+    expect(conNombre.texto).toContain(`· Compra — productor que nos escribió: ${productor.name} · ${productor.email}`)
   })
 
   it('ningún correo al productor promete precio', () => {

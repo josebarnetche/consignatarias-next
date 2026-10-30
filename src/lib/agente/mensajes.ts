@@ -130,28 +130,63 @@ export function oferta(o: { leadId: number; ofertaId: number; lado: Lado; datos:
   }
 }
 
-/** A las dos partes juntas, después de la aceptación. */
+/** Qué es la contraparte, en palabras del correo. */
+export type TipoContraparte = 'frigorifico' | 'firma' | 'lead'
+
+const QUE_ES: Record<TipoContraparte, string> = {
+  frigorifico: 'frigorífico',
+  firma: 'consignataria',
+  lead: 'productor',
+}
+
+/** Un nombre que se puede mostrar: ni vacío, ni un email, ni el rótulo interno "un productor de X". */
+function nombreMostrable(nombre: string | null | undefined): string {
+  const n = (nombre ?? '').trim()
+  if (n.length < 2 || n.includes('@') || /^un productor\b/i.test(n)) return ''
+  return n
+}
+
+/**
+ * A las dos partes juntas, después de la aceptación.
+ *
+ * El mismo correo les llega a los dos, así que cada renglón de contacto dice el
+ * rol (vendedor/comprador, según el `lado` del caso) y qué es esa parte
+ * (productor, frigorífico, consignataria, según el `tipo` de la oferta). Hasta
+ * v1.254.10 la contraparte lead figuraba como "un productor de Rosario" al lado
+ * de su email y el correo parecía hablar de dos productores.
+ */
 export function presentacion(o: {
   leadId: number
   ofertaId: number
   lado: Lado
   datos: DatosHacienda
   productor: { nombre: string | null; email: string | null; phone: string | null }
-  contraparte: { nombre: string; email: string }
+  contraparte: { tipo: TipoContraparte; nombre: string | null; email: string; phone?: string | null }
 }): Correo {
+  const vende = o.lado === 'vende'
   const p = o.productor
-  const contactoProductor = [p.nombre, p.email, p.phone].filter(Boolean).join(' · ')
+  const c = o.contraparte
+  const queEs = QUE_ES[c.tipo]
+  const nombreContraparte = nombreMostrable(c.nombre)
+  const contactoProductor = [nombreMostrable(p.nombre), p.email, p.phone].filter(Boolean).join(' · ')
+  const contactoContraparte = [nombreContraparte, c.email, c.phone].filter(Boolean).join(' · ')
+  const rolProductor = vende ? 'Vende' : 'Compra'
+  const rolContraparte = vende ? 'Compra' : 'Vende'
+  const quienConfirma = nombreContraparte
+    ? `${nombreContraparte} (${queEs}, ${vende ? 'interesado en comprar' : 'con hacienda para vender'})`
+    : `El ${queEs} ${vende ? 'que busca hacienda' : 'que tiene la hacienda'}`
   return {
     asunto: `Les presentamos: ${resumenHacienda(o.datos)} · Ref. ${referencia(o.leadId, o.ofertaId)}`,
     texto: [
       'Hola a los dos,',
       '',
-      `${o.contraparte.nombre} confirmó que le interesa ${o.lado === 'vende' ? 'la hacienda' : 'el pedido'}:`,
+      `${quienConfirma} confirmó que le interesa ${vende ? 'la hacienda' : 'el pedido'}:`,
       '',
       detalle(o.datos),
       '',
-      `· Productor: ${contactoProductor}`,
-      `· ${o.contraparte.nombre}: ${o.contraparte.email}`,
+      'Quién es quién:',
+      `· ${rolProductor} — productor que nos escribió: ${contactoProductor}`,
+      `· ${rolContraparte} — ${queEs}: ${contactoContraparte}`,
       '',
       'A partir de acá acuerdan precio, plazo y condiciones directamente entre ustedes; nosotros no intervenimos en eso.',
       '',
