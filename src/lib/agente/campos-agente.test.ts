@@ -3,7 +3,7 @@ import { datosDeLead, esCasoDeHacienda, ladoDeIntent, planNuevo, planPendiente, 
 
 const ahora = new Date('2026-10-21T15:00:00Z') // 12:00 ART
 const lead = (o: Partial<LeadCampo>): LeadCampo => ({
-  id: 10, intent: 'arrendar_busco', name: 'Mirko', email: 'm@x.com', province: 'Buenos Aires', zona: null, hectareas: 100, category: null, ...o,
+  id: 10, intent: 'arrendar_busco', name: 'Juan', email: 'm@x.com', province: 'Buenos Aires', zona: null, hectareas: 100, category: null, ...o,
 })
 
 describe('esCasoDeHacienda', () => {

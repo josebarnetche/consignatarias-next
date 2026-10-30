@@ -270,7 +270,8 @@ export async function trabajarCampos(ctx: Ctx, activo = TIPOS_CAMPO_ACTIVOS): Pr
 export async function ofrecerCampos(ctx: Ctx): Promise<void> {
   const { db, ahora } = ctx
   if (!horarioHabil(ahora)) return
-  const { data: casos } = await db.from('agente_casos').select('*').eq('estado', 'ofreciendo').lte('proximo_at', ahora.toISOString()).limit(20)
+  // Sin filtrar por tipo, 20 casos de hacienda vencidos dejarían afuera a los de campo: se trae más y por antigüedad.
+  const { data: casos } = await db.from('agente_casos').select('*').eq('estado', 'ofreciendo').lte('proximo_at', ahora.toISOString()).order('proximo_at').limit(100)
   const deCampo = ((casos ?? []) as Array<{ lead_id: number; lado: Lado; tandas: number; datos: DatosCaso }>).filter(
     (c) => !esCasoDeHacienda(c.datos) && sePuedeOfrecer(c.datos, c.lado),
   )
@@ -279,7 +280,17 @@ export async function ofrecerCampos(ctx: Ctx): Promise<void> {
   const { data: fs } = await db.from('consignatarias').select('canonical_slug,display_name,email,province').not('email', 'is', null)
   const firmas: FirmaCampo[] = (fs ?? []).map((f) => ({ ref: String(f.canonical_slug), nombre: String(f.display_name), email: String(f.email), provincia: f.province as string | null }))
 
+  const { data: ls } = await db.from('producer_leads').select('id,email').in('id', deCampo.map((c) => c.lead_id))
+  const mailLead = new Map((ls ?? []).map((l) => [Number(l.id), l.email ? String(l.email).toLowerCase() : null]))
+
   for (const caso of deCampo) {
+    const mailDuenio = mailLead.get(caso.lead_id) ?? null
+    // Un dueño con BAJA no se ofrece: si una firma aceptara, su contacto le llegaría sin que él lo sepa.
+    if (!mailDuenio || ctx.bajas?.has(mailDuenio)) {
+      if (!ctx.dryRun) await db.from('agente_casos').update({ estado: 'retirado', motivo: mailDuenio ? 'el email del dueño está dado de baja' : 'el dueño no tiene email', actualizado_at: ahora.toISOString() }).eq('lead_id', caso.lead_id)
+      await ctx.bitacora(caso.lead_id, 'Campo retirado: el dueño no tiene email o está de baja')
+      continue
+    }
     // Mismo cupo que hacienda (motor.ts, enviadasHoy): ofertas de las últimas 24 h.
     const desde = new Date(ahora.getTime() - 86_400_000).toISOString()
     const { count: hoy } = await db.from('agente_ofertas').select('id', { count: 'exact', head: true }).gte('enviada_at', desde)
@@ -291,15 +302,35 @@ export async function ofrecerCampos(ctx: Ctx): Promise<void> {
     const { data: ofs } = await db.from('agente_ofertas').select('email,estado').eq('lead_id', caso.lead_id)
     if ((ofs ?? []).some((o) => ['acepto', 'presentada'].includes(String(o.estado)))) continue
     const { data: recientes } = await db.from('agente_ofertas').select('email').gte('enviada_at', desde)
-    const excluir = new Set([...(ctx.bajas ?? []), ...[...(ofs ?? []), ...(recientes ?? [])].map((r) => String(r.email).toLowerCase())])
+    const yaOfrecidas = (ofs ?? []).map((r) => String(r.email).toLowerCase())
+    const excluir = new Set([...(ctx.bajas ?? []), mailDuenio, ...yaOfrecidas, ...(recientes ?? []).map((r) => String(r.email).toLowerCase())])
 
-    const elegidas = caso.tandas >= MAX_TANDAS ? [] : elegirFirmasCampo({ provincia: caso.datos.provincia, firmas, excluir, cuantos: Math.min(OFERTAS_POR_TANDA, cupo) })
-    if (elegidas.length === 0) {
-      if (!ctx.dryRun) await db.from('agente_casos').update({ estado: 'escalado', motivo: 'campo: no quedan consignatarias de la zona para ofrecer', actualizado_at: ahora.toISOString() }).eq('lead_id', caso.lead_id)
-      await ctx.avisar?.(`Campo #${caso.lead_id}: no quedan consignatarias para ofrecer`, `${resumenCampo(caso.datos)}. Se ofreció a ${(ofs ?? []).length} y ninguna aceptó. Lo seguís vos.`)
-      await ctx.bitacora(caso.lead_id, 'Campo: no quedan consignatarias de la zona para ofrecer, pasa a José')
+    const escalarCampo = async (motivo: string, cuerpo: string) => {
+      if (!ctx.dryRun) await db.from('agente_casos').update({ estado: 'escalado', motivo: `campo: ${motivo}`, actualizado_at: ahora.toISOString() }).eq('lead_id', caso.lead_id)
+      await ctx.avisar?.(`Campo #${caso.lead_id}: ${motivo}`, `${resumenCampo(caso.datos)}. ${cuerpo} Lo seguís vos.`)
+      await ctx.bitacora(caso.lead_id, `Campo: ${motivo}, pasa a José`)
+    }
+    if (caso.tandas >= MAX_TANDAS) {
+      await escalarCampo(`se agotaron las ${MAX_TANDAS} tandas`, `Se ofreció a ${yaOfrecidas.length} y ninguna aceptó.`)
       continue
     }
+    if (!caso.datos.provincia) {
+      await escalarCampo('falta la provincia', 'Sin provincia no sé a qué consignatarias ofrecerlo.')
+      continue
+    }
+    const elegidas = elegirFirmasCampo({ provincia: caso.datos.provincia, firmas, excluir, cuantos: Math.min(OFERTAS_POR_TANDA, cupo) })
+    if (elegidas.length === 0) {
+      // Si quedan firmas que solo esperan por la regla de las 24 h, se reintenta mañana.
+      const sinRecientes = new Set([...(ctx.bajas ?? []), mailDuenio, ...yaOfrecidas])
+      const quedan = elegirFirmasCampo({ provincia: caso.datos.provincia, firmas, excluir: sinRecientes, cuantos: 1 })
+      if (quedan.length > 0) {
+        if (!ctx.dryRun) await db.from('agente_casos').update({ proximo_at: enDias(ahora, 1).toISOString(), actualizado_at: ahora.toISOString() }).eq('lead_id', caso.lead_id)
+        continue
+      }
+      await escalarCampo('no quedan consignatarias de la zona para ofrecer', `Se ofreció a ${yaOfrecidas.length} y ninguna aceptó.`)
+      continue
+    }
+    let salieron = 0
     for (const f of elegidas) {
       if (ctx.dryRun) {
         await ctx.mandar({ leadId: caso.lead_id, para: [f.email], correo: ofertaCampo({ leadId: caso.lead_id, ofertaId: 0, datos: caso.datos }), plantilla: 'oferta_campo', conBaja: true })
@@ -309,13 +340,19 @@ export async function ofrecerCampos(ctx: Ctx): Promise<void> {
       if (error || !nueva) continue
       const id = await ctx.mandar({ leadId: caso.lead_id, ofertaId: nueva.id, para: [f.email], correo: ofertaCampo({ leadId: caso.lead_id, ofertaId: nueva.id, datos: caso.datos }), plantilla: 'oferta_campo', conBaja: true })
       if (!id) await db.from('agente_ofertas').delete().eq('id', nueva.id)
-      else await ctx.bitacora(caso.lead_id, `Campo ofrecido a ${f.nombre}`)
+      else {
+        salieron++
+        await ctx.bitacora(caso.lead_id, `Campo ofrecido a ${f.nombre}`)
+      }
     }
-    if (!ctx.dryRun) {
+    // Una tanda que no salió (envíos fallidos) no cuenta: se reintenta en la próxima corrida.
+    if (!ctx.dryRun && salieron > 0) {
       await db
         .from('agente_casos')
         .update({ tandas: caso.tandas + 1, proximo_at: enDias(ahora, DIAS_ESPERA_CONTRAPARTE).toISOString(), actualizado_at: ahora.toISOString() })
         .eq('lead_id', caso.lead_id)
+    } else if (!ctx.dryRun) {
+      await db.from('agente_casos').update({ proximo_at: enDias(ahora, 1).toISOString(), actualizado_at: ahora.toISOString() }).eq('lead_id', caso.lead_id)
     }
   }
 }

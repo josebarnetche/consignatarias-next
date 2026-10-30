@@ -304,7 +304,18 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
       // respeta y un ACEPTO escrito presenta a las partes. Todo lo demás, a José.
       const { data: ofC } = ofertaId ? await db.from('agente_ofertas').select('*').eq('id', ofertaId).maybeSingle() : { data: null }
       const ofCampo = ofC as Oferta | null
-      const esFirma = !!ofCampo && ofCampo.email.toLowerCase() === m.de && lead.email?.toLowerCase() !== m.de
+      // La oferta tiene que ser de ESTE caso: la referencia del asunto la puede editar quien responde.
+      const esFirma = !!ofCampo && ofCampo.lead_id === lead.id && ofCampo.email.toLowerCase() === m.de && lead.email?.toLowerCase() !== m.de
+      const esDuenio = !!lead.email && lead.email.toLowerCase() === m.de
+      if (esDuenio && pareceBaja(texto)) {
+        await registrar({ tipo: 'baja' })
+        await db.from('agente_bajas').upsert({ email: m.de, motivo: `respondió BAJA (caso ${lead.id})` })
+        await mandar({ leadId: lead.id, para: [m.de], correo: M.bajaConfirmada(), plantilla: 'baja', enRespuestaA: m.messageId })
+        bajas.add(m.de)
+        await guardarCaso(lead.id, { estado: 'retirado', motivo: 'el dueño pidió la baja' })
+        await bitacora(lead.id, `${m.de} pidió la baja`, 'no_interesa')
+        return
+      }
       if (esFirma && ofCampo && pareceBaja(texto)) {
         await registrar({ tipo: 'baja' })
         await db.from('agente_bajas').upsert({ email: m.de, motivo: `respondió BAJA (caso ${lead.id})` })
@@ -318,6 +329,13 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
         const ahoraIso = new Date().toISOString()
         await registrar({ tipo: 'acepta', quien: 'contraparte' })
         await guardarOferta(ofCampo.id, { estado: 'acepto', aceptacion: texto.slice(0, 2000), respondida_at: ahoraIso })
+        // Si el dueño no tiene mail o pidió la BAJA, `mandar` lo sacaría en silencio y la
+        // firma recibiría sus datos sola: no se presenta y lo resuelve José.
+        if (!lead.email || bajas.has(lead.email.toLowerCase())) {
+          await guardarCaso(lead.id, { estado: 'escalado', motivo: 'campo: aceptó una firma pero el dueño no tiene mail o está de baja' })
+          await escalar(`Campo #${lead.id}: ${ofCampo.nombre} aceptó, NO los presenté`, `El dueño no tiene mail o pidió la BAJA, así que no le pasé su contacto a nadie. Lo resolvés vos.\n\n${texto}`, m.de)
+          return
+        }
         const id = await mandar({
           leadId: lead.id,
           ofertaId: ofCampo.id,
@@ -326,7 +344,12 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
           plantilla: 'presentacion_campo',
           enRespuestaA: m.messageId,
         })
-        if (!id) return
+        if (!id) {
+          // El entrante ya quedó registrado y no se reprocesa: sin aviso, la firma que aceptó queda esperando.
+          await guardarCaso(lead.id, { estado: 'escalado', motivo: 'campo: aceptó una firma pero la presentación no salió' })
+          await escalar(`Campo #${lead.id}: ${ofCampo.nombre} aceptó y la presentación NO salió`, `Falló el envío de la presentación. Pasales el contacto vos.\n\n${texto}`, m.de)
+          return
+        }
         // Sin seguimiento automático (el de hacienda habla de cabezas): lo sigue José.
         await guardarOferta(ofCampo.id, { estado: 'presentada', presentada_at: ahoraIso, proximo_at: null })
         await guardarCaso(lead.id, { estado: 'presentado' })
