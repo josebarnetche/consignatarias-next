@@ -1,7 +1,7 @@
 /**
  * EL OVEJERO — agente diario que trabaja los leads solo.
  *
- * Nació el 2026-08-01: había 3 leads, uno ruteado y dos parados (Elisabet, 11 días
+ * Nació el 2026-08-01: había 3 leads, uno ruteado y dos parados (uno de ellos, 11 días
  * sin respuesta), y cero matches de arrendamiento porque solo entraba un lado del
  * mercado (2 "busco", 0 "ofrezco"). Nadie lo miraba todos los días.
  *

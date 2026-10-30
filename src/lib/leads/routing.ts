@@ -116,7 +116,7 @@ const ZONA_STOPWORDS = new Set([
  * operen ahí. Dónde remata una firma es un dato **observado**, no declarado, y de
  * los 914 remates del calendario 865 traen localidad.
  *
- * Se arma una sola vez por proceso. Sirvió al primer intento: el lead de Elisabet
+ * Se arma una sola vez por proceso. Sirvió al primer intento: un lead de arrendamiento
  * ("Isla, partido de 25 de Mayo") no matcheaba con nadie, y en 25 de Mayo rematan
  * Ferias Rurales de 25 de Mayo, Daniel Blanco y Martín Lalor.
  */
@@ -396,8 +396,8 @@ export async function matchConsignatarias(
  * OJO CON EL 9. WhatsApp exige que los móviles argentinos vayan en formato
  * `54 9 <área> <número>`. Sin ese 9, `wa.me` abre un cartel de "número inválido"
  * en vez del chat. La versión anterior armaba `54` + los dígitos tal cual, así que
- * un teléfono guardado como "2214189529" —que es como vienen casi todos los del
- * backoffice— generaba `wa.me/542214189529` y **no abría nada**. Todos los links
+ * un teléfono guardado como "2215550101" —que es como vienen casi todos los del
+ * backoffice— generaba `wa.me/542215550101` y **no abría nada**. Todos los links
  * que el Ovejero prearmaba para el outreach a consignatarias salían así.
  *
  * Los fijos no llevan 9, pero WhatsApp tampoco funciona sobre un fijo: si el número
