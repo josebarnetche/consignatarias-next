@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.254.13] — 2026-10-30
+
+### Corregido
+- **Webhook de Rebill: el rechazo ahora dice si la clave cargada es la equivocada.** Los webhooks llegaban con `x-rebill-signature` (hex, 64) y se rechazaban con `firma_invalida`. Según la documentación oficial de Rebill, la firma es HMAC-SHA256 del cuerpo crudo en hex, sin timestamp ni prefijo, con el *signing secret* `whsec_` + 64 hex como clave — exactamente uno de los esquemas que ya probábamos. El valor guardado en `REBILL_WEBHOOK_SECRET` tiene 35 caracteres y prefijo `we_`, que es la forma del **ID del webhook**, no de su secret. La causa es de configuración, no de código.
+- El diagnóstico de `ops_events` suma `secret_forma` (`whsec` / `id_de_webhook` / `otra`) y `secret_largo`. Nunca el valor. Se corrige también el comentario del handler, que atribuía el prefijo `we_` a un esquema estilo Stripe.
+
 ## [1.254.12] — 2026-10-30
 
 ### Corregido
