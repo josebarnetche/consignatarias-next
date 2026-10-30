@@ -3,7 +3,7 @@
   "name": "ar.com.consignatarias/cattle-market",
   "title": "Consignatarias — Mercado Ganadero Argentino",
   "description": "Mercado ganadero argentino, en vivo y como herramientas MCP para agentes. Índice Novillo (INMAG) diario en ARS y USD desde 2015; precios por categoría y bandas de dispersión observada (P10, mediana y P90) sobre lotes del MAG, con historia y referencia por rango de peso para valuar una tropa. Contexto macro, estacionalidad de precios y brecha del precio argentino frente a EE.UU., Uruguay y Australia. Calendario de remates, directorio y actividad de consignatarias, y búsqueda de frigoríficos. Valuaciones de tierra por provincia y zona, cálculo de arrendamientos y renta del campo, con fuentes y fechas de los datos. Sanidad SENASA, vacunación, reglas de movimiento y Buenas Prácticas Ganaderas. Consultas públicas gratuitas; API key Enterprise para descarga masiva y exports.",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "websiteUrl": "https://www.consignatarias.com.ar/mcp",
   "repository": {
     "url": "https://github.com/josebarnetche/consignatarias-next",

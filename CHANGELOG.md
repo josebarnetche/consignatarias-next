@@ -7,6 +7,13 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.254.15] — 2026-10-30
+
+### Cambiado
+- **El MCP ya no pone primero a las firmas PRO ni las marca.** `find_livestock_broker` devuelve el directorio en el orden de la base, sin `★ PRO` ni `pro: true`, y no consulta quién pagó. Así se puede contestar con verdad que el servidor no devuelve contenido patrocinado (lo pregunta el directorio de conectores de Claude). Los listados del sitio siguen ordenando a las PRO primero.
+- **PRO ya no promete lugar en los agentes de IA.** Fuera "primera en el directorio que consultan las IAs" de `subscribe_broker_pro`, la server card, el endpoint x402 de PRO, /planes, /para-empresas, /para-consignatarias, la landing, la lista de beneficios del panel y la propuesta (web y PDF). Lo que sí queda es medir las visitas que llegan desde asistentes de IA.
+- MCP 1.9.1 (`route.ts`, los tres `server.json` y la server card).
+
 ## [1.254.14] — 2026-10-30
 
 ### Seguridad

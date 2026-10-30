@@ -197,6 +197,7 @@ Authentication ("no authentication"), Data handling, Test & launch, Compliance y
   - `create_price_alert` y `cattle_buying_request` guardan el email que el usuario da para avisarle.
   - `market_match` con `registrar: true` y `consentimiento: true` guarda nombre y email o teléfono para que una persona lo contacte. Nadie le escribe hasta que la persona confirma desde un link firmado que le llega por mail (doble opt-in, v1.249.0) o hasta que alguien verifica el contacto.
   - `cattle_buying_request` pasa a operación solo con `contacto_para_operar: true` (consentimiento explícito, v1.244.0); sin eso, solo manda avisos de remates. Con `contacto_para_operar: true` rige el mismo doble opt-in que en `market_match`.
+- **¿Devuelve contenido patrocinado o promocionado?** → **No**, desde v1.254.15 (MCP 1.9.1): `find_livestock_broker` ya no pone primero a las firmas PRO ni las marca, y el plan PRO no promete lugar en el MCP ni en los agentes de IA.
 
 **Qué aprueba José:**
 - Enviar con la cuenta de Memola.

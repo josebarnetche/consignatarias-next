@@ -9,8 +9,7 @@ const RESERVAR = 'https://calendar.app.google/gr2BXY1ooDMki8TK7'
  * (lo "verificado" sale de reclamar el perfil, no de pagar), primera en el directorio
  * —provincias incluidas— y en el muro de la portada, remates resaltados en el
  * calendario y en sus fichas, primera en el newsletter semanal (el único canal que
- * envía de verdad, con registro de a cuántos les llegó), primera en el directorio
- * que consultan los agentes de IA (MCP), leads con nombre y contacto, el panel
+ * envía de verdad, con registro de a cuántos les llegó), leads con nombre y contacto, el panel
  * "Quién te mira", widget de remates + landing /go con QR, y el cruce contra el
  * Mercado de Cañuelas SOLO para las firmas que operan ahí. La pre-oferta de lotes
  * NO va: es un piloto cerrado que se opera a mano.
@@ -82,12 +81,12 @@ export default function BeneficiosPro({ citadas }: { citadas: string[] }) {
             <p className="mt-3 text-xxs text-zinc-500">Queda registrado a cuántos les llegó cada envío.</p>
           </Frame>
 
-          {/* 4 — IAs (el directorio que consultan los agentes, vía nuestro servidor MCP) */}
-          <Frame nombre="04 · En el directorio de las IAs" className="p-6 md:col-span-3">
-            <h3 className="text-lg font-semibold text-ink">Primera cuando una IA busca consignataria.</h3>
+          {/* 4 — IAs. Desde v1.254.10 el MCP no ordena por plan: lo que PRO da acá es la
+              medición (visitas desde asistentes), no un lugar en la respuesta de una IA. */}
+          <Frame nombre="04 · Visitas desde las IAs" className="p-6 md:col-span-3">
+            <h3 className="text-lg font-semibold text-ink">Sabé cuándo te encuentra una IA.</h3>
             <p className="mt-2 text-sm text-zinc-400">
-              Los agentes de IA consultan nuestro directorio; ahí tu firma va primera. En tu panel ves cuántas visitas
-              te llegaron desde ChatGPT, Copilot o Gemini.
+              En tu panel ves cuántas visitas a tu ficha te llegaron desde ChatGPT, Copilot o Gemini.
             </p>
             {citadas.length > 0 && (
               <>
@@ -171,7 +170,6 @@ export default function BeneficiosPro({ citadas }: { citadas: string[] }) {
               'Primera en el directorio y en el muro de la portada',
               'Remates resaltados en el calendario y en sus fichas',
               'Primera en el newsletter semanal, con registro de envíos',
-              'Primera en el directorio que consultan las IAs',
               'Leads con nombre y contacto, por mail y en tu panel',
               'Quién te mira: vistas por día y por dónde llegan',
               'Widget de remates y página con QR',

@@ -121,15 +121,13 @@ export default function Funciones({
         </Captura>
       </Funcion>
 
-      {/* 3 · DIRECTORIO + IAs */}
+      {/* 3 · DIRECTORIO (el MCP es neutral desde v1.254.10: PRO no se ordena ahí) */}
       <Funcion
         n={++n}
-        titulo="Primera cuando buscan consignataria, también desde una IA"
+        titulo="Primera cuando buscan consignataria"
         para={
           <p>
             En el directorio de {f.provincia ?? 'su provincia'} y en el general, las firmas PRO van primero y con el sello.
-            Cuando un asistente de IA (ChatGPT, Claude, Copilot) consulta nuestro directorio por el servidor MCP, la
-            respuesta también las pone adelante.
           </p>
         }
       >
@@ -147,15 +145,6 @@ export default function Funciones({
               </li>
             ))}
           </ol>
-        </Captura>
-        <Captura url="Respuesta de un asistente de IA · consulta al directorio">
-          <pre className="whitespace-pre-wrap font-mono text-[11px] leading-relaxed text-zinc-300">
-{`find_livestock_broker({ provincia: "${f.provincia ?? '…'}" })
-
-★ PRO · ${profile.displayName} · Consignataria · pro: true
-  https://www.consignatarias.com.ar/consignatarias/${slug}
-${f.directorio.slice(1).map((d) => `${d.nombre} · Consignataria\n  https://www.consignatarias.com.ar/consignatarias/${d.slug}`).join('\n')}`}
-          </pre>
         </Captura>
       </Funcion>
 
