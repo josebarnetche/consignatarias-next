@@ -7,7 +7,7 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
-## [1.255.0] — 2026-10-26
+## [1.255.0] — 2026-10-30
 
 ### Agregado
 - **Agente: las ventas de campo se ofrecen a consignatarias de la zona.** Decisión de José del 26-10: las consignatarias tienen la matrícula y saben cómo manejarse con el sitio, que es un portal que no intermedia y solo ofrece el contacto. Un caso de venta de campo con superficie, aptitud y zona pasa a `ofreciendo` y `ofrecerCampos` (`src/lib/agente/campos-agente.ts`) se lo ofrece a consignatarias de la misma provincia y después a las de provincias limítrofes. Son 3 por tanda, una tanda cada 4 días y hasta 3 tandas. Se mantienen las reglas de hacienda: solo días hábiles de 8 a 19, cupo de 20 contactos nuevos por día compartido con hacienda, nadie dos veces en 24 h, BAJA para siempre. Si se acaban las firmas, el caso pasa a José.
@@ -15,6 +15,24 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ### Cambiado
 - **`TIPOS.campo` ya no tiene bloqueo legal.** El 2,4% queda solo como referencia interna (ESTIMADO) para valuar el caso en el tablero: el mail no menciona comisión. Arrendamiento sigue bloqueado y sin oferta.
+
+## [1.254.9] — 2026-10-29
+
+### Corregido
+- **El agente ya no queda parado entre corridas, ahora sí.** La 1.254.8 suponía que el cron de GitHub larga cada 2 h y que su corrida quedaba en espera detrás de la viva. En la práctica larga cada 6-7 h: el 29-10 la corrida de las 06:05 terminó a las 11:37 y la siguiente arrancó a las 13:25. Ahora el primer paso de cada corrida hace un `workflow_dispatch` de `agente.yml`, que queda en espera y arranca apenas termina la viva. El cron queda de respaldo.
+- Freno contra un lazo rápido: si una corrida dura menos de 20 minutos (falló antes de trabajar), el último paso cancela la que quedó en espera y el agente vuelve a depender del cron.
+
+### Cambiado
+- Para frenar el agente hay que deshabilitar el workflow (`gh workflow disable agente.yml`): cancelar la corrida viva no alcanza.
+
+## [1.254.8] — 2026-10-28
+
+### Corregido
+- **El agente ya no queda parado entre corridas.** `agente.yml` pasa a `cancel-in-progress: false`: la corrida que larga el cron queda en espera y arranca apenas termina la viva, en vez de cancelarla. Antes, cuando la viva terminaba sola, el agente quedaba quieto hasta que GitHub largaba el cron tarde: hasta 2 h 26 min el 28-10, y de 113 a 141 vueltas por día contra las 144 previstas.
+
+### Cambiado
+- **Ritmo del agente: cada 30 minutos en vez de cada 10** (10 vueltas por corrida, ~5 h). Los horarios de envío no cambian: los decide el código.
+- Un `workflow_dispatch` de `agente.yml` ahora queda en espera detrás de la corrida viva. Para probar en seco se usa `POST /api/cron/agente?dryRun=1`.
 
 ## [1.254.7] — 2026-10-26
 
