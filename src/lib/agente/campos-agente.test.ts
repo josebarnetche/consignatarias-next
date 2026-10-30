@@ -133,6 +133,25 @@ describe('trabajarCampos (prendido)', () => {
     )
     expect(insertados).toHaveLength(0)
   })
+  it('tope diario: si el primer correo tiene que esperar, el lead no se toma todavía (no se pierde)', async () => {
+    const leads = [lead({ id: 1, intent: 'arrendar_busco', category: null }), lead({ id: 3, intent: 'tasar', email: 'c@x.com' })]
+    const { db, insertados } = dbFalsa({ producer_leads: leads, agente_casos: [] })
+    const enviados: string[][] = []
+    await trabajarCampos(
+      {
+        db: db as never,
+        ahora,
+        dryRun: false,
+        mandar: async (o) => { enviados.push(o.para); return 'id' },
+        tope: (para) => (para.includes('m@x.com') ? new Date(ahora.getTime() + 3_600_000) : null),
+        bitacora: async () => null,
+        nota: () => {},
+      },
+      true,
+    )
+    expect(enviados).toEqual([['c@x.com']])
+    expect(insertados).toHaveLength(1)
+  })
 })
 
 describe('un caso de campo nunca es contraparte de hacienda', () => {

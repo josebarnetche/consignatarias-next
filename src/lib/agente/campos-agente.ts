@@ -189,6 +189,8 @@ export interface Ctx {
   mandar: (o: { leadId: number; ofertaId?: number | null; para: string[]; correo: Correo; plantilla: string; conBaja?: boolean }) => Promise<string | null>
   /** Mails con BAJA (en minúscula). Nunca se les escribe. */
   bajas?: Set<string>
+  /** Tope diario por dirección (tope.ts): hasta cuándo espera el correo, o null si sale. */
+  tope?: (para: string[], plantilla: string, leadId?: number | null) => Date | null
   bitacora: (leadId: number, body: string) => Promise<unknown>
   /** Aviso a José (el `escalar` del motor). Un caso que pasa a él sin aviso queda olvidado. */
   avisar?: (titulo: string, cuerpo: string, responderA?: string) => Promise<unknown>
@@ -214,6 +216,13 @@ export async function trabajarCampos(ctx: Ctx, activo = TIPOS_CAMPO_ACTIVOS): Pr
   for (const l of ((nuevos ?? []) as LeadCampo[]).filter((x) => !ya.has(x.id) && tomable({ status: x.status ?? 'new', source: x.source })).slice(0, MAX_CAMPOS_POR_CORRIDA)) {
     const a = planNuevo(l, ahora)
     if (a.tipo !== 'tomar') continue
+    // Si el primer correo no entra en el tope diario, el lead no se toma todavía: queda
+    // sin caso y se vuelve a mirar en la próxima corrida (no se pierde el primer correo).
+    const espera = a.correo ? ctx.tope?.([l.email!], `campo_${a.datos.tipo}`, l.id) : null
+    if (espera) {
+      ctx.nota(`#${l.id}: campo_${a.datos.tipo} espera hasta ${espera.toISOString()} (tope diario)`)
+      continue
+    }
     if (!ctx.dryRun) {
       await db.from('agente_casos').insert({
         lead_id: l.id,
@@ -248,6 +257,12 @@ export async function trabajarCampos(ctx: Ctx, activo = TIPOS_CAMPO_ACTIVOS): Pr
     if (!lr) continue
     const a = planPendiente(caso, lr as LeadCampo, ahora)
     if (a.tipo === 'recordar') {
+      const espera = ctx.tope?.([(lr as LeadCampo).email!], 'campo_recordatorio', caso.lead_id)
+      if (espera) {
+        if (!ctx.dryRun) await db.from('agente_casos').update({ proximo_at: espera.toISOString(), actualizado_at: ahora.toISOString() }).eq('lead_id', caso.lead_id)
+        ctx.nota(`#${caso.lead_id}: campo_recordatorio espera hasta ${espera.toISOString()} (tope diario)`)
+        continue
+      }
       await ctx.mandar({ leadId: caso.lead_id, para: [(lr as LeadCampo).email!], correo: a.correo, plantilla: `campo_recordatorio` })
       if (!ctx.dryRun) {
         await db
