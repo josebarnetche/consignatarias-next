@@ -11,7 +11,7 @@ import { getCronHealth, type CronHealthRow } from '@/lib/ops'
  * Soft-fail por ítem: `null` = "s/d" (la query falló), nunca un 0 inventado.
  */
 
-/** Mismo criterio que SystemHealthCard: falló, o pasó 1,5× su intervalo esperado. */
+/** Criterio de salud de un cron: falló, o pasó 1,5× su intervalo esperado. */
 export const CRON_OVERDUE_FACTOR = 1.5
 
 export function cronEnRojo(c: CronHealthRow): boolean {
