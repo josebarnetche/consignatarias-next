@@ -7,6 +7,15 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.254.12] — 2026-10-30
+
+### Corregido
+- **Salud de email ya no muestra cero como si fuera un dato.** `email_events` está vacía porque el webhook de Resend nunca se registró en Resend (la única llamada en `ops_events`, el 01-10, se rechazó con `secret_sin_configurar`). Con cero eventos, el card ahora lo dice, muestra el diagnóstico a partir del último intento en `ops_events` y los pasos: crear el webhook en Resend apuntando a `https://www.consignatarias.com.ar/api/webhooks/resend` y cargar `RESEND_WEBHOOK_SECRET` en Vercel. Sin tasas en 0%.
+- **Los badges de Outreach ya no dicen "s/d".** El estado de cada motor se leía de `.github/workflows/` con `fs`, y esa carpeta no viajaba al Lambda de Vercel: en producción el badge decía "s/d" siempre. `next.config.js` la incluye para `/admin/dashboard`; si igual falta, el badge muestra el último envío real de ese motor, y si tampoco hay, "sin dato" con el motivo.
+
+### Eliminado
+- Cuatro cards del admin que nadie importaba: `SystemHealthCard`, `GodCommandsCard`, `ConversionRevenueCard` y `ModerationQueueCard`.
+
 ## [1.254.11] — 2026-10-30
 
 ### Corregido
