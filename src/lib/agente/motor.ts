@@ -27,6 +27,7 @@ import { enviar, leerBandeja, CASILLA, type Entrante } from './correo'
 import { triageLead, leerRespuesta } from './ia'
 import * as M from './mensajes'
 import { ordenarCola } from './cola'
+import { puedeCorrer, soltarCandado, tomarCandado } from './candado'
 import { cobroCorto, ofertaHacienda } from './mensajes-contacto'
 import { tomable } from './verificacion'
 import { TIPOS_CAMPO_ACTIVOS, esCasoDeHacienda, ofrecerCampos, trabajarCampos } from './campos-agente'
@@ -35,6 +36,7 @@ import { pedirConfirmaciones } from './confirmacion'
 import { comisionEstimada } from './tablero'
 import { crearChequeoMx } from './dominios'
 import {
+  aceptacionConCondiciones,
   DIAS_ESPERA_CONTRAPARTE,
   MAX_CONTACTOS_NUEVOS_DIA,
   MAX_RECORDATORIOS,
@@ -123,7 +125,33 @@ export interface Informe {
 
 const LEAD_COLS = 'id,intent,category,head_count,province,zona,name,email,phone,message,source,desired_price_ars,status'
 
+/**
+ * Una corrida, con candado: si otra corrida está viva, esta sale sin leer ni
+ * mandar nada (candado.ts). En seco no hace falta: no manda ni escribe.
+ */
 export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean; ahora?: Date } = {}): Promise<Informe> {
+  const enSeco = !!opts.dryRun || !process.env.AGENTE_IMAP_PASSWORD
+  if (enSeco) return correrAgenteSinCandado(db, opts)
+  const candado = await tomarCandado(db)
+  if (!puedeCorrer(candado)) {
+    const inf: Informe = { dryRun: false, bandeja: { leidos: 0, errores: [] }, nuevos: 0, descartados: 0, enviados: 0, escalados: 0, cierres: 0, notas: [] }
+    inf.notas.push(
+      candado.estado === 'ocupado'
+        ? 'otra corrida del agente está en curso: esta sale sin hacer nada'
+        : `no pude verificar el candado (${candado.estado === 'error' ? candado.detalle : candado.estado}): no corro para no duplicar envíos`,
+    )
+    return inf
+  }
+  try {
+    const inf = await correrAgenteSinCandado(db, opts)
+    if (candado.estado === 'sin_migracion') inf.notas.push(`sin candado (falta la migración 20261030_agente_candado): corrí igual, como antes — ${candado.detalle}`)
+    return inf
+  } finally {
+    if (candado.estado === 'tomado') await soltarCandado(db, candado.duenio)
+  }
+}
+
+async function correrAgenteSinCandado(db: SupabaseClient, opts: { dryRun?: boolean; ahora?: Date } = {}): Promise<Informe> {
   const ahora = opts.ahora ?? new Date()
   const dryRun = !!opts.dryRun || !process.env.AGENTE_IMAP_PASSWORD
   const inf: Informe = { dryRun, bandeja: { leidos: 0, errores: [] }, nuevos: 0, descartados: 0, enviados: 0, escalados: 0, cierres: 0, notas: [] }
@@ -332,6 +360,19 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
         return
       }
       if (esFirma && ofCampo && pareceAceptacion(texto) && ['enviada', 'sin_respuesta'].includes(ofCampo.estado) && caso.estado === 'ofreciendo') {
+        // El agente no pacta precios ni comisiones: un ACEPTO con condiciones no presenta.
+        // La oferta queda como está y José decide (y le contesta directo a la firma).
+        const condiciones = aceptacionConCondiciones(texto)
+        if (condiciones) {
+          await registrar({ tipo: 'acepta_con_condiciones', quien: 'contraparte', condiciones })
+          await escalar(
+            `Campo #${lead.id}: ${ofCampo.nombre} aceptó CON CONDICIONES, NO los presenté`,
+            `Su ACEPTO trae ${condiciones}. El agente no pacta precios ni comisiones, así que no le pasé el contacto del dueño y la oferta sigue como estaba.\n\nDe: ${m.de}\nAsunto: ${m.asunto}\n\n${texto}\n\nSi respondés este correo, le llega directo a ${m.de}.`,
+            m.de,
+          )
+          await bitacora(lead.id, `${ofCampo.nombre} respondió ACEPTO con condiciones (${condiciones}): escalado a José, sin presentar`, 'pendiente', { oferta_id: ofCampo.id })
+          return
+        }
         const ahoraIso = new Date().toISOString()
         await registrar({ tipo: 'acepta', quien: 'contraparte' })
         await guardarOferta(ofCampo.id, { estado: 'acepto', aceptacion: texto.slice(0, 2000), respondida_at: ahoraIso })

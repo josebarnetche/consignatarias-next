@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  aceptacionConCondiciones,
   brutoDeCierre,
   comisionArs,
   comprometePrecio,
@@ -49,6 +50,24 @@ describe('reglas', () => {
     expect(brutoDeCierre({ cabezas: 40, peso_kg: 430, precio_kg: 4300 })).toBe(73_960_000)
     expect(brutoDeCierre({ bruto_ars: 1000 })).toBe(1000)
     expect(brutoDeCierre({ cabezas: 40 })).toBeNull()
+  })
+
+  it('un ACEPTO con condiciones no es un ACEPTO limpio (campo)', () => {
+    // Limpios: presentan.
+    expect(aceptacionConCondiciones('ACEPTO\n\nSaludos, Juan Pérez')).toBeNull()
+    expect(aceptacionConCondiciones('Acepto, pasame el contacto del dueño. Gracias')).toBeNull()
+    expect(aceptacionConCondiciones('ACEPTO las condiciones, quedo atento')).toBeNull()
+    expect(aceptacionConCondiciones('ACEPTO\nJuan Pérez · Tel. 011 4444-5555 · juan@example.com')).toBeNull()
+    // Con condiciones: escalan.
+    expect(aceptacionConCondiciones('ACEPTO, con el 3% a cargo del vendedor')).toMatch(/porcentaje/)
+    expect(aceptacionConCondiciones('ACEPTO\nNuestra comisión es del tres por ciento')).toMatch(/comisión/)
+    expect(aceptacionConCondiciones('Acepto, siempre que nos den la exclusividad por 6 meses')).toMatch(/exclusividad/)
+    expect(aceptacionConCondiciones('ACEPTO si el dueño baja a USD 4.500 la hectárea')).toMatch(/monto/)
+    expect(aceptacionConCondiciones('ACEPTO. Lo tasamos en 3 millones')).toMatch(/monto/)
+    expect(aceptacionConCondiciones('Acepto, con la condición de que firme autorización de venta')).toMatch(/condición/)
+    expect(aceptacionConCondiciones('ACEPTO siempre y cuando el campo tenga mensura')).toMatch(/condición/)
+    expect(aceptacionConCondiciones('ACEPTO. Honorarios a convenir con el dueño')).toMatch(/comisión/)
+    expect(aceptacionConCondiciones('Acepto, cobramos el 2% más IVA')).toMatch(/porcentaje.*comisión|comisión.*porcentaje/)
   })
 
   it('ACEPTO y BAJA se reconocen sin modelo', () => {

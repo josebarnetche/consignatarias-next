@@ -165,6 +165,32 @@ export function pareceAceptacion(texto: string): boolean {
   return /^\s*(acepto|aceptamos|ok,? acepto|s[ií],? acepto|de acuerdo,? acepto)\b/.test(primera)
 }
 
+/**
+ * Un ACEPTO que trae condiciones no es un ACEPTO (30-10-2026). El agente no pacta
+ * precios ni comisiones: si junto al ACEPTO viene un porcentaje, una comisión, una
+ * exclusividad, un monto o un "siempre que", no presenta a nadie y lo ve José.
+ * Mira todo el texto (sin la cita), no solo la primera línea: la condición suele
+ * venir abajo. Ante la duda escala: un falso positivo le cuesta a José leer un
+ * correo; un falso negativo entrega el contacto con un compromiso que nadie aceptó.
+ * Devuelve qué encontró, o null si es un ACEPTO limpio.
+ */
+const CONDICIONES: [RegExp, string][] = [
+  [/%|\bpor ?ciento\b/, 'un porcentaje'],
+  [/\bcomision|\bhonorario|\bcobra(mos|r|riamos|ria)\b|\bnos corresponde/, 'una comisión u honorario'],
+  [/\bexclusiv/, 'exclusividad'],
+  [/\$|\busd\b|\bdolar|\bpesos\b|\b\d[\d.,]*\s*(mil|millon(es)?|palos|k)\b|\bmillon(es)?\b/, 'un monto'],
+  [/\bsiempre (que|y cuando)\b|\b(con la|a) condicion\b|\bcondicionad|\bnuestras condiciones\b|\bsujeto a\b|\bsolo si\b|\ben la medida (en )?que\b|\ba cambio de\b|\bprevio (pago|acuerdo)\b/, 'una condición'],
+]
+
+export function aceptacionConCondiciones(texto: string): string | null {
+  const t = texto
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+  const hallados = CONDICIONES.filter(([re]) => re.test(t)).map(([, que]) => que)
+  return hallados.length ? hallados.join(', ') : null
+}
+
 /** ¿Pide la baja? Respaldo determinista: siempre se respeta, con o sin modelo. */
 export function pareceBaja(texto: string): boolean {
   const t = texto.trim().toLowerCase().slice(0, 300)
