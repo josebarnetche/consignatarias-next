@@ -21,7 +21,8 @@ import {
 import { distanciaProvincia, elegirContrapartes, type Candidato } from './contrapartes'
 import * as M from './mensajes'
 import { categoriaDemanda, leadDeDemanda, provinciaDemanda } from './demanda'
-import { armarTablero, comisionEstimada, proximoPaso, type CasoFila, type OfertaFila } from './tablero'
+import { armarTablero, comisionCampoUsd, comisionEstimada, guionLlamada, proximoPaso, resumenCaso, tandaLabel, type CasoFila, type OfertaFila } from './tablero'
+import { usdHaTipico } from './por-tipo'
 
 const productor = { name: 'Juan Pérez Gorostiaga', email: 'juanpg@gmail.com', phone: '+54 9 2923 445566' }
 const datos = { cabezas: 40, categoria: 'novillos', zona: 'Saavedra', provincia: 'Buenos Aires', peso_kg: 420 }
@@ -301,5 +302,53 @@ describe('tablero', () => {
     const ahora = new Date('2026-10-21T12:00:00Z')
     expect(proximoPaso({ estado: 'ofreciendo', proximo_at: '2026-10-24T12:00:00Z' }, ahora)).toMatch(/en 3 días/)
     expect(proximoPaso({ estado: 'nuevo', proximo_at: '2026-10-21T11:00:00Z' }, ahora)).toBe('arranca en la próxima corrida')
+  })
+})
+
+describe('tablero con casos de campo', () => {
+  const campo = { tipo: 'campo' as const, hectareas: 500, aptitud: 'Ganadera', zona: 'Azul', provincia: 'Buenos Aires' }
+  const caso = (lead_id: number, estado: CasoFila['estado'], datos: CasoFila['datos'], tandas = 0): CasoFila => ({ lead_id, lado: 'vende', estado, datos, motivo: null, tandas, proximo_at: '2026-10-21T11:00:00Z', actualizado_at: '2026-10-21T00:00:00Z' })
+  const of = (lead_id: number, estado: string): OfertaFila => ({ lead_id, tipo: 'firma', nombre: 'Firma Ejemplo', estado, enviada_at: '2026-10-20T13:00:00Z', respondida_at: estado === 'enviada' || estado === 'sin_respuesta' ? null : '2026-10-20T15:00:00Z', cierre: null })
+
+  it('resume un campo por superficie, aptitud y zona, nunca por cabezas', () => {
+    expect(resumenCaso(campo)).toBe('Venta de campo · 500 ha · ganadera · Azul, Buenos Aires')
+    expect(resumenCaso({ tipo: 'arrendamiento', hectareas: null, zona: null, provincia: 'Corrientes' })).toBe('Arrendamiento · ha s/d · aptitud s/d · Corrientes')
+    expect(resumenCaso(campo)).not.toMatch(/cabezas/)
+    // Los casos viejos sin tipo siguen siendo de hacienda.
+    expect(resumenCaso({ cabezas: 40, categoria: 'novillos', zona: 'Saavedra' })).toBe('40 novillos en Saavedra')
+  })
+
+  it('estima la comisión del campo en USD (2,4% de ha × USD/ha de la provincia) y nada para otros tipos', () => {
+    expect(comisionCampoUsd(campo)).toBe(Math.round((500 * usdHaTipico('Buenos Aires') * 2.4) / 100))
+    expect(comisionCampoUsd({ ...campo, hectareas: null })).toBeNull()
+    expect(comisionCampoUsd({ ...campo, tipo: 'tasacion' })).toBeNull()
+    expect(Number.isNaN(comisionCampoUsd({ ...campo, provincia: 'Provincia inexistente' }))).toBe(false)
+  })
+
+  it('no cuenta los campos como "sin cabezas", los separa en USD y agrupa sus ofertas', () => {
+    const t = armarTablero(
+      [caso(1, 'ofreciendo', campo, 2), caso(2, 'pidiendo_datos', { tipo: 'arrendamiento', hectareas: 100, provincia: 'Buenos Aires' }), caso(3, 'pidiendo_datos', { cabezas: null, categoria: 'novillos' })],
+      [of(1, 'enviada'), of(1, 'sin_respuesta'), of(1, 'rechazo'), of(1, 'acepto')],
+    )
+    expect(t.plata.sinEstimar).toBe(1)
+    expect(t.plata.potencial).toBe(0)
+    expect(t.plata.campos).toBe(1)
+    expect(t.plata.campoUsd).toBe(comisionCampoUsd(campo))
+    expect(t.porEstado.ofreciendo).toBe(1)
+    const c1 = t.vivos.find((v) => v.lead_id === 1)!
+    expect(c1).toMatchObject({ tipo: 'campo', comision: null, ofertas: 4, pendientes: 2, aceptadas: 1 })
+    expect(t.vivos[0].lead_id).toBe(1)
+    expect(tandaLabel(c1)).toBe('tanda 2/3')
+    expect(tandaLabel({ estado: 'presentado', tandas: 3 })).toBe('')
+  })
+
+  it('el campo presentado lo sigue José y el guion no habla de cabezas', () => {
+    expect(proximoPaso({ estado: 'presentado', proximo_at: '2026-10-21T11:00:00Z', datos: campo })).toBe('presentado: lo seguís vos')
+    expect(proximoPaso({ estado: 'presentado', proximo_at: '2026-10-21T11:00:00Z' })).toBe('seguimiento de la presentación')
+    const g = guionLlamada({ estado: 'pidiendo_datos', lado: 'vende', datos: campo }, 'Hola Juan')
+    expect(g).toMatch(/hectáreas/)
+    expect(g).not.toMatch(/cabezas|hacienda/)
+    expect(guionLlamada({ estado: 'ofreciendo', lado: 'vende', datos: campo }, 'Hola')).not.toMatch(/hacienda/)
+    expect(guionLlamada({ estado: 'pidiendo_datos', lado: 'vende', datos: { tipo: 'tasacion' } }, 'Hola')).toMatch(/vender o para arrendar/)
   })
 })

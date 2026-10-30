@@ -8,10 +8,19 @@ import PorTipo from '@/components/admin/agente/PorTipo'
 import Decisiones from '@/components/admin/agente/Decisiones'
 import EmbudoMcp from '@/components/admin/agente/EmbudoMcp'
 import Badge, { type BadgeTone } from '@/components/ui/Badge'
-import { resumenHacienda } from '@/lib/agente/mensajes'
 import { whatsappLink } from '@/lib/leads/routing'
 import { COMISION_PCT, type EstadoCaso } from '@/lib/agente/reglas'
-import { armarTablero, proximoPaso, ESTADO_LABEL, ORDEN_ESTADOS, type CasoFila, type OfertaFila } from '@/lib/agente/tablero'
+import {
+  armarTablero,
+  guionLlamada,
+  proximoPaso,
+  resumenCaso,
+  tandaLabel,
+  ESTADO_LABEL,
+  ORDEN_ESTADOS,
+  type CasoFila,
+  type OfertaFila,
+} from '@/lib/agente/tablero'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -19,7 +28,9 @@ export const metadata: Metadata = { title: 'Agente · Admin' }
 
 /**
  * /admin/agente — el cerrador que trabaja los leads de hacienda solo
- * (src/lib/agente/motor.ts).
+ * (src/lib/agente/motor.ts) y, desde el 26-10-2026, ofrece ventas de campo a
+ * consignatarias (src/lib/agente/campos-agente.ts). Los casos de campo se muestran
+ * por superficie, aptitud y zona; su comisión en USD es un ESTIMADO interno.
  *
  *   1. Plata: comisión potencial, en juego y cerrada (src/lib/agente/tablero.ts)
  *   2. Embudo de casos por estado y respuesta de las contrapartes
@@ -35,6 +46,7 @@ export const metadata: Metadata = { title: 'Agente · Admin' }
 const TZ = 'America/Argentina/Buenos_Aires'
 const nf = (n: number) => n.toLocaleString('es-AR')
 const ars = (n: number) => `$${nf(Math.round(n))}`
+const usd = (n: number) => `USD ${nf(Math.round(n))}`
 const fecha = (iso: string) =>
   new Date(iso).toLocaleString('es-AR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false, timeZone: TZ })
 
@@ -81,12 +93,7 @@ export default async function AdminAgentePage() {
     .map(({ c, l }) => {
       const pila = (l!.name ?? '').trim().split(/\s+/)[0]
       const saludo = pila && !pila.includes('@') ? `Hola ${pila.charAt(0).toUpperCase()}${pila.slice(1).toLowerCase()}` : 'Hola'
-      const guion =
-        c.estado === 'pidiendo_datos'
-          ? `${saludo}, te escribo de consignatarias.com por la hacienda que cargaste. Para ofrecerla me falta saber cuántas cabezas son, la categoría y la zona. ¿Me lo pasás por acá?`
-          : c.estado === 'presentado'
-            ? `${saludo}, te escribo de consignatarias.com. ¿Pudiste hablar con la contraparte que te presentamos? ¿Avanzaron?`
-            : `${saludo}, te escribo de consignatarias.com. Estamos ofreciendo tu ${c.lado === 'vende' ? 'hacienda' : 'pedido de compra'} (${resumenHacienda(c.datos)}). ¿Sigue en pie? ¿Tenés un precio de referencia o una fecha?`
+      const guion = guionLlamada(c, saludo)
       return { c, phone: l!.phone!, wa: whatsappLink(l!.phone, guion), motivo: c.estado === 'pidiendo_datos' ? 'no mandó los datos' : c.estado === 'presentado' ? 'presentado: ¿avanzan?' : 'nadie contestó todavía' }
     })
   const ofs = t.ofertas
@@ -96,7 +103,7 @@ export default async function AdminAgentePage() {
       <AdminPageHeader
         title="Agente"
         meta={corrida?.last_run_at ? `última corrida ${fecha(corrida.last_run_at)}` : 'sin corridas registradas'}
-        description={`Trabaja los leads de hacienda hasta el cierre: pide datos, ofrece, presenta tras un ACEPTO escrito y cobra el ${COMISION_PCT}% a quien recibe el contacto. Precio y firma quedan entre las partes.`}
+        description={`Trabaja los leads de hacienda hasta el cierre: pide datos, ofrece, presenta tras un ACEPTO escrito y cobra el ${COMISION_PCT}% a quien recibe el contacto. Las ventas de campo se ofrecen a consignatarias de la zona, sin comisión pactada. Precio y firma quedan entre las partes.`}
       />
 
       {fallo && (
@@ -116,7 +123,9 @@ export default async function AdminAgentePage() {
           <Stat
             label="Potencial"
             value={ars(t.plata.potencial)}
-            sub={`${COMISION_PCT}% del bruto estimado de los casos vivos${t.plata.sinEstimar ? ` · ${t.plata.sinEstimar} sin cabezas` : ''}`}
+            sub={`${COMISION_PCT}% del bruto estimado de la hacienda viva${t.plata.sinEstimar ? ` · ${t.plata.sinEstimar} sin cabezas` : ''}${
+              t.plata.campos ? ` · ${t.plata.campos} ${t.plata.campos === 1 ? 'campo' : 'campos'} ≈ ${usd(t.plata.campoUsd)} estimado interno, no pactado` : ''
+            }`}
           />
         </KpiCell>
         <KpiCell>
@@ -153,7 +162,7 @@ export default async function AdminAgentePage() {
                 <Link href={`/admin/leads?lead=${c.lead_id}`} className="w-10 text-data font-terminal text-zinc-400 hover:text-accent tabular-nums">
                   #{c.lead_id}
                 </Link>
-                <span className="min-w-0 flex-1 truncate text-data font-terminal text-ink">{resumenHacienda(c.datos)}</span>
+                <span className="min-w-0 flex-1 truncate text-data font-terminal text-ink">{resumenCaso(c.datos)}</span>
                 <span className="text-xxs font-terminal text-zinc-500">{motivo}</span>
                 <a href={`tel:${phone.replace(/[^\d+]/g, '')}`} className="text-data font-terminal text-zinc-300 hover:text-accent tabular-nums">
                   {phone}
@@ -171,7 +180,7 @@ export default async function AdminAgentePage() {
 
       <AdminSection title={`Casos vivos · ${t.vivos.length}`} flush>
         {t.vivos.length === 0 ? (
-          <AdminEmpty>No hay casos abiertos. Cuando entre un lead de compra o venta de hacienda con 40 cabezas o más, el agente lo toma solo.</AdminEmpty>
+          <AdminEmpty>No hay casos abiertos. Cuando entre un lead de compra o venta de hacienda con 40 cabezas o más (o de campo, con AGENTE_TIPOS prendido), el agente lo toma solo.</AdminEmpty>
         ) : (
           <ol>
             {t.vivos.map((c) => (
@@ -181,11 +190,22 @@ export default async function AdminAgentePage() {
                 </Link>
                 <Badge tone={TONO[c.estado] ?? 'neutral'}>{ESTADO_LABEL[c.estado]}</Badge>
                 <span className="text-xxs font-terminal text-zinc-500">{c.lado === 'vende' ? 'vende' : 'compra'}</span>
-                <span className="min-w-0 flex-1 truncate text-data font-terminal text-ink">{resumenHacienda(c.datos)}</span>
+                <span className="min-w-0 flex-1 truncate text-data font-terminal text-ink">{resumenCaso(c.datos)}</span>
+                {tandaLabel(c) && <span className="text-xxs font-terminal text-zinc-500 tabular-nums">{tandaLabel(c)}</span>}
                 <span className="text-xxs font-terminal text-zinc-500 tabular-nums">
-                  {c.ofertas ? `${c.respondidas}/${c.ofertas} respondieron` : 'sin ofertas'}
+                  {c.ofertas
+                    ? c.tipo === 'hacienda'
+                      ? `${c.respondidas}/${c.ofertas} respondieron`
+                      : `${c.ofertas} enviadas · ${c.pendientes} sin respuesta · ${c.aceptadas} ACEPTO`
+                    : 'sin ofertas'}
                 </span>
-                <span className="w-28 text-right text-data font-terminal tabular-nums text-zinc-300">{c.comision == null ? '—' : ars(c.comision)}</span>
+                {c.comisionUsd != null ? (
+                  <span className="w-28 text-right text-data font-terminal tabular-nums text-zinc-500" title="Estimado interno (2,4% de ha × USD/ha de referencia). No está pactado ni se le comunica a nadie.">
+                    ≈ {usd(c.comisionUsd)} <span className="text-xxs">est.</span>
+                  </span>
+                ) : (
+                  <span className="w-28 text-right text-data font-terminal tabular-nums text-zinc-300">{c.comision == null ? '—' : ars(c.comision)}</span>
+                )}
                 <span className="basis-full sm:basis-auto sm:w-64 text-xxs font-terminal text-zinc-500 truncate">{proximoPaso(c)}</span>
               </li>
             ))}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { estadoEnvio, kgHaMesTipico, resumenPorTipo } from './por-tipo'
+import { estadoEnvio, kgHaMesTipico, resumenPorTipo, usdHaTipico } from './por-tipo'
 import type { Valuacion } from './tipos'
 
 describe('estadoEnvio', () => {
@@ -53,6 +53,26 @@ describe('kgHaMesTipico', () => {
   })
   it('lee el relevamiento real sin romperse', () => {
     expect(kgHaMesTipico('Buenos Aires')).toBeGreaterThan(0)
+  })
+})
+
+describe('usdHaTipico', () => {
+  const filas = [
+    { provincia: 'Buenos Aires', zona: 'Salado', kg_ha_mes_canon: 4, usd_ha: 2000 },
+    { provincia: 'Buenos Aires', zona: null, kg_ha_mes_canon: 5.4, usd_ha: 3400 },
+    { provincia: 'Córdoba', zona: 'Sur', kg_ha_mes_canon: null, usd_ha: 6000 },
+    { provincia: 'Chaco', zona: null, kg_ha_mes_canon: 2, usd_ha: null },
+  ]
+  it('usa la fila de provincia sin zona, sin importar tildes', () => {
+    expect(usdHaTipico('buenos aires', filas)).toBe(3400)
+    expect(usdHaTipico('Cordoba', filas)).toBe(6000)
+  })
+  it('sin dato de la provincia, la mediana del país', () => {
+    expect(usdHaTipico('Chaco', filas)).toBe(3400)
+    expect(usdHaTipico(null, filas)).toBe(3400)
+  })
+  it('lee el relevamiento real sin romperse', () => {
+    expect(usdHaTipico('Buenos Aires')).toBeGreaterThan(0)
   })
 })
 
