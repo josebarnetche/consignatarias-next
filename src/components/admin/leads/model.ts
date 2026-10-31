@@ -255,7 +255,7 @@ export function matchesSearch(l: Lead, q: string): boolean {
       .filter(Boolean)
       .join(' '),
   )
-  // Teléfono: también por dígitos ("2214189529" encuentra "+54 221 418-9529").
+  // Teléfono: también por dígitos ("2215550101" encuentra "+54 221 555-0101").
   const qDigits = t.replace(/\D/g, '')
   if (qDigits.length >= 4 && (l.phone || '').replace(/\D/g, '').includes(qDigits)) return true
   return t.split(/\s+/).every((w) => hay.includes(w))
