@@ -33,6 +33,7 @@ import { TIPOS_CAMPO_ACTIVOS, esCasoDeHacienda, ofrecerCampos, trabajarCampos } 
 import { presentacionCampo, type DatosCampo } from './mensajes-tipos'
 import { pedirConfirmaciones } from './confirmacion'
 import { comisionEstimada } from './tablero'
+import { crearChequeoMx } from './dominios'
 import {
   DIAS_ESPERA_CONTRAPARTE,
   MAX_CONTACTOS_NUEVOS_DIA,
@@ -155,6 +156,8 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
     for (const r of data ?? []) bajas.add(String(r.email).toLowerCase())
   }
 
+  const tieneMx = crearChequeoMx()
+
   /** Manda y registra. Devuelve el Message-ID, o null si no salió. */
   const mandar = async (o: {
     leadId: number
@@ -165,7 +168,10 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
     enRespuestaA?: string | null
     conBaja?: boolean
   }): Promise<string | null> => {
-    const para = o.para.map((p) => p.trim().toLowerCase()).filter((p) => p && !bajas.has(p))
+    const candidatos = o.para.map((p) => p.trim().toLowerCase()).filter((p) => p && !bajas.has(p))
+    const recibe = await Promise.all(candidatos.map(tieneMx))
+    const para = candidatos.filter((_, i) => recibe[i])
+    for (const p of candidatos.filter((_, i) => !recibe[i])) inf.notas.push(`no mandé ${o.plantilla} a ${p}: el dominio no recibe correo (sin MX)`)
     if (para.length === 0) return null
     if (dryRun) {
       inf.notas.push(`[seco] ${o.plantilla} → ${para.join(', ')} · ${o.correo.asunto}`)
@@ -429,11 +435,20 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
         case 'acepta': {
           if (!['enviada', 'sin_respuesta'].includes(of.estado)) return
           await guardarOferta(of.id, { estado: 'acepto', aceptacion: texto.slice(0, 2000), respondida_at: ahoraIso })
+          // Si la contraparte es otro lead, su nombre real (si lo dejó) en vez del rótulo "un productor de X".
+          const otroLead = of.tipo === 'lead' ? await leerLead(Number(of.ref)) : null
           const id = await mandar({
             leadId: lead.id,
             ofertaId: of.id,
             para: [lead.email!, of.email],
-            correo: M.presentacion({ leadId: lead.id, ofertaId: of.id, lado: caso.lado, datos: caso.datos, productor: { nombre: lead.name, email: lead.email, phone: lead.phone }, contraparte: { nombre: of.nombre, email: of.email } }),
+            correo: M.presentacion({
+              leadId: lead.id,
+              ofertaId: of.id,
+              lado: caso.lado,
+              datos: caso.datos,
+              productor: { nombre: lead.name, email: lead.email, phone: lead.phone },
+              contraparte: { tipo: of.tipo, nombre: of.tipo === 'lead' ? otroLead?.name ?? null : of.nombre, email: of.email, phone: otroLead?.phone ?? null },
+            }),
             plantilla: 'presentacion',
             enRespuestaA: m.messageId,
           })

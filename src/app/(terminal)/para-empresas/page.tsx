@@ -22,7 +22,7 @@ const ENTRADAS = [
     id: 'firma',
     kicker: 'Para tu firma',
     titulo: 'PRO Consignataria',
-    texto: `Tu consignataria y tus remates, primero: tu firma primera en el directorio con el sello ★ PRO, remates resaltados en el calendario y primeros en el newsletter semanal, primera en el directorio que consultan las IAs y las consultas de productores con nombre y contacto. El sitio tuvo más de ${Math.floor(ALCANCE_GOOGLE.impresiones / 1_000_000)} millón de impresiones en Google desde marzo de 2026.`,
+    texto: `Tu consignataria y tus remates, primero: tu firma primera en el directorio con el sello ★ PRO, remates resaltados en el calendario y primeros en el newsletter semanal y las consultas de productores con nombre y contacto. El sitio tuvo más de ${Math.floor(ALCANCE_GOOGLE.impresiones / 1_000_000)} millón de impresiones en Google desde marzo de 2026.`,
     precio: 'ARS 45.000/mes · sin permanencia',
     cta: { label: 'Ver PRO Consignataria', href: '/para-consignatarias' },
     links: [

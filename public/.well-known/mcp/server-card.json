@@ -3,11 +3,11 @@
   "name": "ar.com.consignatarias/cattle-market",
   "title": "Consignatarias — Mercado Ganadero Argentino",
   "description": "Mercado ganadero argentino, en vivo y como herramientas MCP para agentes. Índice Novillo (INMAG) diario en ARS y USD desde 2015; precios por categoría y bandas de dispersión observada (P10, mediana y P90) sobre lotes del MAG, con historia y referencia por rango de peso para valuar una tropa. Contexto macro, estacionalidad de precios y brecha del precio argentino frente a EE.UU., Uruguay y Australia. Calendario de remates, directorio y actividad de consignatarias, y búsqueda de frigoríficos. Valuaciones de tierra por provincia y zona, cálculo de arrendamientos y renta del campo, con fuentes y fechas de los datos. Sanidad SENASA, vacunación, reglas de movimiento y Buenas Prácticas Ganaderas. Consultas públicas gratuitas; API key Enterprise para descarga masiva y exports.",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "serverInfo": {
     "name": "consignatarias",
     "title": "Consignatarias — Mercado Ganadero Argentino",
-    "version": "1.9.0"
+    "version": "1.9.1"
   },
   "protocolVersions": [
     "2026-07-28",
@@ -876,7 +876,7 @@
     {
       "name": "subscribe_broker_pro",
       "title": "PRO Consignataria: cotizar y activar en USDC",
-      "description": "Cotiza y explica cómo activar PRO Consignataria pagando en USDC (x402): sello ★ PRO; primera en el directorio y en el muro de la home; remates resaltados en el calendario y en sus fichas; primera en el newsletter semanal con registro de envíos; primera en el directorio que consultan los agentes de IA (este MCP); leads con nombre y contacto; panel con quién mira el perfil, cuándo y desde dónde (incluidas visitas desde IAs); cruce contra el Mercado de Cañuelas si opera ahí. Mismo producto que en /planes (ARS 45.000/mes), cotizado al dólar blue del día. Esta tool NO cobra: devuelve el monto exacto y el endpoint x402 para pagar. Params: slug (consignataria del directorio, usá find_livestock_broker si no lo sabés), meses (1-12, default 1). [EN] Quote and subscribe to the PRO plan for a livestock broker profile, payable in USDC.",
+      "description": "Cotiza y explica cómo activar PRO Consignataria pagando en USDC (x402): sello ★ PRO; primera en el directorio y en el muro de la home; remates resaltados en el calendario y en sus fichas; primera en el newsletter semanal con registro de envíos; leads con nombre y contacto; panel con quién mira el perfil, cuándo y desde dónde (incluidas visitas desde IAs); cruce contra el Mercado de Cañuelas si opera ahí. Mismo producto que en /planes (ARS 45.000/mes), cotizado al dólar blue del día. Esta tool NO cobra: devuelve el monto exacto y el endpoint x402 para pagar. Params: slug (consignataria del directorio, usá find_livestock_broker si no lo sabés), meses (1-12, default 1). [EN] Quote and subscribe to the PRO plan for a livestock broker profile, payable in USDC.",
       "inputSchema": {
         "type": "object",
         "properties": {

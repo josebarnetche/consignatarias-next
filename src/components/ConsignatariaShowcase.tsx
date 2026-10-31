@@ -107,8 +107,8 @@ function Chat({ firm, cited }: { firm?: Firm; cited: string[] }) {
  * Scroll-to-discover para CONSIGNATARIAS — evocativa, no declarativa. Muestra el
  * momento (un productor le pregunta a una IA y una firma aparece) y deja que el
  * valor se infiera. Personalizable por slug (ABM). Copy verificado contra el código
- * el 17-10-2026: la charla es un ejemplo (no "no es una demo"), PRO ordena el
- * directorio que consultan las IAs —no su respuesta— y no hay CRM prometido.
+ * el 17-10-2026: la charla es un ejemplo (no "no es una demo") y no hay CRM prometido.
+ * Desde v1.254.10 PRO no ordena el directorio que consultan las IAs (el MCP es neutral).
  */
 export default function ConsignatariaShowcase({
   stats,
@@ -217,8 +217,8 @@ export default function ConsignatariaShowcase({
         <p className="cs-in text-xxs font-terminal uppercase tracking-widest text-amber-400 mb-3">Consignataria PRO</p>
         <h2 className="cs-in d1 text-2xl md:text-3xl font-heading text-zinc-100 mb-4">Que seas vos la que aparece.</h2>
         <p className="cs-in d1 text-zinc-400 text-base max-w-xl mb-8">
-          Ponemos tu firma y tus remates adelante — en el directorio y el calendario, en el directorio que
-          consultan las IAs y en el newsletter semanal. Vos rematás; que el mercado te encuentre lo hacemos
+          Ponemos tu firma y tus remates adelante — en el directorio y el calendario, y en el newsletter
+          semanal. Vos rematás; que el mercado te encuentre lo hacemos
           nosotros.
         </p>
         <div className="cs-in d2 flex flex-wrap gap-3 items-center">

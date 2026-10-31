@@ -15,6 +15,7 @@ import { getCanonicalSlug, getProfile } from '@/lib/data/consignataria-slugs'
 import crypto from 'crypto'
 import { logEvent } from '@/lib/ops'
 import { asegurarReclamoPorPago } from '@/lib/claims/reclamo-por-pago'
+import { formaDelSecret } from '@/lib/rebill-firma'
 
 // Verify Rebill webhook signature (HMAC-SHA256)
 /**
@@ -33,6 +34,14 @@ import { asegurarReclamoPorPago } from '@/lib/claims/reclamo-por-pago'
  * fail-closed: si ninguno coincide, 401. Lo que cambia es que ahora el rechazo
  * dice qué esquemas se probaron y qué cabeceras llegaron, así el próximo reintento
  * lo resuelve en un renglón de /admin/ops en vez de en otra investigación.
+ *
+ * Corrección del 30-10-2026: la hipótesis de arriba estaba mal. Según la doc
+ * oficial (docs.rebill.com/guides/webhooks) Rebill firma HMAC-SHA256 del cuerpo
+ * crudo, en hex, sin timestamp ni prefijo, con el signing secret `whsec_` + 64 hex
+ * (70 caracteres) como clave. Un valor de 35 caracteres con prefijo `we_` es el
+ * ID del webhook (`webhook.id`), no su secret. El esquema `secret+cuerpo+hex` ya
+ * se prueba acá: lo que falla es la clave configurada. El diagnóstico ahora anota
+ * la forma del secret para que esto se vea sin investigar.
  */
 
 /** Las cabeceras que podrían traer el timestamp del esquema `ts.cuerpo`. */
@@ -110,6 +119,10 @@ function diagnosticoFirma(rawBody: string, signature: string | null, secret: str
     firma_forma: /^[0-9a-f]+$/i.test(limpia) ? "hex" : /^[A-Za-z0-9+/=_-]+$/.test(limpia) ? "base64" : "otra",
     tenia_prefijo_sha256: /^sha256=/i.test((signature || "").trim()),
     body_bytes: Buffer.byteLength(rawBody, "utf8"),
+    // Forma (prefijo público + largo) del secret configurado, nunca su valor. Rebill
+    // firma con `whsec_` + 64 hex; si acá aparece `id_de_webhook` (we_ + 32 hex), la
+    // variable tiene el id del webhook y no el signing secret: es configuración.
+    ...formaDelSecret(secret),
     // Lo que faltaba para cerrar el caso: qué manda Rebill y qué probamos nosotros.
     cabeceras_recibidas: cabeceras,
     esquemas_probados: candidatos(rawBody, secret, req).map((c) => `${c.nombre}:${c.firma.slice(0, 7)}`),

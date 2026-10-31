@@ -10,7 +10,7 @@ import ConsignatariaShowcase from '@/components/ConsignatariaShowcase'
 export const metadata: Metadata = {
   title: 'Para consignatarias — publicitá tus remates donde el mercado mira',
   description:
-    'Con PRO tu firma va primera en el directorio y en el que consultan las IAs, tus remates se resaltan en el calendario y van primeros en el newsletter semanal, y ves cuántas visitas te llegan desde ChatGPT, Copilot o Gemini.',
+    'Con PRO tu firma va primera en el directorio, tus remates se resaltan en el calendario y van primeros en el newsletter semanal, y ves cuántas visitas te llegan desde ChatGPT, Copilot o Gemini.',
   alternates: { canonical: 'https://www.consignatarias.com.ar/para-consignatarias' },
 }
 

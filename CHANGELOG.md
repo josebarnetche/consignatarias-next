@@ -16,6 +16,44 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ### Cambiado
 - **`TIPOS.campo` ya no tiene bloqueo legal.** El 2,4% queda solo como referencia interna (ESTIMADO) para valuar el caso en el tablero: el mail no menciona comisión. Arrendamiento sigue bloqueado y sin oferta.
+## [1.254.15] — 2026-10-30
+
+### Cambiado
+- **El MCP ya no pone primero a las firmas PRO ni las marca.** `find_livestock_broker` devuelve el directorio en el orden de la base, sin `★ PRO` ni `pro: true`, y no consulta quién pagó. Así se puede contestar con verdad que el servidor no devuelve contenido patrocinado (lo pregunta el directorio de conectores de Claude). Los listados del sitio siguen ordenando a las PRO primero.
+- **PRO ya no promete lugar en los agentes de IA.** Fuera "primera en el directorio que consultan las IAs" de `subscribe_broker_pro`, la server card, el endpoint x402 de PRO, /planes, /para-empresas, /para-consignatarias, la landing, la lista de beneficios del panel y la propuesta (web y PDF). Lo que sí queda es medir las visitas que llegan desde asistentes de IA.
+- MCP 1.9.1 (`route.ts`, los tres `server.json` y la server card).
+
+## [1.254.14] — 2026-10-30
+
+### Seguridad
+- **`visitor_stats()` deja de ser pública**: la función SQL que alimenta el panel VISITANTES de `/admin/ops` es `SECURITY DEFINER` y se podía ejecutar con la clave anon por `/rest/v1/rpc/visitor_stats` (advisor de Supabase, lints 0028/0029), exponiendo totales, fuentes y los últimos 12 visitantes. Migración `20261030_visitor_stats_revocar_anon.sql`: revoca `EXECUTE` a `PUBLIC`, `anon` y `authenticated`; queda sólo `service_role`, que es lo único que la usa (`createAdminClient()` en `/admin/ops`). Pendiente de aplicar en producción con el OK del dueño; el rollback está en la misma migración.
+
+## [1.254.13] — 2026-10-30
+
+### Corregido
+- **Webhook de Rebill: el rechazo ahora dice si la clave cargada es la equivocada.** Los webhooks llegaban con `x-rebill-signature` (hex, 64) y se rechazaban con `firma_invalida`. Según la documentación oficial de Rebill, la firma es HMAC-SHA256 del cuerpo crudo en hex, sin timestamp ni prefijo, con el *signing secret* `whsec_` + 64 hex como clave — exactamente uno de los esquemas que ya probábamos. El valor guardado en `REBILL_WEBHOOK_SECRET` tiene 35 caracteres y prefijo `we_`, que es la forma del **ID del webhook**, no de su secret. La causa es de configuración, no de código.
+- El diagnóstico de `ops_events` suma `secret_forma` (`whsec` / `id_de_webhook` / `otra`) y `secret_largo`. Nunca el valor. Se corrige también el comentario del handler, que atribuía el prefijo `we_` a un esquema estilo Stripe.
+
+## [1.254.12] — 2026-10-30
+
+### Corregido
+- **Salud de email ya no muestra cero como si fuera un dato.** `email_events` está vacía porque el webhook de Resend nunca se registró en Resend (la única llamada en `ops_events`, el 01-10, se rechazó con `secret_sin_configurar`). Con cero eventos, el card ahora lo dice, muestra el diagnóstico a partir del último intento en `ops_events` y los pasos: crear el webhook en Resend apuntando a `https://www.consignatarias.com.ar/api/webhooks/resend` y cargar `RESEND_WEBHOOK_SECRET` en Vercel. Sin tasas en 0%.
+- **Los badges de Outreach ya no dicen "s/d".** El estado de cada motor se leía de `.github/workflows/` con `fs`, y esa carpeta no viajaba al Lambda de Vercel: en producción el badge decía "s/d" siempre. `next.config.js` la incluye para `/admin/dashboard`; si igual falta, el badge muestra el último envío real de ese motor, y si tampoco hay, "sin dato" con el motivo.
+
+### Eliminado
+- Cuatro cards del admin que nadie importaba: `SystemHealthCard`, `GodCommandsCard`, `ConversionRevenueCard` y `ModerationQueueCard`.
+
+## [1.254.11] — 2026-10-30
+
+### Corregido
+- **La presentación del agente dice quién es quién.** El correo que sale cuando la contraparte responde ACEPTO rotulaba a la otra parte "un productor de Rosario" al lado de su email, y se leía como si hubiera dos productores. Ahora cada renglón de contacto lleva el rol según el lado del caso (vende / compra) y qué es esa parte según el tipo de la oferta (productor, frigorífico, consignataria), con su nombre si lo tenemos. Cuando la contraparte es otro lead, el agente lee su nombre y teléfono en vez de usar el rótulo interno.
+
+## [1.254.10] — 2026-10-30
+
+### Corregido
+- **El agente ya no le escribe a dominios que no reciben correo.** Antes de mandar, `mandar()` consulta el MX de cada destinatario (`src/lib/agente/dominios.ts`, una consulta por dominio por corrida) y saltea los dominios inexistentes o sin MX. El salteo queda anotado en las notas de la corrida. Pasaba con @arnet.com.ar: la consulta del kosher a Logros (20-10) y C-49-47 (26-10) quedaron en "entrega demorada" y nunca llegaron. Un error o timeout del DNS no frena el envío.
+- Directorio: se quitó el mail de Swift Argentina en `consignatarias.json`, que apuntaba a `swiftargentinasa-ar.com`, un dominio estacionado y sin MX.
+- `src/lib/email.ts`: el comentario decía que hola@ no tenía buzón; lo tiene desde el 18-10 y reenvía a agro@.
 
 ## [1.254.9] — 2026-10-29
 
@@ -188,6 +226,7 @@ Ronda 3 entre sesiones, frente del MCP. El puente (v1.248.0) aparece después de
 - Sin cambios en tools, parámetros ni manifiestos. El MCP sigue en 1.9.0.
 
 ---
+
 ## [1.249.1] — 2026-10-22
 
 ### Seguridad
@@ -380,6 +419,7 @@ El uso del MCP viene casi todo de escáneres y la palanca es la distribución. A
 - **`docs/mcp-distribucion.md`**: estado en cada directorio, verificado el 21-10, y el paso a paso de cada envío con el texto en inglés y en castellano. Nada se envió: cada paso espera el OK de José.
 
 ---
+
 ## [1.240.0] — 2026-10-21
 
 ### Prospectos PRO: a qué firma escribirle y qué decirle, con los números de la base
@@ -391,6 +431,7 @@ El uso del MCP viene casi todo de escáneres y la palanca es la distribución. A
 - WhatsApp con el guion ya escrito para las firmas que no contestan mails.
 
 ---
+
 ## [1.239.0] — 2026-10-21
 
 ### SEO de plantillas: cada búsqueda a su página, y del precio al formulario que convierte
@@ -438,6 +479,7 @@ Línea de base (30 días al 21-10, vistas = `value_events.time_on_page` por plan
 - Una sola lista de provincias para todos los formularios (`PROVINCIAS_FORM`, suma Tierra del Fuego).
 
 ---
+
 ## [1.237.2] — 2026-10-21
 
 ### Agente: si no hay a quién ofrecer, se sigue buscando

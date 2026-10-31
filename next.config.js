@@ -67,6 +67,9 @@ const nextConfig = {
     // trae y la descarga responde 503 file_unavailable.
     '/api/guias-premium/**': ['./private/guias/**'],
     // La presentación PRO en PDF (lib/pdf/propuesta): Inter y las capturas del panel.
+    // El card de Outreach del admin mira si el workflow está en .github/workflows/
+    // o en disabled/. Sin esto el Lambda no trae .github/ y el badge decía "s/d".
+    '/admin/dashboard': ['./.github/workflows/*.yml', './.github/workflows/disabled/*.yml'],
     '/api/propuesta/**': ['./src/fonts/Inter-*.woff', './src/lib/pdf/propuesta/capturas/*.png', './src/lib/pdf/propuesta/portada.jpg'],
   },
 

@@ -14,7 +14,7 @@ export const dynamic = 'force-dynamic'
 const SPEC = {
   resource: 'https://www.consignatarias.com.ar/api/x402/pro',
   description:
-    'PRO Consignataria en consignatarias.com.ar: sello ★ PRO y primer lugar en el directorio y el calendario, primera en el newsletter semanal y en el directorio MCP, leads con nombre y contacto, y panel de visitas. Precio ARS 45.000/mes cotizado en USDC al dólar blue del día. Params: slug (consignataria del directorio), meses (1-12, default 1).',
+    'PRO Consignataria en consignatarias.com.ar: sello ★ PRO y primer lugar en el directorio y el calendario, primera en el newsletter semanal, leads con nombre y contacto, y panel de visitas. Precio ARS 45.000/mes cotizado en USDC al dólar blue del día. Params: slug (consignataria del directorio), meses (1-12, default 1).',
   usdCents: (args: Record<string, unknown>) => cotizarProUsdCents(proMeses(args.meses)),
   validate: (args: Record<string, unknown>) => {
     if (!validarSlugPro(args.slug)) {

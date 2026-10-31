@@ -5,7 +5,7 @@ import Badge from '@/components/ui/Badge'
  * Línea chica bajo los ingresos de /admin/dashboard: cuántos eventos de Rebill
  * (webhooks de cobro/alta/baja) se procesaron. Es la señal de que el circuito
  * de pagos está vivo; viene de la tabla de idempotencia processed_webhook_events.
- * Antes vivía en ConversionRevenueCard (que ya no se renderiza).
+ * Antes vivía en ConversionRevenueCard (eliminado en 1.254.12).
  */
 
 const nf = (n: number) => n.toLocaleString('es-AR')

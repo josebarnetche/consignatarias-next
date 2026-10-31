@@ -454,14 +454,14 @@ export function Presentacion(p: PresentacionProps) {
         </View>
       </Funcion>
 
-      {/* 3 · DIRECTORIO + IA */}
+      {/* 3 · DIRECTORIO (el MCP es neutral desde v1.254.10) */}
       <Funcion
         firma={firma}
         pag={pag}
         numero={++num}
         titulo="Primera cuando buscan consignataria"
-        texto={`En el directorio de ${f.provincia ?? 'su provincia'} y en el general, las firmas PRO van primero y con el sello. Cuando un asistente de IA consulta nuestro directorio, la respuesta también las pone adelante.`}
-        puntos={['El productor que llega a la provincia la ve antes que al resto', 'Lo mismo cuando la búsqueda la hace una IA por el productor']}
+        texto={`En el directorio de ${f.provincia ?? 'su provincia'} y en el general, las firmas PRO van primero y con el sello.`}
+        puntos={['El productor que llega a la provincia la ve antes que al resto']}
       >
         <Ventana url={`consignatarias.com.ar/consignatarias`}>
           {f.directorio.map((d, i) => (
@@ -486,16 +486,6 @@ export function Presentacion(p: PresentacionProps) {
             </View>
           ))}
         </Ventana>
-        <View style={{ marginTop: 10, backgroundColor: C.papel, borderRadius: 6, padding: 10, borderWidth: 0.5, borderColor: C.linea }}>
-          <Text style={{ fontSize: 7, color: C.gris, marginBottom: 4 }}>Respuesta del directorio a un asistente de IA</Text>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
-            <Estrella size={7} />
-            <Text style={{ fontSize: 8, color: C.tinta, fontWeight: 600 }}>PRO · {firma} · Consignataria</Text>
-          </View>
-          {f.directorio.slice(1, 3).map((d) => (
-            <Text key={d.slug} style={{ fontSize: 8, color: C.texto, marginTop: 2 }}>{d.nombre} · Consignataria</Text>
-          ))}
-        </View>
       </Funcion>
 
       {/* SUS REMATES, DESDE SU PANEL */}
