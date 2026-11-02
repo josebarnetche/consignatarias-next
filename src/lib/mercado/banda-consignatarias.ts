@@ -171,3 +171,24 @@ export function bandaSemanal(puntos: PuntoBanda[], fecha?: string): BandaSemanal
       'no la diferencia de un día contra otro. La serie arranca en junio de 2026.',
   }
 }
+
+/**
+ * Las categorías del bloque corto de la portada: el titular (novillo) y las que
+ * más cabezas movieron después, hasta `n`. `porCabezas` es el orden de volumen
+ * (los códigos de `getBandasPublicas()`); una categoría que no está ahí no tiene
+ * base publicable y no entra. Sin titular, el bloque no se muestra: devuelve [].
+ */
+export function categoriasPrincipales(
+  b: BandaSemanal,
+  porCabezas: readonly string[],
+  n = 3,
+): CategoriaSemana[] {
+  if (!b.titular) return []
+  const porCodigo = new Map(b.categorias.map((c) => [c.categoria, c]))
+  const orden = [b.titular.categoria, ...porCabezas.filter((c) => c !== b.titular!.categoria)]
+  return orden
+    .filter((c) => porCabezas.includes(c))
+    .map((c) => porCodigo.get(c))
+    .filter((c): c is CategoriaSemana => c != null)
+    .slice(0, n)
+}
