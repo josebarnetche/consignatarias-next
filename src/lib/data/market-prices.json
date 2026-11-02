@@ -1833,7 +1833,7 @@
       }
     ],
     "latestVolume": 3791,
-    "periodVolume": 143430
+    "periodVolume": 137523
   },
   "categories": {
     "novillos": {
@@ -1908,7 +1908,7 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-11-01",
+  "lastUpdate": "2026-11-02",
   "provinceEntry": {
     "date": "2026-10-31",
     "totalCabezas": 3791,
