@@ -36,6 +36,7 @@
  */
 import type { SupabaseClient } from '@supabase/supabase-js'
 import bandas from '@/lib/data/vr-bandas.json'
+import type { PuntoBanda } from '@/lib/mercado/banda-consignatarias'
 
 /** Versión de la metodología. Cambia el cálculo → cambia esto. */
 export const VR_METODOLOGIA = 'VR v1.0'
@@ -561,6 +562,28 @@ export function getMovimiento(slug: string): VrMovimiento | null {
     amplitudInicial: a.amplitud,
     amplitudFinal: z.amplitud,
   }
+}
+
+/**
+ * La serie de la Banda Consignatarias armada con lo que ya viene en el JSON, sin
+ * consultar la base: el punto vigente de cada categoría publicable (con P10/P90) y,
+ * antes, los puntos cortos de `tendencia` (solo amplitud y mediana), que alcanzan
+ * para la comparación semanal de `bandaSemanal()`. Así la portada muestra la banda
+ * y sigue siendo SSG; la serie larga la lee la base (MCP, /api/precios).
+ * Solo entran categorías que pasan `MIN_LOTES_BANDA_COMPLETA`.
+ */
+export function getPuntosBandaPublicos(): PuntoBanda[] {
+  const hasta = archivo.fecha_dato_hasta
+  const out: PuntoBanda[] = []
+  for (const [codigo, b] of Object.entries(archivo.categorias)) {
+    if (b.lotes < MIN_LOTES_BANDA_COMPLETA) continue
+    for (const t of archivo.tendencia?.[codigo] ?? []) {
+      if (t.date >= hasta) continue
+      out.push({ date: t.date, category: codigo, p10: null, mediana: t.mediana, p90: null, amplitud_pct: t.amplitud, lotes: null })
+    }
+    out.push({ date: hasta, category: codigo, p10: b.p10, mediana: b.mediana, p90: b.p90, amplitud_pct: b.amplitud_pct, lotes: b.lotes })
+  }
+  return out
 }
 
 

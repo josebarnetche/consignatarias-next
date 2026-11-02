@@ -104,12 +104,8 @@ describe('fusiones de la v1.255.1', () => {
   })
 
   it('nada en src enlaza a una ruta vieja', () => {
-    // La portada (src/app/page.tsx) la reordena otro PR: sus dos enlaces viejos se
-    // resuelven ahí. Hasta entonces caen en un solo 301, sin cadena.
-    const EXCEPTUADOS = new Set([join(APP, 'page.tsx')])
     const hallazgos: string[] = []
     for (const f of archivosFuente(join(ROOT, 'src'))) {
-      if (EXCEPTUADOS.has(f)) continue
       const src = readFileSync(f, 'utf8')
       for (const vieja of Object.keys(FUSIONES)) {
         // Un enlace es la ruta entre comillas (sola, con ancla o con query), no una mención en un comentario.

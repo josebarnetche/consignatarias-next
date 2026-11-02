@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
-  bandaSemanal, CATEGORIA_TITULAR, UMBRAL_PP, MIN_SEMANAS_SERIE,
+  bandaSemanal, categoriasPrincipales, CATEGORIA_TITULAR, UMBRAL_PP, MIN_SEMANAS_SERIE,
   type PuntoBanda,
 } from './banda-consignatarias'
 
@@ -98,5 +98,28 @@ describe('Banda Consignatarias', () => {
     const b = bandaSemanal(serieNovillo([28, 29, 30, 31, 30, 29, 28, 27, 28, 29, 30, 31]))
     expect(b.advertencia).toContain('30 días')
     expect(b.advertencia).toContain('nivel y tendencia')
+  })
+})
+
+describe('categoriasPrincipales — el bloque corto de la portada', () => {
+  const puntos = [
+    p('2026-10-30', 'NOVILLO', 27),
+    p('2026-10-30', 'VACA', 38),
+    p('2026-10-30', 'VAQUILLONA', 41),
+    p('2026-10-30', 'TORO', 33),
+  ]
+
+  it('pone primero al novillo y después las de más cabezas', () => {
+    const cats = categoriasPrincipales(bandaSemanal(puntos), ['VACA', 'VAQUILLONA', 'NOVILLO', 'TORO'])
+    expect(cats.map((c) => c.categoria)).toEqual(['NOVILLO', 'VACA', 'VAQUILLONA'])
+  })
+
+  it('no muestra una categoría sin base publicable', () => {
+    const cats = categoriasPrincipales(bandaSemanal(puntos), ['NOVILLO', 'TORO'])
+    expect(cats.map((c) => c.categoria)).toEqual(['NOVILLO', 'TORO'])
+  })
+
+  it('sin dato, no hay bloque', () => {
+    expect(categoriasPrincipales(bandaSemanal([]), ['NOVILLO'])).toEqual([])
   })
 })
