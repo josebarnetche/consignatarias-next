@@ -153,7 +153,7 @@ export async function leerSerie(
 
   if (moneda === 'usd') {
     // Dólar blue venta, último valor conocido a cada fecha (forward-fill): la misma
-    // regla que /mercado/inmag-dolares y las alertas. El margen de 14 días hacia atrás
+    // regla que /mercado/novillo-historico#inmag-dolares y las alertas. El margen de 14 días hacia atrás
     // asegura que la primera rueda tenga una cotización previa de la cual colgarse.
     const margen = restarDias(rango.desde, 14)
     const blues: Array<{ date: string; venta: number }> = []

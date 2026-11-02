@@ -58,9 +58,41 @@ const TERMINOS = [
       'Honorario que cobra la consignataria por intermediar la operación, calculado como porcentaje sobre el valor de venta de la hacienda —de referencia del mercado, habitualmente entre 3% y 5%—. Se descuenta de la liquidación al productor. Cada firma la acuerda con el productor.',
   },
   {
-    name: 'Gastos de venta',
+    name: 'Gastos de comercialización',
     description:
-      'Costos que se descuentan de la liquidación además de la comisión: fletes, sanidad, guías de traslado, DT-e, sellados e IVA cuando corresponde. El productor recibe el neto: valor de venta menos comisión menos gastos.',
+      'Costos que se descuentan de la liquidación además de la comisión: fletes, sanidad, guías de traslado, DT-e, impuesto de sellos e IVA cuando corresponde. Todos figuran, línea por línea, en la liquidación. El productor recibe el neto: valor de venta menos comisión menos gastos.',
+    url: `${PAGE_URL}#gastos-de-comercializacion`,
+  },
+  // Los cinco que siguen venían de /vender-hacienda-guia (301 hacia acá desde la v1.255.1).
+  {
+    name: 'Liquidación',
+    description:
+      'Documento que emite la consignataria al productor tras la venta, donde se detalla el precio obtenido, el peso, los descuentos por desbaste y los gastos de comercialización (comisión, fletes, sanidad, sellos, IVA). Es la rendición de cuentas de la operación: del bruto vendido al neto que cobra el productor.',
+    url: `${BASE_URL}/como-leer-una-liquidacion-de-hacienda`,
+  },
+  {
+    name: 'Desbaste',
+    description:
+      'Descuento porcentual que se aplica al peso de la hacienda para compensar el contenido gástrico y la pérdida de peso por el ayuno y el transporte. Suele ubicarse en ~5% a 8% del peso vivo (puede superar el 10% en traslados largos), según el estado del animal y la distancia al destino; incide directamente sobre el precio de tranquera.',
+    url: `${BASE_URL}/desbaste-de-la-hacienda`,
+  },
+  {
+    name: 'Precio de tranquera',
+    description:
+      'Precio neto que efectivamente percibe el productor por su hacienda, ya descontados el desbaste y todos los gastos de comercialización. Es el número que importa para comparar canales: no el precio de pizarra, sino lo que queda en la tranquera del campo.',
+    url: `${PAGE_URL}#precio-de-tranquera`,
+  },
+  {
+    name: 'Tropa',
+    description:
+      'Conjunto de animales de una misma especie y categoría que se mueven o comercializan juntos bajo una misma documentación. En la venta define el lote, el peso total y el destino sanitario; ordena tanto el remate como la venta directa a frigorífico.',
+    url: `${BASE_URL}/que-es-una-tropa-de-hacienda`,
+  },
+  {
+    name: 'Guía de hacienda',
+    description:
+      'Documento que ampara la propiedad y el traslado de la hacienda entre establecimientos o hacia el remate y el frigorífico. Emitida por la autoridad provincial, acredita la legítima tenencia del ganado; sin guía la hacienda no puede circular ni venderse dentro del circuito legal.',
+    url: `${BASE_URL}/que-es-la-guia-de-hacienda`,
   },
   {
     name: 'DT-e (Documento de Tránsito electrónico)',
@@ -120,13 +152,23 @@ const FAQ = [
     answer:
       'Depende de la categoría, la urgencia y el apetito de riesgo. En el remate feria el precio lo fija la puja del mercado en el momento —hay competencia entre compradores, pero el resultado no está garantizado de antemano—. En la venta directa a frigorífico o invernador el precio se acuerda de forma particular antes de mover la hacienda, con más previsibilidad pero sin la competencia de la subasta. La consignación cubre ambos: la firma vende por cuenta y orden del productor por el canal que más convenga.',
   },
+  {
+    question: '¿Qué me descuentan de la liquidación?',
+    answer:
+      'La liquidación descuenta, sobre el bruto vendido, cinco conceptos: el desbaste sobre el peso, la comisión de la consignataria, los fletes, los gastos de sanidad y guía, y el impuesto de sellos, además del IVA que corresponda. La resta de todos esos gastos de comercialización sobre el precio bruto arroja el precio de tranquera, que es el neto que percibe el productor.',
+  },
+  {
+    question: '¿Qué es el precio de tranquera?',
+    answer: `El precio de tranquera es el valor neto que efectivamente percibe el productor por su hacienda, ya descontados el desbaste sobre el peso y todos los gastos de comercialización (comisión, fletes, sanidad, guía, sellos, IVA). Sobre un novillo de referencia a $${fmt(novillo)}/kg vivo (${INMAG_DATE}), el precio de tranquera es siempre inferior al precio de pizarra: es el número que conviene usar para comparar canales de venta.`,
+  },
 ]
 
 export const metadata: Metadata = {
-  // Cómo ELEGIR el canal. El paso a paso está en /vender-hacienda-guia y la
-  // comparativa lado a lado en /vender-en-remate-vs-venta-directa-vs-consignacion.
-  title: '¿Por dónde vender tu hacienda? Cómo elegir el canal',
-  description: `Para vender hacienda hay tres canales: consignación, remate feria o venta directa a frigorífico o invernador. Precio de referencia hoy $${fmt(novillo)}/kg vivo para el novillo (INMAG del ${INMAG_DATE}). Comisión de referencia 3-5%, documentación necesaria y cómo elegir consignataria.`,
+  // LA guía de venta: elegir el canal y el paso a paso (papeles, descuentos, cobro).
+  // /vender-hacienda-guia es un 301 hacia acá desde la v1.255.1. La comparativa lado
+  // a lado sigue aparte: /vender-en-remate-vs-venta-directa-vs-consignacion.
+  title: 'Cómo vender hacienda: canal, papeles, gastos y cobro',
+  description: `Para vender hacienda hay tres canales: consignación, remate feria o venta directa a frigorífico o invernador. Precio de referencia hoy $${fmt(novillo)}/kg vivo para el novillo (INMAG del ${INMAG_DATE}). Comisión de referencia 3-5%, desbaste, precio de tranquera, documentación necesaria y cómo elegir consignataria.`,
   keywords: [
     'cómo vender hacienda',
     'como vender hacienda',
@@ -140,9 +182,12 @@ export const metadata: Metadata = {
     'comisión consignataria hacienda',
     'documentación para vender hacienda',
     'vender vacas argentina',
+    'pasos para vender ganado',
+    'precio de tranquera',
+    'gastos de comercialización hacienda',
   ],
   openGraph: {
-    title: '¿Por dónde vender tu hacienda? Cómo elegir el canal',
+    title: 'Cómo vender hacienda: canal, papeles, gastos y cobro',
     description: `Los tres canales para vender hacienda en Argentina, la comisión de referencia (3-5%), la documentación necesaria y cómo elegir consignataria. Precio de referencia del novillo hoy: $${fmt(novillo)}/kg vivo (INMAG del ${INMAG_DATE}).`,
     url: PAGE_URL,
     type: 'article',
@@ -178,7 +223,7 @@ export default function ComoVenderHaciendaPage() {
       <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">
         {/* Title */}
         <h1 className="text-zinc-100 text-2xl font-medium mb-6">
-          Por dónde vender tu hacienda: cómo elegir entre consignación, remate o venta directa
+          Cómo vender hacienda: por dónde, con qué papeles y cuánto te queda
         </h1>
 
         {/* Answer-first: respuesta extraíble por asistentes IA en la 1ª oración */}
@@ -263,6 +308,64 @@ export default function ComoVenderHaciendaPage() {
           de la operación.
         </p>
 
+        {/* Del precio de pizarra al neto — venía de /vender-hacienda-guia */}
+        <h2 id="precio-de-tranquera" className="text-zinc-200 text-lg font-medium mb-3 scroll-mt-24">
+          De qué se compone el precio que cobrás
+        </h2>
+        <p className="text-zinc-400 mb-4">
+          El número de pizarra no es lo que percibe el productor. Del{' '}
+          <Link href="/precio-del-novillo-en-pie" className="text-accent hover:underline">
+            precio del novillo en pie
+          </Link>{' '}
+          al neto que queda en la tranquera hay una secuencia de descuentos:
+        </p>
+        <ul className="text-zinc-400 mb-6 space-y-2 list-disc pl-5">
+          <li>
+            <span className="text-zinc-300">Peso vivo:</span> el peso de la hacienda tal como sale del
+            campo o llega a la balanza, base de toda la operación por{' '}
+            <Link href="/rendimiento-al-gancho" className="text-accent hover:underline">
+              kilo vivo y rendimiento al gancho
+            </Link>
+            .
+          </li>
+          <li>
+            <span className="text-zinc-300">Desbaste:</span> descuento de ~5% a 8% (puede superar el 10%
+            en traslados largos) sobre el peso para compensar el contenido gástrico y la merma por ayuno y
+            transporte. Ver{' '}
+            <Link href="/desbaste-de-la-hacienda" className="text-accent hover:underline">
+              el desbaste de la hacienda
+            </Link>
+            .
+          </li>
+          <li>
+            <span className="text-zinc-300">Precio:</span> el valor por kilo acordado o alcanzado en la
+            puja, aplicado sobre el peso ya desbastado.
+          </li>
+          <li id="gastos-de-comercializacion">
+            <span className="text-zinc-300">Gastos de comercialización:</span>{' '}
+            <Link href="/cuanto-cobra-de-comision-una-consignataria" className="text-accent hover:underline">
+              comisión de la consignataria
+            </Link>
+            ,{' '}
+            <Link href="/cuanto-cuesta-el-flete-de-hacienda" className="text-accent hover:underline">
+              flete de hacienda
+            </Link>
+            , sanidad, guía e impuesto de sellos, más el IVA.
+          </li>
+          <li>
+            <span className="text-zinc-300">Precio de tranquera:</span> el neto final. Cómo leer cada
+            línea en{' '}
+            <Link href="/como-leer-una-liquidacion-de-hacienda" className="text-accent hover:underline">
+              cómo leer una liquidación de hacienda
+            </Link>{' '}
+            y el concepto en{' '}
+            <Link href="/precio-de-tranquera" className="text-accent hover:underline">
+              precio de tranquera
+            </Link>
+            .
+          </li>
+        </ul>
+
         {/* Documentación */}
         <h2 className="text-zinc-200 text-lg font-medium mb-3">Documentación necesaria</h2>
         <ul className="text-zinc-400 mb-6 space-y-2 list-disc pl-5">
@@ -286,7 +389,19 @@ export default function ComoVenderHaciendaPage() {
           <li>
             <span className="text-zinc-300">Guía de traslado:</span> documento provincial —ligado al
             boleto de marca— que acredita la propiedad de la hacienda. Es distinto de la DT-e: la guía
-            es provincial y prueba la titularidad; la DT-e es sanitaria y la emite SENASA.
+            es provincial y prueba la titularidad; la DT-e es sanitaria y la emite SENASA.{' '}
+            <Link href="/que-es-la-guia-de-hacienda" className="text-accent hover:underline">
+              Qué es la guía de hacienda
+            </Link>
+            .
+          </li>
+          <li>
+            <span className="text-zinc-300">Boleto de marca:</span> acredita la titularidad de la marca
+            a fuego del ganado.{' '}
+            <Link href="/como-sacar-el-boleto-de-marca" className="text-accent hover:underline">
+              Cómo sacar el boleto de marca
+            </Link>
+            .
           </li>
           <li>
             <span className="text-zinc-300">Documentación sanitaria:</span> planes de vacunación al día
@@ -323,6 +438,35 @@ export default function ComoVenderHaciendaPage() {
           ]}
           gratisAca="Todo lo de arriba sigue gratis: cómo vender, cuánto se descuenta y qué documentación hace falta. La guía es para el que quiere estar del lado que liquida."
         />
+
+        {/* El circuito de venta, tema por tema — venía de /vender-hacienda-guia */}
+        <div className="border border-terminal-border bg-terminal-panel/40 px-panel py-3 space-y-2 mb-6 text-zinc-400">
+          <p className="text-xxs font-terminal uppercase tracking-wider text-zinc-500">
+            El circuito de venta, tema por tema
+          </p>
+          <p>
+            Proceso:{' '}
+            <Link href="/como-funciona-un-remate-ganadero" className="text-accent hover:underline">cómo funciona un remate ganadero</Link>{' · '}
+            <Link href="/vender-en-remate-vs-venta-directa-vs-consignacion" className="text-accent hover:underline">remate vs. venta directa vs. consignación</Link>{' · '}
+            <Link href="/conviene-vender-la-hacienda-ahora-o-esperar" className="text-accent hover:underline">¿vender ahora o esperar?</Link>.
+          </p>
+          <p>
+            Precio y liquidación:{' '}
+            <Link href="/desbaste-de-la-hacienda" className="text-accent hover:underline">desbaste</Link>{' · '}
+            <Link href="/como-leer-una-liquidacion-de-hacienda" className="text-accent hover:underline">cómo leer una liquidación</Link>{' · '}
+            <Link href="/cuanto-cobra-de-comision-una-consignataria" className="text-accent hover:underline">comisión de una consignataria</Link>{' · '}
+            <Link href="/cuanto-cuesta-el-flete-de-hacienda" className="text-accent hover:underline">flete de hacienda</Link>{' · '}
+            <Link href="/precio-de-tranquera" className="text-accent hover:underline">precio de tranquera</Link>.
+          </p>
+          <p>
+            Documentación y tenencia:{' '}
+            <Link href="/que-es-la-guia-de-hacienda" className="text-accent hover:underline">guía de hacienda</Link>{' · '}
+            <Link href="/que-es-una-tropa-de-hacienda" className="text-accent hover:underline">tropa de hacienda</Link>{' · '}
+            <Link href="/como-sacar-el-boleto-de-marca" className="text-accent hover:underline">boleto de marca</Link>{' · '}
+            <Link href="/que-es-el-dte" className="text-accent hover:underline">DT-e</Link>{' · '}
+            <Link href="/que-es-el-renspa" className="text-accent hover:underline">RENSPA</Link>.
+          </p>
+        </div>
 
         {/* Links internos — al negocio */}
         <div className="border-t border-zinc-800 pt-4 flex flex-wrap gap-4 text-xs">

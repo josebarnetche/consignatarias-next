@@ -25,8 +25,7 @@ export const GUIAS: GrupoGuias[] = [
     titulo: 'Vender hacienda',
     bajada: 'Cómo se vende, con quién, cuánto se lleva cada uno y qué queda de neto.',
     guias: [
-      { href: '/vender-hacienda-guia', label: 'Cómo vender hacienda paso a paso', hint: 'Papeles, gastos y cobro, de la tropa a la liquidación' },
-      { href: '/como-vender-hacienda', label: 'Por dónde vender tu hacienda', hint: 'Cómo elegir entre consignación, remate o venta directa' },
+      { href: '/como-vender-hacienda', label: 'Cómo vender hacienda', hint: 'Por dónde vender, papeles, descuentos y cobro' },
       { href: '/vender-en-remate-vs-venta-directa-vs-consignacion', label: 'Remate, venta directa o consignación', hint: 'Comparativa de costos, tiempos y riesgo, lado a lado' },
       { href: '/senal-o-ruido-precio-hacienda', label: '¿El precio se movió de verdad?', hint: 'Separar el movimiento real del ruido de la serie' },
       { href: '/conviene-vender-la-hacienda-ahora-o-esperar', label: '¿Conviene vender ahora o esperar?', hint: 'Qué mirar antes de decidir' },
@@ -81,7 +80,7 @@ export const GUIAS: GrupoGuias[] = [
       { href: '/terneros-por-vaca-de-tu-zona', label: 'Terneros por vaca de tu zona', hint: 'Cómo leerlo, y cuándo el número engaña' },
       { href: '/que-es-el-destete', label: 'Qué es el destete', hint: 'Y qué es el destete precoz' },
       { href: '/que-es-un-feedlot', label: 'Qué es un feedlot', hint: 'Engorde a corral' },
-      { href: '/relacion-maiz-novillo', label: 'Relación maíz / novillo', hint: 'La cuenta que decide si conviene engordar' },
+      { href: '/mercado/spread', label: 'Relación maíz / novillo', hint: 'La cuenta que decide si conviene engordar' },
       { href: '/feedlot-vs-pastoril', label: 'Feedlot vs pastoril', hint: 'Qué conviene para engordar' },
       { href: '/que-es-el-equivalente-vaca', label: 'Qué es el equivalente vaca (EV)', hint: 'La unidad que ordena la receptividad' },
       { href: '/como-se-calcula-la-carga-animal', label: 'Cómo se calcula la carga animal', hint: 'EV por hectárea' },

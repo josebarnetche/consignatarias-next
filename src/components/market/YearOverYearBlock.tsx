@@ -60,7 +60,7 @@ export async function YearOverYearBlock() {
         inflación no distorsiona: los años se superponen y recién ahí se lee la
         estacionalidad y el cambio real interanual.{' '}
         <Link
-          href="/mercado/inmag-dolares"
+          href="/mercado/novillo-historico#inmag-dolares"
           className="text-sky-400 hover:underline underline-offset-2"
         >
           Ver INMAG en dólares (serie completa)

@@ -101,7 +101,7 @@
               "ars",
               "usd"
             ],
-            "description": "ars (default) o usd — conversión por dólar blue venta, último valor conocido a cada fecha (regla de /mercado/inmag-dolares)"
+            "description": "ars (default) o usd — conversión por dólar blue venta, último valor conocido a cada fecha (regla de /mercado/novillo-historico)"
           },
           "api_key": {
             "type": "string",

@@ -87,7 +87,7 @@ const FAQ = [
 ]
 
 export const metadata: Metadata = {
-  // COMPARATIVA lado a lado. Elegir canal: /como-vender-hacienda; paso a paso: /vender-hacienda-guia.
+  // COMPARATIVA lado a lado. Elegir canal y paso a paso: /como-vender-hacienda (v1.255.1).
   title: 'Remate, venta directa o consignación: comparativa de costos',
   description: `Los tres canales para vender hacienda —remate, venta directa y consignación— comparados por comisión, transparencia en la formación de precio y velocidad de cobro, con el novillo de referencia a $${fmt(novillo)}/kg vivo (${lastUpdate}).`,
   keywords: [
@@ -369,7 +369,7 @@ export default function VenderEnRemateVsVentaDirectaVsConsignacionPage() {
           en directo según convenga al lote, y un mismo productor puede combinar canales por
           categoría. La guía completa está en{' '}
           <Link
-            href="/vender-hacienda-guia"
+            href="/como-vender-hacienda"
             className="text-accent hover:text-accent-bright transition-colors"
           >
             la guía para vender hacienda
@@ -439,12 +439,6 @@ export default function VenderEnRemateVsVentaDirectaVsConsignacionPage() {
               className="text-accent hover:text-accent-bright transition-colors"
             >
               Precio de tranquera →
-            </Link>
-            <Link
-              href="/vender-hacienda-guia"
-              className="text-accent hover:text-accent-bright transition-colors"
-            >
-              Guía para vender hacienda →
             </Link>
             <Link
               href="/que-es-el-rosgan"

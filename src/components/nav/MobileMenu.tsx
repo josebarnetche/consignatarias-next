@@ -32,6 +32,8 @@ interface Item {
 interface Group {
   label: string;
   match: string;
+  /** Adónde lleva el grupo; se usa cuando no tiene items (enlace directo). */
+  href: string;
   items: Item[];
 }
 
@@ -100,7 +102,21 @@ export default function MobileMenu({ groups }: { groups: Group[] }) {
         {...(open ? {} : { inert: "" as unknown as boolean })}
       >
         <nav aria-label="Secciones del sitio" className="px-3 py-3">
-          {groups.map((group) => (
+          {groups.map((group) => group.items.length === 0 ? (
+            // Grupo sin items (El Corredor): enlace directo en vez de título + lista.
+            <div key={group.label} className="mb-4 last:mb-1">
+              <Link
+                href={group.href}
+                className={`block rounded px-2 py-2 text-xxs font-terminal uppercase tracking-widest transition-colors ${
+                  pathname === group.href || pathname.startsWith(group.href + "/")
+                    ? "bg-accent/10 text-accent"
+                    : "text-zinc-300 hover:bg-zinc-900/60 hover:text-ink"
+                }`}
+              >
+                {group.label} →
+              </Link>
+            </div>
+          ) : (
             <div key={group.label} className="mb-4 last:mb-1">
               <h2 className="px-1 mb-1.5 text-xxs font-terminal uppercase tracking-widest text-zinc-500">
                 {group.label}

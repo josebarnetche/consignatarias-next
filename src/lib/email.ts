@@ -3721,7 +3721,7 @@ export async function sendAlertaNovilloUsd(opts: {
       <h2 style="color:#fafafa;font-size:19px;font-weight:700;margin:0 0 14px">${escapeHtml(asunto)}</h2>
       ${parrafos}
       <p style="margin:18px 0 20px">
-        <a href="${APP_URL}/mercado/inmag-dolares" style="display:inline-block;background:#38bdf8;color:#0a0a0a;font-weight:700;font-size:13px;text-decoration:none;padding:11px 18px;border-radius:6px">Ver la serie completa</a>
+        <a href="${APP_URL}/mercado/novillo-historico#inmag-dolares" style="display:inline-block;background:#38bdf8;color:#0a0a0a;font-weight:700;font-size:13px;text-decoration:none;padding:11px 18px;border-radius:6px">Ver la serie completa</a>
       </p>
       <p style="color:#52525b;font-size:11px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px">Esta alerta suena sola: no hay nada que configurar y no llega otra en 30 días. Si no la querés más, <a href="${APP_URL}/unsubscribe?tipo=alerta-novillo&email=${encodeURIComponent(to)}" style="color:#71717a">date de baja acá</a>.</p>
     `),

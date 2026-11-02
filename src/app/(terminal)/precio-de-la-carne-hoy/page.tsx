@@ -306,7 +306,7 @@ export default function PrecioDeLaCarneHoyPage() {
             <Link href="/cuanto-pesa-una-media-res" className="text-accent hover:text-accent-bright transition-colors">
               ¿Cuánto pesa una media res? →
             </Link>
-            <Link href="/el-novillo-en-dolares" className="text-accent hover:text-accent-bright transition-colors">
+            <Link href="/mercado/novillo-historico" className="text-accent hover:text-accent-bright transition-colors">
               El novillo en dólares →
             </Link>
           </p>

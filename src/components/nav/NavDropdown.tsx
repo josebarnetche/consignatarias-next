@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import type { NavGroup, NavLeaf } from "@/lib/nav";
+import { esEnlaceDirecto, type NavGroup, type NavLeaf } from "@/lib/nav";
 
 /**
  * Desplegable de un grupo del menú (lib/nav). Lo usan el terminal y la portada, así
@@ -80,6 +80,28 @@ export default function NavDropdown({
     clearTimers();
     closeTimer.current = setTimeout(() => setOpen(false), 120);
   };
+
+  // Grupo sin items (El Corredor): enlace directo, mismo aspecto que el botón de grupo.
+  if (esEnlaceDirecto(group)) {
+    return (
+      <Link
+        href={group.href}
+        className={`relative flex items-center px-2 py-1.5 text-xxs font-terminal uppercase tracking-widest motion-hover claro:text-sm claro:font-medium claro:px-3 claro:rounded-terminal ${
+          active
+            ? "text-accent claro:bg-accent/[0.07]"
+            : "text-zinc-500 hover:text-zinc-100 claro:text-zinc-300 claro:hover:bg-zinc-900"
+        }`}
+      >
+        {group.label}
+        {active && (
+          <span
+            className="absolute bottom-0 left-1 right-1 h-px bg-accent"
+            style={{ borderRadius: "1px" }}
+          />
+        )}
+      </Link>
+    );
+  }
 
   return (
     <div

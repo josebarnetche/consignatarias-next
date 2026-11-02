@@ -1,20 +1,16 @@
 import Link from 'next/link'
 
 /**
- * Las tres guías de venta de hacienda, cada una con su pregunta. Antes tenían
- * titles casi iguales y se pisaban en Google; ahora cada una responde una cosa
- * distinta y se enlazan entre sí diciendo cuál es cuál.
+ * Las guías de venta de hacienda, cada una con su pregunta. Eran tres con titles casi
+ * iguales que se pisaban en Google; desde la v1.255.1 el paso a paso
+ * (/vender-hacienda-guia) vive en /como-vender-hacienda y queda aparte solo la
+ * comparativa lado a lado, que responde otra pregunta.
  */
 const GUIAS = [
   {
-    href: '/vender-hacienda-guia',
-    titulo: 'Cómo vender hacienda paso a paso',
-    para: 'Si ya decidiste vender: papeles, desbaste, gastos y cuánto te queda en la mano.',
-  },
-  {
     href: '/como-vender-hacienda',
-    titulo: 'Cómo elegir por dónde vender',
-    para: 'Si no sabés si te conviene la consignación, el remate o la venta directa.',
+    titulo: 'Cómo vender hacienda',
+    para: 'Por dónde vender, qué papeles hacen falta, qué te descuentan y cuánto te queda en la mano.',
   },
   {
     href: '/vender-en-remate-vs-venta-directa-vs-consignacion',

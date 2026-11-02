@@ -257,7 +257,7 @@ export default async function InmagYearPage({
           <div className="terminal-panel mb-6">
             <div className="px-panel py-6 text-zinc-400 text-data">
               Estamos cargando la serie del INMAG para {anio}.{' '}
-              <Link href="/mercado/inmag-dolares" className="text-sky-400 hover:underline">
+              <Link href="/mercado/novillo-historico#inmag-dolares" className="text-sky-400 hover:underline">
                 Ver la serie completa en dólares →
               </Link>
             </div>
@@ -313,7 +313,7 @@ export default async function InmagYearPage({
 
         <p className="text-zinc-600 text-xxs text-center">
           Fuente: INMAG (Mercado Agroganadero) ÷ dólar blue ·{' '}
-          <Link href="/mercado/inmag-dolares" className="text-zinc-500 hover:text-zinc-300 underline-offset-2 hover:underline">
+          <Link href="/mercado/novillo-historico#inmag-dolares" className="text-zinc-500 hover:text-zinc-300 underline-offset-2 hover:underline">
             Ver la serie completa en dólares
           </Link>{' '}·{' '}
           <Link href="/indices" className="text-zinc-500 hover:text-zinc-300 underline-offset-2 hover:underline">

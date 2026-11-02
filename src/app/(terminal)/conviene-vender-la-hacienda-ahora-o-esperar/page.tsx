@@ -270,7 +270,7 @@ export default function ConvieneVenderLaHaciendaAhoraOEsperarPage() {
           <strong>estacionalidad</strong> —en general hay más oferta y presión bajista en otoño,
           cuando se descargan campos—, ayuda a entender el clima del mercado. Para el productor
           exportador o el que sigue el poder de compra, conviene mirar además el{' '}
-          <Link href="/el-novillo-en-dolares" className="text-accent hover:text-accent-bright transition-colors">
+          <Link href="/mercado/novillo-historico" className="text-accent hover:text-accent-bright transition-colors">
             novillo en dólares
           </Link>
           , que separa la suba nominal de la real.
@@ -373,7 +373,7 @@ export default function ConvieneVenderLaHaciendaAhoraOEsperarPage() {
             <Link href="/mercado" className="text-accent hover:text-accent-bright transition-colors">
               Inteligencia de mercado →
             </Link>
-            <Link href="/el-novillo-en-dolares" className="text-accent hover:text-accent-bright transition-colors">
+            <Link href="/mercado/novillo-historico" className="text-accent hover:text-accent-bright transition-colors">
               El novillo en dólares →
             </Link>
             <Link href="/metodologia" className="text-accent hover:text-accent-bright transition-colors">
@@ -393,7 +393,7 @@ export default function ConvieneVenderLaHaciendaAhoraOEsperarPage() {
             <Link href="/mercado/arrendamiento" className="text-accent hover:text-accent-bright transition-colors">
               Precio del novillo de arrendamiento →
             </Link>
-            <Link href="/vender-hacienda-guia" className="text-accent hover:text-accent-bright transition-colors">
+            <Link href="/como-vender-hacienda" className="text-accent hover:text-accent-bright transition-colors">
               Guía para vender hacienda →
             </Link>
           </p>

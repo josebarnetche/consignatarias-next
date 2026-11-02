@@ -7,6 +7,26 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.255.1] — 2026-11-02
+
+### Cambiado
+- **Una pregunta, una página.** Siete rutas que competían con otra por la misma búsqueda, cada una con su canonical, ahora son 301 (`vercel.json`, `statusCode: 301`) hacia la sobreviviente de su familia, elegida por impresiones en Search Console (`reports/gsc/2026-W29…W43`):
+  - `/el-novillo-en-dolares` y `/mercado/inmag-dolares` → `/mercado/novillo-historico`. Se suman el INMAG en dólares blue de los últimos 12 meses (`#inmag-dolares`), los días que movieron la serie con el valor del novillo calculado del INMAG de ese día (`#dias`) y la alerta por mail (`#alerta`). Un solo Dataset.
+  - `/relacion-maiz-novillo` → `/mercado/spread`, con "Cómo se lee" y tres preguntas más.
+  - `/reporte-semanal` → `/informes/parte-semanal`: el reporte gratuito en PDF pasa a ser una sección de la misma página (`#reporte-gratis`).
+  - `/vender-hacienda-guia` → `/como-vender-hacienda`: de qué se compone el precio que cobrás, el boleto de marca, cinco términos y dos preguntas. La comparativa de canales (`/vender-en-remate-vs-venta-directa-vs-consignacion`) responde otra pregunta y queda.
+  - `/sanidad` → `/calendario-sanitario-bovino`: el régimen SENASA citado (calendario 2026, planes, vacunador 2027, movimientos, trámites) entra como secciones con las mismas anclas. El plan por época se alinea con la Res. 711/2025.
+  - `/upgrade` → `/planes`: era una página que solo redirigía con un 307; sale también del `Disallow` de `robots.txt` para que Google lea el 301.
+- Enlaces internos, sitemap e índice de guías apuntan a la sobreviviente. Quedan dos enlaces viejos en el cuerpo de la portada, que reordena otro PR: caen en un solo 301.
+- **Menú:** "Banda Consignatarias" (`/banda`) como segunda entrada de Precios y **El Corredor** como enlace directo de nivel superior (un grupo sin items en `lib/nav.ts` se pinta como link en el escritorio, la portada y el teléfono). "INMAG en USD" y "Novillo 20 años" pasan a ser una entrada: "Novillo en dólares".
+- **Un solo footer** (`src/components/SiteFooter.tsx`) para el terminal y la portada, con las guías agrupadas por tema (Vender, Campos, Sanidad, Glosario) y sin Preofertas, Upgrade ni Manifiesto. El logo usa tokens y ya no desaparece en el tema claro.
+
+### Agregado
+- `src/lib/arquitectura-fusiones.test.ts`: cada ruta fusionada es 301, no tiene `page.tsx`, no encadena, no está en el sitemap y nada en `src` la enlaza; el menú y el footer no apuntan a rutas sacadas y cada enlace interno del footer tiene su página.
+
+### Eliminado
+- `src/components/NovilloEnDolares.tsx` (la máquina scrollable de `/el-novillo-en-dolares`).
+
 ## [1.255.0] — 2026-11-02
 
 ### Agregado

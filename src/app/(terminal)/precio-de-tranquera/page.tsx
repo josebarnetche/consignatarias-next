@@ -350,7 +350,7 @@ export default function PrecioDeTranqueraPage() {
               Índice de arrendamiento →
             </Link>{' '}
             ·{' '}
-            <Link href="/vender-hacienda-guia" className="text-accent hover:text-accent-bright transition-colors">
+            <Link href="/como-vender-hacienda" className="text-accent hover:text-accent-bright transition-colors">
               Guía para vender hacienda →
             </Link>
           </p>

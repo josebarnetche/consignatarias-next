@@ -14,7 +14,7 @@
  * LA REGLA DE QUÉ SE PUEDE GATEAR
  * Sólo entra acá lo que no rompe el motor de descubrimiento. Queda afuera, y por escrito:
  * el número del día, los precios observados de cada firma con su `DatasetSchema`, los
- * feeds `webcal`, las 52 guías, el comparador y `/mercado/spread`. Esa superficie es la
+ * feeds `webcal`, las guías (`TOTAL_GUIAS`), el comparador y `/mercado/spread`. Esa superficie es la
  * que hace que los asistentes nos citen —799 sesiones de Copilot y ChatGPT en diez
  * semanas— y `/mercado/spread` es además la página más leída del sitio, con 5,7 % de
  * conversión. Cerrar eso sería cambiar conversión por unos pesos.

@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { FUNCIONES_PREMIUM, PRO_ABIERTO } from '@/lib/plan-pro'
 import { SuscribirPro } from './SuscribirPro'
+import { TOTAL_GUIAS } from '@/lib/data/guias'
 
 const APP_URL = 'https://www.consignatarias.com.ar'
 
@@ -89,7 +90,7 @@ export default function ProPage() {
         <h2 className="text-lg font-semibold text-emerald-200">Lo que sigue siendo gratis</h2>
         <p className="mt-2 text-sm leading-relaxed text-slate-300">
           Y va a seguir siéndolo: <strong className="text-slate-100">el precio del día</strong>,
-          los precios de cada firma, el calendario de remates y su suscripción, las 52
+          los precios de cada firma, el calendario de remates y su suscripción, las {TOTAL_GUIAS}
           guías, el comparador, la calculadora de arrendamiento, la valuación de campo y
           las 455 fichas de productividad por partido.
         </p>

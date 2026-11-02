@@ -31,7 +31,7 @@ export default async function ReportesPage() {
   // Access: PRO Usuario OR any Enterprise tier
   const isEnterprise = await hasApiAccess(user.id)
   if (tier !== 'pro' && !isEnterprise) {
-    redirect('/upgrade?next=/cuenta/reportes')
+    redirect('/planes')
   }
 
   const reports = getAllReports()

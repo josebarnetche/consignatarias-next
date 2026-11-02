@@ -6,7 +6,7 @@ import remates from '@/lib/data/remates.json'
  * semanal.ts — arma el Parte Semanal del Mercado.
  *
  * QUÉ LO DIFERENCIA DEL REPORTE DIARIO GRATIS
- * Ya existe `/reporte-semanal` con un PDF gratuito (`generateReportePDF`) que trae el
+ * Ya existe el reporte gratuito (`/informes/parte-semanal#reporte-gratis`, antes en /reporte-semanal) con un PDF (`generateReportePDF`) que trae el
  * precio del día, el macro y las categorías. Repetir eso y cobrarlo sería vender lo mismo
  * dos veces. Este parte agrega lo único que no se consigue en ningún otro lado:
  *

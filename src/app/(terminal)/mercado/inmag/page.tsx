@@ -414,7 +414,7 @@ export default function InmagPage() {
           <h2 className="text-xl font-semibold text-ink mb-4">Variantes del INMAG</h2>
           <div className="grid sm:grid-cols-3 gap-3">
             <Link
-              href="/mercado/inmag-dolares"
+              href="/mercado/novillo-historico#inmag-dolares"
               className="block bg-zinc-900/40 border border-zinc-800 rounded-xl p-5 hover:border-sky-500/30 transition-colors group"
             >
               <div className="text-xs text-zinc-500 uppercase tracking-wider mb-1">INMAG en dólares</div>

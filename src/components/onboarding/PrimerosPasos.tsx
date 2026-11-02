@@ -58,7 +58,7 @@ const PASOS: Paso[] = [
     detalle:
       'Una sola alerta, sin nada que configurar. Suena cuando el novillo en dólares se aparta más de 12 % de su promedio del mes: unas cuatro veces por año. Si no pasa nada, no te escribimos.',
     cta: 'Anotarme',
-    href: '/mercado/inmag-dolares#alerta',
+    href: '/mercado/novillo-historico#alerta',
     clave: 'alerta',
   },
 ]
