@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import re
 import subprocess
 import sys
 from datetime import date
@@ -81,21 +82,29 @@ td .unidad { color: #71717a; font-size: 18px; margin-left: 8px; }
 """
 
 
-def lienzo(p: D.Paquete, tam: tuple[int, int], titulo: str, cuerpo: str, fuente: str, bajada: str = "") -> str:
+def lienzo(p: D.Paquete, tam: tuple[int, int], titulo: str, cuerpo: str, fuente: str, bajada: str = "",
+           fecha: str | None = None) -> str:
     from string import Template
     ancho, alto = tam
     css = Template(CSS).substitute(fuentes=I.fuentes_embebidas(), ancho=ancho, alto=alto)
     clase = "wa" if alto > ancho * 1.5 else "ig"
     b = f'<p class="bajada">{bajada}</p>' if bajada else ""
+    dato = f" Dato al {I2.fecha_ar(fecha or p.cierre['fecha'])}."
     return (
         f'<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><style>{css}</style></head>'
         f'<body class="{clase}"><div class="lienzo">'
         f'<div class="cab"><span class="marca">EL CORREDOR</span><span class="ed">{p.mes.etiqueta}</span></div>'
         f'<h1>{titulo}</h1>{b}<div class="cuerpo">{cuerpo}</div>'
-        f'<div class="pie"><div class="fuente">Fuente: {I.esc(fuente)}</div>'
-        f'<div class="cita">{I.esc(I2.cita(p))}</div><div class="url">consignatarias.com.ar</div></div>'
+        f'<div class="pie"><div class="fuente">Fuente: {I.esc(fuente)}.{dato}</div>'
+        f'<div class="cita">{I.esc(I2.cita(p))}</div><div class="cita">{I.esc(I2.cita_banda())}</div>'
+        f'<div class="url">consignatarias.com.ar</div></div>'
         f'</div></body></html>'
     )
+
+
+def _p(titulo: str, html: str, bajada: str = "") -> dict:
+    """Lo que devuelve cada pieza: el HTML y lo que el manifest necesita para listarla."""
+    return {"titulo": re.sub(r"<[^>]+>", "", titulo), "texto": re.sub(r"<[^>]+>", "", bajada), "html": html}
 
 
 # ─── las piezas ────────────────────────────────────────────────────────────────
@@ -106,45 +115,45 @@ def cuatro(p, x, tam):
         return None
     t = "".join(f'<div class="num4"><div class="et">{n["et"]}</div><div class="val">{n["val"]}</div>'
                 f'<div>{n["delta"]}</div><div class="nota4">{I.esc(n["nota"])}</div></div>' for n in nums)
-    return lienzo(p, tam, f'Los cuatro números de {p.mes.nombre}', f'<div class="grid4">{t}</div>',
-                  "MAG (Índice Novillo y lotes), dólar blue, USDA AMS; cálculo propio",
-                  bajada=f'Índice Novillo al cierre: {G.ars(p.cierre["ars"])} por kilo vivo ({G.usd(p.cierre["usd_blue"])})')
+    titulo = I2.titulo_mes(p)
+    bajada = (f'Índice Novillo, cierre del {I2.fecha_ar(p.cierre["fecha"])}: {G.ars(p.cierre["ars"])} por kilo vivo '
+              f'({G.usd(p.cierre["usd_blue"])}). Los cuatro números del mes')
+    return _p(titulo, lienzo(p, tam, titulo, f'<div class="grid4">{t}</div>',
+                             "MAG (Índice Novillo y lotes), dólar blue, USDA AMS; cálculo propio", bajada=bajada), bajada)
 
 
 def estacional(p, x, tam):
-    mens = p.mensual("usd_blue")
-    por = {q["ym"]: q["valor"] for q in mens}
-    base = [por.get(f"{p.mes.anio - k:04d}-{p.mes.mes:02d}") for k in range(1, D2.ANIOS_PROMEDIO + 1)]
-    actual = por.get(p.mes.ym)
-    if not actual or not all(base):
+    titulo = I2.estacional_titulo(p)
+    if not titulo:
         return None
-    prom5 = sum(base) / len(base)
-    return lienzo(p, tam,
-                  f'{p.mes.nombre.capitalize()} cerró en {G.usd(actual)}; el promedio de {p.mes.nombre} '
-                  f'{p.mes.anio - D2.ANIOS_PROMEDIO}–{str(p.mes.anio - 1)[2:]} es {G.usd(prom5)}',
-                  G2.espagueti(mens, p.mes.anio, ancho_mm=120, alto_mm=86),
-                  "MAG (Índice Novillo) y dólar blue; cálculo propio. Gris: cada año desde 2015; punteado: promedio de 5 años",
-                  bajada="Índice Novillo en dólares por kilo vivo, mes a mes")
+    eb = D2.etiqueta_base(D2.anios_base(p.mes.anio))
+    bajada = "Índice Novillo en dólares por kilo vivo (al blue, valores nominales), mes a mes"
+    return _p(titulo, lienzo(p, tam, titulo,
+                             G2.espagueti(p.mensual("usd_blue"), p.mes.anio, D2.anios_base(p.mes.anio), ancho_mm=120,
+                                          alto_mm=68, rotulo_base=f"promedio\n{eb}"),
+                             f"MAG (Índice Novillo) y dólar blue; cálculo propio. Gris: cada año desde 2015; gris oscuro: "
+                             f"{p.mes.anio - 1}; punteado: promedio de {eb}, años de cambio unificado (sin 2020–2024, por la brecha)",
+                             bajada=bajada), bajada)
 
 
 def bandas(p, x, tam):
     if not len(x.bandas_hist):
         return None
-    return lienzo(p, tam, "Lo que se paga barato y lo que se paga caro, por categoría",
-                  G2.grilla_bandas(x.bandas_hist.puntos, ancho_mm=120, alto_mm=94),
-                  "MAG, operaciones de lote (Valor de Referencia VR v1.0); cálculo propio",
-                  bajada="Banda P10–P90 de cada ventana de 30 días; la línea es la mediana")
+    titulo = I2.banda_titulo(p)
+    bajada = f"{I2.BANDA}: {I2.DEF_BANDA}. Área: P10 a P90 de cada ventana de 30 días; línea: mediana"
+    return _p(titulo, lienzo(p, tam, titulo, G2.grilla_bandas(x.bandas_hist.puntos, ancho_mm=120, alto_mm=80),
+                             "MAG, operaciones de lote (Valor de Referencia VR v1.0); cálculo propio",
+                             bajada=bajada, fecha=x.bandas_hist.fecha_dato), bajada)
 
 
 def relativos(p, x, tam):
     if not len(x.relativos):
         return None
-    vaca = next((s for s in x.relativos.puntos if s["categoria"] == "VACA"), None)
-    t = (f'La vaca vale {G2._num(vaca["puntos"][-1]["relacion"])} del novillo' if vaca
-         else "Cada categoría contra el novillo")
-    return lienzo(p, tam, t, G2.relativos_paneles(x.relativos.puntos, ancho_mm=130, alto_mm=84),
-                  "MAG, operaciones de lote (mediana de la banda VR sobre la del novillo); cálculo propio",
-                  bajada="Precio de cada categoría sobre el del novillo, desde junio de 2026")
+    titulo = I2.relativos_titulo(x)
+    bajada = "Mediana de cada categoría sobre la del novillo (1,00), misma escala en los tres paneles"
+    return _p(titulo, lienzo(p, tam, titulo, G2.relativos_paneles(x.relativos.puntos, ancho_mm=130, alto_mm=84),
+                             "MAG, operaciones de lote (mediana de la Banda Consignatarias sobre la del novillo); cálculo propio",
+                             bajada=bajada, fecha=x.relativos.fecha_dato), bajada)
 
 
 def brecha(p, x, tam):
@@ -153,26 +162,33 @@ def brecha(p, x, tam):
         return None
     ar = intl["argentina"]
     filas = [(q["pais"], q["usd_kg_vivo"], f'{G.usd(q["usd_kg_vivo"])} · ×{G2._num(q["ratio"])}') for q in intl["paises"]]
-    filas.append(("Argentina", ar, G.usd(ar)))
+    filas.append(("Argentina", ar, f'{G.usd(ar)} · cierre'))
     filas.sort(key=lambda f: f[1], reverse=True)
-    eeuu = intl["paises"][0]
-    return lienzo(p, tam,
-                  f'Un novillo de 450 kg: USD {I2._miles(ar * 450)} en Argentina, USD {I2._miles(eeuu["usd_kg_vivo"] * 450)} en {eeuu["pais"]}',
-                  G2.barras_ordenadas(filas, ancho_mm=120, fila_h=34, L=96, R=118, destacar="Argentina"),
-                  "USDA AMS, INAC, MLA; Argentina: Índice Novillo del MAG al dólar blue; cálculo propio. Peso vivo en todos los países",
-                  bajada="Novillo en pie, dólares por kilo vivo")
+    titulo = I2.mundo_titulo(x)
+    bajada = "Novillo en pie, dólares por kilo vivo. Argentina: cierre del mes"
+    wa = tam[1] > tam[0] * 1.5
+    return _p(titulo, lienzo(p, tam, titulo,
+                             G2.barras_ordenadas(filas, ancho_mm=120, fila_h=56 if wa else 46, L=150, R=150,
+                                                 destacar="Argentina", barra=30 if wa else 24, letra=11),
+                             "USDA AMS, INAC, MLA; Argentina: Índice Novillo del MAG al dólar blue; cálculo propio. "
+                             "Peso vivo en todos los países", bajada=bajada), bajada)
 
 
 def tierra(p, x, tam):
-    if not len(x.tierra):
+    t = I2.tierra_con_renta(x)
+    if len(t) < 3:
+        print(f"  · ig-6-tierra: {len(t)} zona(s) con canon relevado en la zona, n ≥ 5 y dato vigente; hacen falta 3")
         return None
-    t = x.tierra.puntos[:8]
-    filas = [(f'{z["provincia"]}{" — " + z["zona"] if z["zona"] else ""}', z["kg_novillo_ha"],
-              f'{I2._miles(z["kg_novillo_ha"])} kg') for z in t]
-    return lienzo(p, tam, "Lo que cuesta una hectárea ganadera, en kilos de novillo",
-                  G2.barras_ordenadas(filas, ancho_mm=140, fila_h=26, L=230, R=62, corte=34),
-                  "Relevamiento propio y Compañía Argentina de Tierras; Índice Novillo del MAG al blue; cálculo propio",
-                  bajada=f'Con el novillo a {G.usd(x.internacional.get("argentina") or 0)} por kilo vivo' if x.internacional else "")
+    t = t[:8]
+    filas = [(f'{z["provincia"]}{" — " + z["zona"] if z["zona"] else ""} (n={z["n"]}, {I2.ym_ar(z["fecha"])})',
+              z["kg_novillo_ha"], f'{I2._miles(z["kg_novillo_ha"])} kg') for z in t]
+    top = t[0]
+    titulo = (f'Una hectárea ganadera en {top["provincia"]}{" (" + top["zona"] + ")" if top["zona"] else ""} '
+              f'cuesta {I2._miles(top["kg_novillo_ha"])} kg de novillo')
+    bajada = f'Con el novillo a {G.usd(x.internacional.get("argentina") or 0)} por kilo vivo' if x.internacional else ""
+    return _p(titulo, lienzo(p, tam, titulo, G2.barras_ordenadas(filas, ancho_mm=140, fila_h=26, L=260, R=62),
+                             "Relevamiento propio y Compañía Argentina de Tierras; Índice Novillo del MAG al blue; cálculo propio",
+                             bajada=bajada), bajada)
 
 
 def semaforo(p, x, tam):
@@ -183,11 +199,16 @@ def semaforo(p, x, tam):
         f'<td class="fuerte">{I2._valor(f)}</td>{I2._celda(f["s4"], f["color"])}{I2._celda(f["ia"], f["color"])}</tr>'
         for f in x.semaforo
     )
-    return lienzo(p, tam, f'Cuánto se movió cada precio en {p.mes.nombre}',
-                  f'<table><thead><tr><th>Serie</th><th>Último</th><th>4 sem.</th><th>Interanual</th></tr></thead>'
-                  f'<tbody>{filas}</tbody></table>',
-                  "MAG (Índice Novillo, novillito, lotes) y dólar blue; cálculo propio. Color solo en dólares",
-                  bajada="Variación contra 4 semanas antes y contra el mismo mes del año pasado")
+    v12, vu12 = p.variacion("ars", 12), p.variacion("usd_blue", 12)
+    titulo = (f'El Índice Novillo {I2._verbo(v12)} en doce meses en pesos y {I2._verbo(vu12).split(" ", 1)[1]} en dólares'
+              if v12 is not None and vu12 is not None and (v12 >= 0) == (vu12 >= 0)
+              else f'Cuánto se movió cada precio en {p.mes.nombre}')
+    bajada = f"Cierre del {I2.fecha_ar(p.cierre['fecha'])} contra 4 semanas antes, y promedio del mes contra un año atrás"
+    return _p(titulo, lienzo(p, tam, titulo,
+                             f'<table><thead><tr><th>Serie</th><th>Cierre</th><th>4 sem.</th><th>Interanual</th></tr></thead>'
+                             f'<tbody>{filas}</tbody></table>',
+                             "MAG (Índice Novillo, novillito, lotes) y dólar blue; cálculo propio. Color solo en dólares",
+                             bajada=bajada), bajada)
 
 
 def escalera(p, x, tam):
@@ -199,16 +220,19 @@ def escalera(p, x, tam):
         a, b = novi["rangos"][0], novi["rangos"][-1]
         t = (f'Novillito: {G.ars(a["mediana"])} el kilo a {a["desde_kg"]}–{a["hasta_kg"]} kg, '
              f'{G.ars(b["mediana"])} a {b["desde_kg"]}–{b["hasta_kg"]} kg')
-    return lienzo(p, tam, t, G2.escalera_pesos(p.por_peso.puntos, ancho_mm=120, fila_h=14),
-                  "MAG, operaciones de lote por rango de 50 kg (Valor de Referencia VR v1.0); cálculo propio",
-                  bajada="Barra: P10 a P90. Punto: mediana")
+    bajada = f"{I2.BANDA} por rango de 50 kg. Barra: P10 a P90. Punto: mediana"
+    return _p(t, lienzo(p, tam, t, G2.escalera_pesos(p.por_peso.puntos, ancho_mm=130, fila_h=18, letra=1.3),
+                        "MAG, operaciones de lote por rango de 50 kg (Valor de Referencia VR v1.0); cálculo propio",
+                        bajada=bajada, fecha=p.por_peso.fecha_dato), bajada)
 
 
+#: (nombre, tamaño, función, tipo para el manifest)
 PIEZAS = [
-    ("ig-1-cuatro-numeros", IG, cuatro), ("ig-2-estacionalidad", IG, estacional), ("ig-3-bandas", IG, bandas),
-    ("ig-4-relativos", IG, relativos), ("ig-5-brecha", IG, brecha), ("ig-6-tierra", IG, tierra),
-    ("wa-1-cuatro-numeros", WA, cuatro), ("wa-2-semaforo", WA, semaforo), ("wa-3-escalera-pesos", WA, escalera),
-    ("wa-4-brecha", WA, brecha),
+    ("ig-1-cuatro-numeros", IG, cuatro, "ig"), ("ig-2-estacionalidad", IG, estacional, "ig"),
+    ("ig-3-bandas", IG, bandas, "ig"), ("ig-4-relativos", IG, relativos, "ig"), ("ig-5-brecha", IG, brecha, "ig"),
+    ("ig-6-tierra", IG, tierra, "ig"),
+    ("wa-1-cuatro-numeros", WA, cuatro, "estado"), ("wa-2-semaforo", WA, semaforo, "estado"),
+    ("wa-3-escalera-pesos", WA, escalera, "estado"), ("wa-4-brecha", WA, brecha, "estado"),
 ]
 
 
@@ -231,26 +255,35 @@ def a_png(html_path: Path, png_path: Path, tam: tuple[int, int]) -> bool:
     return False
 
 
-def generar(p: D.Paquete, x: D2.Extra, salida: Path, png: bool = True) -> list[Path]:
+def generar(p: D.Paquete, x: D2.Extra, salida: Path, png: bool = True) -> list[dict]:
+    """
+    Genera las piezas y devuelve una entrada por pieza hecha:
+    {nombre, tipo ('ig'|'estado'), titulo, texto, archivo}. Una pieza sin dato no se
+    genera y se avisa; una que rompe tampoco corta las demás.
+    """
     salida.mkdir(parents=True, exist_ok=True)
     hechas = []
-    for nombre, tam, fn in PIEZAS:
-        html = fn(p, x, tam)
-        if not html:
+    for nombre, tam, fn, tipo in PIEZAS:
+        try:
+            r = fn(p, x, tam)
+        except Exception as e:  # noqa: BLE001
+            print(f"  ✗ {nombre}: {e}")
+            continue
+        if not r:
             print(f"  ⚠ {nombre}: sin dato, no se genera")
             continue
         base = salida / f"el-corredor-{p.mes.ym}-{nombre}"
         hp = base.with_suffix(".html")
-        hp.write_text(html, encoding="utf-8")
+        hp.write_text(r["html"], encoding="utf-8")
+        archivo = hp
         if png:
             pp = base.with_suffix(".png")
             if not a_png(hp, pp, tam):
                 print(f"  ✗ {nombre}: no se pudo rasterizar (¿chromium?)")
                 continue
-            hechas.append(pp)
+            archivo = pp
             print(f"  {pp.name} ({pp.stat().st_size // 1024} KB)")
-        else:
-            hechas.append(hp)
+        hechas.append({"nombre": nombre, "tipo": tipo, "titulo": r["titulo"], "texto": r["texto"], "archivo": archivo})
     return hechas
 
 

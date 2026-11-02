@@ -40,6 +40,39 @@ def _fc(v: float) -> str:
     return _f(v).replace(".", ",")
 
 
+def ticks_lindos(lo: float, hi: float, n: int = 4) -> list[float]:
+    """
+    Ticks en 1, 2, 2,5 o 5 × 10^k, con el último EN o POR ENCIMA del máximo: el eje
+    se estira hasta el tick siguiente para que ningún dato quede afuera de la grilla
+    (el 2026 del espagueti y el mayo de las hembras quedaban por encima del último
+    tick). No reemplaza al `_ticks` del v1, que tiene que seguir saliendo igual.
+    """
+    import math
+    if hi <= lo:
+        return [lo]
+    crudo = (hi - lo) / max(n, 1)
+    k = 10 ** math.floor(math.log10(crudo))
+    paso = next(m * k for m in (1, 2, 2.5, 5, 10) if m * k >= crudo * 0.999)
+    t0 = math.floor(lo / paso + 1e-9) * paso
+    out, x = [], t0
+    while x < hi - paso * 1e-6:
+        out.append(round(x, 6))
+        x += paso
+    out.append(round(x, 6))
+    return out
+
+
+def eje(lo: float, hi: float, n: int = 4) -> tuple[float, float, list[float]]:
+    """(lo, hi, ticks) con los bordes llevados a los ticks lindos."""
+    t = ticks_lindos(lo, hi, n)
+    return t[0], t[-1], t
+
+
+def num_ar(v: float, dec: int = 1) -> str:
+    """Miles con punto y decimal con coma: 1234,5 → "1.234,5"."""
+    return f"{v:,.{dec}f}".replace(",", "@").replace(".", ",").replace("@", ".")
+
+
 def nombre_cat(c: str) -> str:
     """"MEJ" es una sigla (macho entero joven) y queda en mayúsculas; el resto, en nombre propio."""
     return c if c == "MEJ" else c.capitalize()
@@ -58,11 +91,11 @@ def novillito_largo(mensual: list[dict], ancho_mm: float = 180, alto_mm: float =
         return _vacio(ancho_mm, alto_mm, "serie insuficiente")
     W, H = round(ancho_mm * MM), round(alto_mm * MM)
     L, R, T, B = 46, 92, 16, 26
-    hi = max(max(p["usd_oficial"] for p in pts), max(p.get("usd_blue") or 0 for p in pts)) * 1.1
+    _, hi, tk = eje(0, max(max(p["usd_oficial"] for p in pts), max(p.get("usd_blue") or 0 for p in pts)) * 1.04, 4)
     x = _escala(0, len(pts) - 1, L, W - R)
     y = _escala(0, hi, H - B, T)
     o = [abrir(ancho_mm, alto_mm, "Novillito en dólares desde 2006")]
-    for t in _ticks(0, hi, 4):
+    for t in tk:
         o.append(f'<line x1="{L}" y1="{_f(y(t))}" x2="{W-R}" y2="{_f(y(t))}" stroke="{FILETE}" stroke-width="1"/>')
         o.append(texto(L - 5, y(t) + 3, usd(t, 1), 7, TINTA_3, 500, "end", mono=True))
     for i, p in enumerate(pts):
@@ -88,38 +121,39 @@ def novillito_largo(mensual: list[dict], ancho_mm: float = 180, alto_mm: float =
     for p, dy, lbl in ((pmax, -8, "máx"), (pmin, 14, "mín")):
         i = pts.index(p)
         o.append(texto(x(i), y(p["usd_blue"]) + dy, f'{lbl} {usd(p["usd_blue"])} · {p["ym"]}', 7, TINTA_2, 500, "middle"))
-    o.append(texto(L, T - 6, "Promedio mensual, USD por kilo vivo · blue desde 2011", 7, TINTA_3, 400))
+    o.append(texto(L, T - 6, "Promedio mensual, USD corrientes por kilo vivo (valores nominales) · blue desde 2011", 7, TINTA_3, 400))
     o.append("</svg>")
     return "".join(o)
 
 
 # ─── estacionalidad: espagueti ─────────────────────────────────────────────────
 
-def espagueti(mensual: list[dict], anio: int, ancho_mm: float = 180, alto_mm: float = 72,
-              anios_prom: int = 5) -> str:
+def espagueti(mensual: list[dict], anio: int, base: list[int], ancho_mm: float = 180, alto_mm: float = 72,
+              rotulo_base: str = "") -> str:
     """
     Un año por línea, enero a diciembre, en USD/kg. Los años completos van en gris
-    fino: son el contexto. El año en curso va en azul con marcador en cada mes; el
-    promedio de los últimos cinco años completos, punteado. El eje no arranca en
-    cero: acá lo que se lee es la forma del año, no el nivel.
+    fino: son el contexto. Se rotulan tres líneas y solo tres: el año anterior, el
+    promedio de la base (punteado) y el año en curso (azul, marcador en cada mes).
+    La base son los años que se le pasan (los de cambio unificado), no "los últimos
+    cinco". El eje no arranca en cero: acá se lee la forma del año, no el nivel.
     """
     por_anio: dict[int, dict[int, float]] = {}
     for p in mensual:
         por_anio.setdefault(int(p["ym"][:4]), {})[int(p["ym"][5:7])] = p["valor"]
     previos = [a for a in sorted(por_anio) if a < anio and len(por_anio[a]) >= 10]
-    if anio not in por_anio or len(previos) < 3:
+    base = [a for a in base if a in por_anio]
+    if anio not in por_anio or len(previos) < 3 or not base:
         return _vacio(ancho_mm, alto_mm, "serie insuficiente")
-    base = previos[-anios_prom:]
     prom = {m: sum(por_anio[a][m] for a in base if m in por_anio[a]) / max(1, sum(1 for a in base if m in por_anio[a]))
             for m in range(1, 13)}
     W, H = round(ancho_mm * MM), round(alto_mm * MM)
-    L, R, T, B = 44, 92, 18, 24
+    L, R, T, B = 44, 96, 18, 24
     todos = [v for a in previos + [anio] for v in por_anio[a].values()]
-    lo, hi = min(todos) * 0.92, max(todos) * 1.05
+    lo, hi, tk = eje(min(todos) * 0.97, max(todos) * 1.02, 6)
     x = _escala(1, 12, L, W - R)
     y = _escala(lo, hi, H - B, T)
     o = [abrir(ancho_mm, alto_mm, "Estacionalidad del novillo en dólares")]
-    for t in _ticks(lo, hi, 4):
+    for t in tk:
         o.append(f'<line x1="{L}" y1="{_f(y(t))}" x2="{W-R}" y2="{_f(y(t))}" stroke="{FILETE}" stroke-width="1"/>')
         o.append(texto(L - 5, y(t) + 3, usd(t, 1), 7, TINTA_3, 500, "end", mono=True))
     for m in range(1, 13):
@@ -130,18 +164,26 @@ def espagueti(mensual: list[dict], anio: int, ancho_mm: float = 180, alto_mm: fl
         d = "M" + " L".join(f"{_f(x(m))} {_f(y(serie[m]))}" for m in ms)
         return f'<path d="{d}" fill="none" stroke="{color}" stroke-width="{grosor}" stroke-linejoin="round"{extra}/>'
 
+    anterior = anio - 1 if (anio - 1) in previos else None
     for a in previos:
-        o.append(linea(por_anio[a], GRIS_SERIE, 1))
-    # Rótulo de los años extremos en diciembre: el máximo y el mínimo de la historia.
+        if a != anterior:
+            o.append(linea(por_anio[a], GRIS_SERIE, 1))
+    if anterior:
+        o.append(linea(por_anio[anterior], TINTA_3, 1.25))
     o.append(linea(prom, TINTA_2, 1.5, ' stroke-dasharray="6 3"'))
-    yp = y(prom[12])
-    o.append(texto(x(12) + 6, yp + 3, f"prom. {base[0]}–{str(base[-1])[2:]}", 7, TINTA_2, 600))
-    # Los años extremos de diciembre se rotulan solo si no pisan el del promedio.
-    dic = sorted(((por_anio[a].get(12), a) for a in previos if por_anio[a].get(12)), reverse=True)
-    if dic:
-        for v, a in (dic[0], dic[-1]):
-            if abs(y(v) - yp) > 11:
-                o.append(texto(x(12) + 6, y(v) + 3, str(a), 7, TINTA_3, 500))
+    rot = []
+    if anterior:
+        rot.append([y(por_anio[anterior][max(por_anio[anterior])]) + 3, str(anterior), TINTA_3, 500])
+    # El rótulo de la base va en dos renglones ("promedio" / "2016–2019 y 2025").
+    rot.append([y(prom[12]) + 3, rotulo_base or "promedio base", TINTA_2, 600])
+    rot.sort(key=lambda r: r[0])
+    for k in range(1, len(rot)):
+        alto_prev = 20 if "\n" in rot[k - 1][1] else 10
+        if rot[k][0] - rot[k - 1][0] < alto_prev:
+            rot[k][0] = rot[k - 1][0] + alto_prev
+    for yy, t, c, pz in rot:
+        for j, renglon in enumerate(t.split("\n")):
+            o.append(texto(x(12) + 6, yy + 10 * j, renglon, 7, c, pz))
     actual = por_anio[anio]
     o.append(linea(actual, SERIE, 2.25))
     for m, v in actual.items():
@@ -220,30 +262,35 @@ def grilla_bandas(series: list[dict], ancho_mm: float = 180, alto_mm: float = 15
     cols, gap_x, gap_y = 2, 26, 30
     filas = (len(series) + 1) // 2
     pw = (W - gap_x - 40) / cols
-    ph = (H - 20 - gap_y * (filas - 1)) / filas
+    ph = (H - 32 - gap_y * (filas - 1)) / filas
     todos = [v for s in series for p in s["puntos"] for v in (p["p10"], p["p90"])]
-    lo, hi = min(todos) * 0.95, max(todos) * 1.03
-    o = [abrir(ancho_mm, alto_mm, "Banda de precio por categoría en el tiempo")]
+    lo, hi, tk = eje(min(todos) * 0.98, max(todos) * 1.01, 4 if ph > 120 else 2)
+    o = [abrir(ancho_mm, alto_mm, "Banda Consignatarias por categoría en el tiempo")]
     for k, s in enumerate(series):
         ox = 40 + (k % cols) * (pw + gap_x)
         oy = 18 + (k // cols) * (ph + gap_y)
         pts = s["puntos"]
         x = _escala(0, len(pts) - 1, ox, ox + pw)
         y = _escala(lo, hi, oy + ph, oy + 24)
-        for t in _ticks(lo, hi, 3):
+        for t in tk:
             o.append(f'<line x1="{_f(ox)}" y1="{_f(y(t))}" x2="{_f(ox+pw)}" y2="{_f(y(t))}" stroke="{FILETE}" stroke-width="1"/>')
             if k % cols == 0:
                 o.append(texto(ox - 4, y(t) + 3, ars(t), 6.5, TINTA_3, 500, "end", mono=True))
         area = ("M" + " L".join(f"{_f(x(i))} {_f(y(p['p90']))}" for i, p in enumerate(pts)) +
                 " L" + " L".join(f"{_f(x(i))} {_f(y(p['p10']))}" for i, p in reversed(list(enumerate(pts)))) + " Z")
-        o.append(f'<path d="{area}" fill="{BANDA}" style="print-color-adjust:exact"/>')
+        # Más saturada que el BANDA del v1 y con los bordes P10 y P90 trazados: en
+        # una fotocopia en blanco y negro el celeste pálido desaparecía.
+        o.append(f'<path d="{area}" fill="#93c5fd" style="print-color-adjust:exact"/>')
+        for borde in ("p90", "p10"):
+            d = "M" + " L".join(f"{_f(x(i))} {_f(y(p[borde]))}" for i, p in enumerate(pts))
+            o.append(f'<path d="{d}" fill="none" stroke="{SERIE}" stroke-width="1" stroke-linejoin="round"/>')
         conm = [(i, p) for i, p in enumerate(pts) if p.get("mediana")]
         if conm:
             d = "M" + " L".join(f"{_f(x(i))} {_f(y(p['mediana']))}" for i, p in conm)
-            o.append(f'<path d="{d}" fill="none" stroke="{SERIE_OSC}" stroke-width="1.75" stroke-linejoin="round"/>')
+            o.append(f'<path d="{d}" fill="none" stroke="{TINTA}" stroke-width="1.75" stroke-linejoin="round"/>')
         u = pts[-1]
         o.append(texto(ox, oy + 2, nombre_cat(s["categoria"]), 8.5, TINTA, 600))
-        amp = f' · amplitud {_fc(u["amplitud"])}%' if u.get("amplitud") is not None else ""
+        amp = f' · Banda {_fc(u["amplitud"])}%' if u.get("amplitud") is not None else ""
         o.append(texto(ox, oy + 13, f'mediana {ars(u["mediana"] or 0)}{amp}', 7, TINTA_2, 500))
         o.append(texto(ox, oy + ph + 11, f'{date.fromisoformat(pts[0]["fecha"]).day}/{date.fromisoformat(pts[0]["fecha"]).month}', 6.5, TINTA_3, 500, mono=True))
         o.append(texto(ox + pw, oy + ph + 11, f'{date.fromisoformat(u["fecha"]).day}/{date.fromisoformat(u["fecha"]).month}', 6.5, TINTA_3, 500, "end", mono=True))
@@ -253,7 +300,7 @@ def grilla_bandas(series: list[dict], ancho_mm: float = 180, alto_mm: float = 15
 
 # ─── banda II: escalera de pesos ───────────────────────────────────────────────
 
-def escalera_pesos(por_peso: list[dict], ancho_mm: float = 180, fila_h: int = 19) -> str:
+def escalera_pesos(por_peso: list[dict], ancho_mm: float = 180, fila_h: int = 19, letra: float = 1.0) -> str:
     """
     La banda por rango de 50 kg dentro de cada categoría, con una escala común.
     Contesta la pregunta del criador: cuánto se castiga el kilo a medida que el
@@ -265,35 +312,37 @@ def escalera_pesos(por_peso: list[dict], ancho_mm: float = 180, fila_h: int = 19
     if not filas:
         return _vacio(ancho_mm, 20, "sin bandas por peso")
     W = round(ancho_mm * MM)
-    L, R, T = 128, 76, 18
+    L, R, T = round(128 * letra), round(76 * letra), round(18 * letra)
+    cab_h = round(12 * letra)
     n_cab = len({c for c, _ in filas})
-    H = T + fila_h * len(filas) + 12 * n_cab + 6
-    hi = max(r["p90"] for _, r in filas) * 1.03
-    lo = min(r["p10"] for _, r in filas) * 0.95
+    H = T + fila_h * len(filas) + cab_h * n_cab + 6
+    # Con letra grande el área de dibujo se achica: menos ticks para que no se pisen.
+    lo, hi, tk = eje(min(r["p10"] for _, r in filas) * 0.98, max(r["p90"] for _, r in filas) * 1.02,
+                     4 if W - R - L > 340 else 2)
     x = _escala(lo, hi, L, W - R)
     o = [abrir(ancho_mm, H / MM, "Escalera de pesos")]
-    for t in _ticks(lo, hi, 4):
+    for t in tk:
         o.append(f'<line x1="{_f(x(t))}" y1="{T-6}" x2="{_f(x(t))}" y2="{H-6}" stroke="{FILETE}" stroke-width="1"/>')
-        o.append(texto(x(t), T - 9, ars(t), 7, TINTA_3, 500, "middle", mono=True))
+        o.append(texto(x(t), T - 9, ars(t), 7 * letra, TINTA_3, 500, "middle", mono=True))
     cy = T
     previa = None
     for cat, r in filas:
         if cat != previa:
-            cy += 12
-            o.append(texto(0, cy - 2, nombre_cat(cat), 8, TINTA, 600))
+            cy += cab_h
+            o.append(texto(0, cy - 2, nombre_cat(cat), 8 * letra, TINTA, 600))
             o.append(f'<line x1="0" y1="{_f(cy+1)}" x2="{L-10}" y2="{_f(cy+1)}" stroke="{FILETE_FUERTE}" stroke-width="1"/>')
             previa = cat
         c = cy + fila_h / 2 + 2
-        o.append(texto(L - 10, c + 3, f'{r["desde_kg"]}–{r["hasta_kg"]} kg', 7.5, TINTA_2, 500, "end", mono=True))
+        o.append(texto(L - 10, c + 3, f'{r["desde_kg"]}–{r["hasta_kg"]} kg', 7.5 * letra, TINTA_2, 500, "end", mono=True))
         fina = (r.get("lotes") or 0) < 30
         x1, x2 = x(r["p10"]), x(r["p90"])
-        relleno = "none" if fina else BANDA
-        o.append(f'<rect x="{_f(x1)}" y="{_f(c-4)}" width="{_f(max(x2-x1,2))}" height="8" rx="3" fill="{relleno}" '
-                 f'stroke="{SERIE if fina else "none"}" stroke-width="1" style="print-color-adjust:exact"/>')
+        relleno = "none" if fina else "#93c5fd"
+        o.append(f'<rect x="{_f(x1)}" y="{_f(c-4*letra)}" width="{_f(max(x2-x1,2))}" height="{_f(8*letra)}" rx="3" fill="{relleno}" '
+                 f'stroke="{SERIE}" stroke-width="1" style="print-color-adjust:exact"/>')
         if r.get("mediana"):
-            o.append(f'<circle cx="{_f(x(r["mediana"]))}" cy="{_f(c)}" r="4.5" fill="{SERIE_OSC}" stroke="{BLANCO}" stroke-width="1.5"/>')
-            o.append(texto(x2 + 5, c + 3, ars(r["mediana"]), 7, TINTA, 600, mono=True))
-        o.append(texto(W - 2, c + 3, f'n={r.get("lotes")}' + (" · fina" if fina else ""), 6.5, TINTA_3, 500, "end"))
+            o.append(f'<circle cx="{_f(x(r["mediana"]))}" cy="{_f(c)}" r="{_f(4.5*letra)}" fill="{SERIE_OSC}" stroke="{BLANCO}" stroke-width="1.5"/>')
+            o.append(texto(x2 + 5, c + 3, ars(r["mediana"]), 7 * letra, TINTA, 600, mono=True))
+        o.append(texto(W - 2, c + 3, f'n={r.get("lotes")}' + (" · fina" if fina else ""), 6.5 * letra, TINTA_3, 500, "end"))
         cy += fila_h
     o.append("</svg>")
     return "".join(o)
@@ -301,39 +350,46 @@ def escalera_pesos(por_peso: list[dict], ancho_mm: float = 180, fila_h: int = 19
 
 # ─── precios relativos ─────────────────────────────────────────────────────────
 
-def relativos_paneles(series: list[dict], ancho_mm: float = 180, alto_mm: float = 46) -> str:
+def relativos_paneles(series: list[dict], ancho_mm: float = 180, alto_mm: float = 46, letra: float = 1.0) -> str:
     """
     Tres paneles chicos, uno por relación (vaca, vaquillona y novillito sobre
-    novillo), cada uno con SU escala y con el promedio de su propia serie como
-    referencia. No hay umbral externo: la serie empieza en junio de 2026 y lo
-    único honesto es compararla contra sí misma.
+    novillo), con UNA escala común: con escalas propias, la vaquillona que se movió
+    de 0,98 a 1,07 parecía tan agitada como la vaca que pasó de 0,56 a 0,71. La
+    línea de 1,00 es el novillo; la punteada, el promedio de la propia serie. No
+    hay umbral externo: la serie empieza en junio de 2026.
     """
     if not series:
         return _vacio(ancho_mm, alto_mm, "sin serie de precios relativos")
     W, H = round(ancho_mm * MM), round(alto_mm * MM)
     n = len(series)
-    gap = 22
-    pw = (W - gap * (n - 1)) / n
+    gap = 18
+    L0 = round(30 * letra)
+    pw = (W - L0 - gap * (n - 1)) / n
+    todos = [p["relacion"] for s in series for p in s["puntos"]] + [1.0]
+    lo, hi, tk = eje(min(todos) * 0.99, max(todos) * 1.01, 4)
     o = [abrir(ancho_mm, alto_mm, "Precios relativos contra el novillo")]
+    T = round(34 * letra)
     for k, s in enumerate(series):
-        ox = k * (pw + gap)
+        ox = L0 + k * (pw + gap)
         pts = s["puntos"]
         vals = [p["relacion"] for p in pts]
         prom = sum(vals) / len(vals)
-        lo, hi = min(vals) * 0.98, max(vals) * 1.02
-        x = _escala(0, len(pts) - 1, ox + 30, ox + pw - 4)
-        y = _escala(lo, hi, H - 18, 34)
-        o.append(texto(ox, 10, f'{nombre_cat(s["categoria"])} / novillo', 8, TINTA, 600))
-        o.append(f'<line x1="{_f(ox+30)}" y1="{_f(y(prom))}" x2="{_f(ox+pw-4)}" y2="{_f(y(prom))}" stroke="{FILETE_FUERTE}" stroke-width="1" stroke-dasharray="4 3"/>')
-        for t in (lo, hi):
-            o.append(texto(ox + 26, y(t) + 3, _num(t), 6.5, TINTA_3, 500, "end", mono=True))
+        x = _escala(0, len(pts) - 1, ox, ox + pw)
+        y = _escala(lo, hi, H - 18, T)
+        for t in tk:
+            o.append(f'<line x1="{_f(ox)}" y1="{_f(y(t))}" x2="{_f(ox+pw)}" y2="{_f(y(t))}" stroke="{FILETE}" stroke-width="1"/>')
+            if k == 0:
+                o.append(texto(ox - 4, y(t) + 3, _num(t), 6.5 * letra, TINTA_3, 500, "end", mono=True))
+        o.append(f'<line x1="{_f(ox)}" y1="{_f(y(1))}" x2="{_f(ox+pw)}" y2="{_f(y(1))}" stroke="{TINTA}" stroke-width="1"/>')
+        o.append(texto(ox, 10 * letra, f'{nombre_cat(s["categoria"])} / novillo', 8 * letra, TINTA, 600))
+        o.append(f'<line x1="{_f(ox)}" y1="{_f(y(prom))}" x2="{_f(ox+pw)}" y2="{_f(y(prom))}" stroke="{FILETE_FUERTE}" stroke-width="1" stroke-dasharray="4 3"/>')
         d = "M" + " L".join(f"{_f(x(i))} {_f(y(v))}" for i, v in enumerate(vals))
         o.append(f'<path d="{d}" fill="none" stroke="{SERIE}" stroke-width="1.75" stroke-linejoin="round"/>')
         o.append(f'<circle cx="{_f(x(len(vals)-1))}" cy="{_f(y(vals[-1]))}" r="3.5" fill="{SERIE}" stroke="{BLANCO}" stroke-width="1.5"/>')
-        o.append(texto(ox, 22, f'último {_num(vals[-1])} · promedio {_num(prom)}', 7, TINTA_2, 500))
+        o.append(texto(ox, 22 * letra, f'de {_num(vals[0])} a {_num(vals[-1])} · promedio {_num(prom)}', 7 * letra, TINTA_2, 500))
         f0, f1 = date.fromisoformat(pts[0]["fecha"]), date.fromisoformat(pts[-1]["fecha"])
-        o.append(texto(ox + 30, H - 6, f"{f0.day}/{f0.month}", 6.5, TINTA_3, 500, mono=True))
-        o.append(texto(ox + pw - 4, H - 6, f"{f1.day}/{f1.month}", 6.5, TINTA_3, 500, "end", mono=True))
+        o.append(texto(ox, H - 6, f"{f0.day}/{f0.month}", 6.5 * letra, TINTA_3, 500, mono=True))
+        o.append(texto(ox + pw, H - 6, f"{f1.day}/{f1.month}", 6.5 * letra, TINTA_3, 500, "end", mono=True))
     o.append("</svg>")
     return "".join(o)
 
@@ -354,12 +410,12 @@ def hembras_franja(puntos: list[dict], ancho_mm: float = 180, alto_mm: float = 5
     vals = sorted(p["pct"] for p in puntos)
     n = len(vals)
     q1, med, q3 = vals[n // 4], vals[n // 2] if n % 2 else (vals[n // 2 - 1] + vals[n // 2]) / 2, vals[(3 * n) // 4]
-    lo, hi = min(vals) - 3, max(vals) + 3
+    lo, hi, tk = eje(min(vals) - 1, max(vals) + 0.5, 4)
     x = _escala(0, n - 1, L + 10, W - R)
     y = _escala(lo, hi, H - B, T)
     o = [abrir(ancho_mm, alto_mm, "Hembras sobre el total operado")]
     o.append(f'<rect x="{L}" y="{_f(y(q3))}" width="{_f(W-R-L)}" height="{_f(max(y(q1)-y(q3),1))}" fill="{CERO}" style="print-color-adjust:exact"/>')
-    for t in _ticks(lo, hi, 4):
+    for t in tk:
         o.append(f'<line x1="{L}" y1="{_f(y(t))}" x2="{W-R}" y2="{_f(y(t))}" stroke="{FILETE}" stroke-width="1"/>')
         o.append(texto(L - 5, y(t) + 3, f"{_fc(t)}%", 7, TINTA_3, 500, "end", mono=True))
     o.append(f'<line x1="{L}" y1="{_f(y(med))}" x2="{W-R}" y2="{_f(y(med))}" stroke="{TINTA}" stroke-width="1.25" stroke-dasharray="5 3"/>')
@@ -384,7 +440,7 @@ def hembras_franja(puntos: list[dict], ancho_mm: float = 180, alto_mm: float = 5
 
 def barras_ordenadas(filas: list[tuple[str, float, str]], ancho_mm: float = 87, fila_h: int = 18,
                      L: int = 104, R: int = 52, destacar: str | None = None, titulo: str = "",
-                     corte: int = 22) -> str:
+                     corte: int = 60, barra: float = 11, letra: float = 7.5) -> str:
     """
     Barras horizontales de mayor a menor, etiqueta a la izquierda y valor al final.
     Nominal: un solo tono, salvo la fila que se quiere señalar.
@@ -400,17 +456,18 @@ def barras_ordenadas(filas: list[tuple[str, float, str]], ancho_mm: float = 87, 
     for i, (et, v, rot) in enumerate(filas):
         cy = T + fila_h * i + fila_h / 2
         fuerte = destacar is not None and et == destacar
-        o.append(texto(L - 6, cy + 3, _corto(et, corte), 7.5, TINTA, 600 if fuerte else 500, "end"))
-        o.append(f'<rect x="{L}" y="{_f(cy-5.5)}" width="{_f(max(x(v)-L,2))}" height="11" rx="3" '
-                 f'fill="{SERIE_OSC if fuerte else (SERIE if destacar is None else BANDA)}" style="print-color-adjust:exact"/>')
-        o.append(texto(x(v) + 5, cy + 3, rot, 7.5, TINTA, 600 if fuerte else 500, mono=True))
+        o.append(texto(L - 6, cy + letra * 0.45, _corto(et, corte), letra, TINTA, 600 if fuerte else 500, "end"))
+        o.append(f'<rect x="{L}" y="{_f(cy-barra/2)}" width="{_f(max(x(v)-L,2))}" height="{_f(barra)}" rx="3" '
+                 f'fill="{SERIE_OSC if fuerte else (SERIE if destacar is None else "#93c5fd")}" '
+                 f'stroke="{SERIE_OSC if fuerte or destacar is None else SERIE}" stroke-width="1" style="print-color-adjust:exact"/>')
+        o.append(texto(x(v) + 5, cy + letra * 0.45, rot, letra, TINTA, 600 if fuerte else 500, mono=True))
     o.append("</svg>")
     return "".join(o)
 
 
 # ─── Argentina contra los niveles de afuera ────────────────────────────────────
 
-def argentina_vs_niveles(mensual_usd: list[dict], paises: list[dict], meses: int = 24,
+def argentina_vs_niveles(mensual_usd: list[dict], paises: list[dict], cierre: dict, meses: int = 24,
                          ancho_mm: float = 180, alto_mm: float = 62) -> str:
     """
     El Índice Novillo en dólares de los últimos dos años, contra el nivel de HOY
@@ -423,11 +480,11 @@ def argentina_vs_niveles(mensual_usd: list[dict], paises: list[dict], meses: int
         return _vacio(ancho_mm, alto_mm, "serie insuficiente")
     W, H = round(ancho_mm * MM), round(alto_mm * MM)
     L, R, T, B = 46, 150, 12, 24
-    hi = max(max(p["valor"] for p in pts), max(q["usd_kg_vivo"] for q in paises)) * 1.08
+    _, hi, tk = eje(0, max(max(p["valor"] for p in pts), max(q["usd_kg_vivo"] for q in paises)) * 1.02, 4)
     x = _escala(0, len(pts) - 1, L, W - R)
     y = _escala(0, hi, H - B, T)
     o = [abrir(ancho_mm, alto_mm, "Argentina contra los niveles de afuera")]
-    for t in _ticks(0, hi, 4):
+    for t in tk:
         o.append(f'<line x1="{L}" y1="{_f(y(t))}" x2="{W-R}" y2="{_f(y(t))}" stroke="{FILETE}" stroke-width="1"/>')
         o.append(texto(L - 5, y(t) + 3, usd(t, 1), 7, TINTA_3, 500, "end", mono=True))
     usados: list[float] = []
@@ -438,14 +495,78 @@ def argentina_vs_niveles(mensual_usd: list[dict], paises: list[dict], meses: int
         while any(abs(yt - u) < 10 for u in usados):
             yt += 10
         usados.append(yt)
-        o.append(texto(W - R + 6, yt, f'{q["pais"]} {usd(q["usd_kg_vivo"])} · {q["fecha"]}', 7, TINTA_2, 500))
+        o.append(texto(W - R + 6, yt, f'{q["pais"]} {usd(q["usd_kg_vivo"])} · {q.get("fecha_ar") or q["fecha"]}', 7, TINTA_2, 500))
+    # La línea es el promedio mensual (la serie); el punto rotulado es el CIERRE, la
+    # misma base argentina que usa toda la página.
     d = "M" + " L".join(f"{_f(x(i))} {_f(y(p['valor']))}" for i, p in enumerate(pts))
     o.append(f'<path d="{d}" fill="none" stroke="{SERIE}" stroke-width="2" stroke-linejoin="round"/>')
-    u = pts[-1]
-    o.append(f'<circle cx="{_f(x(len(pts)-1))}" cy="{_f(y(u["valor"]))}" r="4" fill="{SERIE}" stroke="{BLANCO}" stroke-width="2"/>')
-    o.append(texto(x(len(pts) - 1) - 6, y(u["valor"]) + 15, f'Argentina {usd(u["valor"])} · {u["ym"]}', 7.5, TINTA, 600, "end"))
+    cx = x(len(pts) - 1)
+    o.append(f'<circle cx="{_f(cx)}" cy="{_f(y(cierre["usd_blue"]))}" r="4" fill="{SERIE_OSC}" stroke="{BLANCO}" stroke-width="2"/>')
+    fc = date.fromisoformat(cierre["fecha"])
+    o.append(texto(cx - 6, y(cierre["usd_blue"]) + 15, f'Argentina, cierre {fc.day:02d}/{fc.month:02d}/{fc.year}: {usd(cierre["usd_blue"])}', 7.5, TINTA, 600, "end"))
     for i, p in enumerate(pts):
         if i % 6 == 0 or i == len(pts) - 1:
-            o.append(texto(x(i), H - B + 13, p["ym"], 7, TINTA_3, 500, "middle", mono=True))
+            o.append(texto(x(i), H - B + 13, f'{p["ym"][5:7]}/{p["ym"][:4]}', 7, TINTA_3, 500, "middle", mono=True))
+    o.append("</svg>")
+    return "".join(o)
+
+
+# ─── maíz / novillo, contra su mediana propia ──────────────────────────────────
+
+def ratio_maiz(puntos: list[dict], ancho_mm: float = 180, alto_mm: float = 54) -> str:
+    """
+    Kg de maíz que compra 1 kg de novillo. A diferencia del v1 no hay "umbral de
+    referencia" de afuera: se marca la mediana de la propia serie dibujada y nada
+    más, sin frase que la interprete.
+    """
+    pts = [p for p in puntos if p.get("relacion")][-72:]
+    if len(pts) < 6:
+        return _vacio(ancho_mm, alto_mm, "serie insuficiente")
+    W, H = round(ancho_mm * MM), round(alto_mm * MM)
+    L, R, T, B = 44, 80, 16, 26
+    vals = sorted(p["relacion"] for p in pts)
+    n = len(vals)
+    med = vals[n // 2] if n % 2 else (vals[n // 2 - 1] + vals[n // 2]) / 2
+    lo, hi, tk = eje(min(vals) * 0.95, max(vals) * 1.02, 4)
+    x = _escala(0, len(pts) - 1, L, W - R)
+    y = _escala(lo, hi, H - B, T)
+    o = [abrir(ancho_mm, alto_mm, "Relación maíz / novillo")]
+    for t in tk:
+        o.append(f'<line x1="{L}" y1="{_f(y(t))}" x2="{W-R}" y2="{_f(y(t))}" stroke="{FILETE}" stroke-width="1"/>')
+        o.append(texto(L - 5, y(t) + 3, _num(t, 0), 7, TINTA_3, 500, "end", mono=True))
+    o.append(f'<line x1="{L}" y1="{_f(y(med))}" x2="{W-R}" y2="{_f(y(med))}" stroke="{TINTA}" stroke-width="1.25" stroke-dasharray="5 3"/>')
+    o.append(texto(W - R + 6, y(med) + 3, f"mediana {_num(med, 1)}", 7, TINTA, 600))
+    d = "M" + " L".join(f"{_f(x(i))} {_f(y(p['relacion']))}" for i, p in enumerate(pts))
+    o.append(f'<path d="{d}" fill="none" stroke="{SERIE}" stroke-width="1.75" stroke-linejoin="round"/>')
+    u = pts[-1]
+    o.append(f'<circle cx="{_f(x(len(pts)-1))}" cy="{_f(y(u["relacion"]))}" r="4" fill="{SERIE}" stroke="{BLANCO}" stroke-width="2"/>')
+    o.append(texto(W - R + 6, y(u["relacion"]) - 6, f'{_num(u["relacion"], 1)} kg · {u["ym"][5:7]}/{u["ym"][:4]}', 7.5, TINTA, 600))
+    for i, p in enumerate(pts):
+        if i % 12 == 0 or i == len(pts) - 1:
+            o.append(texto(x(i), H - B + 12, p["ym"][:4], 7, TINTA_3, 500, "middle", mono=True))
+    o.append("</svg>")
+    return "".join(o)
+
+
+# ─── composición del mes, con "otras" ──────────────────────────────────────────
+
+def barras_composicion(filas: list[dict], ancho_mm: float = 87) -> str:
+    """Cabezas por categoría sobre el total del mes; la última fila junta lo que no llega a 10 lotes."""
+    filas = [f for f in filas if f.get("cabezas")]
+    if not filas:
+        return _vacio(ancho_mm, 20, "sin composición del mes")
+    W = round(ancho_mm * MM)
+    L, R, T, fila_h = 74, 118, 6, 20
+    H = T + fila_h * len(filas) + 6
+    hi = max(f["cabezas"] for f in filas)
+    x = _escala(0, hi, L, W - R)
+    o = [abrir(ancho_mm, H / MM, "Composición del mes")]
+    for i, f in enumerate(filas):
+        cy = T + fila_h * i + fila_h / 2
+        otras = f["categoria"] == "OTRAS"
+        o.append(texto(0, cy + 3, "Otras" if otras else nombre_cat(f["categoria"]), 7.5, TINTA_2 if otras else TINTA, 600))
+        o.append(f'<rect x="{L}" y="{_f(cy-6)}" width="{_f(max(x(f["cabezas"])-L,2))}" height="12" rx="3" '
+                 f'fill="{"none" if otras else SERIE}" stroke="{SERIE}" stroke-width="1" style="print-color-adjust:exact"/>')
+        o.append(texto(W - 2, cy + 3, f'{num_ar(f["cabezas"], 0)} cab · {num_ar(f["share"], 1)}%', 7, TINTA, 500, "end", mono=True))
     o.append("</svg>")
     return "".join(o)
