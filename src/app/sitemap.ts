@@ -467,6 +467,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly' as const,
       priority: 0.8,
     },
+    {
+      // La Banda Consignatarias: el número propio, la página que se cita y se
+      // comparte. Se recalcula con la misma serie que el VR.
+      url: `${baseUrl}/banda`,
+      lastModified: vrDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    },
     // Una URL citable por categoría (/vr/vaca, /vr/novillo…). Solo las que
     // tienen banda publicable — getSlugsConBanda() aplica la regla de
     // degradación, así que el sitemap nunca emite una página sin dato.
