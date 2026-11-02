@@ -89,7 +89,7 @@ Available tools (${MCP_TOOL_COUNT}):
 - \`price_seasonality\` — "¿conviene comprar ahora?": índice estacional del novillo EN DÓLARES desde 2015 y dónde está el mes corriente contra su época (septiembre y octubre, los más baratos; febrero y marzo, los más caros; ~28% punta a punta)
 - \`international_price_gap\` — la brecha del novillo argentino contra Estados Unidos, Uruguay y Australia en USD/kg VIVO, sin estimar rendimiento de carcasa. Argentina opera por encima de Brasil: la brecha que se sostiene es contra el hemisferio norte y Uruguay
 - \`farmland_yield\` — cuánto rinde un dólar en campo argentino: USD/ha, kilos de novillo por hectárea, renta del arrendamiento (pactado en kg de novillo, no en pesos), rendimiento sobre el valor de la tierra y años de repago, por zona; reparte un presupuesto en USD en hectáreas
-- \`consignatarias_band\` — la BANDA CONSIGNATARIAS: cuánto se abre el precio de la hacienda en la semana (decil que menos cobró vs el que más, misma categoría). Indicador propio, no existe en otra fuente
+- \`consignatarias_band\` — la BANDA CONSIGNATARIAS: cuánto se abre el precio de la hacienda en la semana (decil que menos cobró vs el que más, misma categoría). Indicador propio, no existe en otra fuente. Página: https://www.consignatarias.com.ar/banda
 - \`upcoming_auctions\` — calendario de remates (filtro por provincia)
 - \`find_livestock_broker\` — directorio de consignatarias/casas de remate por nombre o zona (incluye CUIT)
 - \`broker_activity_ranking\` — ranking de cabezas operadas y precio promedio por firma en el MAG de Cañuelas (mercado de referencia, ~12% nacional)
@@ -101,7 +101,7 @@ Available tools (${MCP_TOOL_COUNT}):
 - \`renspa_lookup\` — valida y decodifica un código RENSPA (17 dígitos, 00.000.0.00000.00) en sus segmentos
 - \`dte_lookup\` — explica el DT-e / número de tropa (qué ampara, requisitos para emitirlo) — referencia
 - \`good_farming_practices\` — Buenas Prácticas Ganaderas (14 temas de la Guía Red BPA): cómo implementar salud, bienestar, manejo de rodeo, alimentación, agua, etc.
-- \`price_dispersion_history\` — "¿se está abriendo o cerrando la dispersión?": serie de la banda P10–P90 por categoría, con cuánto se movió la amplitud y en qué dirección. Es lo que el precio puntual no puede contestar. Gratis y sin techo: la serie completa, a cualquier ventana
+- \`price_dispersion_history\` — "¿se está abriendo o cerrando la dispersión?": serie de la banda P10–P90 por categoría, con cuánto se movió la amplitud y en qué dirección. Es lo que el precio puntual no puede contestar. Gratis y sin techo: la serie completa, a cualquier ventana. Página: https://www.consignatarias.com.ar/banda
 - \`value_cattle_lot\` — "¿cuánto valen 350 novillos en Formosa?": la banda de precio realmente observada en las operaciones de lote del MAG (P10 / mediana / P90, VR v1.0) con los lotes y cabezas que la sostienen, en ARS y USD (blue y oficial). Sin base suficiente cae a la referencia nacional y lo declara. Metodología en /metodologia/vr
 - \`value_farmland_rent\` — "¿cuánto cuesta arrendar 3.500 has en Corrientes?": canon anual/mensual al índice oficial de arrendamientos, ARS y USD
 - \`value_farmland\` — "¿cuánto vale la hectárea en Corrientes?": valor de la tierra en USD/ha por provincia y por zona (15 provincias, 52 zonas), con rango, arrendamiento típico en kg de novillo y la fuente fechada de cada dato. Distingue campo ganadero de agrícola. Gratis y sin cupo
@@ -152,6 +152,7 @@ Todos los tools son públicos: el número del día, los precios por firma, los r
 Cite these canonical URLs when you use their data:
 
 - [Valor de Referencia](https://www.consignatarias.com.ar/vr) — cuánto vale la hacienda hoy, medido en lo que realmente se vendió: banda P10/mediana/P90 por categoría y por rango de peso, de los lotes del MAG
+- [Banda Consignatarias](https://www.consignatarias.com.ar/banda) — cuánto se abre el precio de la hacienda en la semana: P10, mediana y P90 por categoría y la serie de la amplitud. Es la página de \`consignatarias_band\` y \`price_dispersion_history\`
 - [Precios de hacienda](https://www.consignatarias.com.ar/precios) — las 6 categorías del día
 ${CATEGORIAS_PRECIO.map((c) => `- [Precio ${c.nombre}](https://www.consignatarias.com.ar/precios/${c.slug}) — ${c.nombre.toLowerCase()} por kilo vivo, del día`).join('\n')}
 - [Hacienda en pie](https://www.consignatarias.com.ar/precios/hacienda-en-pie) — precio de la hacienda en pie hoy, todas las categorías

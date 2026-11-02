@@ -73,7 +73,7 @@ export const maxDuration = 60
 const SERVER_INFO = {
   name: 'consignatarias',
   title: 'Consignatarias — Mercado Ganadero Argentino',
-  version: '1.9.1',
+  version: '1.9.2',
   websiteUrl: 'https://www.consignatarias.com.ar/mcp',
 }
 // Versiones del protocolo MCP que soportamos. Somos tools-only + stateless, así que
@@ -1406,7 +1406,7 @@ const TOOLS: Tool[] = [
   {
     name: 'consignatarias_band',
     description:
-      'La BANDA CONSIGNATARIAS: cuánto se abre el precio de la hacienda esta semana — la distancia entre el 10% que menos cobró y el 10% que más cobró, por la misma categoría y el mismo día, sobre los lotes realmente operados en el Mercado Agroganadero. Es un indicador propio y no existe en ninguna otra fuente: el resto publica el promedio y se reserva la dispersión. Cuando la banda se abre, la misma hacienda vale cada vez más distinto según quién la venda. Devuelve la cita ya redactada para publicar. [EN] The Consignatarias Band: how wide Argentine cattle prices spread in a given week — the gap between the bottom and top deciles for the same category, from actual lot sales. A proprietary indicator; everyone else publishes the average and keeps the dispersion.',
+      'La BANDA CONSIGNATARIAS: cuánto se abre el precio de la hacienda esta semana — la distancia entre el 10% que menos cobró y el 10% que más cobró, por la misma categoría y el mismo día, sobre los lotes realmente operados en el Mercado Agroganadero. Es un indicador propio y no existe en ninguna otra fuente: el resto publica el promedio y se reserva la dispersión. Cuando la banda se abre, la misma hacienda vale cada vez más distinto según quién la venda. Devuelve la cita ya redactada para publicar. Página pública: https://www.consignatarias.com.ar/banda. [EN] The Consignatarias Band: how wide Argentine cattle prices spread in a given week — the gap between the bottom and top deciles for the same category, from actual lot sales. A proprietary indicator; everyone else publishes the average and keeps the dispersion.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1451,7 +1451,7 @@ const TOOLS: Tool[] = [
     description:
       '¿Se está abriendo o cerrando la dispersión de precios? Serie histórica de la BANDA observada (VR v1.0): cómo evolucionó el rango P10–P90 por categoría en el Mercado Agroganadero. Es la pregunta que el precio puntual NO puede contestar — amplitud y mediana se mueven independientemente, así que una dispersión que se abre mientras el precio hace otra cosa es señal de riesgo que no se deriva del precio. GRATIS los últimos ' +
       VR_SERIE_VENTANA_GRATIS_DIAS +
-      ' días y también hacia atrás sin techo, gratis y sin cupo (la ventana publicada en /mercado y /vr es solo el default). Params: dias (default ' +
+      ' días y también hacia atrás sin techo, gratis y sin cupo (la ventana publicada en /banda es solo el default). Params: dias (default ' +
       VR_SERIE_VENTANA_GRATIS_DIAS +
       '), categoria (opcional). Valor de HOY → livestock_prices; valuar una tropa → value_cattle_lot. ' +
       '[EN] Is the market widening or tightening? Historical series of the observed P10-P90 price band by category in the Argentine reference market.',
@@ -1900,9 +1900,11 @@ const PAGINA_DE_LA_TOOL: Record<string, string> = {
   livestock_prices_detailed: '/mercado',
   macro_context: '/mercado',
   herd_liquidation_index: '/mercado/liquidacion',
-  // La banda por categoría se ve en /vr; /mercado es el índice de las seis.
-  price_dispersion_history: '/mercado',
-  consignatarias_band: '/vr',
+  // Desde la v1.255.0 la Banda Consignatarias tiene página propia: /banda muestra la
+  // banda de la semana (P10, mediana, P90 por categoría) y la serie de amplitud, que
+  // es lo mismo que devuelven estas dos tools. /vr es el precio por categoría y peso.
+  price_dispersion_history: '/banda',
+  consignatarias_band: '/banda',
   // Estacionalidad y renta del campo no tienen página propia todavía: se manda a
   // la del dato que las alimenta, que es donde el lector puede verificarlas.
   price_seasonality: '/mercado/inmag',

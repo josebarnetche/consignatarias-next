@@ -102,6 +102,14 @@ describe('doctrina del server MCP', () => {
     expect(huerfanas, `tools sin página de destino: ${huerfanas.join(', ')}`).toEqual([])
   })
 
+  it('la banda se cita en /banda, su página propia desde la v1.255.0', () => {
+    // Hasta el MCP 1.9.1 citaba /vr (precio por categoría y peso) y /mercado: el lector
+    // que seguía la cita no encontraba el número que acababa de leer.
+    const mapa = ROUTE.match(/const PAGINA_DE_LA_TOOL[^=]*= \{([\s\S]*?)\n\}/)![1]
+    expect(mapa).toMatch(/^\s*consignatarias_band: '\/banda',$/m)
+    expect(mapa).toMatch(/^\s*price_dispersion_history: '\/banda',$/m)
+  })
+
   it('el origen se hashea: agrupa sesiones, no identifica personas', () => {
     expect(ROUTE).toContain('function origenId')
     expect(ROUTE).toContain('createHash')
