@@ -397,7 +397,7 @@ def _fila_semaforo(nombre: str, unidad: str, diario: list[dict], campo: str, m: 
     }
 
 
-def semaforo(p: D.Paquete, nov: D.Serie) -> list[dict]:
+def semaforo(p: D.Paquete, nov: D.Serie, faena: dict | None = None) -> list[dict]:
     """
     Variación a 1 semana, 4 semanas, interanual y contra el promedio de 5 años.
 
@@ -424,7 +424,28 @@ def semaforo(p: D.Paquete, nov: D.Serie) -> list[dict]:
         diario = [{"fecha": x["fecha"], "mediana": x.get("mediana")} for x in s["puntos"]]
         filas.append(_fila_semaforo(f'{s["categoria"] if s["categoria"] == "MEJ" else s["categoria"].capitalize()} (mediana de la Banda)', "$/kg", diario,
                                     "mediana", p.mes, False, False, "banda VR"))
+    filas += filas_faena(faena or {})
     return [f for f in filas if f]
+
+
+def filas_faena(fm: dict) -> list[dict]:
+    """
+    La faena nacional y el peso medio de res en el semáforo: un dato mensual con un
+    mes de rezago, así que solo tiene interanual (mismo mes del año anterior). El
+    mes va en el nombre de la fila, para que no se lea como dato de octubre. Sin
+    color: más faena no es "bueno" ni "malo" para el que vende.
+    """
+    if not fm:
+        return []
+    u = fm["u"]
+    cuando = mes_corto(u["periodo"])
+    base = {"s1": None, "s4": None, "p5": None, "p5_oficial_5": None, "color": False, "fecha": u["periodo"],
+            "fuente": "MAGyP"}
+    return [
+        {**base, "nombre": f"Faena nacional · {cuando}", "unidad": "cabezas", "ultimo": u["total"], "ia": fm["var_total"]},
+        {**base, "nombre": f"Peso medio de res · {cuando}", "unidad": "kg", "ultimo": u["peso_medio_res_kg"],
+         "ia": fm["var_peso"]},
+    ]
 
 
 def amplitud_contra(p: D.Paquete, categoria: str, dias: int = 28) -> tuple[float | None, float | None, str | None]:
@@ -437,6 +458,195 @@ def amplitud_contra(p: D.Paquete, categoria: str, dias: int = 28) -> tuple[float
     hasta = (date.fromisoformat(u["fecha"]) - timedelta(days=dias)).isoformat()
     previo = _valor_a(s["puntos"], "amplitud", hasta)
     return actual, (previo or {}).get("amplitud"), (previo or {}).get("fecha")
+
+
+# ─── fuentes públicas nuevas (cache de fuentes_nuevas/) ────────────────────────
+#
+# Cada serie se lee del cache que dejó `fuentes_nuevas` (publish.py lo actualiza
+# antes de armar la edición). Acá no hay red: si el cache no está o no se puede
+# leer, la serie queda en None, la página que la usa no va y se anota. Lo que se
+# calcula sobre esas series (interanuales, cocientes, sumas del año) es cuenta
+# propia sobre números publicados y el pie lo dice; nada se estima.
+
+#: El precio real arranca acá. Antes de 2016-12 no hay IPC nacional del INDEC: el
+#: "empalmado" de fuentes_nuevas pega el IPC de San Luis, una sola provincia, y no
+#: se usa en el informe. Enero de 2017 es el primer mes con variación nacional.
+DESDE_REAL = "2017-01"
+#: Stock: 2007–2011 la propia fuente los marca estimados. No se grafican.
+DESDE_STOCK = 2012
+#: Grupos de destino de la serie del INDEC, en el orden de las columnas. Los tres
+#: países de la UE (Alemania, Países Bajos, Italia) son DETALLE del grupo ue27 y no
+#: se suman: duplicarían.
+DESTINOS = [
+    ("china", "China"), ("estados_unidos", "Estados Unidos"), ("israel", "Israel"), ("ue27", "Unión Europea (27)"),
+    ("chile", "Chile"), ("brasil", "Brasil"), ("canada", "Canadá"), ("rusia", "Rusia"), ("mexico", "México"),
+    ("hong_kong", "Hong Kong"), ("reino_unido", "Reino Unido"), ("confidencial", "Confidencial (país 999)"),
+    ("resto", "Resto"),
+]
+MESES_AB_ES = {1: "ene", 2: "feb", 3: "mar", 4: "abr", 5: "may", 6: "jun", 7: "jul", 8: "ago", 9: "sep",
+               10: "oct", 11: "nov", 12: "dic"}
+
+
+def externa(id_serie: str):
+    """La serie del cache de `fuentes_nuevas`, o una excepción que `cargar` anota."""
+    from fuentes_nuevas._base import cargar_cache
+    return cargar_cache(id_serie)
+
+
+def _ym_menos(ym: str, meses: int) -> str:
+    a, m = int(ym[:4]), int(ym[5:7])
+    k = a * 12 + m - 1 - meses
+    return f"{k // 12:04d}-{k % 12 + 1:02d}"
+
+
+def mes_corto(ym: str) -> str:
+    """'2026-09' → 'sep. 2026'."""
+    return f"{MESES_AB_ES[int(ym[5:7])]}. {ym[:4]}"
+
+
+def faena_mes(faena) -> dict:
+    """
+    El último mes de la faena nacional del MAGyP contra el mismo mes del año
+    anterior (los dos de la misma serie; el interanual es cuenta propia). El "%
+    hembras" es el PUBLICADO por la fuente en cabezas, no el de toneladas.
+    """
+    if not faena or not faena.puntos:
+        return {}
+    por = {q["periodo"]: q for q in faena.puntos}
+    u = faena.puntos[-1]
+    a = por.get(_ym_menos(u["periodo"], 12))
+    cats = ("vacas", "vaquillonas", "novillitos", "novillos", "mej", "toros")
+    filas = [{"cat": c, "cab": u[c], "cab_ant": a[c] if a else None, "var": _var(u[c], a and a[c]),
+              "peso": u.get(f"peso_res_kg_{c}"), "peso_ant": a.get(f"peso_res_kg_{c}") if a else None,
+              "share": 100 * u[c] / u["total"]} for c in cats]
+    filas.sort(key=lambda f: f["cab"], reverse=True)
+    return {
+        "u": u, "ant": a, "filas": filas,
+        "var_total": _var(u["total"], a and a["total"]),
+        "var_prod": _var(u["produccion_t"], a and a["produccion_t"]),
+        "var_peso": _var(u["peso_medio_res_kg"], a and a["peso_medio_res_kg"]),
+        "pp_hembras": round(u["pct_hembras"] - a["pct_hembras"], 1) if a else None,
+        "serie": [{"ym": q["periodo"], "pct": q["pct_hembras"]} for q in faena.puntos],
+        "procedencia": faena.procedencia,
+    }
+
+
+def stock_serie(stock) -> dict:
+    """El stock al 31/12 desde 2012 (los años que la fuente marca estimados quedan afuera)."""
+    if not stock or not stock.puntos:
+        return {}
+    pts = [q for q in stock.puntos if int(q["periodo"]) >= DESDE_STOCK and not q.get("estimado")]
+    if len(pts) < 2:
+        return {}
+    u, a = pts[-1], pts[-2]
+    return {"puntos": pts, "u": u, "ant": a, "var_total": _var(u["total"], a["total"]),
+            "fuera": [q["periodo"] for q in stock.puntos if q.get("estimado")], "procedencia": stock.procedencia}
+
+
+def precio_real(nov: D.Serie, inmag: D.Serie, ipc) -> dict:
+    """
+    Novillito e Índice Novillo en pesos constantes del último mes con IPC, desde
+    enero de 2017. `deflactar` de fuentes_nuevas no devuelve el mes sin IPC: el mes
+    del informe (octubre) queda afuera hasta que el INDEC publique su IPC, y el
+    texto lo dice. No se toca el IPC empalmado.
+    """
+    from fuentes_nuevas.ipc import deflactar
+    if not ipc or not ipc.puntos or not len(nov):
+        return {}
+    base = ipc.procedencia.fecha_dato or ipc.puntos[-1]["periodo"]
+    out = {"base": base, "procedencia": ipc.procedencia}
+    for clave, serie, campo in (("novillito", nov.puntos, "ars"), ("inmag", inmag.puntos, "ars")):
+        mens = [{"periodo": q["ym"], "valor": q["valor"]} for q in a_mensual(serie, campo) if q["ym"] >= DESDE_REAL]
+        pts = [q for q in deflactar(mens, ipc, base) if not q["ipc_empalmado"]]
+        out[clave] = [{"ym": q["periodo"], "valor": q["valor"], "nominal": q["valor_nominal"]} for q in pts]
+    if len(out["novillito"]) < 24:
+        return {}
+    return out
+
+
+def exportacion(expo, dest) -> dict:
+    """
+    Las exportaciones de carne bovina del INDEC: el último mes, el acumulado del año
+    contra los mismos meses del año anterior y los destinos ordenados. Toneladas en
+    PESO PRODUCTO (lo que declara la Aduana), sin convertir a res con hueso. La
+    partida 0202.20 (congelada con hueso) trae huesos de desposte que van a China:
+    el US$/t "sin 0202.20" es un cociente propio sobre las columnas publicadas.
+    """
+    if not expo or not expo.puntos:
+        return {}
+    u = expo.puntos[-1]
+    por = {q["periodo"]: q for q in expo.puntos}
+    a = por.get(_ym_menos(u["periodo"], 12))
+    anio, mes = int(u["periodo"][:4]), int(u["periodo"][5:7])
+
+    def acum(serie, a_: int, campo: str) -> float | None:
+        vals = [q.get(campo) for q in serie if q["periodo"][:4] == str(a_) and int(q["periodo"][5:7]) <= mes]
+        return sum(vals) if len(vals) == mes and all(v is not None for v in vals) else None
+
+    def sin_hueso(q: dict) -> float | None:
+        t = q["toneladas_peso_producto"] - q["toneladas_congelada_con_hueso"]
+        return 1e6 * (q["fob_musd"] - q["fob_musd_congelada_con_hueso"]) / t if t > 0 else None
+
+    mensual = [{"ym": q["periodo"], "t": q["toneladas_peso_producto"], "t_hueso": q["toneladas_congelada_con_hueso"],
+                "fob": q["fob_musd"], "usd_t": q["usd_por_t"], "usd_t_sin": sin_hueso(q)} for q in expo.puntos]
+    out = {
+        "u": u, "ant": a, "anio": anio, "mes": mes, "mensual": mensual,
+        "var_t": _var(u["toneladas_peso_producto"], a and a["toneladas_peso_producto"]),
+        "var_fob": _var(u["fob_musd"], a and a["fob_musd"]),
+        "var_usd_t": _var(u["usd_por_t"], a and a["usd_por_t"]),
+        "usd_t_sin": sin_hueso(u), "usd_t_sin_ant": sin_hueso(a) if a else None,
+        "acum_t": acum(expo.puntos, anio, "toneladas_peso_producto"),
+        "acum_t_ant": acum(expo.puntos, anio - 1, "toneladas_peso_producto"),
+        "acum_fob": acum(expo.puntos, anio, "fob_musd"), "acum_fob_ant": acum(expo.puntos, anio - 1, "fob_musd"),
+        "procedencia": expo.procedencia, "destinos": [],
+    }
+    if dest and dest.puntos and dest.procedencia.fecha_dato == expo.procedencia.fecha_dato:
+        filas = []
+        for k, nombre in DESTINOS:
+            t, t0 = acum(dest.puntos, anio, f"toneladas_{k}"), acum(dest.puntos, anio - 1, f"toneladas_{k}")
+            f, f0 = acum(dest.puntos, anio, f"fob_musd_{k}"), acum(dest.puntos, anio - 1, f"fob_musd_{k}")
+            if t is None or t0 is None:
+                continue
+            filas.append({"clave": k, "nombre": nombre, "t": t, "t_ant": t0, "fob": f, "fob_ant": f0,
+                          "var_t": _var(t, t0)})
+        total = sum(f["t"] for f in filas)
+        for f in filas:
+            f["share"] = 100 * f["t"] / total if total else None
+        # Ordenadas por toneladas del año; "Confidencial" y "Resto" van al final siempre:
+        # no son un destino.
+        fijos = [f for f in filas if f["clave"] in ("confidencial", "resto")]
+        out["destinos"] = sorted((f for f in filas if f not in fijos), key=lambda f: f["t"], reverse=True) + fijos
+        out["procedencia_dest"] = dest.procedencia
+    return out
+
+
+def clima(enso, lluvias) -> dict:
+    """ENSO con el índice que clasifica el CPC (RONI desde el 01-02-2026) y la lluvia contra la normal."""
+    out: dict = {}
+    if enso and enso.puntos:
+        out["enso"] = enso.puntos[-48:]
+        out["enso_u"] = enso.puntos[-1]
+        out["enso_procedencia"] = enso.procedencia
+        racha = 0
+        for q in reversed(enso.puntos):
+            v = q.get(q.get("indice_fase") == "RONI" and "roni" or "oni")
+            if v is None or v < 0.5:
+                break
+            racha += 1
+        out["enso_racha_nino"] = racha
+    if lluvias and lluvias.puntos:
+        ult = lluvias.procedencia.fecha_dato
+        meses = sorted({q["periodo"] for q in lluvias.puntos})
+        tres = [m for m in meses if m <= ult][-3:]
+        est: dict[str, dict] = {}
+        for q in lluvias.puntos:
+            e = est.setdefault(q["wmo"], {"wmo": q["wmo"], "estacion": q["estacion"], "provincia": q["provincia"], "meses": {}})
+            e["meses"][q["periodo"]] = q
+        out["lluvias"] = list(est.values())
+        out["lluvias_mes"] = ult
+        out["lluvias_tres"] = tres
+        out["lluvias_procedencia"] = lluvias.procedencia
+    return out
 
 
 # ─── el paquete v2 ─────────────────────────────────────────────────────────────
@@ -457,6 +667,12 @@ class Extra:
     composicion: list[dict] = field(default_factory=list)
     avisos: list[str] = field(default_factory=list)
     faltantes: list[str] = field(default_factory=list)
+    # Las fuentes públicas nuevas: {} si la serie no está (la página no va).
+    faena: dict = field(default_factory=dict)
+    stock: dict = field(default_factory=dict)
+    real: dict = field(default_factory=dict)
+    expo: dict = field(default_factory=dict)
+    clima: dict = field(default_factory=dict)
 
 
 def control_ruedas(p: D.Paquete) -> dict:
@@ -607,8 +823,30 @@ def cargar(ym: str) -> tuple[D.Paquete, Extra]:
     if p.maiz.puntos and not mv:
         u = p.maiz.puntos[-1]["ym"]
         faltan.append(f"relación maíz/novillo (último dato {u[5:7]}/{u[:4]})")
+
+    # Las fuentes públicas nuevas. Cada una por separado: si su cache no está, la
+    # página que la usa no va y queda anotada con el nombre de la serie.
+    def ext(nombre: str, id_serie: str):
+        try:
+            return externa(id_serie)
+        except Exception as e:  # noqa: BLE001
+            faltan.append(f"{nombre}: sin dato (cache ilegible o ausente: {type(e).__name__})")
+            return None
+
+    fae = seguro("faena nacional (MAGyP)", lambda: faena_mes(ext("faena nacional (MAGyP)", "faena-bovina-mensual")), {})
+    sto = seguro("stock bovino (SENASA)", lambda: stock_serie(ext("stock bovino (SENASA)", "stock-bovino-categorias")), {})
+    ipc = ext("IPC nacional (INDEC)", "ipc-nacional")
+    rea = seguro("precio real", lambda: precio_real(nov, p.inmag, ipc), {})
+    exp = seguro("exportaciones (INDEC)", lambda: exportacion(ext("exportaciones (INDEC)", "exportaciones-carne-bovina"),
+                                                               ext("exportaciones por destino (INDEC)",
+                                                                   "exportaciones-carne-bovina-destinos")), {})
+    cli = seguro("clima", lambda: clima(ext("ENSO (NOAA CPC)", "enso-oni"),
+                                        ext("lluvias (SMN vía DWD)", "lluvias-corredor-ganadero")), {})
+    # No hay serie oficial descargable de existencias en feedlot desde 07/2022: va
+    # siempre a la línea de ausencias hasta que la haya.
+    faltan.append("existencias en feedlot (sin serie oficial descargable desde 07/2022)")
     return p, Extra(novillito=nov, bandas_hist=bh, estacional=est, relativos=rel, internacional=intl, tierra=tie,
-                    remates_mes=rm, semaforo=seguro("semáforo", lambda: semaforo(p, nov), []), ruedas=ru,
+                    remates_mes=rm, semaforo=seguro("semáforo", lambda: semaforo(p, nov, fae), []), ruedas=ru,
                     nacional=seguro("faena nacional", nacional_hembras, {}), maiz_vigente=mv,
                     composicion=seguro("composición del mes", lambda: composicion(p), []), avisos=avisos,
-                    faltantes=faltan)
+                    faltantes=faltan, faena=fae, stock=sto, real=rea, expo=exp, clima=cli)

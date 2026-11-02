@@ -6,7 +6,7 @@
 - **Con parser y sin cache:** una (FAO), porque la licencia no deja republicarla.
 - **Descartada:** una (feedlot), porque no hay archivo oficial descargable.
 
-Los módulos viven en `scripts/monthly-report/fuentes_nuevas/` y todavía **no están enchufados** al informe: `datos.py`, `informe.py` y la plantilla no se tocaron.
+Los módulos viven en `scripts/monthly-report/fuentes_nuevas/`. **Desde el v3 están enchufados al informe v2**: `publish.py` actualiza los caches con `fuentes_nuevas/corrida.py` antes de armar la edición (cada fuente tolerante a fallo: si una no baja, queda el cache anterior con su fecha y se anota), y `datos_v2.py` los lee para las páginas de precio real, exportación, faena y stock nacional y clima. La FAO sigue afuera (licencia) y el feedlot va a la línea de ausencias. El v1 (`--v1`) no los usa.
 
 ## Reglas comunes (`fuentes_nuevas/_base.py`)
 

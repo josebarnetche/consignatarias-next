@@ -4,7 +4,7 @@ El Corredor v2 — armado del informe.
 
 Lo arman `informe.py` y `publish.py`; con `--v1` sale el informe viejo, byte por
 byte igual que antes. Este archivo no toca nada del v1; reusa sus utilidades (`esc`, `ficha`, `delta`, `hoja`,
-`fuentes_embebidas`, la planilla y los remates del mes que viene).
+`fuentes_embebidas` y los remates del mes que viene).
 
 DESDE NOVIEMBRE DE 2026 ES EL INFORME POR DEFECTO (el v1 queda detrás de --v1).
 
@@ -42,6 +42,8 @@ AQUI = Path(__file__).resolve().parent
 
 URL_INFORME = "https://www.consignatarias.com.ar/el-corredor"
 URL_LICENCIA = "https://www.consignatarias.com.ar/licencia-datos"
+#: La herramienta de valuación del sitio (src/app/(terminal)/valuar-hacienda, indexable).
+URL_VALUAR = "https://www.consignatarias.com.ar/valuar-hacienda"
 
 
 # ─── utilidades ────────────────────────────────────────────────────────────────
@@ -76,15 +78,16 @@ def ym_largo(ym: str) -> str:
     return f"{D.MESES[int(ym[5:7])]} de {ym[:4]}"
 
 
-def pie(fuente: str, propio: bool = True, fecha: str | None = None, nota: str = "") -> str:
+def pie(fuente: str, propio: bool = True, fecha: str | None = None, nota: str = "", dato: str = "") -> str:
     """
     El pie de cada figura. Va con la forma "Fuente: X; cálculo propio" porque es lo
     que sobrevive al recorte: el gráfico suelto, mandado por WhatsApp, se sigue
-    pudiendo citar.
+    pudiendo citar. `dato` es para las series mensuales o anuales de afuera, que no
+    tienen día: "Dato a septiembre de 2026".
     """
     clase = "propio" if propio else "externo"
     calc = "; cálculo propio" if propio else ""
-    f = f" Dato al {fecha_ar(fecha)}." if fecha else ""
+    f = f" Dato al {fecha_ar(fecha)}." if fecha else (f" Dato a {dato}." if dato else "")
     n = f" {I.esc(nota)}" if nota else ""
     return (f'<figcaption class="{clase}"><span class="marca-dato"></span>'
             f'Fuente: {I.esc(fuente)}{calc}.{f}{n} · consignatarias.com.ar</figcaption>')
@@ -116,6 +119,10 @@ def _celda(v: float | None, color: bool) -> str:
 
 
 def _valor(fila: dict) -> str:
+    if fila["unidad"] == "cabezas":
+        return _miles(fila["ultimo"])
+    if fila["unidad"] == "kg":
+        return _miles(fila["ultimo"])
     return G.usd(fila["ultimo"]) if fila["unidad"].startswith("USD") else G.ars(fila["ultimo"])
 
 
@@ -357,6 +364,12 @@ def p_resumen(p: D.Paquete, x: D2.Extra) -> str:
                     " y ".join(f'{_signo(f["p5_oficial_5"])} para {f["nombre"].lower() if f["nombre"] != "Índice Novillo" else "el Índice Novillo"}'
                                .replace("para novillito", "para el novillito") for f in alt) + ".")
     ctx = contexto_cambiario(p)
+    nota_faena = fuente_faena = ""
+    if x.faena:
+        u = x.faena["u"]
+        nota_faena = (f" Faena y peso medio de res (kg de res con hueso): dato de {ym_largo(u['periodo'])}, un mes de "
+                      f"rezago; solo interanual.")
+        fuente_faena = "; MAGyP (faena nacional)"
     return (
         f'<h2>Si sólo leés una página, es ésta</h2>'
         f'<ol class="lista-num compacta">' + "".join(f"<li>{h}</li>" for h in hechos(p, x)) + "</ol>"
@@ -369,8 +382,8 @@ def p_resumen(p: D.Paquete, x: D2.Extra) -> str:
         f'mes contra el mismo mes del año anterior. Promedio de 5 años, solo en dólares: el mismo mes de {eb}, los años '
         f'de cambio unificado; 2020–2024 quedan afuera porque la brecha cambiaria hacía que el mismo kilo valiera dos '
         f'cifras en dólares.{nota_alt} Verde y rojo solo en dólares; en pesos la inflación hace ambiguo el signo. Las '
-        f'medianas de la {BANDA} tienen serie desde junio de 2026: solo ventanas cortas. Fuente: MAG (Índice Novillo, '
-        f'novillito, lotes) y dólar blue; cálculo propio · consignatarias.com.ar</p>'
+        f'medianas de la {BANDA} tienen serie desde junio de 2026: solo ventanas cortas.{nota_faena} Fuente: MAG (Índice Novillo, '
+        f'novillito, lotes) y dólar blue{fuente_faena}; cálculo propio · consignatarias.com.ar</p>'
         f'{aviso}'
     )
 
@@ -518,7 +531,7 @@ def p_banda2(p: D.Paquete, x: D2.Extra) -> str:
     return (
         f'<h2>{titulo}</h2>'
         f'<p class="ancho">La {BANDA} por rango de 50 kg dentro de cada categoría: cuánto se castiga o se premia el kilo '
-        f'a medida que el animal pesa más. La tabla completa por categoría y peso está en la planilla.</p>'
+        f'a medida que el animal pesa más.</p>'
         f'<figure>{G2.escalera_pesos(p.por_peso.puntos, fila_h=13)}'
         f'{pie("MAG, operaciones de lote por rango de 50 kg (Valor de Referencia VR v1.0)", fecha=p.por_peso.fecha_dato, nota="Barra: P10 a P90. Punto: mediana. Barra hueca: menos de 30 lotes.")}</figure>'
     )
@@ -575,7 +588,14 @@ def p_ciclo(p: D.Paquete, x: D2.Extra) -> str:
     med = _mediana([q["pct"] for q in p.liquidacion.puntos])
     nac = x.nacional or {}
     bloque_nac = ""
-    if nac.get("pct"):
+    if x.faena:
+        # La serie mensual del MAGyP (página siguiente) reemplaza al acumulado del año.
+        fu = x.faena["u"]
+        bloque_nac = (f'<div class="aviso">A nivel nacional, las hembras fueron el {_d(fu["pct_hembras"])}% de la faena '
+                      f'de {ym_largo(fu["periodo"])} (MAGyP; la serie mes a mes va en la página de faena nacional). '
+                      f'<strong>Las dos series no se grafican juntas</strong>: Cañuelas concentra venta de vientres y '
+                      f'corre quince a veinte puntos por encima del país.</div>')
+    elif nac.get("pct"):
         cuando = f'acumulado del año a {nac["mes_informe"].lower()}' if nac.get("mes_informe") else "acumulado del año"
         bloque_nac = (f'<div class="aviso">A nivel nacional, las hembras fueron el {_d(nac["pct"])}% de la faena '
                       f'({cuando}; {I.esc(nac.get("fuente"))}). <strong>Las dos series no se grafican juntas</strong>: '
@@ -769,64 +789,6 @@ def p_tierra(p: D.Paquete, x: D2.Extra) -> str:
     )
 
 
-def ejemplo_planilla(p: D.Paquete) -> dict | None:
-    """El ejemplo de la planilla: novillito de 420 kg a la mediana DEL RANGO que lo contiene."""
-    kg, cab = 420, 50
-    for cat in ("NOVILLITO", "NOVILLO", "VAQUILLONA"):
-        g = next((g for g in getattr(p.por_peso, "puntos", []) if g["categoria"] == cat), None)
-        r = next((r for r in (g or {}).get("rangos") or [] if r["desde_kg"] <= kg <= r["hasta_kg"] and r.get("mediana")), None)
-        if r:
-            bruto = r["mediana"] * kg * cab
-            return {"cat": cat, "kg": kg, "cab": cab, "rango": r, "bruto": bruto, "com": bruto * 0.05}
-    return None
-
-
-def p_planilla(p: D.Paquete, x: D2.Extra) -> str:
-    """La página que justifica imprimir el informe: se completa con lapicera."""
-    c = p.cierre
-    e = ejemplo_planilla(p)
-    ejemplo = ""
-    if e:
-        r = e["rango"]
-        ejemplo = (f'<p class="ancho">Ejemplo con los números de este mes: {e["cab"]} cabezas de {e["cat"].lower()} de '
-                   f'{e["kg"]} kg, a la mediana del rango {r["desde_kg"]}–{r["hasta_kg"]} kg ({G.ars(r["mediana"])}), son '
-                   f'<span class="fuerte">{G.ars(e["bruto"])}</span> brutos. Con 5% de comisión, {G.ars(e["com"])} se van '
-                   f'ahí. El resto depende de flete, gastos y plazo, que son tuyos y por eso van en blanco.</p>')
-    vacias = "".join(
-        '<tr><td class="vacia">&nbsp;</td><td class="vacia"></td><td class="vacia"></td><td class="vacia"></td>'
-        '<td class="vacia"></td><td class="vacia"></td><td class="vacia"></td></tr>' for _ in range(8)
-    )
-    base = (
-        f'<h2>Tu lote, tu cuenta</h2>'
-        f'<p class="ancho">Esta página está para completar a mano, con la referencia del mes al lado. El precio de '
-        f'referencia sale de la {BANDA} por categoría y peso (tabla de abajo): usá la mediana de tu rango, o el P10 si '
-        f'querés la cuenta conservadora.</p>'
-        f'{ejemplo}'
-        f'<table class="planilla"><thead><tr><th>Categoría</th><th>Cabezas</th><th>Kg prom.</th><th>$/kg ref.</th>'
-        f'<th>Bruto</th><th>Comisión + gastos</th><th>Neto</th></tr></thead><tbody>{vacias}</tbody></table>'
-        f'<p class="nota">Referencia del mes: cierre {G.ars(c["ars"])} por kilo vivo ({G.fecha_larga_es(c["fecha"])}). '
-        f'La comisión y los gastos varían por firma y por canal: preguntá antes de consignar, que es tu derecho y nadie se ofende.</p>'
-    )
-    filas = [(g["categoria"], r) for g in getattr(p.por_peso, "puntos", []) for r in g["rangos"] if (r.get("lotes") or 0) >= 10]
-    if not filas:
-        return base
-
-    def tabla(parte: list) -> str:
-        cuerpo = "".join(
-            f'<tr><td>{G2.nombre_cat(c)} {r["desde_kg"]}–{r["hasta_kg"]} kg</td><td class="num">{G.ars(r["p10"])}</td>'
-            f'<td class="num fuerte">{G.ars(r["mediana"])}</td><td class="num">{G.ars(r["p90"])}</td></tr>'
-            for c, r in parte
-        )
-        return (f'<table class="chica apretada"><thead><tr><th>Categoría y peso</th><th>P10</th><th>Mediana</th>'
-                f'<th>P90</th></tr></thead><tbody>{cuerpo}</tbody></table>')
-
-    mitad = (len(filas) + 1) // 2
-    return (base + f'<h3 style="margin-top:4mm">La referencia para la columna $/kg: {BANDA} por categoría y peso</h3>'
-            f'<div class="dos"><div>{tabla(filas[:mitad])}</div><div>{tabla(filas[mitad:])}</div></div>'
-            f'<p class="nota">Ventana de 30 días al {fecha_ar(p.por_peso.fecha_dato)}; rangos con 10 lotes o más. Fuente: MAG, '
-            f'operaciones de lote (Valor de Referencia VR v1.0); cálculo propio · consignatarias.com.ar</p>')
-
-
 def p_metodologia(p: D.Paquete, x: D2.Extra) -> str:
     """Metodología, fuentes, ausencias, licencia, cita y contacto. El contacto queda al final, donde ya está la mano."""
     fuentes = [
@@ -838,6 +800,9 @@ def p_metodologia(p: D.Paquete, x: D2.Extra) -> str:
         ("Brecha internacional", "USDA AMS, INAC, MLA", "USD por kg vivo"),
         ("Tierra", "Relevamiento propio y CAT", "Kg de novillo; renta solo con canon de la zona"),
         ("Remates", "Calendario propio", "Conteo por provincia y tipo"),
+        ("Faena y stock", "MAGyP y SENASA, CC BY 4.0", "Interanuales; stock desde 2012"),
+        ("Exportaciones e IPC", "INDEC, CC BY-SA 4.0", "Sumas del año; precio real desde 2017"),
+        ("Clima", "NOAA CPC (RONI); SMN vía CLIMAT/DWD", "% de la normal 1991–2020"),
     ]
     tabla = "".join(f"<tr><td>{a}</td><td>{b}</td><td>{c}</td></tr>" for a, b, c in fuentes)
     faltan = ausencias(p, x)
@@ -849,16 +814,19 @@ def p_metodologia(p: D.Paquete, x: D2.Extra) -> str:
         f'<h2>Cómo se construye esto</h2>'
         f'<p class="ancho"><span class="fuerte">Lo propio y lo de terceros.</span> Los precios y los lotes los publica el '
         f'Mercado Agroganadero (MAG). Nuestros son el empalme, los dólares, la {BANDA}, la estacionalidad, las hembras, '
-        f'los precios relativos y la cuenta de la tierra.</p>'
+        f'los precios relativos y la cuenta de la tierra. Faena, stock, exportaciones, IPC y clima: organismos '
+        f'públicos.</p>'
         f'<p class="ancho"><span class="fuerte">Lo que no está.</span> Precio de ternero: el MAG no opera terneros. Las '
         f'hembras de Cañuelas y la faena nacional no se grafican juntas. Ningún umbral de afuera para leer una serie '
-        f'propia: se marca su mediana. Pesos y dólares, valores nominales.</p>'
+        f'propia: se marca su mediana. Valores nominales, salvo el precio real. Índice de la carne de la FAO: su licencia no '
+        f'permite republicarlo. Relación novillo/FOB: mezclaría kilo vivo y kilo de producto con un rendimiento estimado.</p>'
         f'{linea_aus}'
-        f'<table class="chica"><thead><tr><th>Dato</th><th>Origen</th><th>Lo que hacemos</th></tr></thead><tbody>{tabla}</tbody></table>'
+        f'<table class="chica apretada"><thead><tr><th>Dato</th><th>Origen</th><th>Lo que hacemos</th></tr></thead><tbody>{tabla}</tbody></table>'
         f'<div class="cita-caja"><div class="rotulo">Licencia y cita</div>'
         f'<p class="ancho" style="margin:1mm 0 2mm">Citar es libre y gratis; la atribución es la condición de uso. Republicar '
         f'nuestras compilaciones o usarlas en un producto propio requiere licencia: {URL_LICENCIA.replace("https://www.", "")}</p>'
         f'<div class="cita-txt">{I.esc(cita(p))}</div><div class="nota">{I.esc(cita_banda())}</div></div>'
+        f'<p class="ancho" style="margin:0 0 1mm">Para valuar un lote con estos datos: {URL_VALUAR.replace("https://www.", "")}</p>'
         f'<p class="nota">Este informe es una referencia de mercado, no una tasación ni una recomendación de compra o venta.</p>'
         f'{contacto}'
     )
@@ -883,22 +851,312 @@ def p_anexo(p: D.Paquete, x: D2.Extra) -> str:
             f'sale de dividir los kilos totales por las cabezas.</p>')
 
 
+# ─── fuentes públicas nuevas: precio real, exportación, ciclo nacional, clima ──
+#
+# Cada página lee lo que `datos_v2.cargar` dejó en `x.real`, `x.expo`, `x.faena`,
+# `x.stock` y `x.clima`; vacío = la página no va y queda en la línea de ausencias.
+# El pie lleva el organismo y el MES del dato (son series mensuales o anuales con
+# rezago: no tienen "dato al día").
+
+def _mes_ym(ym: str) -> str:
+    """'2026-09' → 'septiembre'."""
+    return D.MESES[int(ym[5:7])]
+
+
+def _musd(v: float) -> str:
+    """Millones de dólares con un decimal: 492,7."""
+    return G2.num_ar(v, 1)
+
+
+def _var_ficha(v: float | None, suf: str = "%", detalle: str = "") -> str:
+    if v is None:
+        return '<div class="delta neutro">sin comparable</div>'
+    return f'<div class="delta neutro">{_signo(v, suf)}{detalle}</div>'
+
+
+def p_real(p: D.Paquete, x: D2.Extra) -> str:
+    """
+    El novillito y el Índice Novillo en pesos constantes, desde enero de 2017. Antes
+    no hay IPC nacional del INDEC y el empalme con San Luis no se usa. El título
+    dice el nivel y el interanual: ningún "récord", que dependería de la ventana.
+    """
+    r = x.real
+    if not r:
+        return ""
+    base = r["base"]
+    nov = r["novillito"]
+    por = {q["ym"]: q for q in nov}
+    u = nov[-1]
+    a = por.get(D2._ym_menos(u["ym"], 12))
+    v = D2._var(u["valor"], a and a["valor"])
+    previos = [q["valor"] for q in nov if q["ym"][:4] < u["ym"][:4]]
+    prom = sum(previos) / len(previos) if previos else None
+    titulo = (f'En pesos de {ym_largo(base)}, el novillito promedió {G.ars(u["valor"])} el kilo en {_mes_ym(u["ym"])}, '
+              f'{_d(abs(v))}% {"más" if v >= 0 else "menos"} que un año antes' if v is not None
+              else f'El novillito en pesos de {ym_largo(base)}, desde 2017')
+    series = [{"nombre": "novillito", "puntos": nov, "color": G.SERIE, "grosor": 1.75}]
+    if len(r.get("inmag") or []) >= 24:
+        series.append({"nombre": "Índice Novillo", "puntos": r["inmag"], "color": G.TINTA_3, "grosor": 1.25,
+                       "guion": ' stroke-dasharray="5 3"'})
+    anual: dict[str, dict[str, list[float]]] = {}
+    for clave in ("novillito", "inmag"):
+        for q in r.get(clave) or []:
+            anual.setdefault(q["ym"][:4], {}).setdefault(clave, []).append(q["valor"])
+    filas = "".join(
+        f'<tr><td>{a_}{"*" if len(d.get("novillito", [])) < 12 else ""}</td>'
+        f'<td class="num">{G.ars(sum(d["novillito"]) / len(d["novillito"])) if d.get("novillito") else "—"}</td>'
+        f'<td class="num">{G.ars(sum(d["inmag"]) / len(d["inmag"])) if d.get("inmag") else "—"}</td></tr>'
+        for a_, d in sorted(anual.items())
+    )
+    oct_ = (f' {p.mes.nombre.capitalize()} todavía no tiene IPC (el INDEC lo publica a mediados del mes que viene): '
+            f'entra en la edición siguiente.' if base < p.mes.ym else "")
+    proc = r["procedencia"]
+    return (
+        f'<h2>{titulo}</h2>'
+        f'<div class="fichas">'
+        f'{I.ficha(f"Novillito · {_mes_ym(u["ym"])}", G.ars(u["valor"]), _var_ficha(v, detalle=" contra un año antes"))}'
+        f'{I.ficha(f"Promedio {nov[0]["ym"][:4]}–{int(u["ym"][:4]) - 1}", G.ars(prom) if prom else "—", "<div class=delta>mismos pesos constantes</div>")}'
+        f'{I.ficha("Pesos de", ym_ar(base), "<div class=delta>último IPC publicado</div>")}'
+        f'</div>'
+        f'<figure>{G2.lineas_mensuales(series, alto_mm=70, leyenda=f"Promedio mensual, $ por kilo vivo en pesos de {ym_largo(base)}", R=120)}'
+        f'{pie("MAG (novillito por rueda e Índice Novillo) deflactados por el IPC nacional del INDEC (nivel general, base dic-2016=100)", dato=ym_largo(base), nota="Precio real = nominal × IPC del mes base ÷ IPC del mes. Desde enero de 2017: antes no hay IPC nacional y no se usa ningún empalme.")}</figure>'
+        f'<div class="dos"><div><h3>Promedio anual, en pesos de {ym_largo(base)}</h3>'
+        f'<table class="chica apretada"><thead><tr><th>Año</th><th>Novillito</th><th>Índice Novillo</th></tr></thead>'
+        f'<tbody>{filas}</tbody></table><div class="nota">* Año incompleto: promedio de los meses con IPC.</div></div>'
+        f'<div><h3>Cómo se lee</h3><p class="nota" style="font-size:8.5pt;line-height:12pt">El precio en pesos de cada '
+        f'mes se lleva a pesos de {ym_largo(base)} con el IPC nacional del INDEC. La serie arranca en enero de 2017 '
+        f'porque el IPC nacional empieza en diciembre de 2016; para años anteriores la única serie disponible es un '
+        f'empalme con el IPC de una sola provincia (San Luis), que este informe no usa.{oct_} El resto del informe va en '
+        f'valores nominales.</p>'
+        f'<p class="nota">IPC: {I.esc(proc.fuente)}. Licencia {I.esc(proc.licencia.split(" · ")[0])}. Bajado el '
+        f'{fecha_ar(proc.fecha_observacion)}.</p></div></div>'
+    )
+
+
+def p_exportacion(p: D.Paquete, x: D2.Extra) -> str:
+    """
+    Exportaciones de carne bovina del INDEC: toneladas en PESO PRODUCTO, US$ FOB y
+    US$/t por mes, y los destinos del año contra el mismo período del anterior. No
+    hay relación novillo/FOB: compararía kilo vivo con kilo de producto y pediría un
+    rendimiento estimado, que este informe no usa.
+    """
+    e = x.expo
+    if not e:
+        return ""
+    u, a = e["u"], e["ant"]
+    mes, anio = _mes_ym(u["periodo"]), e["anio"]
+    proc = e["procedencia"]
+    titulo = (f'En {mes} se exportaron {_miles(u["toneladas_peso_producto"])} t de carne bovina por USD '
+              f'{_musd(u["fob_musd"])} millones FOB, {_d(abs(e["var_fob"]))}% {"más" if e["var_fob"] >= 0 else "menos"} '
+              f'en dólares que un año antes' if e["var_fob"] is not None else
+              f'En {mes} se exportaron {_miles(u["toneladas_peso_producto"])} t de carne bovina')
+    ant_txt = f" vs {D2.mes_corto(a['periodo'])}" if a else ""
+    fichas = (
+        f'<div class="fichas">'
+        f'{I.ficha("Toneladas", _miles(u["toneladas_peso_producto"]), _var_ficha(e["var_t"], detalle=ant_txt))}'
+        f'{I.ficha("USD millones FOB", _musd(u["fob_musd"]), _var_ficha(e["var_fob"], detalle=ant_txt))}'
+        f'{I.ficha("USD por tonelada", _miles(u["usd_por_t"]), _var_ficha(e["var_usd_t"], detalle=ant_txt))}'
+        + (f'{I.ficha("USD/t sin 0202.20", _miles(e["usd_t_sin"]), _var_ficha(D2._var(e["usd_t_sin"], e["usd_t_sin_ant"]), detalle=ant_txt))}'
+           if e.get("usd_t_sin") else "")
+        + '</div>'
+    )
+    m36 = e["mensual"][-36:]
+    usd_t = [{"nombre": "total", "puntos": [{"ym": q["ym"], "valor": q["usd_t"]} for q in m36], "color": G.SERIE},
+             {"nombre": "sin 0202.20", "puntos": [{"ym": q["ym"], "valor": q["usd_t_sin"]} for q in m36 if q["usd_t_sin"]],
+              "color": G.TINTA_3, "grosor": 1.25, "guion": ' stroke-dasharray="5 3"'}]
+    bloque_dest = ""
+    if e.get("destinos"):
+        n = e["mes"]
+        per = f'ene–{D2.MESES_AB_ES[n]}' if n > 1 else "ene"
+        filas = [{"nombre": d["nombre"], "v": d["t"], "v_ant": d["t_ant"],
+                  "rot": f'{_miles(d["t"])} t · {_signo(d["var_t"]) if d["var_t"] is not None else "—"} · USD {_miles(d["fob"])} M'}
+                 for d in e["destinos"]]
+        china = next((d for d in e["destinos"] if d["clave"] == "china"), None)
+        h3 = (f'Destinos, {per} {anio} contra {per} {anio - 1}: China llevó el {_d(china["share"])}% de las toneladas'
+              if china and china.get("share") else f'Destinos, {per} {anio} contra {per} {anio - 1}')
+        bloque_dest = (
+            f'<h3>{h3}</h3>'
+            f'<figure>{G2.barras_pareadas(filas, fila_h=19, et_actual=f"{per} {anio}", et_anterior=f"{per} {anio - 1}")}'
+            f'{pie("INDEC, exportaciones por país de destino (NCM 02.01 + 02.02)", dato=ym_largo(u["periodo"]), nota="Toneladas en peso producto, acumuladas en el año. Unión Europea: los 27 miembros actuales, composición fija; Chile incluye las zonas francas de Iquique y Punta Arenas; Brasil, Manaos. Ordenado por toneladas del año.")}</figure>'
+        )
+    return (
+        f'<h2>{titulo}</h2>{fichas}'
+        f'<div class="dos"><div><h3>Toneladas por mes</h3>{G2.columnas_exportacion(e["mensual"])}'
+        f'<div class="nota">Peso producto. Parte hueca: partida 0202.20 (congelada con hueso), que incluye huesos de '
+        f'desposte con destino a China. Fuente: INDEC; cálculo propio · consignatarias.com.ar</div></div>'
+        f'<div><h3>USD FOB por tonelada</h3>{G2.lineas_mensuales(usd_t, ancho_mm=87, alto_mm=56, fmt=_miles, extremos=False, R=118, leyenda="USD FOB corrientes por t")}'
+        f'<div class="nota">"Sin 0202.20": FOB y toneladas descontando esa partida, cociente propio sobre columnas '
+        f'publicadas. Dólares corrientes (valores nominales). Fuente: INDEC; cálculo propio · consignatarias.com.ar</div></div></div>'
+        f'{bloque_dest}'
+        f'<div class="aviso">Toneladas en <strong>peso producto</strong> (lo que declara la Aduana), no en res con hueso: no '
+        f'se comparan con la producción de la página de faena. Desde 2018 rige el secreto estadístico: los envíos de '
+        f'destinos con pocos exportadores van al país 999 ("confidencial"), así que un destino puede no figurar un mes '
+        f'sin haber dejado de comprar. {anio} es provisorio: el INDEC lo reemplaza entero cada mes. Fuente: INDEC '
+        f'(CC BY-SA 4.0); las sumas por grupo de países y por año son cálculo propio.</div>'
+    )
+
+
+STOCK_CATS = [("total", "Total"), ("vacas", "Vacas"), ("vaquillonas", "Vaquillonas"), ("terneros", "Terneros"),
+              ("terneras", "Terneras"), ("novillitos", "Novillitos"), ("novillos", "Novillos"),
+              ("toros+toritos", "Toros y toritos")]
+
+
+def p_ciclo_nacional(p: D.Paquete, x: D2.Extra) -> str:
+    """
+    La faena nacional del MAGyP (mes a mes, con un mes de rezago) y el stock al
+    31/12 de SENASA. Va en página propia, después de la de Cañuelas: las dos series
+    de hembras no se grafican juntas.
+    """
+    fm, st = x.faena, x.stock
+    if not fm and not st:
+        return ""
+    partes = []
+    if fm:
+        u = fm["u"]
+        ant = fm["ant"]
+        mes = ym_largo(u["periodo"])
+        vs = f" vs {D2.mes_corto(ant['periodo'])}" if ant else ""
+        titulo = (f'Faena nacional de {mes}: {_miles(u["total"])} cabezas, {_d(abs(fm["var_total"]))}% '
+                  f'{"más" if fm["var_total"] >= 0 else "menos"} que un año antes; las hembras, {_d(u["pct_hembras"])}%'
+                  if fm["var_total"] is not None else f'Faena nacional de {mes}: {_miles(u["total"])} cabezas')
+        filas = "".join(
+            f'<tr><td>{G2.nombre_cat(f["cat"].upper() if f["cat"] == "mej" else f["cat"])}</td>'
+            f'<td class="num fuerte">{_miles(f["cab"])}</td><td class="num">{_miles(f["cab_ant"]) if f["cab_ant"] else "—"}</td>'
+            f'<td class="num">{_signo(f["var"]) if f["var"] is not None else "—"}</td><td class="num">{_d(f["share"])}%</td>'
+            f'<td class="num">{f["peso"] or "—"}</td><td class="num">{f["peso_ant"] or "—"}</td></tr>'
+            for f in fm["filas"]
+        )
+        ca = D2.mes_corto(u["periodo"])
+        cb = D2.mes_corto(ant["periodo"]) if ant else "año anterior"
+        partes.append(
+            f'<h2>{titulo}</h2>'
+            f'<div class="fichas">'
+            f'{I.ficha("Faena", _miles(u["total"]), _var_ficha(fm["var_total"], detalle=vs))}'
+            f'{I.ficha("Hembras", f"{_d(u["pct_hembras"])}%", _var_ficha(fm["pp_hembras"], " pp", detalle=vs))}'
+            f'{I.ficha("Peso medio de res", f"{u["peso_medio_res_kg"]} kg", _var_ficha(fm["var_peso"], detalle=vs))}'
+            f'{I.ficha("Producción", f"{_miles(u["produccion_t"])} t", _var_ficha(fm["var_prod"], detalle=vs))}'
+            f'</div>'
+            f'<h3>Hembras sobre la faena nacional, mes a mes</h3>'
+            f'<figure>{G2.hembras_franja(fm["serie"], alto_mm=50)}'
+            f'{pie(fm["procedencia"].fuente, propio=False, dato=mes, nota="% de hembras en cabezas, publicado por la fuente. Datos provisorios: cada edición revisa los meses anteriores.")}</figure>'
+            f'<table class="chica apretada"><thead><tr><th>Categoría</th><th>Cabezas {ca}</th><th>{cb}</th><th>Var.</th>'
+            f'<th>% del total</th><th>Kg res {ca}</th><th>{cb}</th></tr></thead><tbody>{filas}</tbody></table>'
+            f'<p class="nota">Clasificación por dentición (Res. 32/2018): no hay columna de terneros, que entran en '
+            f'novillito y vaquillona. Kg de res con hueso por cabeza. Fuente: MAGyP (SENASA + DNCCA), CC BY 4.0; '
+            f'variaciones: cálculo propio · consignatarias.com.ar</p>'
+        )
+    if st:
+        u, a = st["u"], st["ant"]
+        vac = 100 * u["vacas_sobre_total"]
+        partes.append(
+            f'<h3 style="margin-top:3mm">Stock al 31/12/{u["periodo"]}: {_miles(u["total"])} cabezas, '
+            f'{_d(abs(st["var_total"]))}% {"más" if st["var_total"] >= 0 else "menos"} que un año antes; las vacas, '
+            f'{_d(vac)}% del total</h3>'
+            f'<figure>{G2.stock_paneles(st["puntos"], STOCK_CATS, alto_mm=60)}'
+            f'{pie(st["procedencia"].fuente, propio=False, dato=f"31/12/{u["periodo"]}", nota="Millones de cabezas. Cada panel tiene su propia escala: se leen los números escritos, no la pendiente. " + (f"{st["fuera"][0]}–{st["fuera"][-1]} no se grafican: la fuente los marca estimados. " if st["fuera"] else "") + "Toritos discriminados recién desde 2013 (cambio de clasificación).")}</figure>'
+        )
+    return "".join(partes)
+
+
+TRIMESTRE = {1: ("diciembre", "febrero"), 2: ("enero", "marzo"), 3: ("febrero", "abril"), 4: ("marzo", "mayo"),
+             5: ("abril", "junio"), 6: ("mayo", "julio"), 7: ("junio", "agosto"), 8: ("julio", "septiembre"),
+             9: ("agosto", "octubre"), 10: ("septiembre", "noviembre"), 11: ("octubre", "diciembre"),
+             12: ("noviembre", "enero")}
+ORDINAL = {1: "primer", 2: "segundo", 3: "tercer", 4: "cuarto", 5: "quinto"}
+
+
+def p_clima(p: D.Paquete, x: D2.Extra) -> str:
+    """
+    ENSO con el índice con el que clasifica el CPC (RONI desde el 01-02-2026) y la
+    lluvia del último mes contra la normal 1991–2020 en las estaciones del corredor.
+    Sin pronóstico: no hay uno descargable, y no se dibuja uno a ojo.
+    """
+    c = x.clima
+    if not c or (not c.get("enso") and not c.get("lluvias")):
+        return ""
+    partes = []
+    if c.get("enso"):
+        u = c["enso_u"]
+        m = int(u["periodo"][5:7])
+        desde, hasta = TRIMESTRE[m]
+        racha = c.get("enso_racha_nino") or 0
+        val = f'{u["roni"]:+.2f}'.replace(".", ",")
+        if racha:
+            cola = (f', el {ORDINAL.get(racha, f"{racha}.º")} trimestre seguido por encima del umbral de El Niño'
+                    if racha > 1 else ", por encima del umbral de El Niño")
+        else:
+            cola = ""
+        proc = c["enso_procedencia"]
+        partes.append(
+            f'<h2>El RONI de {desde}–{hasta} de {u["periodo"][:4]} midió {val} °C{cola}</h2>'
+            f'<p class="ancho">Desde el 1 de febrero de 2026 el Centro de Predicción Climática de la NOAA (CPC) clasifica '
+            f'El Niño y La Niña con el <span class="fuerte">RONI</span> (índice relativo del Niño Oceánico, aviso NWS PNS '
+            f'26-05), no con el ONI: el ONI va como comparación. Un episodio oficial pide cinco trimestres seguidos del '
+            f'mismo lado del umbral de ±0,5 °C; '
+            + (f'van {racha}, así que el CPC todavía no lo da por establecido.' if 0 < racha < 5 else
+               'la serie lo cumple.' if racha >= 5 else 'hoy no hay racha en curso.')
+            + f' Dato del CPC actualizado al trimestre {u["temporada"]} {u["periodo"][:4]}, bajado el '
+            f'{fecha_ar(proc.fecha_observacion)}; los últimos valores se revisan cada mes.</p>'
+            f'<figure>{G2.enso_barras(c["enso"], alto_mm=58)}'
+            f'{pie("NOAA Climate Prediction Center, RONI y ONI (Niño 3.4, ERSSTv5)", propio=False, dato=f"{desde}–{hasta} de {u["periodo"][:4]}", nota="Dominio público. Cada columna es un trimestre móvil fechado en su mes central.")}</figure>'
+        )
+    if c.get("lluvias"):
+        mes = c["lluvias_mes"]
+        tres = c["lluvias_tres"]
+        filas, sin = [], []
+        from fuentes_nuevas.lluvias import ESTACIONES
+        orden = [w for w, _, _ in ESTACIONES]
+        for e in sorted(c["lluvias"], key=lambda e: orden.index(e["wmo"]) if e["wmo"] in orden else 99):
+            q = e["meses"].get(mes)
+            nombre = f'{e["estacion"]} ({e["provincia"]})'
+            if not q or q.get("pct_normal") is None:
+                sin.append(nombre)
+                continue
+            rot = f'{_miles(q["pct_normal"])}% · {_miles(q["precipitacion_mm"])} de {_miles(q["normal_mm"])} mm'
+            tr = [e["meses"].get(m_) for m_ in tres]
+            if len(tres) == 3 and all(t_ and t_.get("normal_mm") for t_ in tr):
+                acum = 100 * sum(t_["precipitacion_mm"] for t_ in tr) / sum(t_["normal_mm"] for t_ in tr)
+                rot += f' · trim. {_miles(acum)}%'
+            filas.append({"nombre": nombre, "pct": q["pct_normal"], "rot": rot})
+        abajo = sum(1 for f_ in filas if f_["pct"] < 100)
+        proc = c["lluvias_procedencia"]
+        tri = f'{D2.MESES_AB_ES[int(tres[0][5:7])]}–{D2.MESES_AB_ES[int(tres[-1][5:7])]}' if len(tres) == 3 else ""
+        partes.append(
+            f'<h3 style="margin-top:2mm">Lluvia de {ym_largo(mes)}: {abajo} de {len(filas)} estaciones por debajo de su '
+            f'normal 1991–2020</h3>'
+            f'<figure>{G2.barras_lluvia(filas, fila_h=16)}'
+            f'{pie("SMN vía mensajes CLIMAT de la OMM, publicados por el Deutscher Wetterdienst; normal 1991–2020 de cada estación", dato=ym_largo(mes), nota=f"Estaciones de norte a sur. % de la normal = lluvia del mes ÷ normal del mes. " + (f"«trim.»: {tri} sumados contra la suma de sus normales. " if tri else "") + "CC BY 4.0 (DWD). Datos sin el control de calidad completo del DWD: pueden corregirse.")}</figure>'
+            f'<div class="aviso">El NEA casi no tiene cobertura: Corrientes y Mercedes (Ctes.) no transmiten el CLIMAT '
+            f'completo, así que no figuran; lo más cercano son Reconquista, Ceres y Paraná. Un mes no transmitido no es '
+            f'un cero: no aparece.'
+            + (f' Sin dato de {ym_largo(mes)}: {I.esc(", ".join(sin))}.' if sin else "") + '</div>'
+        )
+    return "".join(partes)
+
+
 # ─── armado ────────────────────────────────────────────────────────────────────
 
 #: El orden de la edición. La Banda, que es el número propio, va primero; después
-#: los gráficos largos en dólares y la brecha contra el mundo; la planilla antes de
-#: los remates; metodología y contacto, y al final el anexo.
+#: los gráficos largos en dólares, el precio real, la brecha contra el mundo y la
+#: exportación; el ciclo (Cañuelas y después el nacional, en páginas separadas) y el
+#: clima; los remates; metodología y contacto, y al final el
+#: anexo. Con todas las fuentes, 17 páginas (el tope es 18). La planilla para completar
+#: a mano ("Tu lote, tu cuenta") se sacó por pedido de José: en su lugar, la
+#: metodología manda a la herramienta de valuación del sitio.
 PAGINAS = [
     (p_tapa, True), (p_resumen, False), (p_banda1, False), (p_banda2, False), (p_historia, False),
-    (p_estacional, False), (p_mundo, False), (p_relativos, False), (p_ciclo, False), (p_tierra, False),
-    (p_planilla, False), (p_remates, False), (p_metodologia, False), (p_anexo, False),
+    (p_real, False), (p_estacional, False), (p_mundo, False), (p_exportacion, False), (p_relativos, False),
+    (p_ciclo, False), (p_ciclo_nacional, False), (p_clima, False), (p_tierra, False),
+    (p_remates, False), (p_metodologia, False), (p_anexo, False),
 ]
 
 NOMBRE_PAGINA = {
     "p_banda1": f"{BANDA} en el tiempo", "p_banda2": f"{BANDA} por peso", "p_historia": "serie larga en dólares",
     "p_estacional": "estacionalidad", "p_mundo": "brecha internacional", "p_relativos": "precios relativos",
     "p_ciclo": "proporción de hembras", "p_tierra": "valor de la tierra", "p_remates": "remates del mes",
-    "p_anexo": "anexo de subcategorías", "p_planilla": "planilla",
+    "p_anexo": "anexo de subcategorías",
+    "p_real": "precio real (IPC)", "p_exportacion": "exportación", "p_ciclo_nacional": "faena y stock nacional",
+    "p_clima": "clima",
 }
 
 

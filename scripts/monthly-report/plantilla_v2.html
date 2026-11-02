@@ -119,9 +119,6 @@ td.num { text-align: right; }
 
 .aviso { border-left: 2px solid #b45309; padding: 2mm 0 2mm 3mm; margin: 0 0 6mm; font-size: 9pt; line-height: 13pt; color: #52525b; max-width: 180mm; }
 
-/* La planilla que se completa a mano: es lo que justifica imprimirlo. */
-.planilla td { height: 7mm; border-bottom: 1px solid #a1a1aa; }
-.planilla .vacia { background: #fff; }
 
 .contacto { margin-top: 10mm; padding-top: 6mm; border-top: 1.5px solid #18181b; break-inside: avoid; }
 .vias { display: flex; gap: 10mm; margin: 5mm 0; }
@@ -159,7 +156,9 @@ td.num { text-align: right; }
 
 .lista-num.compacta li { font-size: 10pt; line-height: 14pt; margin-bottom: 2.5mm; }
 
-.semaforo td, .semaforo th { padding: 1.4mm 1.5mm; }
+.semaforo td, .semaforo th { padding: 0.8mm 1.5mm; }
+.semaforo th { line-height: 9pt; }
+.semaforo td:first-child { white-space: nowrap; }
 .semaforo .unidad { color: #71717a; font-size: 7pt; margin-left: 1.5mm; }
 .semaforo .s-sube { color: #065f46; background: #ecfdf5; font-weight: 600; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
 .semaforo .s-baja { color: #b91c1c; background: #fef2f2; font-weight: 600; print-color-adjust: exact; -webkit-print-color-adjust: exact; }

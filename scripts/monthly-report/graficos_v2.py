@@ -420,13 +420,17 @@ def hembras_franja(puntos: list[dict], ancho_mm: float = 180, alto_mm: float = 5
         o.append(texto(L - 5, y(t) + 3, f"{_fc(t)}%", 7, TINTA_3, 500, "end", mono=True))
     o.append(f'<line x1="{L}" y1="{_f(y(med))}" x2="{W-R}" y2="{_f(y(med))}" stroke="{TINTA}" stroke-width="1.25" stroke-dasharray="5 3"/>')
     o.append(texto(W - R + 6, y(med) + 3, f"mediana propia {_fc(med)}%", 7, TINTA, 600))
-    o.append(texto(W - R + 6, y(q3) + 3, f"cuartil 3 · {_fc(q3)}%", 6.5, TINTA_3, 500))
-    o.append(texto(W - R + 6, y(q1) + 3, f"cuartil 1 · {_fc(q1)}%", 6.5, TINTA_3, 500))
+    # Los rótulos de los cuartiles se corren si quedan pegados al de la mediana.
+    y3, y1 = min(y(q3), y(med) - 10), max(y(q1), y(med) + 10)
+    o.append(texto(W - R + 6, y3 + 3, f"cuartil 3 · {_fc(q3)}%", 6.5, TINTA_3, 500))
+    o.append(texto(W - R + 6, y1 + 3, f"cuartil 1 · {_fc(q1)}%", 6.5, TINTA_3, 500))
     d = "M" + " L".join(f"{_f(x(i))} {_f(y(p['pct']))}" for i, p in enumerate(puntos))
     o.append(f'<path d="{d}" fill="none" stroke="{SERIE}" stroke-width="2" stroke-linejoin="round"/>')
     for i, p in enumerate(puntos):
         o.append(f'<circle cx="{_f(x(i))}" cy="{_f(y(p["pct"]))}" r="3.5" fill="{SERIE}" stroke="{BLANCO}" stroke-width="1.5"/>')
-        o.append(texto(x(i), H - B + 13, p["ym"][2:], 7, TINTA_3, 500, "middle", mono=True))
+        # Con más de 12 meses, un rótulo cada tres: si no, se pisan.
+        if n <= 12 or i % 3 == (n - 1) % 3:
+            o.append(texto(x(i), H - B + 13, p["ym"][2:], 7, TINTA_3, 500, "middle", mono=True))
     u = puntos[-1]
     # El último valor va del lado de la línea que no tiene los rótulos de la franja.
     dy = 16 if u["pct"] < med else -9
@@ -568,5 +572,263 @@ def barras_composicion(filas: list[dict], ancho_mm: float = 87) -> str:
         o.append(f'<rect x="{L}" y="{_f(cy-6)}" width="{_f(max(x(f["cabezas"])-L,2))}" height="12" rx="3" '
                  f'fill="{"none" if otras else SERIE}" stroke="{SERIE}" stroke-width="1" style="print-color-adjust:exact"/>')
         o.append(texto(W - 2, cy + 3, f'{num_ar(f["cabezas"], 0)} cab · {num_ar(f["share"], 1)}%', 7, TINTA, 500, "end", mono=True))
+    o.append("</svg>")
+    return "".join(o)
+
+
+# ─── fuentes públicas nuevas ───────────────────────────────────────────────────
+#
+# Lo que suman la faena y el stock del MAGyP/SENASA, las exportaciones del INDEC,
+# el IPC y el clima. Mismas reglas: un solo azul, el gris para lo que compara,
+# rótulo directo y el número escrito donde el color se pierde al fotocopiar.
+
+GRIS_BARRA = "#a1a1aa"
+
+
+def _mm_aa(ym: str) -> str:
+    return f"{ym[5:7]}/{ym[2:4]}"
+
+
+def lineas_mensuales(series: list[dict], ancho_mm: float = 180, alto_mm: float = 62, fmt=ars,
+                     leyenda: str = "", extremos: bool = True, R: int = 96) -> str:
+    """
+    Varias series mensuales en la misma unidad, en un eje desde cero. Cada serie es
+    {"nombre", "puntos": [{"ym", "valor"}], "color", "grosor", "guion"}; la primera
+    es la figura (lleva el máximo y el mínimo rotulados) y el resto, comparación.
+    Rótulo directo al final de cada línea, sin leyenda aparte.
+    """
+    meses = sorted({q["ym"] for s in series for q in s["puntos"]})
+    if len(meses) < 12:
+        return _vacio(ancho_mm, alto_mm, "serie insuficiente")
+    W, H = round(ancho_mm * MM), round(alto_mm * MM)
+    L, T, B = 50, 16, 24
+    _, hi, tk = eje(0, max(q["valor"] for s in series for q in s["puntos"]) * 1.04, 4)
+    pos = {ym: i for i, ym in enumerate(meses)}
+    x = _escala(0, len(meses) - 1, L, W - R)
+    y = _escala(0, hi, H - B, T)
+    o = [abrir(ancho_mm, alto_mm, leyenda)]
+    for t in tk:
+        o.append(f'<line x1="{L}" y1="{_f(y(t))}" x2="{W-R}" y2="{_f(y(t))}" stroke="{FILETE}" stroke-width="1"/>')
+        o.append(texto(L - 5, y(t) + 3, fmt(t), 7, TINTA_3, 500, "end", mono=True))
+    paso = 1 if len(meses) <= 72 else 2
+    for ym in meses:
+        if ym.endswith("-01") and (int(ym[:4]) % paso == 0):
+            o.append(texto(x(pos[ym]), H - B + 13, ym[:4], 7, TINTA_3, 500, "middle", mono=True))
+    rot = []
+    for s in series:
+        pts = sorted(s["puntos"], key=lambda q: q["ym"])
+        d = "M" + " L".join(f"{_f(x(pos[q['ym']]))} {_f(y(q['valor']))}" for q in pts)
+        o.append(f'<path d="{d}" fill="none" stroke="{s.get("color", SERIE)}" stroke-width="{s.get("grosor", 1.75)}"'
+                 f'{s.get("guion", "")} stroke-linejoin="round"/>')
+        u = pts[-1]
+        rot.append([y(u["valor"]) + 3, f'{s["nombre"]} {fmt(u["valor"])}', s.get("color", SERIE)])
+    rot.sort(key=lambda r: r[0])
+    for k in range(1, len(rot)):
+        if rot[k][0] - rot[k - 1][0] < 11:
+            rot[k][0] = rot[k - 1][0] + 11
+    for yy, t, c in rot:
+        o.append(texto(W - R + 8, yy, t, 7.5, TINTA if c == SERIE else TINTA_2, 600 if c == SERIE else 500))
+    u0 = sorted(series[0]["puntos"], key=lambda q: q["ym"])[-1]
+    o.append(f'<circle cx="{_f(x(pos[u0["ym"]]))}" cy="{_f(y(u0["valor"]))}" r="4" fill="{SERIE}" stroke="{BLANCO}" stroke-width="2"/>')
+    if extremos:
+        pts = series[0]["puntos"]
+        pmax, pmin = max(pts, key=lambda q: q["valor"]), min(pts, key=lambda q: q["valor"])
+        for q, dy, lbl in ((pmax, -8, "máx"), (pmin, 14, "mín")):
+            o.append(texto(x(pos[q["ym"]]), y(q["valor"]) + dy, f'{lbl} {fmt(q["valor"])} · {_mm_aa(q["ym"])}', 7,
+                           TINTA_2, 500, "middle"))
+    if leyenda:
+        o.append(texto(L, T - 6, leyenda, 7, TINTA_3, 400))
+    o.append("</svg>")
+    return "".join(o)
+
+
+def columnas_exportacion(mensual: list[dict], meses: int = 36, ancho_mm: float = 87, alto_mm: float = 56) -> str:
+    """
+    Toneladas exportadas por mes (peso producto). La parte de arriba de cada
+    columna, hueca, es la partida 0202.20 (congelada con hueso, que trae los huesos
+    de desposte): así se ve cuánto del volumen no es carne deshuesada sin restarlo.
+    """
+    pts = mensual[-meses:]
+    if len(pts) < 12:
+        return _vacio(ancho_mm, alto_mm, "serie insuficiente")
+    W, H = round(ancho_mm * MM), round(alto_mm * MM)
+    L, R, T, B = 40, 8, 24, 22
+    _, hi, tk = eje(0, max(q["t"] for q in pts) * 1.04, 4)
+    cw = (W - L - R) / len(pts)
+    y = _escala(0, hi, H - B, T)
+    o = [abrir(ancho_mm, alto_mm, "Exportaciones de carne bovina por mes")]
+    for t in tk:
+        o.append(f'<line x1="{L}" y1="{_f(y(t))}" x2="{W-R}" y2="{_f(y(t))}" stroke="{FILETE}" stroke-width="1"/>')
+        o.append(texto(L - 4, y(t) + 3, f"{num_ar(t / 1000, 0)} mil", 6.5, TINTA_3, 500, "end", mono=True))
+    for i, q in enumerate(pts):
+        x0 = L + cw * i + cw * 0.15
+        w = cw * 0.7
+        base = q["t"] - (q.get("t_hueso") or 0)
+        o.append(f'<rect x="{_f(x0)}" y="{_f(y(base))}" width="{_f(w)}" height="{_f(y(0) - y(base))}" fill="{SERIE}" '
+                 f'style="print-color-adjust:exact"/>')
+        if q.get("t_hueso"):
+            o.append(f'<rect x="{_f(x0)}" y="{_f(y(q["t"]))}" width="{_f(w)}" height="{_f(y(base) - y(q["t"]))}" '
+                     f'fill="{BLANCO}" stroke="{SERIE}" stroke-width="1"/>')
+        if i % 6 == (len(pts) - 1) % 6:
+            o.append(texto(x0 + w / 2, H - B + 12, _mm_aa(q["ym"]), 6.5, TINTA_3, 500, "middle", mono=True))
+    u = pts[-1]
+    o.append(texto(W - R, T - 12, f'{_mm_aa(u["ym"])}: {num_ar(u["t"], 0)} t · hueco: 0202.20', 7, TINTA, 600, "end"))
+    o.append("</svg>")
+    return "".join(o)
+
+
+def barras_pareadas(filas: list[dict], ancho_mm: float = 180, fila_h: int = 22, L: int = 150, R: int = 170,
+                    et_actual: str = "", et_anterior: str = "", letra: float = 7.5) -> str:
+    """
+    Destinos ordenados: dos barras por fila, el año en curso (azul lleno) y el
+    mismo período del año anterior (gris hueco), en la misma escala. Barras y no
+    torta: con trece destinos y China en el 60 %, la torta no deja leer el resto.
+    filas: [{"nombre", "v", "v_ant", "rot"}].
+    """
+    if not filas:
+        return _vacio(ancho_mm, 20, "sin datos")
+    W = round(ancho_mm * MM)
+    T = 18
+    H = T + fila_h * len(filas) + 4
+    hi = max(max(f["v"], f["v_ant"] or 0) for f in filas) * 1.02
+    x = _escala(0, hi, L, W - R)
+    o = [abrir(ancho_mm, H / MM, "Destinos")]
+    o.append(f'<rect x="{L}" y="2" width="14" height="7" fill="{SERIE}"/>')
+    o.append(texto(L + 18, 9, et_actual, 7, TINTA, 600))
+    o.append(f'<rect x="{L + 150}" y="2" width="14" height="7" fill="{BLANCO}" stroke="{GRIS_BARRA}" stroke-width="1"/>')
+    o.append(texto(L + 168, 9, et_anterior, 7, TINTA_2, 500))
+    for i, f in enumerate(filas):
+        cy = T + fila_h * i + fila_h / 2
+        o.append(texto(L - 6, cy + 3, f["nombre"], letra, TINTA, 500, "end"))
+        b = fila_h * 0.32
+        o.append(f'<rect x="{L}" y="{_f(cy - b - 1)}" width="{_f(max(x(f["v"]) - L, 1.5))}" height="{_f(b)}" '
+                 f'fill="{SERIE}" style="print-color-adjust:exact"/>')
+        if f.get("v_ant") is not None:
+            o.append(f'<rect x="{L}" y="{_f(cy + 1)}" width="{_f(max(x(f["v_ant"]) - L, 1.5))}" height="{_f(b)}" '
+                     f'fill="{BLANCO}" stroke="{GRIS_BARRA}" stroke-width="1"/>')
+        o.append(texto(max(x(f["v"]), x(f.get("v_ant") or 0)) + 5, cy + 3, f["rot"], letra - 0.5, TINTA, 500, mono=True))
+    o.append("</svg>")
+    return "".join(o)
+
+
+def enso_barras(puntos: list[dict], ancho_mm: float = 180, alto_mm: float = 58) -> str:
+    """
+    El RONI por trimestre móvil (columnas) y el ONI (línea gris punteada) para
+    comparar. Las líneas de ±0,5 °C son el umbral del CPC; azul a partir de +0,5
+    (El Niño), gris oscuro por debajo de −0,5 (La Niña), gris claro en el medio.
+    """
+    pts = [q for q in puntos if q.get("roni") is not None]
+    if len(pts) < 12:
+        return _vacio(ancho_mm, alto_mm, "serie insuficiente")
+    W, H = round(ancho_mm * MM), round(alto_mm * MM)
+    L, R, T, B = 40, 70, 14, 24
+    vals = [q["roni"] for q in pts] + [q["oni"] for q in pts if q.get("oni") is not None]
+    lo, hi, tk = eje(min(min(vals), -1.0) - 0.1, max(max(vals), 1.0) + 0.1, 5)
+    cw = (W - L - R) / len(pts)
+    y = _escala(lo, hi, H - B, T)
+    o = [abrir(ancho_mm, alto_mm, "ENSO: RONI y ONI")]
+    for t in tk:
+        o.append(f'<line x1="{L}" y1="{_f(y(t))}" x2="{W-R}" y2="{_f(y(t))}" stroke="{FILETE}" stroke-width="1"/>')
+        o.append(texto(L - 4, y(t) + 3, f"{t:+.1f}".replace(".", ",").replace("+0,0", "0"), 7, TINTA_3, 500, "end", mono=True))
+    o.append(f'<line x1="{L}" y1="{_f(y(0))}" x2="{W-R}" y2="{_f(y(0))}" stroke="{FILETE_FUERTE}" stroke-width="1"/>')
+    for u, et in ((0.5, "+0,5 · El Niño"), (-0.5, "−0,5 · La Niña")):
+        o.append(f'<line x1="{L}" y1="{_f(y(u))}" x2="{W-R}" y2="{_f(y(u))}" stroke="{TINTA_2}" stroke-width="1" stroke-dasharray="4 3"/>')
+        o.append(texto(W - R + 6, y(u) + 3, et, 7, TINTA_2, 500))
+    for i, q in enumerate(pts):
+        v = q["roni"]
+        color = SERIE if v >= 0.5 else (TINTA_3 if v <= -0.5 else FILETE)
+        x0 = L + cw * i + cw * 0.12
+        o.append(f'<rect x="{_f(x0)}" y="{_f(min(y(v), y(0)))}" width="{_f(cw * 0.76)}" height="{_f(abs(y(v) - y(0)))}" '
+                 f'fill="{color}" style="print-color-adjust:exact"/>')
+        if q["periodo"].endswith("-01") or i == len(pts) - 1:
+            o.append(texto(x0 + cw * 0.38, H - B + 13, f'{q["temporada"]} {q["periodo"][2:4]}', 6.5, TINTA_3, 500,
+                           "middle", mono=True))
+    con_oni = [(i, q["oni"]) for i, q in enumerate(pts) if q.get("oni") is not None]
+    if len(con_oni) > 1:
+        d = "M" + " L".join(f"{_f(L + cw * (i + 0.5))} {_f(y(v))}" for i, v in con_oni)
+        o.append(f'<path d="{d}" fill="none" stroke="{TINTA}" stroke-width="1.25" stroke-dasharray="5 3" stroke-linejoin="round"/>')
+    u = pts[-1]
+    yr, yo = y(u["roni"]) + 3, y(u.get("oni") if u.get("oni") is not None else u["roni"]) + 3
+    if abs(yr - yo) < 11:
+        yr, yo = max(yr, yo) + 6, min(yr, yo) - 5
+    o.append(texto(W - R + 6, yr, f'RONI {u["roni"]:+.2f}'.replace(".", ","), 7.5, TINTA, 600))
+    if u.get("oni") is not None:
+        o.append(texto(W - R + 6, yo, f'ONI {u["oni"]:+.2f}'.replace(".", ","), 7, TINTA_2, 500))
+    o.append(texto(L, T - 5, "°C de anomalía en Niño 3.4, trimestre móvil · columnas: RONI · punteada: ONI", 7, TINTA_3, 400))
+    o.append("</svg>")
+    return "".join(o)
+
+
+def barras_lluvia(filas: list[dict], ancho_mm: float = 180, fila_h: int = 17, L: int = 170, R: int = 150) -> str:
+    """
+    Lluvia del mes como % de la normal 1991–2020, con la línea del 100 %. Las
+    estaciones van de norte a sur (el orden del corredor), no por valor: lo que se
+    lee es dónde llovió de más y dónde de menos. Azul por encima de la normal, gris
+    por debajo. filas: [{"nombre", "pct", "rot"}].
+    """
+    filas = [f for f in filas if f.get("pct") is not None]
+    if not filas:
+        return _vacio(ancho_mm, 20, "sin estaciones con dato")
+    W = round(ancho_mm * MM)
+    T = 16
+    H = T + fila_h * len(filas) + 4
+    hi = max(200, max(f["pct"] for f in filas) * 1.02)
+    x = _escala(0, hi, L, W - R)
+    o = [abrir(ancho_mm, H / MM, "Lluvia sobre la normal")]
+    for t in (0, 50, 100, 150, 200) + ((300,) if hi >= 300 else ()):
+        o.append(f'<line x1="{_f(x(t))}" y1="{T - 4}" x2="{_f(x(t))}" y2="{H - 4}" stroke="{TINTA if t == 100 else FILETE}" '
+                 f'stroke-width="1"{"" if t == 100 else ""}/>')
+        o.append(texto(x(t), T - 7, f"{t}%", 6.5, TINTA if t == 100 else TINTA_3, 600 if t == 100 else 500, "middle", mono=True))
+    for i, f in enumerate(filas):
+        cy = T + fila_h * i + fila_h / 2
+        o.append(texto(L - 6, cy + 3, f["nombre"], 7, TINTA, 500, "end"))
+        v = f["pct"]
+        x0, x1 = sorted((x(100), x(v)))
+        o.append(f'<rect x="{_f(x0)}" y="{_f(cy - 5)}" width="{_f(max(x1 - x0, 1.5))}" height="10" '
+                 f'fill="{SERIE if v >= 100 else GRIS_BARRA}" style="print-color-adjust:exact"/>')
+        o.append(texto(max(x(v), x(100)) + 5, cy + 3, f["rot"], 7, TINTA, 500, mono=True))
+    o.append("</svg>")
+    return "".join(o)
+
+
+def stock_paneles(puntos: list[dict], cats: list[tuple[str, str]], ancho_mm: float = 180, alto_mm: float = 64) -> str:
+    """
+    El stock al 31/12 por categoría, un panel por categoría y CADA UNO CON SU
+    ESCALA: las vacas son 21 millones y los novillos 2, en una escala común los
+    novillos serían una raya. Por eso cada panel lleva escritos el primer y el
+    último valor, en millones: el número manda, no la pendiente.
+    cats: [(clave o "a+b", nombre)].
+    """
+    if len(puntos) < 3:
+        return _vacio(ancho_mm, alto_mm, "serie insuficiente")
+    W, H = round(ancho_mm * MM), round(alto_mm * MM)
+    cols = 4
+    filas = (len(cats) + cols - 1) // cols
+    gx, gy = 16, 16
+    pw = (W - gx * (cols - 1)) / cols
+    ph = (H - gy * (filas - 1)) / filas
+    o = [abrir(ancho_mm, alto_mm, "Stock bovino por categoría")]
+
+    def valor(q: dict, clave: str) -> float:
+        return sum(q[c] for c in clave.split("+"))
+
+    for k, (clave, nombre) in enumerate(cats):
+        ox, oy = (k % cols) * (pw + gx), (k // cols) * (ph + gy)
+        vals = [valor(q, clave) for q in puntos]
+        lo, hi = min(vals), max(vals)
+        pad = (hi - lo) * 0.15 or hi * 0.05
+        x = _escala(0, len(vals) - 1, ox + 4, ox + pw - 4)
+        y = _escala(lo - pad, hi + pad, oy + ph - 14, oy + 26)
+        o.append(f'<rect x="{_f(ox)}" y="{_f(oy + 20)}" width="{_f(pw)}" height="{_f(ph - 30)}" fill="none" '
+                 f'stroke="{FILETE}" stroke-width="1"/>')
+        o.append(texto(ox, oy + 8, nombre, 7.5, TINTA, 600))
+        u, a = vals[-1], vals[-2]
+        o.append(texto(ox, oy + 17, f"{num_ar(u / 1e6, 2)} M · {'+' if u >= a else '−'}{num_ar(abs(100 * (u / a - 1)), 1)}% vs {puntos[-2]['periodo']}",
+                       6.5, TINTA_2, 500))
+        d = "M" + " L".join(f"{_f(x(i))} {_f(y(v))}" for i, v in enumerate(vals))
+        o.append(f'<path d="{d}" fill="none" stroke="{SERIE}" stroke-width="1.5" stroke-linejoin="round"/>')
+        o.append(f'<circle cx="{_f(x(len(vals) - 1))}" cy="{_f(y(u))}" r="2.5" fill="{SERIE}"/>')
+        o.append(texto(ox + 4, oy + ph - 3, f'{puntos[0]["periodo"]}: {num_ar(vals[0] / 1e6, 2)}', 6, TINTA_3, 500, mono=True))
+        o.append(texto(ox + pw - 4, oy + ph - 3, puntos[-1]["periodo"], 6, TINTA_3, 500, "end", mono=True))
     o.append("</svg>")
     return "".join(o)

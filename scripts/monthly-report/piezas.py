@@ -83,13 +83,14 @@ td .unidad { color: #71717a; font-size: 18px; margin-left: 8px; }
 
 
 def lienzo(p: D.Paquete, tam: tuple[int, int], titulo: str, cuerpo: str, fuente: str, bajada: str = "",
-           fecha: str | None = None) -> str:
+           fecha: str | None = None, fecha_txt: str = "") -> str:
     from string import Template
     ancho, alto = tam
     css = Template(CSS).substitute(fuentes=I.fuentes_embebidas(), ancho=ancho, alto=alto)
     clase = "wa" if alto > ancho * 1.5 else "ig"
     b = f'<p class="bajada">{bajada}</p>' if bajada else ""
-    dato = f" Dato al {I2.fecha_ar(fecha or p.cierre['fecha'])}."
+    # Las series mensuales de afuera no tienen día: "Dato a sep. 2026".
+    dato = f" Dato a {fecha_txt}." if fecha_txt else f" Dato al {I2.fecha_ar(fecha or p.cierre['fecha'])}."
     return (
         f'<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><style>{css}</style></head>'
         f'<body class="{clase}"><div class="lienzo">'
@@ -226,11 +227,50 @@ def escalera(p, x, tam):
                         bajada=bajada, fecha=p.por_peso.fecha_dato), bajada)
 
 
+def destinos(p, x, tam):
+    """Destinos de la exportación del año contra el mismo período del anterior (INDEC)."""
+    e = x.expo
+    if not e or not e.get("destinos"):
+        return None
+    n, anio = e["mes"], e["anio"]
+    per = f'ene–{D2.MESES_AB_ES[n]}' if n > 1 else "ene"
+    filas = [{"nombre": d["nombre"].replace(" (país 999)", ""), "v": d["t"], "v_ant": d["t_ant"],
+              "rot": f'{I2._miles(d["t"])} t'} for d in e["destinos"] if d["t"] >= 1000 or d["clave"] in ("confidencial", "resto")]
+    china = next((d for d in e["destinos"] if d["clave"] == "china"), None)
+    titulo = (f'China se llevó el {I2._d(china["share"])}% de la carne bovina exportada en {per} {anio}'
+              if china and china.get("share") else f'Destinos de la carne bovina exportada, {per} {anio}')
+    bajada = (f'Toneladas en peso producto, {per} {anio} (azul) contra {per} {anio - 1} (gris). '
+              f'Los destinos con menos de 1.000 t en el año no figuran')
+    wa = tam[1] > tam[0] * 1.5
+    return _p(titulo, lienzo(p, tam, titulo,
+                             G2.barras_pareadas(filas, ancho_mm=120, fila_h=44 if wa else 30, L=150, R=105,
+                                                et_actual=f"{per} {anio}", et_anterior=f"{per} {anio - 1}", letra=10),
+                             "INDEC, exportaciones por destino (NCM 02.01 + 02.02), CC BY-SA 4.0; sumas del año: cálculo "
+                             "propio. «Confidencial»: país 999, secreto estadístico",
+                             bajada=bajada, fecha_txt=D2.mes_corto(e["u"]["periodo"])), bajada)
+
+
+def hembras_nacional(p, x, tam):
+    """El % de hembras en la faena nacional, mes a mes (MAGyP)."""
+    fm = x.faena
+    if not fm or len(fm["serie"]) < 6:
+        return None
+    u = fm["u"]
+    titulo = f'Hembras: {I2._d(u["pct_hembras"])}% de la faena nacional de {I2.ym_largo(u["periodo"])}'
+    if fm.get("pp_hembras") is not None:
+        titulo += f', {I2._d(abs(fm["pp_hembras"]))} puntos {"más" if fm["pp_hembras"] >= 0 else "menos"} que un año antes'
+    bajada = "% de hembras (vacas y vaquillonas) sobre las cabezas faenadas en todo el país, mes a mes"
+    return _p(titulo, lienzo(p, tam, titulo, G2.hembras_franja(fm["serie"], ancho_mm=130, alto_mm=62),
+                             "MAGyP, informe mensual de faena (SENASA + DNCCA), CC BY 4.0. Datos provisorios",
+                             bajada=bajada, fecha_txt=D2.mes_corto(u["periodo"])), bajada)
+
+
 #: (nombre, tamaño, función, tipo para el manifest)
 PIEZAS = [
     ("ig-1-cuatro-numeros", IG, cuatro, "ig"), ("ig-2-estacionalidad", IG, estacional, "ig"),
     ("ig-3-bandas", IG, bandas, "ig"), ("ig-4-relativos", IG, relativos, "ig"), ("ig-5-brecha", IG, brecha, "ig"),
-    ("ig-6-tierra", IG, tierra, "ig"),
+    ("ig-6-tierra", IG, tierra, "ig"), ("ig-7-destinos", IG, destinos, "ig"),
+    ("ig-8-hembras-nacional", IG, hembras_nacional, "ig"),
     ("wa-1-cuatro-numeros", WA, cuatro, "estado"), ("wa-2-semaforo", WA, semaforo, "estado"),
     ("wa-3-escalera-pesos", WA, escalera, "estado"), ("wa-4-brecha", WA, brecha, "estado"),
 ]
