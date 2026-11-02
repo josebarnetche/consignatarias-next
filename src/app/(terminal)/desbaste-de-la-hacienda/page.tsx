@@ -332,7 +332,7 @@ export default function DesbasteDeLaHaciendaPage() {
             <Link href="/precio-de-tranquera" className="text-accent hover:text-accent-bright transition-colors">
               Precio de tranquera →
             </Link>
-            <Link href="/vender-hacienda-guia" className="text-accent hover:text-accent-bright transition-colors">
+            <Link href="/como-vender-hacienda" className="text-accent hover:text-accent-bright transition-colors">
               Guía para vender hacienda →
             </Link>
           </p>

@@ -309,7 +309,7 @@ export default async function RematesSemanaPage() {
             Directorio de consignatarias →
           </Link>
           <Link
-            href="/reporte-semanal"
+            href="/informes/parte-semanal#reporte-gratis"
             className="text-sm text-accent/80 hover:text-accent-bright transition-colors"
           >
             Descargar reporte semanal →

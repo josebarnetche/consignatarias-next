@@ -16,7 +16,6 @@ const DISALLOW = [
   '/mi-cuenta/',
   '/cuenta/',
   '/login',
-  '/upgrade',
   '/*/verificar', // /consignatarias/<slug>/verificar y /frigorificos/verificar?cuit=
 ]
 

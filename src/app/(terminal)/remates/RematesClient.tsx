@@ -449,7 +449,7 @@ export default function RematesPage({ remates }: RematesClientProps) {
     if (filteredAuctions.length === 0) return
     if (session.tier !== 'pro') {
       const next = encodeURIComponent('/remates')
-      router.push(session.loggedIn ? `/upgrade?next=${next}` : `/login?next=${next}`)
+      router.push(session.loggedIn ? '/planes' : `/login?next=${next}`)
       return
     }
     
@@ -521,7 +521,7 @@ export default function RematesPage({ remates }: RematesClientProps) {
   const handleToggleAdvanced = () => {
     if (session.tier !== 'pro' && !session.loading) {
       const next = encodeURIComponent('/remates')
-      router.push(session.loggedIn ? `/upgrade?next=${next}` : `/login?next=${next}`)
+      router.push(session.loggedIn ? '/planes' : `/login?next=${next}`)
       return
     }
     setShowAdvanced((v) => !v)

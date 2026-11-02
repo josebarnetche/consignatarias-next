@@ -58,7 +58,7 @@ export default function RenspaPage() {
           <h3 className="text-data font-semibold text-ink group-hover:text-accent">Consultar vigencia en SENASA ↗</h3>
           <p className="mt-1 text-data text-zinc-400">Búsqueda pública de productores agropecuarios.</p>
         </a>
-        <Link href="/sanidad" className="group rounded-terminal border border-terminal-border bg-terminal-panel p-4 hover:border-accent transition-colors">
+        <Link href="/calendario-sanitario-bovino" className="group rounded-terminal border border-terminal-border bg-terminal-panel p-4 hover:border-accent transition-colors">
           <h3 className="text-data font-semibold text-ink group-hover:text-accent">Sanidad ganadera →</h3>
           <p className="mt-1 text-data text-zinc-400">Vacunación, requisitos de movimiento y DT-e.</p>
         </Link>

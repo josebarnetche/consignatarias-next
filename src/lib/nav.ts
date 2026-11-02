@@ -4,10 +4,13 @@
  *
  * Antes había tres menús distintos: la portada con 7 enlaces propios, el terminal con
  * 7 desplegables (~45 destinos) y la tira del teléfono con 14 accesos, cada uno con su
- * criterio. Ahora los tres leen de acá, con seis grupos por modelo mental:
- *   Precios · Vender y comprar · Remates · Directorio · Campos · Para empresas
- * Las guías, el glosario y El Corredor van en el footer. Si se agrega una sección
- * importante, va acá y aparece en los tres lugares a la vez.
+ * criterio. Ahora los tres leen de acá, con seis grupos por modelo mental y un enlace
+ * directo:
+ *   Precios · Vender y comprar · Remates · Directorio · Campos · El Corredor · Para empresas
+ * Un grupo SIN items es un enlace directo (El Corredor, desde la v1.255.1): el
+ * desplegable y el menú del teléfono lo pintan como link, sin flecha ni lista.
+ * Las guías y el glosario van en el footer (src/components/SiteFooter.tsx). Si se agrega
+ * una sección importante, va acá y aparece en los tres lugares a la vez.
  */
 
 export type NavTagKind = 'live' | 'pro' | 'core' | 'new'
@@ -26,7 +29,13 @@ export interface NavGroup {
   match: string
   /** Adónde lleva el grupo cuando no hay desplegable (tira del teléfono). */
   href: string
+  /** Vacío = enlace directo de nivel superior (sin desplegable). */
   items: NavLeaf[]
+}
+
+/** Un grupo sin items no despliega nada: es un enlace directo a `href`. */
+export function esEnlaceDirecto(group: NavGroup): boolean {
+  return group.items.length === 0
 }
 
 export function buildNavGroups(totales: { plantas: number; firmas: number }): NavGroup[] {
@@ -37,12 +46,12 @@ export function buildNavGroups(totales: { plantas: number; firmas: number }): Na
       href: '/vr',
       items: [
         { label: 'Precio por categoría y peso', href: '/vr', hint: 'Lo que se pagó de verdad, hoy', tag: 'new' },
+        { label: 'Banda Consignatarias', href: '/banda', hint: 'Cuánto se abre el precio en la semana', tag: 'new' },
         { label: 'INMAG hoy', href: '/mercado/inmag', hint: 'Precio de referencia', tag: 'live' },
         { label: 'Pulso del mercado', href: '/mercado/pulso', hint: 'Cañuelas por firma, en vivo', tag: 'live' },
         { label: 'Precios hoy', href: '/precios', hint: 'Hacienda en pie' },
         { label: 'Categorías', href: '/mercado', hint: 'Terneros, novillos, vacas' },
-        { label: 'INMAG en USD', href: '/mercado/inmag-dolares', hint: 'Serie dolarizada' },
-        { label: 'Novillo 20 años', href: '/mercado/novillo-historico', hint: '2006→hoy · USD oficial y blue' },
+        { label: 'Novillo en dólares', href: '/mercado/novillo-historico', hint: 'INMAG y Novillito · 2006→hoy, oficial y blue' },
         { label: 'Maíz / Novillo', href: '/mercado/spread', hint: 'Relación de canje' },
         { label: 'Índice de Liquidación', href: '/mercado/liquidacion', hint: '% hembras · liquidación vs retención' },
         { label: 'Productividad por zona', href: '/productividad', hint: 'El rodeo de cada partido' },
@@ -64,7 +73,7 @@ export function buildNavGroups(totales: { plantas: number; firmas: number }): Na
         // cerró el 16-07 y la página dice "No hay pre-ofertas abiertas". La URL sigue viva.
         { label: 'Quiero comprar', href: '/quiero-comprar', hint: 'Decinos qué buscás y te avisamos' },
         { label: 'Comparar firmas', href: '/comparar', hint: 'Quién remata más seguido' },
-        { label: 'Sanidad / SENASA', href: '/sanidad', hint: 'Vacunación y requisitos para mover hacienda' },
+        { label: 'Sanidad / SENASA', href: '/calendario-sanitario-bovino', hint: 'Vacunación y requisitos para mover hacienda' },
         { label: 'Validar RENSPA', href: '/renspa', hint: 'Decodificá el código de tu establecimiento' },
       ],
     },
@@ -102,6 +111,13 @@ export function buildNavGroups(totales: { plantas: number; firmas: number }): Na
         { label: 'Campos ofrecidos', href: '/campos', hint: 'En arrendamiento y en venta' },
         { label: 'Publicar un campo', href: '/campos/publicar', hint: 'Gratis · tu contacto no se publica' },
       ],
+    },
+    {
+      // Enlace directo: la publicación mensual de la mesa, sin desplegable.
+      label: 'El Corredor',
+      match: '/el-corredor',
+      href: '/el-corredor',
+      items: [],
     },
     {
       label: 'Para empresas',

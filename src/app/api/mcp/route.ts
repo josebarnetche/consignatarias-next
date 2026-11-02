@@ -533,7 +533,7 @@ const TOOLS: Tool[] = [
         dias: { type: 'number', description: 'Ventana en días hacia atrás (default 30, máx 5000; la serie arranca 2015-01-05). Sin techo: cualquier ventana responde gratis. Ignorado si se pasa desde/hasta.' },
         desde: { type: 'string', description: 'Fecha inicial YYYY-MM-DD (opcional; la serie arranca 2015-01-05)' },
         hasta: { type: 'string', description: 'Fecha final YYYY-MM-DD (opcional; default hoy). desde=hasta consulta una fecha puntual.' },
-        moneda: { type: 'string', enum: ['ars', 'usd'], description: 'ars (default) o usd — conversión por dólar blue venta, último valor conocido a cada fecha (regla de /mercado/inmag-dolares)' },
+        moneda: { type: 'string', enum: ['ars', 'usd'], description: 'ars (default) o usd — conversión por dólar blue venta, último valor conocido a cada fecha (regla de /mercado/novillo-historico)' },
         api_key: { type: 'string', description: 'API key Enterprise (cnsg_live_...). Opcional y ya no necesaria para la consulta: sirve para la descarga masiva fila por fila y los exports. Si ya va por el header Authorization: Bearer, no hace falta acá.' },
       },
       additionalProperties: false,

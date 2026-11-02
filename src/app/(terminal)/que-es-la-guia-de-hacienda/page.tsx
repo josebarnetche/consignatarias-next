@@ -302,9 +302,6 @@ export default function QueEsLaGuiaDeHaciendaPage() {
             <Link href="/que-es-senasa" className="text-accent hover:text-accent-bright transition-colors">
               Qué es SENASA
             </Link>
-            <Link href="/vender-hacienda-guia" className="text-accent hover:text-accent-bright transition-colors">
-              Guía para vender hacienda
-            </Link>
             <Link href="/como-vender-hacienda" className="text-accent hover:text-accent-bright transition-colors">
               Cómo vender hacienda
             </Link>

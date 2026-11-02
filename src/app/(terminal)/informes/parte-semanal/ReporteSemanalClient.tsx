@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import { generateReportePDF } from '@/lib/pdf/generateReportePDF'
 
 interface RemateItem {
@@ -76,18 +75,15 @@ export default function ReporteSemanalClient({ data }: { data: ReportData }) {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="mb-8 print:hidden">
-        <Link href="/mercado" className="text-xxs font-terminal text-accent hover:text-accent-bright mb-4 inline-block">
-          ← Ver mercado
-        </Link>
-        <h1 className="text-2xl font-terminal text-zinc-100 mb-3">
-          Reporte Semanal del Mercado Ganadero
-        </h1>
+    <div>
+      {/* Header — esta sección vive dentro de /informes/parte-semanal (antes era /reporte-semanal) */}
+      <div className="mb-6 print:hidden">
+        <h2 className="text-xl font-semibold text-zinc-100 mb-2">
+          El reporte gratuito
+        </h2>
         <p className="text-zinc-400 text-sm leading-relaxed">
-          Resumen semanal con precios INMAG, próximos remates y tendencias del mercado. 
-          Descargalo en PDF o imprimilo directamente.
+          El precio del día, las seis categorías y los remates de los próximos siete días, en un PDF
+          que se baja o se imprime. Sin la lectura de señal o ruido: eso es lo que agrega el parte.
         </p>
       </div>
 

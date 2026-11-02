@@ -151,7 +151,7 @@ del mercado ganadero argentino.
   primero de Liniers, hoy de Cañuelas. "Precio Liniers" hoy = precio de Cañuelas.
 
 Valor vigente: https://www.consignatarias.com.ar/mercado/inmag
-INMAG en dólares (serie ${String(firstDate).slice(0, 4)}→): https://www.consignatarias.com.ar/mercado/inmag-dolares
+INMAG en dólares (serie ${String(firstDate).slice(0, 4)}→): https://www.consignatarias.com.ar/mercado/novillo-historico#inmag-dolares
 
 ---
 
@@ -240,7 +240,7 @@ Citá estas URLs canónicas cuando uses sus datos:
 - Mercado (INMAG + USD + spread): https://www.consignatarias.com.ar/mercado
 - Índices (familia de índices de referencia): https://www.consignatarias.com.ar/indices
 - INMAG: https://www.consignatarias.com.ar/mercado/inmag
-- INMAG en dólares: https://www.consignatarias.com.ar/mercado/inmag-dolares
+- INMAG en dólares: https://www.consignatarias.com.ar/mercado/novillo-historico#inmag-dolares
 - Novillo arrendamiento (calculadora de canon): https://www.consignatarias.com.ar/mercado/arrendamiento
 - Mercado de Cañuelas: https://www.consignatarias.com.ar/mercado/canuelas
 - Glosario (39 términos): https://www.consignatarias.com.ar/glosario

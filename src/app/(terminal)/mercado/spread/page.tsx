@@ -102,6 +102,22 @@ const FAQ = [
     answer:
       `Se divide el precio del novillo en USD/kg por el precio del maíz en USD/kg. Tomamos el novillo INMAG ($${fmt(novillo)}/kg, convertido a USD con un dólar de referencia de $${fmt(usd)}) y el maíz FOB MAGyP (US$${corn}/tn = US$${cornUsdKg.toFixed(3)}/kg), lo que da ${ratioStr}:1 al ${lastUpdate}.`,
   },
+  // Las tres que siguen venían de /relacion-maiz-novillo (301 hacia acá desde la v1.255.1).
+  {
+    question: '¿Un número alto es bueno o malo?',
+    answer:
+      'Depende de qué lado del negocio estés. Alto favorece a quien engorda: su producto compra más de su insumo. Al que vende maíz le pasa lo contrario. Al criador no le dice mucho directamente, aunque un engorde con margen suele traccionar la demanda de terneros.',
+  },
+  {
+    question: '¿Por qué se mide en dólares?',
+    answer:
+      'Porque el maíz cotiza en dólares y el novillo se opera en pesos. Para dividir uno por otro hay que llevarlos a la misma moneda; si no, la relación mide la inflación en vez de medir el mercado.',
+  },
+  {
+    question: '¿Qué no incluye la relación?',
+    answer:
+      'No incluye la sanidad, el flete, la mano de obra ni el costo del dinero, que en un engorde pesan. Tampoco dice cuánto va a durar: es una foto, y las relaciones de canje se dan vuelta. Además el maíz que se usa es el FOB oficial; el que compra en el mercado interno paga otra cosa, así que sirve para comparar contra su propia historia más que para una planilla de costos.',
+  },
 ]
 
 export const metadata: Metadata = {
@@ -117,6 +133,9 @@ export const metadata: Metadata = {
     'indicador feedlot',
     'conversion maiz carne',
     'cuando conviene el feedlot',
+    'relación de canje ganadera',
+    'conviene engordar o vender',
+    'kilos de maíz por kilo de novillo',
   ],
   openGraph: {
     images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
@@ -195,6 +214,12 @@ export default function SpreadPage() {
           <Link href="/mercado/novillos" className="text-accent hover:underline">
             Precio del novillo →
           </Link>
+          <Link href="/feedlot-vs-pastoril" className="text-accent hover:underline">
+            Feedlot vs pastoril →
+          </Link>
+          <Link href="/que-es-la-invernada" className="text-accent hover:underline">
+            Qué es la invernada →
+          </Link>
         </div>
       </section>
 
@@ -223,6 +248,32 @@ export default function SpreadPage() {
               </div>
               <p className="text-xxs text-zinc-600 mt-2.5 leading-snug">
                 Novillo INMAG en USD (dólar blue) ÷ maíz FOB MAGyP en USD. Serie mensual reconstruida con datos públicos (INMAG desde 2015, maíz FOB por posición HS 1005). La lectura del día, abajo, usa el valor spot.
+              </p>
+            </div>
+
+            {/* Cómo se lee — venía de /relacion-maiz-novillo */}
+            <div id="como-se-lee" className="mt-6 scroll-mt-24 text-sm leading-relaxed text-zinc-400">
+              <h2 className="text-lg font-medium text-zinc-100 mb-2">Cómo se lee</h2>
+              <p className="mb-3">
+                Un número solo no dice nada: lo que importa es dónde cae dentro de su propia historia. En{' '}
+                {serie.length} meses la relación fue de {hmin.ratio}:1 ({fmtMes(hmin.mes)}) a {hmax.ratio}:1 (
+                {fmtMes(hmax.mes)}): {(hmax.ratio / hmin.ratio).toLocaleString('es-AR', { maximumFractionDigits: 1 })}{' '}
+                veces entre un extremo y el otro.
+              </p>
+              <ul className="space-y-2 mb-3">
+                <li>
+                  <strong className="text-zinc-200">Relación alta.</strong> El novillo compra mucho maíz: el grano
+                  está barato medido en hacienda y el engorde tiene aire. Es el momento en que conviene poner kilos.
+                </li>
+                <li>
+                  <strong className="text-zinc-200">Relación baja.</strong> El maíz se come el margen. Suele convenir
+                  salir antes, con menos kilos encima.
+                </li>
+              </ul>
+              <p className="text-zinc-500 text-xs">
+                El umbral de {umbral}:1 orienta, no decide: lo que decide es el costo real de cada corral, y eso no
+                lo sabe nadie desde afuera. El número de la semana, con su lectura, va en el{' '}
+                <Link href="/informes/parte-semanal" className="text-accent hover:underline">parte semanal</Link>.
               </p>
             </div>
           </section>

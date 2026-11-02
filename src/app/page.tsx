@@ -2,6 +2,7 @@ import { PromoGuiaBanner } from '@/components/PromoGuiaBanner'
 import ThemeToggle from "@/components/ThemeToggle";
 import NavDropdown from "@/components/nav/NavDropdown";
 import MobileMenu from "@/components/nav/MobileMenu";
+import SiteFooter from "@/components/SiteFooter";
 import { buildNavGroups } from "@/lib/nav";
 import Link from "next/link";
 import Image from "next/image";
@@ -606,56 +607,9 @@ export default async function LandingPage() {
       </main>
 
       {/* ============================================================ */}
-      {/*  FOOTER                                                       */}
+      {/*  FOOTER — el mismo del terminal (components/SiteFooter)       */}
       {/* ============================================================ */}
-      <footer className="border-t border-zinc-800 bg-zinc-950">
-        <div className="max-w-7xl mx-auto px-6 py-12">
-          <div className="flex flex-col gap-6">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-              <div className="flex items-center gap-2.5">
-                <svg width="18" height="18" viewBox="0 0 512 512" aria-hidden="true" className="opacity-80">
-                  <path d="M 413.61 379.14 A 200 200 0 1 1 367.83 90.17 L 321.98 158.17 A 118 118 0 1 0 348.99 328.66 Z" fill="#fafafa" />
-                  <rect x="379.7" y="168.1" width="118" height="118" fill="#38bdf8" />
-                </svg>
-                <span className="text-xs font-medium text-zinc-400 tracking-tight lowercase">
-                  consignatarias<span className="text-sky-400">.</span>com<span className="text-sky-400">.</span>ar
-                  <span className="text-zinc-500"> &copy; {new Date().getFullYear()}</span>
-                </span>
-              </div>
-
-              <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-zinc-400">
-                <Link href="/vr" className="hover:text-zinc-300 transition-colors">Precio por categoría y peso</Link>
-                <Link href="/valuar-hacienda" className="hover:text-zinc-300 transition-colors">Cuánto vale mi hacienda</Link>
-                <Link href="/overview" className="hover:text-zinc-300 transition-colors">Panel</Link>
-                <Link href="/remates" className="hover:text-zinc-300 transition-colors">Remates</Link>
-                <Link href="/consignatarias" className="hover:text-zinc-300 transition-colors">Directorio</Link>
-                <Link href="/frigorificos" className="hover:text-zinc-300 transition-colors">Frigoríficos</Link>
-                <Link href="/mercado" className="hover:text-zinc-300 transition-colors">Mercado</Link>
-              </div>
-
-              <div className="text-[0.65rem] text-zinc-400 uppercase tracking-widest">
-                Datos actualizados diariamente
-              </div>
-            </div>
-
-            <div className="border-t border-zinc-800/50 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-zinc-400">
-                <Link href="/planes" className="hover:text-zinc-300 transition-colors">Planes</Link>
-                <Link href="/glosario" className="hover:text-zinc-300 transition-colors">Glosario</Link>
-                <Link href="/calidad" className="hover:text-zinc-300 transition-colors">Calidad de datos</Link>
-                <Link href="/quienes-somos" className="hover:text-zinc-300 transition-colors">Quiénes somos</Link>
-                <Link href="/terminos" className="hover:text-zinc-300 transition-colors">Términos</Link>
-                <Link href="/privacidad" className="hover:text-zinc-300 transition-colors">Privacidad</Link>
-                <Link href="/aviso-legal" className="hover:text-zinc-300 transition-colors">Aviso legal</Link>
-                <Link href="/arrepentimiento" className="text-accent/90 hover:text-accent transition-colors">Botón de Arrepentimiento</Link>
-              </div>
-              <span className="text-xs text-zinc-500">
-                © {new Date().getFullYear()} Memola Medios S.A.S. · agro@memola.com.ar
-              </span>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

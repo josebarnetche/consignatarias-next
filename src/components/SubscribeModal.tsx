@@ -42,7 +42,6 @@ const SUPPRESSED_PREFIXES = [
   '/auth',
   '/login',
   '/checkout',
-  '/upgrade',
   '/planes',
   '/enterprise',
   '/el-corredor',
