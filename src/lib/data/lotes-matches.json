@@ -1,5 +1,5 @@
 {
-  "generado": "2026-11-02T00:29:51.596Z",
+  "generado": "2026-11-02T23:48:06.315Z",
   "leads_de_compra": 11,
   "matches": [
     {
@@ -12,6 +12,17 @@
         "estado": "new"
       },
       "lotes": [
+        {
+          "sku": "34123",
+          "titulo": "50 Vacas con cría Braford de 460kg",
+          "score": 85,
+          "motivos": [
+            "misma categoría",
+            "misma provincia",
+            "el lote es chico (50 contra 200 pedidas)"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/50-Vacas-con-cria-460kg-invernada-34123"
+        },
         {
           "sku": "34318",
           "titulo": "40 Vacas con cría Aberdeen Angus Negro de 460kg",
@@ -55,17 +66,6 @@
             "el lote es chico (40 contra 200 pedidas)"
           ],
           "url": "https://www.decampoacampo.com/__dcac/40-Vacas-con-cria-420kg-invernada-34451"
-        },
-        {
-          "sku": "34432",
-          "titulo": "100 Vacas preñadas Braford de 425kg",
-          "score": 55,
-          "motivos": [
-            "categoría equivalente",
-            "otra provincia (Entre Ríos)",
-            "cantidad compatible"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/100-Vacas-prenadas-425kg-invernada-34432"
         }
       ]
     },
@@ -79,6 +79,17 @@
         "estado": "new"
       },
       "lotes": [
+        {
+          "sku": "34484",
+          "titulo": "110 Terneros y Terneras Careta de 170kg",
+          "score": 100,
+          "motivos": [
+            "misma categoría",
+            "misma provincia",
+            "cantidad compatible"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/110-Terneros-y-Terneras-170kg-invernada-34484"
+        },
         {
           "sku": "34470",
           "titulo": "70 Terneros y Terneras Hereford de 200kg",
@@ -122,17 +133,6 @@
             "cantidad compatible"
           ],
           "url": "https://www.decampoacampo.com/__dcac/70-Terneros-y-Terneras-200kg-invernada-34271"
-        },
-        {
-          "sku": "34246",
-          "titulo": "70 Terneros y Terneras Brangus Negro y Colorado de 200kg",
-          "score": 100,
-          "motivos": [
-            "misma categoría",
-            "misma provincia",
-            "cantidad compatible"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/70-Terneros-y-Terneras-200kg-invernada-34246"
         }
       ]
     },
@@ -213,6 +213,16 @@
         "estado": "new"
       },
       "lotes": [
+        {
+          "sku": "34123",
+          "titulo": "50 Vacas con cría Braford de 460kg",
+          "score": 50,
+          "motivos": [
+            "el lead no declaró categoría",
+            "misma provincia"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/50-Vacas-con-cria-460kg-invernada-34123"
+        },
         {
           "sku": "34318",
           "titulo": "40 Vacas con cría Aberdeen Angus Negro de 460kg",
@@ -355,6 +365,17 @@
           "url": "https://www.decampoacampo.com/__dcac/200-Vaquillonas-Prenadas-430kg-invernada-34444"
         },
         {
+          "sku": "34413",
+          "titulo": "240 Vaquillonas Preñadas Aberdeen Angus Negro de 400kg",
+          "score": 35,
+          "motivos": [
+            "el lead no declaró categoría",
+            "otra provincia (La Pampa)",
+            "cantidad compatible"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/240-Vaquillonas-Prenadas-400kg-invernada-34413"
+        },
+        {
           "sku": "34461",
           "titulo": "205 Terneros y Terneras Braford de 145kg",
           "score": 35,
@@ -375,17 +396,6 @@
             "cantidad compatible"
           ],
           "url": "https://www.decampoacampo.com/__dcac/160-Vaquillonas-Prenadas-400kg-invernada-34414"
-        },
-        {
-          "sku": "34087",
-          "titulo": "235 Novillitos Aberdeen Angus Colorado de 355kg",
-          "score": 35,
-          "motivos": [
-            "el lead no declaró categoría",
-            "otra provincia (Buenos Aires)",
-            "cantidad compatible"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/235-Novillitos-355kg-invernada-34087"
         }
       ]
     },
@@ -399,6 +409,26 @@
         "estado": "new"
       },
       "lotes": [
+        {
+          "sku": "34504",
+          "titulo": "100 Terneras Aberdeen Angus Negro y Colorado de 200kg",
+          "score": 50,
+          "motivos": [
+            "el lead no declaró categoría",
+            "misma provincia"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/100-Terneras-200kg-invernada-34504"
+        },
+        {
+          "sku": "34503",
+          "titulo": "55 Terneros Aberdeen Angus Negro y Colorado de 195kg",
+          "score": 50,
+          "motivos": [
+            "el lead no declaró categoría",
+            "misma provincia"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/55-Terneros-195kg-invernada-34503"
+        },
         {
           "sku": "34469",
           "titulo": "60 Terneros y Terneras Aberdeen Angus Negro y Colorado de 205kg",
@@ -428,26 +458,6 @@
             "misma provincia"
           ],
           "url": "https://www.decampoacampo.com/__dcac/200-Vaquillonas-Prenadas-430kg-invernada-34444"
-        },
-        {
-          "sku": "34435",
-          "titulo": "70 Terneras Aberdeen Angus Negro y Colorado de 225kg",
-          "score": 50,
-          "motivos": [
-            "el lead no declaró categoría",
-            "misma provincia"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/70-Terneras-225kg-invernada-34435"
-        },
-        {
-          "sku": "34402",
-          "titulo": "35 Vaquillonas Preñadas Aberdeen Angus Negro y Colorado de 420kg",
-          "score": 50,
-          "motivos": [
-            "el lead no declaró categoría",
-            "misma provincia"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/35-Vaquillonas-Prenadas-420kg-invernada-34402"
         }
       ]
     },
@@ -529,6 +539,28 @@
           "url": "https://www.decampoacampo.com/__dcac/325-Terneros-y-Terneras-210kg-invernada-34121"
         },
         {
+          "sku": "34504",
+          "titulo": "100 Terneras Aberdeen Angus Negro y Colorado de 200kg",
+          "score": 35,
+          "motivos": [
+            "el lead no declaró categoría",
+            "otra provincia (Buenos Aires)",
+            "cantidad compatible"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/100-Terneras-200kg-invernada-34504"
+        },
+        {
+          "sku": "34503",
+          "titulo": "55 Terneros Aberdeen Angus Negro y Colorado de 195kg",
+          "score": 35,
+          "motivos": [
+            "el lead no declaró categoría",
+            "otra provincia (Buenos Aires)",
+            "cantidad compatible"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/55-Terneros-195kg-invernada-34503"
+        },
+        {
           "sku": "34469",
           "titulo": "60 Terneros y Terneras Aberdeen Angus Negro y Colorado de 205kg",
           "score": 35,
@@ -549,28 +581,6 @@
             "cantidad compatible"
           ],
           "url": "https://www.decampoacampo.com/__dcac/40-Vacas-con-cria-420kg-invernada-34451"
-        },
-        {
-          "sku": "34435",
-          "titulo": "70 Terneras Aberdeen Angus Negro y Colorado de 225kg",
-          "score": 35,
-          "motivos": [
-            "el lead no declaró categoría",
-            "otra provincia (Buenos Aires)",
-            "cantidad compatible"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/70-Terneras-225kg-invernada-34435"
-        },
-        {
-          "sku": "34433",
-          "titulo": "35 Vaquillonas Preñadas Hereford de 300kg",
-          "score": 35,
-          "motivos": [
-            "el lead no declaró categoría",
-            "otra provincia (Corrientes)",
-            "cantidad compatible"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/35-Vaquillonas-Prenadas-300kg-invernada-34433"
         }
       ]
     },

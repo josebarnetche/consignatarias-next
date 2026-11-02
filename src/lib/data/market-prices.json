@@ -1888,9 +1888,9 @@
     }
   },
   "corn": {
-    "current": 222.33,
+    "current": 223.1,
     "prev": 222.33,
-    "change": 0,
+    "change": 0.3,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
@@ -1902,64 +1902,22 @@
     "source": "dolarapi.com/v1/dolares/blue"
   },
   "usdOficial": {
-    "current": 1560,
+    "current": 1565,
     "prev": 1560,
-    "change": 0,
+    "change": 0.3,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
   "lastUpdate": "2026-11-02",
   "provinceEntry": {
-    "date": "2026-10-31",
-    "totalCabezas": 3791,
+    "date": "2026-11-02",
+    "totalCabezas": 5,
     "provinces": [
       {
         "province": "BUENOS AIRES",
-        "enPie": 2990,
-        "total": 2992,
-        "percentage": 78.92
-      },
-      {
-        "province": "CORDOBA",
-        "enPie": 219,
-        "total": 220,
-        "percentage": 5.8
-      },
-      {
-        "province": "SANTA FE",
-        "enPie": 153,
-        "total": 153,
-        "percentage": 4.04
-      },
-      {
-        "province": "ENTRE RIOS",
-        "enPie": 125,
-        "total": 125,
-        "percentage": 3.3
-      },
-      {
-        "province": "SAN LUIS",
-        "enPie": 124,
-        "total": 124,
-        "percentage": 3.27
-      },
-      {
-        "province": "LA PAMPA",
-        "enPie": 120,
-        "total": 121,
-        "percentage": 3.19
-      },
-      {
-        "province": "RIO NEGRO",
-        "enPie": 31,
-        "total": 32,
-        "percentage": 0.84
-      },
-      {
-        "province": "CHUBUT",
-        "enPie": 24,
-        "total": 24,
-        "percentage": 0.63
+        "enPie": 5,
+        "total": 5,
+        "percentage": 100
       }
     ]
   },
@@ -2538,11 +2496,11 @@
     "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)"
   },
   "soy": {
-    "current": 475.5,
+    "current": 471.5,
     "prev": 475.5,
-    "change": 0,
+    "change": -0.8,
     "unit": "USD/tn",
     "source": "MAGYP FOB API",
-    "date": "2026-10-30"
+    "date": "2026-11-02"
   }
 }
