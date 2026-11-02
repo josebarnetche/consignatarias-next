@@ -75,6 +75,10 @@ def main() -> None:
     ap.add_argument("--month", default="auto", help="YYYY-MM o 'auto' (mes anterior)")
     ap.add_argument("--skip-data-refresh", action="store_true",
                     help="No correr parsers de USD/categorías (útil para re-renderizar sin re-fetch)")
+    # Apagado por defecto: el workflow mensual no lo pasa y publica el v1 de siempre.
+    # Con --v2 el PDF sale de informe_v2.py y además se generan las piezas para
+    # redes en output/ (todavía no se copian a public/ ni entran al manifest).
+    ap.add_argument("--v2", action="store_true", help="publicar El Corredor v2 (maqueta, en revisión)")
     args = ap.parse_args()
 
     target_ym = previous_month_ym() if args.month == "auto" else args.month
@@ -106,7 +110,9 @@ def main() -> None:
     # sin precio de ternero). `render.py` quedó como referencia histórica: NO se
     # publica más desde ahí, porque imprimía el indicador de ciclo al revés.
     print(f"\n→ [3/4] Render PDF + product images")
-    run(["python3", str(HERE / "informe.py"), "--mes", target_ym, "--pdf"])
+    run(["python3", str(HERE / "informe.py"), "--mes", target_ym, "--pdf"] + (["--v2"] if args.v2 else []))
+    if args.v2:
+        run(["python3", str(HERE / "piezas.py"), "--mes", target_ym])
     run(["python3", str(HERE / "product_image.py"), "--month", target_ym])
 
     # 3. Copy to public/
