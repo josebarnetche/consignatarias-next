@@ -69,10 +69,11 @@ describe('doctrina del server MCP', () => {
 
   it('a la integración anónima se le deja una vía de contacto', () => {
     // La integración de Misiones no tiene key ni UA: la respuesta es el único canal.
-    // Desde la revisión del 21-10-2026 el aviso va SOLO en _meta: el texto de una
-    // integración anónima queda como en main (los tests de contrato están en
+    // Del 21-10 al 02-11-2026 el aviso iba solo en _meta, pero soloTexto() se lo sacaba:
+    // nunca llegó. Desde el 02-11 va en el texto del calendario de remates (la tool que
+    // consulta Misiones); el resto de las tools queda como en main (contratos en
     // structured.route.test.ts).
-    expect(ROUTE).toContain('legado ? conAvisoIntegracion(conCita, { soloMeta: true }) : conCita')
+    expect(ROUTE).toContain("legado ? conAvisoIntegracion(conCita, { soloMeta: canonico !== 'upcoming_auctions' }) : conCita")
   })
 
   it('el log no guarda el contacto de nadie', () => {

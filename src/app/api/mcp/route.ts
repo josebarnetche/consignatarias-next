@@ -2579,7 +2579,10 @@ export async function POST(req: NextRequest) {
         // A la integración anónima no: su texto no cambia.
         const crudo = await tool.run(args, req)
         const conCita = conFuente(legado ? crudo : conPuente(crudo, canonico), canonico, legado && name !== canonico)
-        const completo = legado ? conAvisoIntegracion(conCita, { soloMeta: true }) : conCita
+        // soloTexto() le saca el _meta a la integración anónima, así que el aviso en _meta
+        // nunca le llegó (22-10 → 02-11, nadie escribió). En el calendario de remates, la tool
+        // que consulta Misiones, va UNA línea al final del texto; el resto queda igual (José, 02-11).
+        const completo = legado ? conAvisoIntegracion(conCita, { soloMeta: canonico !== 'upcoming_auctions' }) : conCita
         // structuredContent, _meta y outputSchema son de la 2025-06-18: a un cliente que no
         // la negoció no se le mandan. A una integración anónima, tampoco: recibe el mismo
         // JSON que en main (segunda revisión, 21-10-2026), aunque eso le saque el aviso.

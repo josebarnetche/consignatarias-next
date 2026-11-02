@@ -216,9 +216,15 @@ describe('structuredContent + outputSchema', () => {
       expect(r.content.map((b) => b.text).join('')).not.toMatch(/Cómo citar|Integraste/)
     })
 
-    it('list_remates de Misiones: el vacío de siempre y nada más', async () => {
+    it('list_remates de Misiones: el vacío de siempre y, al final, una línea para escribirnos', async () => {
+      // El aviso en _meta no le llegaba (soloTexto lo saca); desde el 02-11-2026 va en el texto.
       const r = await anonimo('list_remates', { provincia: 'Misiones' })
-      expect(r).toEqual({ content: [{ type: 'text', text: 'No hay remates próximos con esos filtros.' }] })
+      expect(Object.keys(r)).toEqual(['content'])
+      expect(r.content).toHaveLength(1)
+      const texto = r.content[0].text
+      expect(texto.startsWith('No hay remates próximos con esos filtros.\n\n')).toBe(true)
+      expect(texto).toMatch(/¿Integraste estos datos en un sistema\? Escribinos a agro@memola\.com\.ar/)
+      expect(texto.match(/Integraste/g)).toHaveLength(1)
     })
 
     it('por nombre canónico: la cita en el texto como en main, el aviso no', async () => {

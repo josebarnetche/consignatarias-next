@@ -7,6 +7,11 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.256.2] — 2026-11-02
+
+### Corregido
+- **El aviso a la integración anónima del MCP ahora le llega.** Desde v1.243.0 el aviso para que escriba a agro@memola.com.ar iba solo en `_meta`, y `soloTexto()` se lo sacaba antes de responder: en 11 días nunca lo recibió. Ahora el calendario de remates (`list_remates` / `upcoming_auctions`, la tool que consulta la integración de Misiones) suma una línea al final del texto. El resto de las tools le responde igual que antes.
+
 ## [1.256.1] — 2026-11-02
 
 ### Cambiado
