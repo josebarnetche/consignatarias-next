@@ -7,6 +7,11 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.255.3] — 2026-11-02
+
+### Cambiado
+- `/.well-known/glama.json`: el maintainer de Glama pasa a ser agro@memola.com.ar, la casilla de soporte del MCP, en lugar de un mail personal.
+
 ## [1.255.2] — 2026-11-02
 
 ### Cambiado
