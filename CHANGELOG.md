@@ -16,6 +16,7 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ### Cambiado
 - **`TIPOS.campo` ya no tiene bloqueo legal.** El 2,4% queda solo como referencia interna (ESTIMADO) para valuar el caso en el tablero: el mail no menciona comisión. Arrendamiento sigue bloqueado y sin oferta.
+
 ## [1.255.1] — 2026-11-02
 
 ### Cambiado
