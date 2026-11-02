@@ -25,7 +25,13 @@ import { fetchUsdBlue } from "@/lib/markets/usd";
 import ScrollReveal from "@/components/landing/ScrollReveal";
 import { CoverageMap } from "@/components/landing/CoverageMap";
 import SellZoneBadge from "@/components/SellZoneBadge";
-import { getBandasPublicas, getSlugsConBanda, vrCobertura, VR_VENTANA_DIAS } from "@/lib/vr";
+import { getBandasPublicas, getSlugsConBanda, getPuntosBandaPublicos, vrCobertura, VR_VENTANA_DIAS } from "@/lib/vr";
+import { bandaSemanal, categoriasPrincipales } from "@/lib/mercado/banda-consignatarias";
+import HeroProductor from "@/components/landing/HeroProductor";
+import BandaHome, { type FilaBandaHome } from "@/components/landing/BandaHome";
+import { RemateFila } from "@/components/remates/RemateFila";
+import { esRematePro } from "@/lib/remates-pro";
+import corredorManifest from "../../public/el-corredor/manifest.json";
 import { getEffectiveStatus } from "@/lib/ui/tokens";
 import { rematesDesdeHoy } from "@/lib/remates-conteo";
 import HeroPro from "@/components/landing/lienzo/HeroPro";
@@ -169,6 +175,44 @@ const BANDAS_HOME = getBandasPublicas()
   .filter((b) => SLUGS_VR.has(b.slug));
 const VR_COBERTURA = vrCobertura();
 
+// Banda Consignatarias en corto (portada, v1.255.2): misma cuenta que la tool MCP
+// `consignatarias_band`, pero sobre el JSON del VR — la home sigue sin query.
+const BANDA = bandaSemanal(getPuntosBandaPublicos());
+const ETIQUETA_BANDA = new Map(BANDAS_HOME.map((b) => [b.codigo, b.categoria]));
+const FILAS_BANDA: FilaBandaHome[] = categoriasPrincipales(
+  BANDA,
+  getBandasPublicas().map((b) => b.codigo),
+).map((c) => ({
+  etiqueta: ETIQUETA_BANDA.get(c.categoria) ?? c.categoria,
+  p10: c.p10,
+  mediana: c.mediana,
+  p90: c.p90,
+  amplitudPct: c.amplitudPct,
+  lotes: c.lotes,
+}));
+
+// El precio del día: el INMAG del último cierre, con la fecha de esa rueda (no la del
+// scrape, que corre también los días sin mercado).
+const INMAG_SERIE = marketPrices.inmag.series;
+const INMAG_FECHA = INMAG_SERIE.length ? INMAG_SERIE[INMAG_SERIE.length - 1].date : marketPrices.lastUpdate.slice(0, 10);
+const INMAG_FECHA_LARGA = new Date(`${INMAG_FECHA}T12:00:00`).toLocaleDateString("es-AR", { weekday: "long", day: "numeric", month: "long" });
+const INMAG_FECHA_CORTA = `${new Date(`${INMAG_FECHA}T12:00:00`).toLocaleDateString("es-AR", { weekday: "short" })} ${INMAG_FECHA.slice(8, 10)}/${INMAG_FECHA.slice(5, 7)}`;
+
+// Lo que se comparte por WhatsApp: el dato y la portada, nada del que lo manda.
+const URL_HOME = "https://www.consignatarias.com.ar";
+const NOVILLO_BANDA = FILAS_BANDA.find((f) => f.etiqueta === "Novillo");
+const MENSAJE_WHATSAPP = [
+  `Índice Novillo (INMAG), cierre del ${INMAG_FECHA_CORTA}: $${fmt(marketPrices.inmag.current)}/kg vivo${marketPrices.inmag.change != null ? ` (${marketPrices.inmag.change >= 0 ? "+" : ""}${fmt(marketPrices.inmag.change, 1)} %)` : ""}.`,
+  NOVILLO_BANDA ? `Novillo vendido en el MAG, últimos ${VR_VENTANA_DIAS} días: de $${fmt(NOVILLO_BANDA.p10)} a $${fmt(NOVILLO_BANDA.p90)}/kg.` : null,
+  "Cuánto vale tu hacienda, por categoría y peso:",
+  URL_HOME,
+].filter(Boolean).join("\n");
+
+// Los próximos remates en filas livianas; el calendario completo está en /remates.
+const REMATES_PORTADA = [...rematesProximos]
+  .sort((a, b) => a.date.localeCompare(b.date) || (a.time ?? "").localeCompare(b.time ?? ""))
+  .slice(0, 6);
+
 const FAQ_ITEMS = [
   {
     question: "¿Qué gana mi consignataria con PRO?",
@@ -245,7 +289,7 @@ const GRUPOS_MAPA: GrupoMapa[] = [
     bajada: 'El índice del día, la serie larga y la lectura del ciclo.',
     items: [
       { nombre: 'INMAG', href: '/mercado/inmag', dato: `$${fmt(marketPrices.inmag.current)}/kg`, detalle: 'El índice del Mercado Agroganadero, diario, con su serie desde 2015.' },
-      { nombre: 'El novillo en dólares', href: '/mercado/inmag-dolares', detalle: 'El precio del novillo en dólares reales: dónde está contra su historia.' },
+      { nombre: 'El novillo en dólares', href: '/mercado/novillo-historico', detalle: 'El precio del novillo en dólares reales: dónde está contra su historia.' },
       { nombre: 'Índice de liquidación', href: '/mercado/liquidacion', detalle: 'Cuántas hembras se faenan: si el rodeo se retiene o se liquida.' },
       { nombre: 'Cañuelas', href: '/mercado/canuelas', detalle: 'La rueda del Mercado Agroganadero, categoría por categoría.' },
       { nombre: 'Precios de hacienda', href: '/precios', detalle: 'Precio por categoría: novillo, vaca, vaquillona, ternero y más.' },
@@ -262,7 +306,6 @@ const GRUPOS_MAPA: GrupoMapa[] = [
       { nombre: 'Consignatarias', href: '/consignatarias', dato: fmt(totalConsignatarias), detalle: 'El directorio: calendario, historial y contacto de cada firma.' },
       { nombre: 'Frigoríficos', href: '/frigorificos', dato: fmt(frigorificosHabilitados), detalle: `Plantas habilitadas por SENASA en ${provinciasConFrigo} provincias, con CUIT y matrícula.` },
       { nombre: 'Comparar firmas', href: '/comparar', detalle: 'Dos o más consignatarias lado a lado: remates, zonas y precios.' },
-      { nombre: 'Pre-ofertas', href: '/preofertas', detalle: 'Lotes con video ofertados antes del remate.' },
     ],
   },
   {
@@ -281,7 +324,7 @@ const GRUPOS_MAPA: GrupoMapa[] = [
     nombre: 'Sanidad y guías',
     bajada: 'Lo que pide SENASA y lo que conviene saber antes de firmar.',
     items: [
-      { nombre: 'Sanidad SENASA', href: '/sanidad', dato: 'Res. 201/2026', detalle: 'Calendario de aftosa, el vacunador que elegís desde 2027 y lo que pide mover hacienda.' },
+      { nombre: 'Sanidad SENASA', href: '/calendario-sanitario-bovino', dato: 'Res. 201/2026', detalle: 'Calendario de aftosa, el vacunador que elegís desde 2027 y lo que pide mover hacienda.' },
       { nombre: 'DT-e y RENSPA', href: '/dte', detalle: 'Qué es el DT-e, cómo se emite y cómo validar un RENSPA.' },
       { nombre: 'Buenas prácticas', href: '/buenas-practicas', detalle: 'Las 14 prácticas ganaderas de la guía de la Red BPA.' },
       { nombre: 'Guías', href: '/guias', dato: fmt(TOTAL_GUIAS), detalle: 'Cómo vender hacienda, leer una liquidación, tasar un campo y más.' },
@@ -425,13 +468,13 @@ export default async function LandingPage() {
               <MobileMenu groups={NAV_GROUPS} />
             </div>
             <ThemeToggle />
+            {/* El botón del header es del productor (v1.255.2); PRO sigue en el menú y abajo. */}
             <Link
-              href="#pro"
+              href="#valuar"
               className="text-xs font-medium text-zinc-950 bg-accent hover:bg-sky-300 claro:text-white claro:hover:bg-accent-bright transition-colors rounded py-2 px-4"
             >
-              <span className="sm:hidden">PRO</span>
-              <span className="hidden sm:inline lg:hidden xl:inline">PRO para consignatarias</span>
-              <span className="hidden lg:inline xl:hidden">PRO</span>
+              <span className="sm:hidden">Valuar</span>
+              <span className="hidden sm:inline">Valuar mi hacienda</span>
             </Link>
           </div>
         </div>
@@ -444,32 +487,48 @@ export default async function LandingPage() {
         <ScrollReveal />
 
         {/* ============================================================ */}
-        {/*  HERO — PRO Consignataria, el producto principal (v1.226.0)  */}
+        {/*  ORDEN (v1.255.2): primero el productor que llega por WhatsApp  */}
+        {/*  desde el celular — precio, banda, compartir, valuar — después */}
+        {/*  remates, directorio y El Corredor, y recién abajo PRO.        */}
         {/* ============================================================ */}
-        <HeroPro
-          rematesProximos={rematesProximos.length}
-          consignatarias={totalConsignatarias}
-          citadaReal={citadas[0]}
+
+        {/*  HERO — el precio de hoy y la valuación a un toque             */}
+        <HeroProductor
+          inmag={marketPrices.inmag.current}
+          inmagAnterior={marketPrices.inmag.prev ?? null}
+          cambioPct={marketPrices.inmag.change ?? null}
+          fechaCierre={INMAG_FECHA_LARGA}
+          lotes={VR_COBERTURA.lotes}
+          ventanaDias={VR_VENTANA_DIAS}
         />
 
-        {/*  ALCANCE — el millón de impresiones, mes a mes (Search Console) */}
-        <AlcanceGoogle aiRefsMes={ai.aiRefsMes} />
+        {/*  BANDA CONSIGNATARIAS — el rango P10–P90, en corto             */}
+        <BandaHome filas={FILAS_BANDA} fecha={BANDA.fecha} />
 
-        {/*  BENEFICIOS PRO — ocho frames, uno por beneficio              */}
-        <BeneficiosPro citadas={citadas} />
-
-        {/*  EL MURO — las firmas activas, PRO primero                    */}
-        <ConsignatariasShowcase items={showcaseItems} />
-
-        {/*  TODO EL SITIO — el mapa del sitio como lienzo de Figma       */}
-        <MapaDelSitio grupos={GRUPOS_MAPA} />
+        {/*  COMPARTIR — el precio del día por WhatsApp                     */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-4">
+          <div className="flex flex-col gap-3 rounded-lg border border-terminal-border px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm text-zinc-400">Pasale el precio de hoy a quien está por vender.</p>
+            <a
+              href={`https://wa.me/?text=${encodeURIComponent(MENSAJE_WHATSAPP)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-positive/50 px-5 py-3 text-sm font-medium text-positive hover:bg-positive/10 transition-colors"
+            >
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true">
+                <path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.2-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.6-2.1-.2-.3 0-.5.1-.6l.5-.5c.1-.2.2-.3.3-.5 0-.2 0-.4 0-.5 0-.2-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3M12 2a10 10 0 0 0-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1 0 12 2" />
+              </svg>
+              Compartir por WhatsApp
+            </a>
+          </div>
+        </section>
 
         {/*  VALUAR — el productor prueba el Valor de Referencia acá      */}
-        <section id="valuar" className="max-w-4xl mx-auto px-6 pt-24 pb-12 scroll-mt-20">
+        <section id="valuar" className="max-w-4xl mx-auto px-4 sm:px-6 pt-16 pb-4 scroll-mt-20">
           <div className="mb-8">
-            <p className="text-xxs font-medium text-accent">Para el productor, gratis</p>
+            <p className="text-xxs font-medium text-accent">Valuación, gratis</p>
             <h2 className="mt-3 text-3xl sm:text-4xl font-semibold tracking-tight text-ink text-balance">
-              Probalo acá: cuánto vale tu hacienda hoy.
+              ¿Cuánto vale mi hacienda?
             </h2>
             <p className="mt-3 text-zinc-400">
               Medido en {fmt(VR_COBERTURA.lotes)} lotes vendidos en el Mercado Agroganadero en los últimos {VR_VENTANA_DIAS} días.
@@ -498,10 +557,35 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        <div className="w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent" />
+        {/*  REMATES PRÓXIMOS — los seis que vienen                       */}
+        <section id="remates" className="max-w-4xl mx-auto px-4 sm:px-6 pt-16 scroll-mt-20">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-ink">Próximos remates</h2>
+            <div className="flex items-center gap-4 text-sm">
+              {enVivoCount > 0 && (
+                <Link href="/remates/en-vivo" className="inline-flex items-center gap-1.5 text-negative hover:underline">
+                  <span className="h-1.5 w-1.5 rounded-full bg-negative" aria-hidden="true" />
+                  {enVivoCount} en vivo hoy
+                </Link>
+              )}
+              <Link href="/remates" className="text-accent hover:text-accent-bright transition-colors">
+                Ver los {fmt(rematesProximos.length)} <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+          </div>
+          {REMATES_PORTADA.length > 0 ? (
+            <ul className="mt-4 divide-y divide-terminal-border border-y border-terminal-border">
+              {REMATES_PORTADA.map((r) => (
+                <RemateFila key={r.id} remate={r} conFecha pro={esRematePro(r, proSlugs)} />
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-4 text-sm text-zinc-500">No hay remates cargados para los próximos días.</p>
+          )}
+        </section>
 
         {/*  ¿DÓNDE LA VENDO? — buscador + mapa de cobertura               */}
-        <section id="donde-vender" className="max-w-7xl mx-auto px-6 pt-24">
+        <section id="donde-vender" className="max-w-7xl mx-auto px-6 pt-20">
           <div className="max-w-2xl">
             <div className="text-[0.65rem] text-zinc-500 uppercase tracking-widest mb-2">Cuando decidas vender</div>
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-normal text-zinc-100 tracking-tight leading-tight">
@@ -520,13 +604,51 @@ export default async function LandingPage() {
           </div>
         </section>
 
+        {/*  EL MURO — las firmas activas, PRO primero                    */}
+        <ConsignatariasShowcase items={showcaseItems} />
+
+        {/*  EL CORREDOR — la edición del mes                              */}
+        <section id="el-corredor" className="max-w-4xl mx-auto px-4 sm:px-6 pt-16 scroll-mt-20">
+          <Link
+            href="/el-corredor"
+            className="group flex flex-col gap-4 rounded-lg border border-terminal-border bg-terminal-panel claro:shadow-panel p-5 sm:flex-row sm:items-center sm:justify-between hover:border-accent/50 transition-colors"
+          >
+            <div>
+              <p className="text-xxs font-medium text-accent">El Corredor · {corredorManifest.current.edition_label.replace(" · ", " ")}</p>
+              <h2 className="mt-1 text-xl font-semibold tracking-tight text-ink">El cierre del mes del mercado bovino</h2>
+              <p className="mt-1 text-sm text-zinc-400">12 páginas con el INMAG, las categorías y la lectura de la mesa. Gratis por email.</p>
+            </div>
+            <span className="shrink-0 text-sm font-medium text-accent group-hover:text-accent-bright">
+              Leer la edición <span aria-hidden="true">→</span>
+            </span>
+          </Link>
+        </section>
+
+        {/*  CALENDARIO SANITARIO — SENASA, con la Res. 201/2026           */}
+        <CalendarioSanitario />
+
+        {/*  TODO EL SITIO — el mapa del sitio como lienzo de Figma       */}
+        <MapaDelSitio grupos={GRUPOS_MAPA} />
+
+        {/* ============================================================ */}
+        {/*  PARA CONSIGNATARIAS — PRO, recién acá (antes era el hero)    */}
+        {/* ============================================================ */}
+        <HeroPro
+          rematesProximos={rematesProximos.length}
+          consignatarias={totalConsignatarias}
+          citadaReal={citadas[0]}
+        />
+
+        {/*  ALCANCE — el millón de impresiones, mes a mes (Search Console) */}
+        <AlcanceGoogle aiRefsMes={ai.aiRefsMes} />
+
+        {/*  BENEFICIOS PRO — ocho frames, uno por beneficio              */}
+        <BeneficiosPro citadas={citadas} />
+
         {/*  PROMO — la guía paga                                          */}
         <div className="relative z-10 max-w-4xl mx-auto px-6 pt-16 pb-6">
           <PromoGuiaBanner origen="home" />
         </div>
-
-        {/*  CALENDARIO SANITARIO — SENASA, con la Res. 201/2026           */}
-        <CalendarioSanitario />
 
         {/* ============================================================ */}
         {/*  FAQ                                                          */}

@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.255.2] — 2026-11-02
+
+### Cambiado
+- **La portada se ordena para el productor que llega por WhatsApp desde el celular.** Antes el hero era el pitch de PRO Consignataria (ARS 45.000) y la valuación estaba en la sexta sección. Ahora, en este orden: (1) hero con el Índice Novillo (INMAG) del último cierre, con su fecha y la variación contra la rueda anterior, y el botón "¿Cuánto vale mi hacienda?" que lleva a la herramienta de valuación de la misma página; (2) la Banda Consignatarias en corto —P10–P90 y mediana de novillo y las dos categorías con más cabezas— con "Ver la banda completa" → `/banda`; (3) "Compartir por WhatsApp" con el precio del día y la URL de la portada, sin nada del que comparte; (4) la valuación (widget + semáforo), los próximos remates en filas `RemateFila`, el directorio, El Corredor (edición del mes, desde el manifest) y el calendario sanitario; (5) recién abajo, el bloque PRO (`HeroPro`, ahora con h2), el alcance y los beneficios. El botón del header pasa de "PRO" a "Valuar".
+- El hero nuevo es solo texto y números (sin imagen ni JS): es el LCP.
+- La banda de la portada sale del JSON del VR (`getPuntosBandaPublicos()` en `lib/vr.ts` + `categoriasPrincipales()` en `lib/mercado/banda-consignatarias.ts`), con la misma cuenta que la tool MCP `consignatarias_band`. La portada sigue sin consultar la base. Si no hay banda publicable, el bloque no se muestra.
+
+### Eliminado
+- `/preofertas` (piloto cerrado, noindex) sale de la grilla "Todo lo que hay adentro".
+
 ## [1.255.1] — 2026-11-02
 
 ### Cambiado

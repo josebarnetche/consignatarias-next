@@ -7,7 +7,8 @@ function fmt(n: number) {
 }
 
 /**
- * Hero de la landing (v1.226.0): PRO Consignataria como producto principal.
+ * Bloque PRO de la landing (v1.226.0; desde v1.255.2 va debajo de lo del productor,
+ * con h2: el h1 de la portada es el de HeroProductor). PRO Consignataria.
  * A la izquierda la promesa y el alcance real (Search Console); a la derecha el
  * lienzo — cómo se ve una firma PRO en los tres lugares donde el mercado busca:
  * Google, el directorio y la respuesta de una IA. "Tu consignataria" es un
@@ -33,9 +34,9 @@ export default function HeroPro({
             PRO Consignataria
           </div>
 
-          <h1 className="mt-6 text-[2.6rem] leading-[1.02] sm:text-6xl lg:text-[4.1rem] font-semibold tracking-tight text-ink text-balance">
+          <h2 className="mt-6 text-[2.6rem] leading-[1.02] sm:text-6xl lg:text-[4.1rem] font-semibold tracking-tight text-ink text-balance">
             Tu consignataria, donde el mercado ganadero <span className="text-accent">busca.</span>
-          </h1>
+          </h2>
 
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-zinc-400">
             consignatarias.com.ar apareció{' '}

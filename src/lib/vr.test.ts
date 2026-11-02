@@ -13,6 +13,7 @@ import {
   CATEGORIAS_CON_LOTE,
   getTendenciaPorSlug,
   getMovimiento,
+  getPuntosBandaPublicos,
   leerSerieVr,
   resumirSerieVr,
   rangoSerieVr,
@@ -24,6 +25,7 @@ import {
   MIN_LOTES_AJUSTE_ORIGEN,
   MIN_LOTES_BANDA_COMPLETA,
 } from './vr'
+import { bandaSemanal } from './mercado/banda-consignatarias'
 
 describe('getReferencia — banda', () => {
   it('devuelve banda completa para una categoría con base gruesa', () => {
@@ -409,5 +411,29 @@ describe('leerSerieVr', () => {
     const { rows, error } = await leerSerieVr(fakeSb([llena, [punto('2026-09-19', 'VACA', 44)]]), { desde: '2026-01-01' })
     expect(error).toBeNull()
     expect(rows.length).toBe(1001)
+  })
+})
+
+describe('getPuntosBandaPublicos — la banda de la portada sin consultar la base', () => {
+  it('el punto vigente coincide con la banda publicada de cada categoría', () => {
+    const b = bandaSemanal(getPuntosBandaPublicos())
+    const publicas = getBandasPublicas()
+    expect(b.categorias.length).toBe(publicas.length)
+    for (const pub of publicas) {
+      const c = b.categorias.find((x) => x.categoria === pub.codigo)
+      expect(c?.p10).toBe(pub.p10)
+      expect(c?.p90).toBe(pub.p90)
+      expect(c?.mediana).toBe(pub.mediana)
+      expect(c?.lotes).toBe(pub.lotes)
+    }
+    expect(b.fecha).toBe(vrCobertura().hasta)
+  })
+
+  it('los puntos de tendencia no traen P10/P90 que no tenemos', () => {
+    const hasta = vrCobertura().hasta
+    for (const pt of getPuntosBandaPublicos().filter((x) => x.date < hasta)) {
+      expect(pt.p10).toBeNull()
+      expect(pt.p90).toBeNull()
+    }
   })
 })
