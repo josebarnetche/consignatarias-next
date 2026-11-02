@@ -7,6 +7,11 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.256.1] — 2026-11-02
+
+### Cambiado
+- **MCP 1.9.2: la Banda se cita en `/banda`.** `consignatarias_band` y `price_dispersion_history` citaban `/vr` y `/mercado`; ahora la línea de cita y `structuredContent.fuente` apuntan a la página pública de la Banda (v1.255.0). La forma de la respuesta no cambia. Sincronizados route.ts, server-card, los tres manifiestos, `/mcp`, `llms.txt` y `llms-full.txt`; test nuevo en `mcp-doctrina`.
+
 ## [1.256.0] — 2026-11-02
 
 ### Agregado
