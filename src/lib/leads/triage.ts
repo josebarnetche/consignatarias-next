@@ -97,8 +97,8 @@ export function triageLead(input: TriageInput): TriageResult {
  *
  * Misma persona + misma intención + mismo día = un solo lead. Es lo que pasó con
  * el par 13/14 (mismo email, mismo pedido, mismo día, cargado dos veces) y con el
- * 11/12. Preferimos el email; si no hay, el teléfono en dígitos —así `2914222452`
- * y `+5492914222452` no cuentan como dos personas—. Sin ninguno de los dos no hay
+ * 11/12. Preferimos el email; si no hay, el teléfono en dígitos —así `2915550105`
+ * y `+5492915550105` no cuentan como dos personas—. Sin ninguno de los dos no hay
  * dedup posible y el lead pasa (la captura ya exige teléfono o email, así que este
  * caso no debería darse).
  */
@@ -113,7 +113,7 @@ export function dedupeKey(input: {
   const digits = (input.phone || '').replace(/\D/g, '')
   if (digits.length >= 8) {
     // Los últimos 8 dígitos identifican la línea sin importar el prefijo de país
-    // o el 9 de celular: 2914222452 y +5492914222452 caen en la misma clave.
+    // o el 9 de celular: 2915550105 y +5492915550105 caen en la misma clave.
     return `phone:${digits.slice(-8)}|${input.intent}`
   }
 

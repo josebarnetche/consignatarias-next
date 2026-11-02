@@ -3,11 +3,11 @@ import { triageLead, dedupeKey } from './triage'
 
 /**
  * Los casos vienen de las 12 filas reales de `producer_leads` al 21-ago-2026.
- * Si un cambio futuro hace pasar el lead de etiquetas o bloquear el de Fleitas,
+ * Si un cambio futuro hace pasar el lead de etiquetas o bloquear el de Pérez,
  * estos tests lo cantan.
  */
 describe('triageLead', () => {
-  it('deja pasar un lead de hacienda completo (manuel abalo, 50 novillos)', () => {
+  it('deja pasar un lead de hacienda completo (50 novillos)', () => {
     const r = triageLead({
       intent: 'vender',
       province: 'Buenos Aires',
@@ -18,7 +18,7 @@ describe('triageLead', () => {
     expect(r.motivo).toBeNull()
   })
 
-  it('deja pasar un lead de arrendamiento con hectáreas (Elisabet, 80 ha)', () => {
+  it('deja pasar un lead de arrendamiento con hectáreas (80 ha)', () => {
     const r = triageLead({
       intent: 'arrendar_busco',
       province: 'Buenos Aires',
@@ -34,14 +34,14 @@ describe('triageLead', () => {
       intent: 'vender',
       province: 'Buenos Aires',
       message: 'ETIQUETAS PARA LA INDUSTRIA FRIGORIFICA',
-      name: 'CHRISTIAN FABBRO',
+      name: 'JUAN GÓMEZ',
     })
     expect(r.status).toBe('needs_review')
     expect(r.motivo).toContain('etiqueta')
   })
 
   it('marca para revisión un lead sin geo ni volumen ("CONTACTO")', () => {
-    const r = triageLead({ intent: 'vender', message: 'CONTACTO', name: 'MATIAS SEBASTIAN' })
+    const r = triageLead({ intent: 'vender', message: 'CONTACTO', name: 'PEDRO LÓPEZ' })
     expect(r.status).toBe('needs_review')
     expect(r.motivo).toContain('no hay con qué rutearlo')
   })
@@ -59,15 +59,15 @@ describe('triageLead', () => {
 })
 
 describe('dedupeKey', () => {
-  it('da la misma clave para las dos cargas de Fleitas (mismo mail, mismo intent)', () => {
-    const a = dedupeKey({ email: 'JUANKA20122@GMAIL.COM', phone: '3764124038', intent: 'vender' })
-    const b = dedupeKey({ email: 'juanka20122@gmail.com', phone: '+5493764124038', intent: 'vender' })
+  it('da la misma clave para las dos cargas de Pérez (mismo mail, mismo intent)', () => {
+    const a = dedupeKey({ email: 'JUAN.PEREZ@EXAMPLE.COM', phone: '3765550103', intent: 'vender' })
+    const b = dedupeKey({ email: 'juan.perez@example.com', phone: '+5493765550103', intent: 'vender' })
     expect(a).toBe(b)
   })
 
   it('ignora el prefijo de país y el 9 de celular cuando sólo hay teléfono', () => {
-    const a = dedupeKey({ phone: '2914222452', intent: 'vender' })
-    const b = dedupeKey({ phone: '+54 9 291 4222452', intent: 'vender' })
+    const a = dedupeKey({ phone: '2915550105', intent: 'vender' })
+    const b = dedupeKey({ phone: '+54 9 291 5550105', intent: 'vender' })
     expect(a).toBe(b)
   })
 
