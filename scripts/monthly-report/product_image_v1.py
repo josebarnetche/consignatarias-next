@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 """
+⚠️ IMÁGENES DEL V1 — solo las usa `publish.py --v1`. Desde la edición de noviembre de
+2026 las imágenes de producto salen de `product_image.py` (estética v2, mismos datos
+que el PDF). Este archivo calcula su propio interanual al dólar oficial (+20,2 % en
+octubre de 2026, contra +19,5 % al blue del PDF): por eso se reemplazó.
+
 Genera imágenes de producto para "El Corredor":
 - og-1200x630.png  (OG / Twitter Card)
 - square-1080.png  (Instagram / LinkedIn carousel)
@@ -327,7 +332,12 @@ def render_image(html_content: str, w: int, h: int, out_path: Path, scale: float
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--month", default="2026-04", help="YYYY-MM")
+    ap.add_argument("--salida", default=None, help="carpeta de salida (default: output/)")
     args = ap.parse_args()
+    global OUT
+    if args.salida:
+        OUT = Path(args.salida)
+        OUT.mkdir(parents=True, exist_ok=True)
 
     # Load data
     market = json.loads((DATA / "market-prices.json").read_text())

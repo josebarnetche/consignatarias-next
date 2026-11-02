@@ -472,11 +472,16 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="El Corredor — informe mensual")
     ap.add_argument("--mes", default="auto", help="YYYY-MM o 'auto' (el mes anterior)")
     ap.add_argument("--pdf", action="store_true")
-    # El v2 va detrás de un flag apagado por defecto: sin --v2, la corrida del 1
-    # de cada mes es la de siempre. Ver informe_v2.py.
-    ap.add_argument("--v2", action="store_true", help="armar El Corredor v2 (maqueta)")
+    # Desde la edición de noviembre de 2026 el informe por defecto es el v2
+    # (informe_v2.py). --v1 vuelve al informe anterior, que sale byte por byte igual
+    # que antes. --v2 queda aceptado para no romper llamadas viejas: es el default.
+    ap.add_argument("--v1", action="store_true", help="armar el informe anterior (v1) en lugar del v2")
+    ap.add_argument("--v2", action="store_true", help=argparse.SUPPRESS)
     ap.add_argument("--salida", default=None, help="carpeta de salida (default: output/)")
     a = ap.parse_args()
+    if a.v1 and a.v2:
+        ap.error("--v1 y --v2 se excluyen")
+    a.v2 = not a.v1
     salida = Path(a.salida) if a.salida else SALIDA
 
     if a.mes == "auto":
@@ -499,6 +504,8 @@ def main() -> int:
     if a.v2:
         if extra.faltantes:
             print(f"  ⚠ sin dato (v2): {', '.join(extra.faltantes)}")
+        for aviso in extra.avisos:
+            print(f"  ⚠ control: {aviso}")
         html, sin_dato = I2.construir(p, extra)
         if sin_dato:
             print(f"  ⚠ páginas que no van por falta de dato: {', '.join(sin_dato)}")
