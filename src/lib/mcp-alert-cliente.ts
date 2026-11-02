@@ -14,6 +14,8 @@ export const DENY_EXACT = new Set(
     'mcp-spec-check', 'agent-seo', 'mcp',
     // Proyectos PROPIOS de Memola (no son demanda externa).
     'trazabilidad-simple',
+    // Sesiones Claude de José (confirmado 02-11-2026): no son demanda externa.
+    'claude-code', 'claude-user', 'claude-ai', 'anthropic/claudeai',
     // Pruebas propias con curl (verif-39, smoke-39…) y clientes de un solo carácter.
     't', 'probe', 'verif-39', 'smoke-39', 'smoke-verif-39',
   ].map((s) => s.toLowerCase()),

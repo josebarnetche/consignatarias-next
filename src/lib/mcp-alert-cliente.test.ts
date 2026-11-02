@@ -28,12 +28,12 @@ describe('nombreDesdeUA', () => {
 })
 
 describe('isNoise', () => {
-  it('excluye proyectos propios, pruebas propias y escáneres', () => {
-    for (const n of ['trazabilidad-simple', 'verif-39', 'smoke-39', 'MCPCheckup-Probe', 'BrickBlueBot', 'supermarket-probe', 'agent-index-prober', 'aisonar', 'evyAI MCP Check', 'agent-collector', 'mcpyp-incremental', 'creora-verified-execution', 'rokmcp-probe', 'mcp-checkup-prober']) {
+  it('excluye proyectos propios, sesiones Claude de José, pruebas propias y escáneres', () => {
+    for (const n of ['trazabilidad-simple', 'verif-39', 'smoke-39', 'MCPCheckup-Probe', 'BrickBlueBot', 'supermarket-probe', 'agent-index-prober', 'aisonar', 'evyAI MCP Check', 'agent-collector', 'mcpyp-incremental', 'creora-verified-execution', 'rokmcp-probe', 'mcp-checkup-prober', 'claude-code', 'Claude-User', 'claude-ai', 'Anthropic/ClaudeAI']) {
       expect(isNoise(n)).toBe(true)
     }
   })
   it('deja pasar agentes reales', () => {
-    for (const n of ['claude-code', 'Claude-User', 'cursor-vscode']) expect(isNoise(n)).toBe(false)
+    for (const n of ['cursor-vscode', 'cline', 'windsurf']) expect(isNoise(n)).toBe(false)
   })
 })
