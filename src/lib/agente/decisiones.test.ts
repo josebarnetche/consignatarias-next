@@ -8,7 +8,7 @@ describe('decisionesPendientes', () => {
   it('con el estado de hoy lista lo legal primero', () => {
     const d = decisionesPendientes(hoy)
     const ids = d.map((x) => x.id)
-    expect(ids).toEqual(expect.arrayContaining(['siocal', 'bloqueo-arrendamiento', 'bloqueo-campo', 'arrendamiento-quien-paga', 'precio-pedido', 'pie-comercial', 'agente-tipos']))
+    expect(ids).toEqual(expect.arrayContaining(['siocal', 'bloqueo-arrendamiento', 'arrendamiento-quien-paga', 'precio-pedido', 'pie-comercial', 'agente-tipos']))
     expect(d[0].gravedad).toBe('legal')
     expect(d.at(-1)!.gravedad).toBe('producto')
   })
@@ -75,9 +75,9 @@ describe('cobro de hacienda', () => {
     expect(d.titulo).toContain('tarifa fija')
     expect(d.detalle).not.toContain('AGENTE_COBRO_HACIENDA')
   })
-  it('venta de campo: ya tiene propuesta, queda como bloqueo legal y no sale', () => {
+  it('venta de campo: ya sale a consignatarias, no queda como decisión pendiente', () => {
     const ids = decisionesPendientes(base).map((x) => x.id)
-    expect(ids).toContain('bloqueo-campo')
+    expect(ids).not.toContain('bloqueo-campo')
     expect(ids).not.toContain('comision-campo')
   })
 })

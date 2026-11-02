@@ -3,10 +3,12 @@
  * (arrendamiento, venta de campo, tasación). Misma voz y misma firma que
  * `mensajes.ts`; puros, para que cada texto tenga su test.
  *
- * Solo hay correos AL LEAD QUE NOS ESCRIBIÓ (pedirle datos, calificarlo). No hay
- * plantilla de oferta a contrapartes para estos tipos: arrendamiento tiene un
- * bloqueo legal (matrícula de corredor, ver `tipos.ts`) y campo/tasación no tienen
- * comisión definida. Cuando José resuelva eso, la oferta se escribe acá.
+ * Correos al lead que nos escribió (pedirle datos, calificarlo) y, desde el
+ * 26-10-2026, la oferta de una VENTA DE CAMPO a consignatarias de la zona
+ * (`ofertaCampo`) y la presentación cuando una responde ACEPTO
+ * (`presentacionCampo`). Decisión de José: las consignatarias tienen la matrícula
+ * y saben cómo manejarse; el sitio es un portal que no intermedia y solo ofrece el
+ * contacto. Arrendamiento sigue sin oferta (bloqueo legal, `tipos.ts`).
  */
 import { referencia } from './reglas'
 import type { Correo } from './mensajes'
@@ -22,6 +24,12 @@ export interface DatosCampo {
   provincia?: string | null
   /** Desde cuándo y por cuánto tiempo (arrendamiento). */
   plazo?: string | null
+  /**
+   * Mejoras y estado del campo, en una o dos líneas. Lo escribe una persona a
+   * partir de lo que contó el dueño: nunca se copia su texto tal cual, porque va
+   * a terceros y no puede llevar su nombre ni su contacto.
+   */
+  detalle?: string | null
 }
 
 /** Lo mínimo para trabajar un pedido de campo. Vacío = alcanza. */
@@ -121,6 +129,70 @@ export function primerCorreo(
     return faltan.length ? pedirDatosCampo({ leadId: lead.id, nombre: lead.name, intent: lead.intent, faltan }) : null
   }
   return null // hacienda la sigue manejando mensajes.ts
+}
+
+/** "300 ha ganadero en Villaguay, Entre Ríos". */
+export function resumenCampo(d: DatosCampo): string {
+  const lugar = [d.zona, d.provincia].filter((x) => x?.trim()).join(', ')
+  const ha = d.hectareas ? `${Math.round(d.hectareas).toLocaleString('es-AR')} ha` : 'campo'
+  return [ha, d.aptitud?.trim().toLowerCase(), lugar ? `en ${lugar}` : null].filter(Boolean).join(' ')
+}
+
+function fichaCampo(d: DatosCampo): string {
+  return [
+    `· Superficie: ${d.hectareas ? `${Math.round(d.hectareas).toLocaleString('es-AR')} ha` : 'a confirmar'}`,
+    `· Aptitud: ${d.aptitud?.trim() || 'a confirmar'}`,
+    `· Zona: ${[d.zona, d.provincia].filter((x) => x?.trim()).join(', ') || 'a confirmar'}`,
+    ...(d.detalle?.trim() ? [`· ${d.detalle.trim()}`] : []),
+  ].join('\n')
+}
+
+/**
+ * A una consignataria de la zona: un dueño quiere vender su campo. El sitio es un
+ * portal: no intermedia ni cobra al dueño, solo ofrece el contacto (José, 26-10-2026).
+ * Sin nombre ni contacto del dueño: eso sale solo después de un ACEPTO escrito.
+ */
+export function ofertaCampo(o: { leadId: number; ofertaId: number; datos: DatosCampo }): Correo {
+  return conPieComercial({
+    asunto: `Campo en venta: ${resumenCampo(o.datos)} · Ref. ${referencia(o.leadId, o.ofertaId)}`,
+    texto: [
+      'Buenas,',
+      '',
+      'Les escribimos desde consignatarias.com. El dueño de un campo nos consultó porque lo quiere vender:',
+      '',
+      fichaCampo(o.datos),
+      '',
+      'consignatarias.com es un portal: no intermediamos en la operación ni le cobramos al dueño. Si les interesa, respondan ACEPTO y les pasamos su contacto directo para que avancen con él. Si no es para ustedes, con un "no" alcanza y no insistimos.',
+      FIRMA,
+    ].join('\n'),
+  })
+}
+
+/** Cuando la consignataria respondió ACEPTO: los presentamos, a los dos en el mismo correo. */
+export function presentacionCampo(o: {
+  leadId: number
+  ofertaId: number
+  datos: DatosCampo
+  duenio: { nombre: string | null; email: string | null; phone: string | null }
+  firma: { nombre: string; email: string }
+}): Correo {
+  const d = o.duenio
+  return {
+    asunto: `Les presentamos: ${resumenCampo(o.datos)} · Ref. ${referencia(o.leadId, o.ofertaId)}`,
+    texto: [
+      'Hola a los dos,',
+      '',
+      `${o.firma.nombre} confirmó que le interesa el campo:`,
+      '',
+      fichaCampo(o.datos),
+      '',
+      `· Dueño: ${[d.nombre, d.email, d.phone].filter(Boolean).join(' · ')}`,
+      `· ${o.firma.nombre}: ${o.firma.email}`,
+      '',
+      'A partir de acá siguen directamente entre ustedes; consignatarias.com no intermedia en la operación.',
+      FIRMA,
+    ].join('\n'),
+  }
 }
 
 /** La cadencia vive en reglas.ts (la usa el motor); se reexporta para los tests y el tablero. */

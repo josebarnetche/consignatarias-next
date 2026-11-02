@@ -20,11 +20,11 @@ describe('tipoDeIntent', () => {
 })
 
 describe('enviaAContrapartes', () => {
-  it('sale solo hacienda: arrendamiento tiene comisión pero bloqueo legal (matrícula de corredor)', () => {
+  it('salen hacienda y venta de campo: arrendamiento tiene comisión pero bloqueo legal (matrícula de corredor)', () => {
     expect(enviaAContrapartes('hacienda')).toBe(true)
     expect(TIPOS.arrendamiento.bloqueoLegal).toMatch(/matriculado/)
     expect(enviaAContrapartes('arrendamiento')).toBe(false)
-    expect(enviaAContrapartes('campo')).toBe(false)
+    expect(enviaAContrapartes('campo')).toBe(true)
     expect(enviaAContrapartes('tasacion')).toBe(false)
   })
   it('la comisión de hacienda sigue siendo 1%', () => {
@@ -53,10 +53,10 @@ describe('valuarLead', () => {
     expect(comisionArrendamientoMercado(anual)).toBe(1_000_000)
     expect(comisionArrendamiento(anual)).toBe(800_000)
   })
-  it('venta de campo: propuesta 2,4% (ESTIMADO) con bloqueo legal, no sale a contrapartes', () => {
+  it('venta de campo: sale a consignatarias (José, 26-10), 2,4% queda como referencia interna', () => {
     expect(TIPOS.campo.comisionPct).toBe(2.4)
-    expect(TIPOS.campo.bloqueoLegal).toMatch(/matriculado/)
-    expect(enviaAContrapartes('campo')).toBe(false)
+    expect(TIPOS.campo.bloqueoLegal).toBeUndefined()
+    expect(enviaAContrapartes('campo')).toBe(true)
   })
   it('arrendamiento usa el canon del lead si lo trae', () => {
     const v = valuarLead({ intent: 'arrendar_ofrezco', hectareas: 100, kg_ha_mes: 6 }, ref)
