@@ -289,7 +289,7 @@ const GRUPOS_MAPA: GrupoMapa[] = [
     bajada: 'El índice del día, la serie larga y la lectura del ciclo.',
     items: [
       { nombre: 'INMAG', href: '/mercado/inmag', dato: `$${fmt(marketPrices.inmag.current)}/kg`, detalle: 'El índice del Mercado Agroganadero, diario, con su serie desde 2015.' },
-      { nombre: 'El novillo en dólares', href: '/mercado/inmag-dolares', detalle: 'El precio del novillo en dólares reales: dónde está contra su historia.' },
+      { nombre: 'El novillo en dólares', href: '/mercado/novillo-historico', detalle: 'El precio del novillo en dólares reales: dónde está contra su historia.' },
       { nombre: 'Índice de liquidación', href: '/mercado/liquidacion', detalle: 'Cuántas hembras se faenan: si el rodeo se retiene o se liquida.' },
       { nombre: 'Cañuelas', href: '/mercado/canuelas', detalle: 'La rueda del Mercado Agroganadero, categoría por categoría.' },
       { nombre: 'Precios de hacienda', href: '/precios', detalle: 'Precio por categoría: novillo, vaca, vaquillona, ternero y más.' },
@@ -324,7 +324,7 @@ const GRUPOS_MAPA: GrupoMapa[] = [
     nombre: 'Sanidad y guías',
     bajada: 'Lo que pide SENASA y lo que conviene saber antes de firmar.',
     items: [
-      { nombre: 'Sanidad SENASA', href: '/sanidad', dato: 'Res. 201/2026', detalle: 'Calendario de aftosa, el vacunador que elegís desde 2027 y lo que pide mover hacienda.' },
+      { nombre: 'Sanidad SENASA', href: '/calendario-sanitario-bovino', dato: 'Res. 201/2026', detalle: 'Calendario de aftosa, el vacunador que elegís desde 2027 y lo que pide mover hacienda.' },
       { nombre: 'DT-e y RENSPA', href: '/dte', detalle: 'Qué es el DT-e, cómo se emite y cómo validar un RENSPA.' },
       { nombre: 'Buenas prácticas', href: '/buenas-practicas', detalle: 'Las 14 prácticas ganaderas de la guía de la Red BPA.' },
       { nombre: 'Guías', href: '/guias', dato: fmt(TOTAL_GUIAS), detalle: 'Cómo vender hacienda, leer una liquidación, tasar un campo y más.' },
