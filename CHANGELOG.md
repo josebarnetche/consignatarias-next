@@ -7,6 +7,14 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.255.0] — 2026-11-02
+
+### Agregado
+- **`/banda`: la Banda Consignatarias tiene página propia.** El número propio del sitio vivía sólo en la tool MCP `consignatarias_band`, en llms.txt y en /mcp: lo leía un agente y no lo podía enlazar un periodista. La página muestra, arriba, qué mide en dos líneas y la fecha del dato; después las barras P10–P90 por categoría con la mediana marcada, en una escala común de $/kg (`role="img"` con el dato dicho en palabras) y la tabla real debajo (P10, mediana, P90, amplitud, cambio semanal, lotes); la serie de la amplitud por categoría desde que arranca; la cita para copiar y el botón de WhatsApp (`Compartir`, el mismo de las otras páginas: texto de la cita + URL, sin datos personales).
+- **No calcula nada nuevo.** `src/lib/mercado/banda-datos.ts` lee la misma serie que el MCP (`vr_bandas_history`, VR v1.0, vía `leerSerieVr`) y la pasa por la misma `bandaSemanal()`: la cita de la página es la que recibe un agente. Con esas filas sale también la serie de amplitud (lo que devuelve `price_dispersion_history`). ISR de una hora. Si la base no responde, cae a `vr-bandas.json` y la cita sale **sin récord**: con los 12 puntos de la tendencia corta, decir "el valor más alto de la serie" sería falsa precisión.
+- Se publica una categoría sólo con 30 lotes o más (`MIN_LOTES_BANDA_COMPLETA`, la regla que ya usan /vr y `compute-vr-bandas.mjs`). Helpers puros con tests en `src/lib/mercado/banda-pagina.ts`; `etiquetaCategoria()` exportada de `vr.ts`.
+- **Tarjeta OG** (`/banda/opengraph-image`, 1200×630) con las barras de la banda: es la pieza que viaja por WhatsApp. JSON-LD `Dataset` con licencia propia, canonical y entrada en el sitemap.
+
 ## [1.254.15] — 2026-10-30
 
 ### Cambiado
