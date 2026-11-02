@@ -63,7 +63,7 @@ export default async function VenderAhoraPage() {
           </Link>
           {' · '}
           <Link
-            href="/mercado/inmag-dolares"
+            href="/mercado/novillo-historico#inmag-dolares"
             className="hover:text-zinc-300 underline-offset-2 hover:underline"
           >
             Ver serie en dólares

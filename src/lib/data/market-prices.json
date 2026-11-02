@@ -1833,13 +1833,13 @@
       }
     ],
     "latestVolume": 3791,
-    "periodVolume": 150664
+    "periodVolume": 137523
   },
   "categories": {
     "novillos": {
       "current": 4010.33,
-      "prev": 4095.65,
-      "change": -2.1,
+      "prev": 4010.33,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 493,
@@ -1847,8 +1847,8 @@
     },
     "novillitos": {
       "current": 4465.84,
-      "prev": 4412.77,
-      "change": 1.2,
+      "prev": 4465.84,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 713,
@@ -1856,8 +1856,8 @@
     },
     "vaquillonas": {
       "current": 4318.97,
-      "prev": 4068.94,
-      "change": 6.1,
+      "prev": 4318.97,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 1226,
@@ -1865,16 +1865,16 @@
     },
     "vacas": {
       "current": 2871.24,
-      "prev": 2931.54,
-      "change": -2.1,
+      "prev": 2871.24,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "latestVolume": 1262,
       "observedDate": "30/10/2026"
     },
     "toros": {
       "current": 3444.42,
-      "prev": 3385.11,
-      "change": 1.8,
+      "prev": 3444.42,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 106,
@@ -1908,7 +1908,7 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-10-31",
+  "lastUpdate": "2026-11-02",
   "provinceEntry": {
     "date": "2026-10-31",
     "totalCabezas": 3791,
@@ -2532,9 +2532,9 @@
   "arrendamientoOficial": {
     "date": "2026-10-30",
     "index": 4151.25,
-    "periodStart": "2026-10-21",
+    "periodStart": "2026-10-27",
     "periodEnd": "2026-10-30",
-    "periodIndex": 4111.849,
+    "periodIndex": 4204.889,
     "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)"
   },
   "soy": {

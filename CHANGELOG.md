@@ -7,7 +7,7 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
-## [1.255.0] — 2026-10-30
+## [1.256.0] — 2026-11-02
 
 ### Agregado
 - **Agente: las ventas de campo se ofrecen a consignatarias de la zona.** Decisión de José del 26-10: las consignatarias tienen la matrícula y saben cómo manejarse con el sitio, que es un portal que no intermedia y solo ofrece el contacto. Un caso de venta de campo con superficie, aptitud y zona pasa a `ofreciendo` y `ofrecerCampos` (`src/lib/agente/campos-agente.ts`) se lo ofrece a consignatarias de la misma provincia y después a las de provincias limítrofes. Son 3 por tanda, una tanda cada 4 días y hasta 3 tandas. Se mantienen las reglas de hacienda: solo días hábiles de 8 a 19, cupo de 20 contactos nuevos por día compartido con hacienda, nadie dos veces en 24 h, BAJA para siempre. Si se acaban las firmas, el caso pasa a José.
@@ -16,6 +16,33 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ### Cambiado
 - **`TIPOS.campo` ya no tiene bloqueo legal.** El 2,4% queda solo como referencia interna (ESTIMADO) para valuar el caso en el tablero: el mail no menciona comisión. Arrendamiento sigue bloqueado y sin oferta.
+## [1.255.1] — 2026-11-02
+
+### Cambiado
+- **Una pregunta, una página.** Siete rutas que competían con otra por la misma búsqueda, cada una con su canonical, ahora son 301 (`vercel.json`, `statusCode: 301`) hacia la sobreviviente de su familia, elegida por impresiones en Search Console (`reports/gsc/2026-W29…W43`):
+  - `/el-novillo-en-dolares` y `/mercado/inmag-dolares` → `/mercado/novillo-historico`. Se suman el INMAG en dólares blue de los últimos 12 meses (`#inmag-dolares`), los días que movieron la serie con el valor del novillo calculado del INMAG de ese día (`#dias`) y la alerta por mail (`#alerta`). Un solo Dataset.
+  - `/relacion-maiz-novillo` → `/mercado/spread`, con "Cómo se lee" y tres preguntas más.
+  - `/reporte-semanal` → `/informes/parte-semanal`: el reporte gratuito en PDF pasa a ser una sección de la misma página (`#reporte-gratis`).
+  - `/vender-hacienda-guia` → `/como-vender-hacienda`: de qué se compone el precio que cobrás, el boleto de marca, cinco términos y dos preguntas. La comparativa de canales (`/vender-en-remate-vs-venta-directa-vs-consignacion`) responde otra pregunta y queda.
+  - `/sanidad` → `/calendario-sanitario-bovino`: el régimen SENASA citado (calendario 2026, planes, vacunador 2027, movimientos, trámites) entra como secciones con las mismas anclas. El plan por época se alinea con la Res. 711/2025.
+  - `/upgrade` → `/planes`: era una página que solo redirigía con un 307; sale también del `Disallow` de `robots.txt` para que Google lea el 301.
+- Enlaces internos, sitemap e índice de guías apuntan a la sobreviviente. Quedan dos enlaces viejos en el cuerpo de la portada, que reordena otro PR: caen en un solo 301.
+- **Menú:** "Banda Consignatarias" (`/banda`) como segunda entrada de Precios y **El Corredor** como enlace directo de nivel superior (un grupo sin items en `lib/nav.ts` se pinta como link en el escritorio, la portada y el teléfono). "INMAG en USD" y "Novillo 20 años" pasan a ser una entrada: "Novillo en dólares".
+- **Un solo footer** (`src/components/SiteFooter.tsx`) para el terminal y la portada, con las guías agrupadas por tema (Vender, Campos, Sanidad, Glosario) y sin Preofertas, Upgrade ni Manifiesto. El logo usa tokens y ya no desaparece en el tema claro.
+
+### Agregado
+- `src/lib/arquitectura-fusiones.test.ts`: cada ruta fusionada es 301, no tiene `page.tsx`, no encadena, no está en el sitemap y nada en `src` la enlaza; el menú y el footer no apuntan a rutas sacadas y cada enlace interno del footer tiene su página.
+
+### Eliminado
+- `src/components/NovilloEnDolares.tsx` (la máquina scrollable de `/el-novillo-en-dolares`).
+
+## [1.255.0] — 2026-11-02
+
+### Agregado
+- **`/banda`: la Banda Consignatarias tiene página propia.** El número propio del sitio vivía sólo en la tool MCP `consignatarias_band`, en llms.txt y en /mcp: lo leía un agente y no lo podía enlazar un periodista. La página muestra, arriba, qué mide en dos líneas y la fecha del dato; después las barras P10–P90 por categoría con la mediana marcada, en una escala común de $/kg (`role="img"` con el dato dicho en palabras) y la tabla real debajo (P10, mediana, P90, amplitud, cambio semanal, lotes); la serie de la amplitud por categoría desde que arranca; la cita para copiar y el botón de WhatsApp (`Compartir`, el mismo de las otras páginas: texto de la cita + URL, sin datos personales).
+- **No calcula nada nuevo.** `src/lib/mercado/banda-datos.ts` lee la misma serie que el MCP (`vr_bandas_history`, VR v1.0, vía `leerSerieVr`) y la pasa por la misma `bandaSemanal()`: la cita de la página es la que recibe un agente. Con esas filas sale también la serie de amplitud (lo que devuelve `price_dispersion_history`). ISR de una hora. Si la base no responde, cae a `vr-bandas.json` y la cita sale **sin récord**: con los 12 puntos de la tendencia corta, decir "el valor más alto de la serie" sería falsa precisión.
+- Se publica una categoría sólo con 30 lotes o más (`MIN_LOTES_BANDA_COMPLETA`, la regla que ya usan /vr y `compute-vr-bandas.mjs`). Helpers puros con tests en `src/lib/mercado/banda-pagina.ts`; `etiquetaCategoria()` exportada de `vr.ts`.
+- **Tarjeta OG** (`/banda/opengraph-image`, 1200×630) con las barras de la banda: es la pieza que viaja por WhatsApp. JSON-LD `Dataset` con licencia propia, canonical y entrada en el sitemap.
 
 ## [1.254.15] — 2026-10-30
 

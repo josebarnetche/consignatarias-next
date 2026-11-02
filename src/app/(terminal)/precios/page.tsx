@@ -234,7 +234,7 @@ export default function PreciosHubPage() {
             <div className="text-sm text-zinc-200">Rentabilidad feedlot</div>
             <div className="text-xs text-zinc-500 mt-1">Cuántos kg de maíz por kilo de novillo — proxy de margen.</div>
           </Link>
-          <Link href="/mercado/inmag-dolares" className="border border-terminal-border bg-terminal-panel p-4 hover:border-accent transition-colors">
+          <Link href="/mercado/novillo-historico#inmag-dolares" className="border border-terminal-border bg-terminal-panel p-4 hover:border-accent transition-colors">
             <div className="text-xxs uppercase tracking-wider text-zinc-500 mb-1">Real terms</div>
             <div className="text-sm text-zinc-200">INMAG en dólares</div>
             <div className="text-xs text-zinc-500 mt-1">Novillo en USD oficial y blue, comparable interanual.</div>

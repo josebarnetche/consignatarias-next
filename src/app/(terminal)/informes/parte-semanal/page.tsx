@@ -5,6 +5,10 @@ import { ImageTema } from '@/components/ui/ImagenTema'
 import { getProducto, rangoPrecio } from '@/lib/productos-datos'
 import { ListaDeEspera } from '@/components/productos/ListaDeEspera'
 import { armarParteSemanal } from '@/lib/informes/semanal'
+import marketPrices from '@/lib/data/market-prices.json'
+import rematesData from '@/lib/data/remates.json'
+import type { Auction } from '@/lib/db/schema'
+import ReporteSemanalClient from './ReporteSemanalClient'
 
 const APP_URL = 'https://www.consignatarias.com.ar'
 const P = getProducto('parte-semanal-mercado')!
@@ -12,8 +16,8 @@ const P = getProducto('parte-semanal-mercado')!
 export const metadata: Metadata = {
   title: 'Parte semanal del mercado ganadero — el cierre en PDF, por mail',
   description:
-    'El cierre de cada semana en un PDF imprimible: el novillo en pesos y en dólares, la relación maíz/novillo con once años de contexto, si el movimiento fue señal o ruido, y los remates de los próximos siete días.',
-  keywords: P.keywords,
+    'El cierre de cada semana en un PDF imprimible: el novillo en pesos y en dólares, la relación maíz/novillo con once años de contexto, si el movimiento fue señal o ruido, y los remates de los próximos siete días. Con el reporte gratuito del día, también en PDF.',
+  keywords: [...P.keywords, 'reporte semanal del mercado ganadero'],
   openGraph: {
     title: 'Parte semanal del mercado ganadero',
     description:
@@ -49,10 +53,54 @@ const FAQ = [
   },
 ]
 
+/**
+ * Datos del reporte gratuito (PDF del día). Vivía en /reporte-semanal, que desde la
+ * v1.255.1 es un 301 hacia acá: las dos páginas competían por "reporte semanal del
+ * mercado ganadero" y ésta es la que cuelga del árbol de /informes.
+ */
+function datosReporteGratis() {
+  const auctions = rematesData as Auction[]
+  const today = new Date().toISOString().slice(0, 10)
+  const nextWeek = new Date()
+  nextWeek.setDate(nextWeek.getDate() + 7)
+  const nextWeekStr = nextWeek.toISOString().slice(0, 10)
+
+  const aFila = (r: Auction) => ({
+    fecha: r.date,
+    consignataria: r.consignatariaName,
+    ubicacion: r.location,
+    tipo: r.type,
+    cabezas: r.estimatedHeads,
+  })
+  const rematesHoy = auctions
+    .filter((a) => a.date === today)
+    .sort((a, b) => (b.estimatedHeads || 0) - (a.estimatedHeads || 0))
+  const proximos = auctions
+    .filter((a) => a.date >= today && a.date <= nextWeekStr)
+    .sort((a, b) => a.date.localeCompare(b.date))
+
+  return {
+    fecha: new Date().toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
+    inmag: marketPrices.inmag,
+    categories: marketPrices.categories,
+    usdBlue: marketPrices.usdBlue,
+    corn: marketPrices.corn,
+    rematesHoy: rematesHoy.map(aFila),
+    remates: {
+      total: proximos.length,
+      cabezas: proximos.reduce((s, a) => s + (a.estimatedHeads || 0), 0),
+      provincias: new Set(proximos.map((a) => a.province)).size,
+      consignatarias: new Set(proximos.map((a) => a.consignatariaName)).size,
+      top5: proximos.slice(0, 5).map(aFila),
+    },
+  }
+}
+
 export default function Page() {
   // Se arma el parte real para mostrar de qué se trata. `revalidate` de una hora
   // mantiene la muestra fresca sin recalcular en cada visita.
   const muestra = armarParteSemanal('vista-previa@consignatarias.com.ar')
+  const reporteGratis = datosReporteGratis()
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
@@ -164,10 +212,10 @@ export default function Page() {
         </p>
         <p className="mt-3 text-sm leading-relaxed text-slate-400">
           El{' '}
-          <Link href="/reporte-semanal" className="text-sky-400 underline underline-offset-2">
+          <a href="#reporte-gratis" className="text-sky-400 underline underline-offset-2">
             reporte gratuito
-          </Link>{' '}
-          sigue disponible y no se toca.
+          </a>{' '}
+          sigue disponible, más abajo en esta misma página.
         </p>
       </section>
 
@@ -184,6 +232,10 @@ export default function Page() {
       <div className="mt-8">
         <ListaDeEspera slug={P.slug} nombre={P.nombre} />
       </div>
+
+      <section id="reporte-gratis" className="mt-12 scroll-mt-24 border-t border-slate-800 pt-10">
+        <ReporteSemanalClient data={reporteGratis} />
+      </section>
 
       <section className="mt-12">
         <h2 className="text-xl font-semibold text-slate-100">Preguntas</h2>

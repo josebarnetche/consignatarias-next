@@ -46,7 +46,7 @@ const PASOS = [
   {
     name: 'Aplicar la tarifa de referencia por km o por piso',
     text: 'El transportista cotiza combinando una tarifa por kilómetro recorrido y un valor por piso de jaula ocupado; en tramos cortos suele haber un mínimo por viaje. Conviene pedir dos o tres cotizaciones: la tarifa la fija cada fletero según gasoil, distancia y disponibilidad, no esta página.',
-    url: `${BASE_URL}/vender-hacienda-guia`,
+    url: `${BASE_URL}/como-vender-hacienda#gastos-de-comercializacion`,
   },
   {
     name: 'Sumar el flete a los gastos de comercialización',
@@ -336,7 +336,7 @@ export default function CuantoCuestaElFleteDeHaciendaPage() {
             <Link href="/cuanto-cobra-de-comision-una-consignataria" className="text-accent hover:text-accent-bright transition-colors">
               Comisión de la consignataria →
             </Link>
-            <Link href="/vender-hacienda-guia" className="text-accent hover:text-accent-bright transition-colors">
+            <Link href="/como-vender-hacienda" className="text-accent hover:text-accent-bright transition-colors">
               Guía para vender hacienda →
             </Link>
           </p>

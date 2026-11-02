@@ -334,10 +334,6 @@ export default function CuantoCobraDeComisionUnaConsignatariaPage() {
             </Link>
           </p>
           <p className="text-data text-zinc-300 pt-1">
-            <Link href="/vender-hacienda-guia" className="text-accent hover:text-accent-bright transition-colors">
-              Guía para vender hacienda →
-            </Link>{' '}
-            ·{' '}
             <Link href="/consignatarias" className="text-accent hover:text-accent-bright transition-colors">
               Directorio de consignatarias →
             </Link>

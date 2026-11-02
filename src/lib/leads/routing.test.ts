@@ -133,19 +133,19 @@ describe('whatsappLink', () => {
   it('agrega el 9 de móvil a un número local, que es como vienen en la DB', () => {
     // Sin el 9, wa.me abre "número inválido" en vez del chat. Era el caso de TODOS
     // los links que el Ovejero prearmaba para el outreach.
-    expect(whatsappLink('2214189529', t)).toContain('wa.me/5492214189529')
+    expect(whatsappLink('2215550101', t)).toContain('wa.me/5492215550101')
   })
 
   it('agrega el 9 aunque el número ya traiga el 54', () => {
-    expect(whatsappLink('+541133623833', t)).toContain('wa.me/5491133623833')
+    expect(whatsappLink('+541155550102', t)).toContain('wa.me/5491155550102')
   })
 
   it('no duplica el 9 si ya viene en formato móvil', () => {
-    expect(whatsappLink('+5493764124038', t)).toContain('wa.me/5493764124038')
+    expect(whatsappLink('+5493765550103', t)).toContain('wa.me/5493765550103')
   })
 
   it('saca el 0 de larga distancia', () => {
-    expect(whatsappLink('01122181791', t)).toContain('wa.me/5491122181791')
+    expect(whatsappLink('01155550104', t)).toContain('wa.me/5491155550104')
   })
 
   it('no intenta adivinar dónde va el 15 viejo (límite documentado)', () => {
@@ -160,7 +160,7 @@ describe('whatsappLink', () => {
   })
 
   it('escapa el texto del mensaje', () => {
-    const link = whatsappLink('2214189529', '¿Seguís buscando? 40 cab.')!
+    const link = whatsappLink('2215550101', '¿Seguís buscando? 40 cab.')!
     expect(link).toContain('text=')
     expect(link).not.toContain(' ')
   })

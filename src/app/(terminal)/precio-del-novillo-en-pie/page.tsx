@@ -284,7 +284,7 @@ export default function PrecioDelNovilloEnPiePage() {
             Seguir el precio del novillo
           </p>
           <p className="text-data text-zinc-300 flex flex-wrap gap-x-3 gap-y-1">
-            <Link href="/el-novillo-en-dolares" className="text-accent hover:text-accent-bright transition-colors">
+            <Link href="/mercado/novillo-historico" className="text-accent hover:text-accent-bright transition-colors">
               El novillo en dólares →
             </Link>
             <Link href="/mercado/inmag" className="text-accent hover:text-accent-bright transition-colors">

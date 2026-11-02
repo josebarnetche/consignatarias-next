@@ -42,6 +42,41 @@
       "permanent": true
     },
     {
+      "source": "/el-novillo-en-dolares",
+      "destination": "/mercado/novillo-historico",
+      "statusCode": 301
+    },
+    {
+      "source": "/mercado/inmag-dolares",
+      "destination": "/mercado/novillo-historico",
+      "statusCode": 301
+    },
+    {
+      "source": "/relacion-maiz-novillo",
+      "destination": "/mercado/spread",
+      "statusCode": 301
+    },
+    {
+      "source": "/reporte-semanal",
+      "destination": "/informes/parte-semanal",
+      "statusCode": 301
+    },
+    {
+      "source": "/vender-hacienda-guia",
+      "destination": "/como-vender-hacienda",
+      "statusCode": 301
+    },
+    {
+      "source": "/sanidad",
+      "destination": "/calendario-sanitario-bovino",
+      "statusCode": 301
+    },
+    {
+      "source": "/upgrade",
+      "destination": "/planes",
+      "statusCode": 301
+    },
+    {
       "source": "/:path((?!_next/|api/|favicon\\.ico|robots\\.txt|sitemap\\.xml|manifest\\.json|icon-|og-).*)*",
       "has": [
         {

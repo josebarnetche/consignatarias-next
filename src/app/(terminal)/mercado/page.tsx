@@ -235,7 +235,7 @@ export default function MercadoPage() {
         <YearOverYearBlock />
         <div className="mt-3 text-center">
           <Link
-            href="/mercado/inmag-dolares"
+            href="/mercado/novillo-historico#inmag-dolares"
             className="inline-block px-4 py-2 text-xxs font-terminal uppercase tracking-wider border transition-colors"
             style={{
               borderColor: 'rgba(56, 189, 248, 0.4)',

@@ -16,7 +16,7 @@ export interface Consulta {
   created_at: string
 }
 
-/** "Juan Carlos Fleitas" → "Juan C.": identifica sin entregar el contacto (FREE). */
+/** "Juan Carlos Pérez" → "Juan C.": identifica sin entregar el contacto (FREE). */
 function nombreCorto(n: string) {
   const p = n.trim().split(/\s+/)
   return p.length === 1 ? p[0] : `${p[0]} ${p[1][0].toUpperCase()}.`

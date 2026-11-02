@@ -266,6 +266,11 @@ const ETIQUETA: Record<string, string> = {
   MEJ: 'MEJ (macho entero joven)',
 }
 
+/** Etiqueta legible de un código del dato de lote (NOVILLO → Novillo). */
+export function etiquetaCategoria(codigo: string): string {
+  return ETIQUETA[codigo] ?? codigo
+}
+
 export interface VrBandaPublica extends VrBanda {
   /** Código del dato de lote (NOVILLO, VACA…). */
   codigo: string

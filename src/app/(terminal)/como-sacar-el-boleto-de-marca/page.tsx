@@ -309,10 +309,6 @@ export default function ComoSacarElBoletoDeMarcaPage() {
             </Link>
           </p>
           <p className="text-data text-zinc-300 pt-1">
-            <Link href="/vender-hacienda-guia" className="text-accent hover:text-accent-bright transition-colors">
-              Guía para vender hacienda →
-            </Link>{' '}
-            ·{' '}
             <Link href="/como-vender-hacienda" className="text-accent hover:text-accent-bright transition-colors">
               Cómo vender hacienda →
             </Link>

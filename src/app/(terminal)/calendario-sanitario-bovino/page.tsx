@@ -7,7 +7,24 @@ import {
   SpeakableSchema,
   HowToSchema,
 } from '@/components/seo/JsonLd'
+import CalendarioMensual from '@/components/sanidad/CalendarioMensual'
+import {
+  SANIDAD_DISCLAIMER, PLANES, CALENDARIO_AFTOSA_2026, REQUISITOS_MOVIMIENTO,
+  ZONAS_AFTOSA, FUENTES, fuentesDe, COMO_FUNCIONA, TRAMITES, FAQ_SANIDAD, VACUNADOR_2027,
+} from '@/lib/data/senasa-sanidad'
 import marketPrices from '@/lib/data/market-prices.json'
+
+/**
+ * Sanidad del rodeo: una sola página.
+ *
+ * Hasta la v1.255.1 competían dos: esta guía y /sanidad (el régimen SENASA codificado y
+ * citado: planes, calendario 2026, vacunador 2027, movimientos, trámites). Queda esta URL
+ * porque es la que tiene búsqueda (GSC W29-W43: 4 clics y 309 impresiones; /sanidad, 2
+ * impresiones en posición 61). /sanidad es un 301 hacia acá y su contenido vive en las
+ * secciones de abajo, con las mismas anclas (#planes, #aftosa, #vacunador-2027,
+ * #movimiento, #renspa, #tramites, #faq) para que los enlaces viejos con ancla sigan
+ * cayendo donde tienen que caer.
+ */
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -15,30 +32,32 @@ const BASE_URL = 'https://www.consignatarias.com.ar'
 const PAGE_URL = `${BASE_URL}/calendario-sanitario-bovino`
 
 /* ------------------------------------------------------------------ */
-/*  Página conceptual (sin número vivo): el único dato vivo es la      */
-/*  fecha de actualización, sello de frescura para AEO/GEO.            */
-/*  Las fechas oficiales de cada campaña las fija SENASA.              */
+/*  El único dato vivo de la guía es la fecha de actualización, sello  */
+/*  de frescura para AEO/GEO. Las fechas oficiales las fija SENASA.    */
 /* ------------------------------------------------------------------ */
 const lastUpdate = marketPrices.lastUpdate
+
+const zonasSin = ZONAS_AFTOSA.filter((z) => z.estado === 'sin_vacunacion')
+const zonasMixtas = ZONAS_AFTOSA.filter((z) => z.estado === 'mixta')
 
 /* ------------------------------------------------------------------ */
 /*  Calendario por época — mismo array para HowToSchema y <ol> visible */
 /* ------------------------------------------------------------------ */
 const PASOS = [
   {
-    name: 'Primera campaña antiaftosa (otoño)',
+    name: 'Primera campaña antiaftosa (fin del verano y otoño)',
     text:
-      'En la primera campaña anual de vacunación antiaftosa —típicamente en otoño— se vacuna la totalidad del rodeo bovino contra la fiebre aftosa. Es obligatoria, la organiza el ente sanitario o fundación local bajo control de SENASA, y su acta de vacunación es la que habilita a seguir moviendo hacienda. Las fechas exactas de apertura y cierre las fija SENASA cada año.',
+      'En la primera campaña anual de vacunación antiaftosa se vacuna la totalidad del rodeo bovino contra la fiebre aftosa. En 2026 corre de enero a abril, con el grueso del país en marzo (Res. SENASA 711/2025). Es obligatoria, la organiza el ente sanitario o fundación local bajo control de SENASA, y su acta de vacunación es la que habilita a seguir moviendo hacienda.',
   },
   {
     name: 'Vacunación de brucelosis en terneras',
     text:
-      'Junto con la campaña de otoño (o en la ventana que corresponda) se vacuna contra brucelosis a las terneras de entre 3 y 8 meses de edad con vacuna Cepa 19 o RB51, según el plan nacional. Es una vacunación única en la vida del animal hembra y también es obligatoria y controlada por SENASA.',
+      'Junto con la primera campaña (o en la ventana que corresponda) se vacuna contra brucelosis a las terneras de entre 3 y 8 meses de edad con vacuna Cepa 19 o RB51, según el plan nacional. Es una vacunación única en la vida del animal hembra y también es obligatoria y controlada por SENASA.',
   },
   {
-    name: 'Segunda campaña antiaftosa (primavera)',
+    name: 'Segunda campaña antiaftosa (segundo semestre)',
     text:
-      'En la segunda campaña anual —hacia la primavera— se revacuna contra la fiebre aftosa. En la mayoría de las zonas la segunda campaña alcanza solo a las categorías jóvenes (terneros, terneras y a veces vaquillonas), aunque el alcance por categoría lo define SENASA por región. Con las dos campañas al año el rodeo mantiene la cobertura antiaftosa vigente.',
+      'En la segunda campaña anual se revacuna contra la fiebre aftosa. Desde 2025/2026 alcanza únicamente a terneros y terneras: se dejan de vacunar sistemáticamente vaquillonas, novillos, novillitos y toritos. El mes exacto lo fija el Ente Sanitario de cada distrito.',
   },
   {
     name: 'Antiparasitarios y sanidad complementaria',
@@ -65,7 +84,7 @@ const TERMINOS = [
   {
     name: 'Campaña de vacunación',
     description:
-      'Ventana temporal, fijada por SENASA, durante la cual se vacuna de forma coordinada a los rodeos de una región. La campaña antiaftosa se realiza dos veces al año (otoño y primavera) y la ejecutan los entes sanitarios o fundaciones locales. Fuera de la ventana no se emite acta de vacunación válida.',
+      'Ventana temporal, fijada por SENASA, durante la cual se vacuna de forma coordinada a los rodeos de una región. La campaña antiaftosa se realiza dos veces al año y la ejecutan los entes sanitarios o fundaciones locales. Fuera de la ventana no se emite acta de vacunación válida.',
   },
   {
     name: 'RENSPA',
@@ -92,57 +111,64 @@ const TERMINOS = [
 ]
 
 /* ------------------------------------------------------------------ */
-/*  FAQ — copian lo que la gente escribe / le pregunta a un asistente. */
-/*  Cada respuesta arranca con el dato (answer-first).                 */
+/*  FAQ — las de la guía y las del régimen SENASA (que tienen fuente), */
+/*  en un solo FAQPage. Cada respuesta arranca con el dato.            */
 /* ------------------------------------------------------------------ */
-const FAQ = [
+const FAQ_GUIA: { pregunta: string; respuesta: string; fuentes?: string[] }[] = [
   {
-    question: '¿Cuándo se vacuna contra la aftosa?',
-    answer:
-      'La vacunación antiaftosa se hace en dos campañas al año: una en otoño (que alcanza a todo el rodeo) y otra en primavera (que en general alcanza solo a las categorías jóvenes). Las fechas exactas de apertura y cierre de cada campaña las fija SENASA por región y se publican en senasa.gob.ar; no son las mismas en todo el país ni todos los años.',
+    pregunta: '¿Cuándo se vacuna contra la aftosa?',
+    respuesta:
+      'La vacunación antiaftosa se hace en dos campañas al año: la primera alcanza a todo el rodeo (en 2026, de enero a abril, con el grueso del país en marzo) y la segunda, en el segundo semestre, solo a terneros y terneras. El día exacto por distrito lo fija el Plan Local del Ente Sanitario; no es el mismo en todo el país ni todos los años.',
+    fuentes: ['aftosa_calendario_2026'],
   },
   {
-    question: '¿La vacunación antiaftosa es obligatoria?',
-    answer:
+    pregunta: '¿La vacunación antiaftosa es obligatoria?',
+    respuesta:
       'Sí, la vacunación antiaftosa es obligatoria para todos los bovinos en las zonas de vacunación de Argentina. La ejecutan los entes sanitarios o fundaciones locales bajo control de SENASA, y la aplicación queda registrada en un acta de vacunación asociada al RENSPA del establecimiento.',
   },
   {
-    question: '¿Quién controla el calendario sanitario bovino?',
-    answer:
+    pregunta: '¿Quién controla el calendario sanitario bovino?',
+    respuesta:
       'SENASA (Servicio Nacional de Sanidad y Calidad Agroalimentaria) es el organismo nacional que regula el calendario sanitario: define las fechas de las campañas antiaftosa, el plan de brucelosis y las condiciones sanitarias para mover hacienda. En el terreno, la vacunación la ejecutan los entes sanitarios y fundaciones locales, pero la autoridad y el control son de SENASA.',
   },
   {
-    question: '¿Qué pasa si no vacuno contra la aftosa?',
-    answer:
+    pregunta: '¿Qué pasa si no vacuno contra la aftosa?',
+    respuesta:
       'Si no se cumple la vacunación antiaftosa, el rodeo queda sin acta de vacunación vigente y SENASA no habilita la emisión del DT-e; sin DT-e no se puede trasladar, remitir a remate, vender ni enviar a faena la hacienda. Además pueden aplicarse sanciones. Es decir, saltear la campaña deja al campo sin poder operar comercialmente con su ganado.',
   },
   {
-    question: '¿Cuándo se vacuna la brucelosis?',
-    answer:
-      'La brucelosis se vacuna una sola vez en la vida de cada ternera hembra, entre los 3 y los 8 meses de edad, con vacuna Cepa 19 o RB51 según el plan nacional. Es obligatoria y controlada por SENASA, y en la práctica suele aplicarse coordinada con la campaña antiaftosa de otoño para aprovechar el trabajo de manga.',
+    pregunta: '¿Cuándo se vacuna la brucelosis?',
+    respuesta:
+      'La brucelosis se vacuna una sola vez en la vida de cada ternera hembra, entre los 3 y los 8 meses de edad, con vacuna Cepa 19 o RB51 según el plan nacional. Es obligatoria y controlada por SENASA, y en la práctica suele aplicarse coordinada con la primera campaña antiaftosa para aprovechar el trabajo de manga.',
   },
 ]
+const FAQ = [...FAQ_GUIA, ...FAQ_SANIDAD]
 
 export const metadata: Metadata = {
   title: 'Calendario sanitario bovino: vacunación antiaftosa y plan sanitario (SENASA)',
   description:
-    'El calendario sanitario bovino organiza las vacunaciones y tratamientos del año, siendo la campaña antiaftosa —dos por año, regulada por SENASA— la más importante. Cuándo se vacuna aftosa y brucelosis, plan por época y qué pasa si no vacunás.',
+    'El calendario sanitario bovino 2026 con su resolución SENASA citada: campañas antiaftosa (Res. 711/2025), brucelosis, plan por época, el veterinario vacunador que elegís desde 2027 (Res. 201/2026), zonas con y sin vacunación y los requisitos para mover hacienda.',
   keywords: [
     'calendario sanitario bovino',
     'calendario sanitario bovino vacunacion antiaftosa',
-    'vacunación antiaftosa',
+    'vacunación antiaftosa 2026',
     'cuándo se vacuna la aftosa',
     'campaña antiaftosa senasa',
     'plan sanitario bovino',
     'vacunación brucelosis terneras',
     'calendario de vacunación ganado',
-    'plan sanitario rodeo',
     'vacunas obligatorias bovinos argentina',
+    'SENASA',
+    'requisitos movimiento hacienda',
+    'sanidad ganadera Argentina',
+    'Res. SENASA 711/2025',
+    'Res. SENASA 201/2026',
+    'elección de vacunador aftosa 2027',
   ],
   openGraph: {
     title: 'Calendario sanitario bovino: vacunación antiaftosa y plan sanitario',
     description:
-      'El calendario sanitario bovino organiza las vacunaciones y tratamientos del año; la campaña antiaftosa (dos por año, regulada por SENASA) es la más importante. Cuándo se vacuna, obligatoriedad y qué pasa si no vacunás.',
+      'Las campañas antiaftosa 2026, brucelosis, el vacunador elegido desde 2027 y los requisitos para mover hacienda, cada regla con su resolución SENASA.',
     url: PAGE_URL,
     type: 'article',
     images: ['https://www.consignatarias.com.ar/og-image.png'],
@@ -150,6 +176,25 @@ export const metadata: Metadata = {
   alternates: {
     canonical: PAGE_URL,
   },
+}
+
+function FuenteLinks({ keys }: { keys: string[] }) {
+  const fuentes = fuentesDe(keys)
+  return (
+    <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xxs">
+      {fuentes.map((f) => (
+        <a
+          key={f.norma}
+          href={f.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-accent hover:text-accent-bright underline decoration-terminal-border underline-offset-2"
+        >
+          {f.norma} ↗
+        </a>
+      ))}
+    </div>
+  )
 }
 
 export default function CalendarioSanitarioBovinoPage() {
@@ -167,41 +212,73 @@ export default function CalendarioSanitarioBovinoPage() {
       />
       <HowToSchema
         name="Calendario sanitario bovino paso a paso por época del año"
-        description="Plan sanitario anual del rodeo bovino: primera campaña antiaftosa en otoño, vacunación de brucelosis en terneras, segunda campaña antiaftosa en primavera y antiparasitarios complementarios. Las fechas oficiales las fija SENASA."
+        description="Plan sanitario anual del rodeo bovino: primera campaña antiaftosa, vacunación de brucelosis en terneras, segunda campaña antiaftosa y antiparasitarios complementarios. Las fechas oficiales las fija SENASA."
         steps={PASOS}
       />
-      <FAQPageSchema items={FAQ} />
+      <FAQPageSchema items={FAQ.map((f) => ({ question: f.pregunta, answer: f.respuesta }))} />
       <SpeakableSchema
         url={PAGE_URL}
         headline="Calendario sanitario bovino: vacunación antiaftosa y plan sanitario"
         cssSelectors={['h1', '.speakable-content']}
       />
 
-      <div className="max-w-3xl mx-auto px-4 py-8 text-sm leading-relaxed">
-        {/* Title */}
-        <h1 className="text-zinc-100 text-2xl font-medium mb-6">
+      <div className="max-w-4xl mx-auto px-4 py-8 text-sm leading-relaxed">
+        <p className="text-xxs uppercase tracking-widest text-accent mb-2">Sanidad ganadera · SENASA</p>
+        <h1 className="text-zinc-100 text-2xl sm:text-3xl font-medium mb-6 text-balance">
           Calendario sanitario bovino: vacunación antiaftosa y plan sanitario
         </h1>
 
         {/* Answer-first: respuesta extraíble por asistentes IA en la 1ª oración */}
-        <p className="speakable-content text-zinc-300 text-base mb-6">
+        <p className="speakable-content text-zinc-300 text-base mb-6 max-w-3xl">
           El calendario sanitario bovino organiza las vacunaciones y tratamientos obligatorios y
           recomendados del año para un rodeo, siendo la campaña de vacunación antiaftosa —dos por
           año, regulada por SENASA— la práctica más importante, porque de su acta depende poder mover
           y vender la hacienda.
         </p>
 
-        <p className="text-zinc-400 mb-8">
-          El eje del calendario son las dos campañas anuales contra la fiebre aftosa: la de otoño, que
-          alcanza a todo el rodeo, y la de primavera, que en general alcanza solo a las categorías
-          jóvenes. Sobre ese eje se ordenan la vacunación única de brucelosis en las terneras y la
-          sanidad complementaria (antiparasitarios, clostridiales, vacunas reproductivas) que
-          recomienda el veterinario del establecimiento. Esta página es información de referencia; las
-          fechas oficiales de cada campaña las fija SENASA en senasa.gob.ar.
+        <p className="text-zinc-400 mb-6 max-w-3xl">
+          El eje del calendario son las dos campañas anuales contra la fiebre aftosa: la primera alcanza
+          a todo el rodeo y la segunda solo a terneros y terneras. Sobre ese eje se ordenan la vacunación
+          única de brucelosis en las terneras y la sanidad complementaria (antiparasitarios,
+          clostridiales, vacunas reproductivas) que recomienda el veterinario del establecimiento. Más
+          abajo, el régimen completo: planes obligatorios, el cambio de vacunador de 2027 y lo que se
+          exige para mover hacienda, cada regla con su resolución.
         </p>
 
+        {/* Nota de fuentes */}
+        <div className="rounded-terminal border border-terminal-border bg-terminal-panel px-4 py-3 text-data text-zinc-400">
+          {SANIDAD_DISCLAIMER}{' '}
+          Más allá de lo obligatorio, mirá las{' '}
+          <Link href="/buenas-practicas" className="text-accent hover:text-accent-bright underline underline-offset-2">
+            Buenas Prácticas Ganaderas
+          </Link>
+          .
+        </div>
+
+        {/* Índice navegable */}
+        <nav aria-label="Índice" className="mt-6 flex flex-wrap gap-2 text-xxs">
+          {[
+            ['#aftosa', 'Vacunación aftosa 2026'],
+            ['#por-epoca', 'Plan por época'],
+            ['#planes', 'Planes sanitarios'],
+            ['#vacunador-2027', 'Vacunador 2027'],
+            ['#movimiento', 'Mover hacienda'],
+            ['#renspa', 'Validar RENSPA'],
+            ['#tramites', 'Trámites'],
+            ['#faq', 'Preguntas frecuentes'],
+          ].map(([href, label]) => (
+            <a
+              key={href}
+              href={href}
+              className="rounded-full border border-terminal-border bg-terminal-panel px-3 py-1 text-zinc-400 hover:border-accent hover:text-accent transition-colors"
+            >
+              {label}
+            </a>
+          ))}
+        </nav>
+
         {/* Por qué la aftosa ordena el calendario */}
-        <h2 className="text-zinc-200 text-lg font-medium mb-3">
+        <h2 className="text-zinc-200 text-lg font-medium mt-10 mb-3">
           Por qué la antiaftosa ordena todo el calendario
         </h2>
         <p className="text-zinc-400 mb-4">
@@ -228,78 +305,289 @@ export default function CalendarioSanitarioBovinoPage() {
           </li>
         </ul>
 
+        {/* Calendario aftosa 2026 + zonas */}
+        <section id="aftosa" className="scroll-mt-24">
+          <h2 className="text-lg font-medium text-zinc-200 mb-1">Vacunación antiaftosa 2026</h2>
+          <p className="text-data text-zinc-500 mb-4">
+            Res. SENASA 711/2025. El día exacto por distrito lo fija el Plan Local del Ente Sanitario.
+          </p>
+          <div className="mb-6">
+            <CalendarioMensual />
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {CALENDARIO_AFTOSA_2026.map((c) => (
+              <div key={c.campana} className="rounded-terminal border border-terminal-border bg-terminal-panel p-4">
+                <div className="flex items-baseline justify-between">
+                  <h3 className="text-base font-semibold text-ink">{c.campana} campaña</h3>
+                  <span className="text-xxs text-accent">{c.ventana}</span>
+                </div>
+                <p className="mt-1 text-data text-zinc-200 font-medium">{c.categorias}</p>
+                <p className="mt-2 text-data text-zinc-400">{c.detalle}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4 rounded-terminal border border-terminal-border bg-terminal-panel p-4">
+            <h3 className="text-data font-semibold text-ink mb-2">Zonas sanitarias</h3>
+            <p className="text-data text-zinc-300">
+              <span className="text-warning">Zona libre SIN vacunación:</span>{' '}
+              {zonasSin.map((z) => z.provincia).join(', ')}.
+            </p>
+            {zonasMixtas.length > 0 && (
+              <ul className="mt-2 space-y-1 text-xxs text-zinc-400">
+                {zonasMixtas.map((z) => (
+                  <li key={z.provincia}>
+                    <span className="text-zinc-200">{z.provincia}</span> — {z.nota}
+                  </li>
+                ))}
+              </ul>
+            )}
+            <p className="mt-2 text-data text-zinc-300">
+              <span className="text-positive">Zona libre CON vacunación:</span> resto del país (norte y centro,
+              unificada en mayo 2025).
+            </p>
+            <FuenteLinks keys={['aftosa_calendario_2026', 'aftosa_plan']} />
+          </div>
+        </section>
+
         {/* Calendario por época */}
-        <h2 className="text-zinc-200 text-lg font-medium mb-3">El calendario por época del año</h2>
-        <p className="text-zinc-400 mb-4">
-          El plan sanitario anual se ordena por estación, con picos en las dos campañas antiaftosa.
-          Las fechas concretas de apertura y cierre de cada campaña las define SENASA por región:
-        </p>
-        <ol className="text-zinc-400 mb-4 space-y-3 list-decimal pl-5">
-          {PASOS.map((paso) => (
-            <li key={paso.name}>
-              <span className="text-zinc-300">{paso.name}.</span> {paso.text}
-            </li>
-          ))}
-        </ol>
+        <section id="por-epoca" className="mt-10 scroll-mt-24">
+          <h2 className="text-zinc-200 text-lg font-medium mb-3">El plan sanitario por época del año</h2>
+          <p className="text-zinc-400 mb-4">
+            El plan sanitario anual se ordena por estación, con picos en las dos campañas antiaftosa:
+          </p>
+          <ol className="text-zinc-400 mb-6 space-y-3 list-decimal pl-5">
+            {PASOS.map((paso) => (
+              <li key={paso.name}>
+                <span className="text-zinc-300">{paso.name}.</span> {paso.text}
+              </li>
+            ))}
+          </ol>
 
-        {/* Tabla resumen */}
-        <h2 className="text-zinc-200 text-lg font-medium mb-3">Resumen del plan sanitario</h2>
-        <div className="overflow-x-auto mb-8">
-          <table className="w-full text-left border border-terminal-border">
-            <thead>
-              <tr className="border-b border-terminal-border">
-                <th className="text-xxs uppercase tracking-wider text-zinc-500 px-3 py-2">Época</th>
-                <th className="text-xxs uppercase tracking-wider text-zinc-500 px-3 py-2">Práctica</th>
-                <th className="text-xxs uppercase tracking-wider text-zinc-500 px-3 py-2">Alcance</th>
-                <th className="text-xxs uppercase tracking-wider text-zinc-500 px-3 py-2">Carácter</th>
-              </tr>
-            </thead>
-            <tbody className="text-zinc-400">
-              <tr className="border-b border-terminal-border">
-                <td className="px-3 py-2 text-zinc-300">Otoño</td>
-                <td className="px-3 py-2">Antiaftosa (1ª campaña)</td>
-                <td className="px-3 py-2">Todo el rodeo</td>
-                <td className="px-3 py-2">Obligatoria (SENASA)</td>
-              </tr>
-              <tr className="border-b border-terminal-border">
-                <td className="px-3 py-2 text-zinc-300">Otoño</td>
-                <td className="px-3 py-2">Brucelosis</td>
-                <td className="px-3 py-2">Terneras 3–8 meses</td>
-                <td className="px-3 py-2">Obligatoria, única (SENASA)</td>
-              </tr>
-              <tr className="border-b border-terminal-border">
-                <td className="px-3 py-2 text-zinc-300">Primavera</td>
-                <td className="px-3 py-2">Antiaftosa (2ª campaña)</td>
-                <td className="px-3 py-2">Categorías jóvenes</td>
-                <td className="px-3 py-2">Obligatoria (SENASA)</td>
-              </tr>
-              <tr>
-                <td className="px-3 py-2 text-zinc-300">Todo el año</td>
-                <td className="px-3 py-2">Antiparasitarios / clostridiales</td>
-                <td className="px-3 py-2">Según categoría y zona</td>
-                <td className="px-3 py-2">Recomendada (veterinario)</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <p className="text-zinc-500 text-xs mb-8">
-          Esquema de referencia. El alcance por categoría y las fechas exactas los define SENASA por
-          región y campaña; verificá siempre las fechas vigentes en senasa.gob.ar.
-        </p>
+          <div className="overflow-x-auto mb-3">
+            <table className="w-full text-left border border-terminal-border">
+              <thead>
+                <tr className="border-b border-terminal-border">
+                  <th className="text-xxs uppercase tracking-wider text-zinc-500 px-3 py-2">Época</th>
+                  <th className="text-xxs uppercase tracking-wider text-zinc-500 px-3 py-2">Práctica</th>
+                  <th className="text-xxs uppercase tracking-wider text-zinc-500 px-3 py-2">Alcance</th>
+                  <th className="text-xxs uppercase tracking-wider text-zinc-500 px-3 py-2">Carácter</th>
+                </tr>
+              </thead>
+              <tbody className="text-zinc-400">
+                <tr className="border-b border-terminal-border">
+                  <td className="px-3 py-2 text-zinc-300">Enero a abril</td>
+                  <td className="px-3 py-2">Antiaftosa (1ª campaña)</td>
+                  <td className="px-3 py-2">Todo el rodeo</td>
+                  <td className="px-3 py-2">Obligatoria (SENASA)</td>
+                </tr>
+                <tr className="border-b border-terminal-border">
+                  <td className="px-3 py-2 text-zinc-300">Con la 1ª campaña</td>
+                  <td className="px-3 py-2">Brucelosis</td>
+                  <td className="px-3 py-2">Terneras 3–8 meses</td>
+                  <td className="px-3 py-2">Obligatoria, única (SENASA)</td>
+                </tr>
+                <tr className="border-b border-terminal-border">
+                  <td className="px-3 py-2 text-zinc-300">2º semestre</td>
+                  <td className="px-3 py-2">Antiaftosa (2ª campaña)</td>
+                  <td className="px-3 py-2">Terneros y terneras</td>
+                  <td className="px-3 py-2">Obligatoria (SENASA)</td>
+                </tr>
+                <tr>
+                  <td className="px-3 py-2 text-zinc-300">Todo el año</td>
+                  <td className="px-3 py-2">Antiparasitarios / clostridiales</td>
+                  <td className="px-3 py-2">Según categoría y zona</td>
+                  <td className="px-3 py-2">Recomendada (veterinario)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p className="text-zinc-500 text-xs">
+            Esquema de referencia. El alcance por categoría y las fechas exactas los define SENASA por
+            región y campaña; verificá las fechas vigentes con tu Ente Sanitario.
+          </p>
+        </section>
 
-        {/* FAQ visible */}
-        <h2 className="text-zinc-200 text-lg font-medium mb-3">Preguntas frecuentes</h2>
-        <dl className="space-y-5 mb-8">
-          {FAQ.map((item) => (
-            <div key={item.question} className="border-l-2 border-terminal-border pl-4">
-              <dt className="text-accent font-medium text-base mb-1">{item.question}</dt>
-              <dd className="text-zinc-400">{item.answer}</dd>
+        {/* Cómo funciona el sistema */}
+        <section className="mt-10">
+          <h2 className="text-lg font-medium text-zinc-200 mb-4">Cómo funciona el sistema sanitario</h2>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {COMO_FUNCIONA.map((c) => (
+              <div key={c.titulo} className="rounded-terminal border border-terminal-border bg-terminal-panel p-4">
+                <h3 className="text-data font-semibold text-ink">{c.titulo}</h3>
+                <p className="mt-2 text-data text-zinc-400">{c.texto}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Planes sanitarios */}
+        <section id="planes" className="mt-10 scroll-mt-24">
+          <h2 className="text-lg font-medium text-zinc-200 mb-1">Planes sanitarios obligatorios</h2>
+          <p className="text-data text-zinc-500 mb-4">Bovinos y bubalinos. Cada ficha cita su resolución.</p>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {PLANES.map((p) => (
+              <article key={p.id} className="rounded-terminal border border-terminal-border bg-terminal-panel p-4">
+                <div className="flex items-start justify-between gap-2">
+                  <h3 className="text-base font-semibold text-ink">{p.enfermedad}</h3>
+                  {p.zoonosis && (
+                    <span className="shrink-0 rounded-sm bg-negative/10 text-negative text-xxs px-1.5 py-0.5 uppercase tracking-wide">
+                      Zoonosis
+                    </span>
+                  )}
+                </div>
+                <p className="mt-1 text-xxs text-zinc-500 italic">{p.agente}</p>
+                <dl className="mt-3 space-y-2 text-data text-zinc-300">
+                  <div>
+                    <dt className="text-xxs uppercase tracking-wide text-zinc-500">Régimen</dt>
+                    <dd>{p.regimen}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-xxs uppercase tracking-wide text-zinc-500">Categorías afectadas</dt>
+                    <dd>{p.categorias_afectadas}</dd>
+                  </div>
+                </dl>
+                <FuenteLinks keys={p.fuentes} />
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {/* Vacunador elegido desde 2027 — Res. 201/2026 + Disp. DNSA 27/2026 */}
+        <section id="vacunador-2027" className="mt-10 scroll-mt-24">
+          <h2 className="text-lg font-medium text-zinc-200 mb-1">Elegir el veterinario que vacuna: cambio 2027</h2>
+          <p className="text-data text-zinc-500 mb-4">
+            Res. SENASA 201/2026, reglamentada por la Disp. DNSA 27/2026. {VACUNADOR_2027.vigencia}.
+          </p>
+          <div className="rounded-terminal border border-accent/40 bg-terminal-panel p-4">
+            <div className="flex items-baseline justify-between gap-2 flex-wrap">
+              <h3 className="text-base font-semibold text-ink">Plazo para informar la elección</h3>
+              <span className="text-data font-semibold text-accent">{VACUNADOR_2027.plazo}</span>
             </div>
-          ))}
-        </dl>
+            <p className="mt-1 text-xxs text-zinc-500">{VACUNADOR_2027.plazo_detalle}</p>
+            <p className="mt-3 text-data text-zinc-300">{VACUNADOR_2027.resumen}</p>
+          </div>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            {VACUNADOR_2027.puntos.map((p) => (
+              <div key={p.titulo} className="rounded-terminal border border-terminal-border bg-terminal-panel p-4 sm:last:col-span-2">
+                <h3 className="text-data font-semibold text-ink">{p.titulo}</h3>
+                <p className="mt-2 text-data text-zinc-400">{p.texto}</p>
+              </div>
+            ))}
+          </div>
+          <FuenteLinks keys={VACUNADOR_2027.fuentes} />
+        </section>
+
+        {/* Requisitos de movimiento */}
+        <section id="movimiento" className="mt-10 scroll-mt-24">
+          <h2 className="text-lg font-medium text-zinc-200 mb-1">Requisitos para mover hacienda</h2>
+          <p className="text-data text-zinc-500 mb-4">
+            Bovinos. El DT-e se emite en SIGSA (requiere clave fiscal ARCA); acá está qué se exige.
+          </p>
+          <div className="rounded-terminal border border-terminal-border bg-terminal-panel divide-y divide-terminal-border">
+            {REQUISITOS_MOVIMIENTO.map((r) => (
+              <div key={r.concepto} className="p-4">
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <h3 className="text-data font-semibold text-ink">{r.concepto}</h3>
+                  <span className="text-xxs text-zinc-500">
+                    {fuentesDe(r.fuentes).map((f) => f.norma).join(' · ')}
+                  </span>
+                </div>
+                <p className="mt-1 text-data text-zinc-300">{r.regla}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* RENSPA → herramienta aparte */}
+        <section id="renspa" className="mt-10 scroll-mt-24">
+          <h2 className="text-lg font-medium text-zinc-200 mb-1">Validar / decodificar un RENSPA</h2>
+          <p className="text-data text-zinc-500 mb-4">
+            El RENSPA (17 caracteres, formato 00.000.0.00000.00) identifica productor + establecimiento +
+            actividad, y es la base para vacunar y emitir el DT-e.
+          </p>
+          <Link
+            href="/renspa"
+            className="inline-flex items-center gap-2 rounded-terminal border border-accent/40 bg-accent/10 px-4 py-2 text-data text-accent hover:bg-accent/20 transition-colors"
+          >
+            Abrir el validador de RENSPA →
+          </Link>
+        </section>
+
+        {/* Trámites */}
+        <section id="tramites" className="mt-10 scroll-mt-24">
+          <h2 className="text-lg font-medium text-zinc-200 mb-4">Trámites</h2>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {TRAMITES.map((t) => (
+              <a
+                key={t.titulo}
+                href={t.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group rounded-terminal border border-terminal-border bg-terminal-panel p-4 hover:border-accent transition-colors"
+              >
+                <h3 className="text-data font-semibold text-ink group-hover:text-accent">{t.titulo} ↗</h3>
+                <p className="mt-1 text-data text-zinc-400">{t.descripcion}</p>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        {/* FAQ — mismo array que el FAQPageSchema */}
+        <section id="faq" className="mt-10 scroll-mt-24">
+          <h2 className="text-lg font-medium text-zinc-200 mb-4">Preguntas frecuentes</h2>
+          <div className="space-y-3">
+            {FAQ.map((f) => (
+              <details key={f.pregunta} className="rounded-terminal border border-terminal-border bg-terminal-panel p-4 group">
+                <summary className="cursor-pointer text-data font-medium text-zinc-100 marker:text-accent list-disc list-inside">
+                  {f.pregunta}
+                </summary>
+                <p className="mt-2 text-data text-zinc-400">{f.respuesta}</p>
+                {f.fuentes && f.fuentes.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-x-3 text-xxs">
+                    {fuentesDe(f.fuentes).map((x) => (
+                      <a key={x.norma} href={x.url} target="_blank" rel="noopener noreferrer" className="text-accent/80 hover:text-accent">
+                        {x.norma} ↗
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </details>
+            ))}
+          </div>
+        </section>
+
+        {/* CTA MCP / IA */}
+        <section className="mt-10 rounded-terminal border border-accent/30 bg-accent/5 p-5">
+          <h2 className="text-base font-semibold text-ink">Consultá esto con un agente de IA</h2>
+          <p className="mt-2 text-data text-zinc-300">
+            Estos datos también se exponen como <span className="text-accent">5 tools MCP</span> —
+            <code className="text-accent"> sanidad_plan</code>, <code className="text-accent">sanidad_calendario_aftosa</code>,{' '}
+            <code className="text-accent">sanidad_requisitos_movimiento</code>, <code className="text-accent">sanidad_renspa</code> y{' '}
+            <code className="text-accent">sanidad_dte_tropa</code> — para que Claude, Cursor u otro agente respondan
+            “¿qué tengo que vacunar este mes?” o “¿qué necesito para mover de Corrientes a Buenos Aires?” citando la resolución.
+          </p>
+          <Link href="/mcp" className="mt-3 inline-block text-data text-accent hover:text-accent-bright underline underline-offset-2">
+            Ver el servidor MCP →
+          </Link>
+        </section>
+
+        {/* Fuentes maestras */}
+        <section className="mt-8 border-t border-terminal-border pt-5">
+          <h2 className="text-xxs uppercase tracking-widest text-zinc-500 mb-2">Fuentes oficiales</h2>
+          <ul className="grid gap-1 sm:grid-cols-2 text-xxs">
+            {Object.values(FUENTES).map((f) => (
+              <li key={f.norma}>
+                <a href={f.url} target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-accent">
+                  {f.norma} — {f.titulo}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
 
         {/* Links internos */}
-        <div className="border-t border-zinc-800 pt-4 flex flex-wrap gap-4 text-xs">
+        <div className="mt-8 border-t border-zinc-800 pt-4 flex flex-wrap gap-4 text-xs">
           <Link href="/que-es-senasa" className="text-zinc-500 hover:text-accent transition-colors">
             Qué es SENASA →
           </Link>
@@ -317,10 +605,9 @@ export default function CalendarioSanitarioBovinoPage() {
           </Link>
         </div>
 
-        {/* Footer */}
         <p className="text-zinc-500 text-xs mt-4">
-          Información de referencia; las fechas oficiales de cada campaña las fija SENASA en
-          senasa.gob.ar. Actualizado:{' '}{lastUpdate}. Memola Medios S.A.S.
+          Información de referencia; las fechas oficiales de cada campaña las fija SENASA y el día por
+          distrito, el Ente Sanitario. Actualizado:{' '}{lastUpdate}. Memola Medios S.A.S.
         </p>
       </div>
     </>

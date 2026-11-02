@@ -104,7 +104,7 @@ const TERMINOS = [
     name: 'Gastos de comercialización',
     description:
       'Conjunto de cargos que se descuentan además de la comisión: guía y DT-e, flete, impuesto de sellos, sanidad y tasas. Cada concepto debe aparecer discriminado con su importe en la liquidación.',
-    url: `${BASE_URL}/vender-hacienda-guia`,
+    url: `${BASE_URL}/como-vender-hacienda#gastos-de-comercializacion`,
   },
   {
     name: 'DT-e',
@@ -384,7 +384,7 @@ export default function ComoLeerUnaLiquidacionDeHaciendaPage() {
           </Link>
           . A ella se suman los <strong>gastos de comercialización</strong>: la{' '}
           <Link
-            href="/vender-hacienda-guia"
+            href="/que-es-la-guia-de-hacienda"
             className="text-accent hover:text-accent-bright transition-colors"
           >
             guía de traslado
@@ -511,10 +511,10 @@ export default function ComoLeerUnaLiquidacionDeHaciendaPage() {
               Qué es el DT-e →
             </Link>
             <Link
-              href="/vender-hacienda-guia"
+              href="/como-vender-hacienda"
               className="text-accent hover:text-accent-bright transition-colors"
             >
-              Vender hacienda con guía →
+              Cómo vender hacienda →
             </Link>
           </p>
         </div>

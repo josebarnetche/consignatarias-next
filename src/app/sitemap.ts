@@ -79,7 +79,7 @@ const LAST_EDIT: Record<string, string> = {
   '/informes': '2026-10-03',
   '/informes/canon-de-arrendamiento': '2026-10-03',
   '/informes/productivo-departamental': '2026-10-03',
-  '/informes/parte-semanal': '2026-10-03',
+  '/informes/parte-semanal': '2026-11-02',
   '/informes/valuacion-de-campo': '2026-10-03',
   '/para-consignatarias': '2026-10-03',
   '/para-empresas': '2026-10-17',
@@ -89,7 +89,6 @@ const LAST_EDIT: Record<string, string> = {
   '/como-se-tasa-un-campo': '2026-10-03',
   '/senal-o-ruido-precio-hacienda': '2026-10-03',
   '/terneros-por-vaca-de-tu-zona': '2026-10-03',
-  '/relacion-maiz-novillo': '2026-10-03',
   '/consignatarias': '2026-10-03',
   '/quienes-somos': '2026-10-03',
   '/enterprise': '2026-10-03',
@@ -100,7 +99,9 @@ const LAST_EDIT: Record<string, string> = {
   '/pro': '2026-10-03',
   '/api-docs': '2026-10-03',
   '/mcp': '2026-10-03',
-  '/sanidad': '2026-10-03',
+  // Fusiones de la v1.255.1: absorbieron el contenido de las rutas que ahora son 301.
+  '/como-vender-hacienda': '2026-11-02',
+  '/calendario-sanitario-bovino': '2026-11-02',
   '/renspa': '2026-10-03',
   '/buenas-practicas': '2026-10-03',
   '/buenas-practicas/[slug]': '2026-10-03',
@@ -189,7 +190,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/precio-del-novillo-en-pie`, lastModified: priceDate, changeFrequency: 'daily', priority: 0.85 },
     { url: `${baseUrl}/cuanto-pesa-una-media-res`, lastModified: editado('/cuanto-pesa-una-media-res'), changeFrequency: 'monthly', priority: 0.7 },
     { url: `${baseUrl}/rendimiento-al-gancho`, lastModified: editado('/rendimiento-al-gancho'), changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${baseUrl}/como-vender-hacienda`, lastModified: editado('/como-vender-hacienda'), changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${baseUrl}/como-vender-hacienda`, lastModified: editado('/como-vender-hacienda'), changeFrequency: 'monthly', priority: 0.85 },
     { url: `${baseUrl}/quiero-comprar`, lastModified: editado('/quiero-comprar'), changeFrequency: 'weekly', priority: 0.8 },
     { url: `${baseUrl}/licencia-datos`, lastModified: editado('/licencia-datos'), changeFrequency: 'monthly', priority: 0.6 },
     { url: `${baseUrl}/campos`, lastModified: editado('/campos'), changeFrequency: 'daily', priority: 0.9 },
@@ -213,7 +214,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Artículos que explican los productos: contenido gratis que captura búsqueda
     // conceptual ("cómo se tasa un campo", "relación maíz novillo") y deriva a la
     // herramienta o al informe correspondiente.
-    ...['/como-se-tasa-un-campo', '/senal-o-ruido-precio-hacienda', '/terneros-por-vaca-de-tu-zona', '/relacion-maiz-novillo'].map(
+    ...['/como-se-tasa-un-campo', '/senal-o-ruido-precio-hacienda', '/terneros-por-vaca-de-tu-zona'].map(
       (ruta) => ({
         url: `${baseUrl}${ruta}`,
         lastModified: editado(ruta),
@@ -291,7 +292,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/que-es-el-destete`, lastModified: editado('/que-es-el-destete'), changeFrequency: 'monthly', priority: 0.65 },
     { url: `${baseUrl}/que-es-la-capitalizacion-de-hacienda`, lastModified: editado('/que-es-la-capitalizacion-de-hacienda'), changeFrequency: 'monthly', priority: 0.65 },
     // Tanda 4 — tier-3 práctico/comparativo + pilar de venta.
-    { url: `${baseUrl}/vender-hacienda-guia`, lastModified: editado('/vender-hacienda-guia'), changeFrequency: 'monthly', priority: 0.85 },
     { url: `${baseUrl}/precio-de-tranquera`, lastModified: priceDate, changeFrequency: 'daily', priority: 0.8 },
     { url: `${baseUrl}/como-leer-una-liquidacion-de-hacienda`, lastModified: editado('/como-leer-una-liquidacion-de-hacienda'), changeFrequency: 'monthly', priority: 0.75 },
     { url: `${baseUrl}/cuanto-cobra-de-comision-una-consignataria`, lastModified: editado('/cuanto-cobra-de-comision-una-consignataria'), changeFrequency: 'monthly', priority: 0.78 },
@@ -467,6 +467,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly' as const,
       priority: 0.8,
     },
+    {
+      // La Banda Consignatarias: el número propio, la página que se cita y se
+      // comparte. Se recalcula con la misma serie que el VR.
+      url: `${baseUrl}/banda`,
+      lastModified: vrDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    },
     // Una URL citable por categoría (/vr/vaca, /vr/novillo…). Solo las que
     // tienen banda publicable — getSlugsConBanda() aplica la regla de
     // degradación, así que el sitemap nunca emite una página sin dato.
@@ -501,16 +509,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     },
     {
-      url: `${baseUrl}/mercado/inmag-dolares`,
-      lastModified: priceDate,
-      changeFrequency: 'daily' as const,
-      priority: 0.95,
-    },
-    {
       url: `${baseUrl}/mercado/novillo-historico`,
       lastModified: priceDate,
       changeFrequency: 'daily' as const,
-      priority: 0.9,
+      priority: 0.95,
     },
     {
       url: `${baseUrl}/mercado/internacional`,
@@ -612,12 +614,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/sanidad`,
-      lastModified: editado('/sanidad'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
-    },
-    {
       url: `${baseUrl}/renspa`,
       lastModified: editado('/renspa'),
       changeFrequency: 'monthly' as const,
@@ -648,12 +644,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     },
     {
-      url: `${baseUrl}/el-novillo-en-dolares`,
-      lastModified: priceDate,
-      changeFrequency: 'daily' as const,
-      priority: 0.8,
-    },
-    {
       url: `${baseUrl}/mercado/pulso`,
       lastModified: priceDate,
       changeFrequency: 'daily' as const,
@@ -675,12 +665,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: `${baseUrl}/calendario-exportar`,
       lastModified: editado('/calendario-exportar'),
-      changeFrequency: 'weekly' as const,
-      priority: 0.7,
-    },
-    {
-      url: `${baseUrl}/reporte-semanal`,
-      lastModified: priceDate,
       changeFrequency: 'weekly' as const,
       priority: 0.7,
     },

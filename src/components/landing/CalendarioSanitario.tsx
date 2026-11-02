@@ -6,8 +6,8 @@ import { VACUNADOR_2027 } from '@/lib/data/senasa-sanidad'
  * Banda "Calendario sanitario" para la landing. Muestra las campañas de
  * vacunación antiaftosa 2026 (Res. SENASA 711/2025) de forma compacta, el
  * cambio 2027 (Res. SENASA 201/2026: el productor elige el veterinario que
- * vacuna, con plazo de la Disp. DNSA 27/2026) y enlaza a /sanidad. Sin lógica
- * de fecha (SSG): el plazo va con su año; el detalle y las fuentes viven en /sanidad.
+ * vacuna, con plazo de la Disp. DNSA 27/2026) y enlaza a /calendario-sanitario-bovino. Sin lógica
+ * de fecha (SSG): el plazo va con su año; el detalle y las fuentes viven en /calendario-sanitario-bovino.
  */
 export default function CalendarioSanitario() {
   return (
@@ -27,7 +27,7 @@ export default function CalendarioSanitario() {
             </p>
           </div>
           <Link
-            href="/sanidad"
+            href="/calendario-sanitario-bovino"
             className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-zinc-700 px-4 py-2 text-sm text-zinc-200 hover:border-accent hover:text-accent transition-colors"
           >
             Ver calendario completo →
@@ -37,7 +37,7 @@ export default function CalendarioSanitario() {
         {/* Cambio 2027 — Res. SENASA 201/2026. Va arriba del calendario: es lo que
             tiene plazo y lo que el productor tiene que decidir ahora. */}
         <Link
-          href="/sanidad#vacunador-2027"
+          href="/calendario-sanitario-bovino#vacunador-2027"
           className="group mb-8 grid gap-4 rounded-xl border border-accent/40 bg-accent/[0.06] p-5 sm:grid-cols-[1fr_auto] sm:items-center hover:border-accent transition-colors"
         >
           <div>
@@ -68,8 +68,8 @@ export default function CalendarioSanitario() {
           Fuente: Res. SENASA 711/2025 (calendario 2026) y Res. SENASA 201/2026 (vacunador desde{' '}
           {VACUNADOR_2027.vigencia.replace('Desde el ', '')}). El día exacto por distrito lo fija el Ente
           Sanitario local. Detalle, brucelosis, garrapata y requisitos de movimiento en{' '}
-          <Link href="/sanidad" className="text-zinc-400 hover:text-accent underline underline-offset-2">
-            /sanidad
+          <Link href="/calendario-sanitario-bovino" className="text-zinc-400 hover:text-accent underline underline-offset-2">
+            el calendario sanitario
           </Link>
           .
         </p>

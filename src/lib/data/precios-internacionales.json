@@ -1,5 +1,5 @@
 {
- "generadoEl": "2026-10-30T17:53:49.757Z",
+ "generadoEl": "2026-11-01T17:49:46.976Z",
  "unidad": "USD por kilogramo de novillo en pie (peso vivo)",
  "metodo": "Sólo fuentes que publican peso vivo: no se estima rendimiento de carcasa en ningún país. Brasil queda afuera porque la licencia de CEPEA prohíbe la transmisión de series de precios.",
  "tipoCambio": {
@@ -33,7 +33,7 @@
    "usd_kg_vivo": 3.409,
    "nativo": "485.4 c/kg lwt (AUD)",
    "base": "peso vivo (indicador lwt), sin estimar rendimiento",
-   "fecha": "2026-10-29",
+   "fecha": "2026-10-31",
    "fuente": "Meat & Livestock Australia — National Heavy Steer Indicator (NLRS)",
    "url": "https://api-mlastatistics.mla.com.au/",
    "licencia": "Uso comercial autorizado con atribución",

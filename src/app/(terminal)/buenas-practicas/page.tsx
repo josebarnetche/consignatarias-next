@@ -65,7 +65,7 @@ export default function BuenasPracticasPage() {
           Las BPG son <strong className="text-zinc-100">voluntarias</strong> y abarcan toda la producción. Los planes
           sanitarios <strong className="text-zinc-100">obligatorios</strong> de SENASA (aftosa, brucelosis, tuberculosis,
           garrapata) y los requisitos para mover hacienda están en{' '}
-          <Link href="/sanidad" className="text-accent hover:text-accent-bright underline underline-offset-2">/sanidad</Link>.
+          <Link href="/calendario-sanitario-bovino" className="text-accent hover:text-accent-bright underline underline-offset-2">el calendario sanitario</Link>.
         </p>
       </section>
 

@@ -319,7 +319,7 @@ export default function QueEsElEquivalenteVacaPage() {
             <Link href="/que-es-la-invernada" className="text-accent hover:text-accent-bright transition-colors">
               Qué es la invernada
             </Link>
-            <Link href="/vender-hacienda-guia" className="text-accent hover:text-accent-bright transition-colors">
+            <Link href="/como-vender-hacienda" className="text-accent hover:text-accent-bright transition-colors">
               Guía para vender hacienda
             </Link>
             <Link href="/glosario" className="text-accent hover:text-accent-bright transition-colors">

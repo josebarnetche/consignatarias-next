@@ -77,7 +77,7 @@ const FAMILY: IndexDef[] = [
     what: 'El INMAG deflactado por el dólar blue: el precio del kilo vivo en dólares, para comparar el poder de compra real del ganado a través del tiempo sin el ruido de la inflación. Es el overlay que ningún otro publica.',
     methodology: 'INMAG diario ÷ cotización del dólar blue (venta) del mismo día, con forward-fill en feriados cambiarios. Serie desde 2015.',
     cadence: 'Diario',
-    href: '/mercado/inmag-dolares',
+    href: '/mercado/novillo-historico#inmag-dolares',
     keywords: ['INMAG en dólares', 'precio novillo dólares', 'hacienda en dólares'],
   },
   {
