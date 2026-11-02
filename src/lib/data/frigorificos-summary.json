@@ -1,8 +1,8 @@
 {
-  "total": 1122,
-  "habilitados": 870,
+  "total": 1123,
+  "habilitados": 871,
   "provincias": 25,
-  "generadoEl": "2026-10-26",
+  "generadoEl": "2026-11-02",
   "byProvince": {
     "BUENOS AIRES": 399,
     "SANTA FE": 126,
@@ -22,8 +22,8 @@
     "SANTA CRUZ": 12,
     "SANTIAGO DEL ESTERO": 11,
     "SAN LUIS": 10,
+    "CATAMARCA": 8,
     "FORMOSA": 7,
-    "CATAMARCA": 7,
     "JUJUY": 5,
     "LA RIOJA": 4,
     "TIERRA DEL FUEGO": 4,
@@ -31,7 +31,7 @@
     "SAN JUAN": 1
   },
   "byStage": {
-    "1": 185,
+    "1": 186,
     "2": 538,
     "3": 399
   },
@@ -39,7 +39,7 @@
     {
       "province": "BUENOS AIRES",
       "count": 399,
-      "pct": 35.6
+      "pct": 35.5
     },
     {
       "province": "SANTA FE",
@@ -74,7 +74,7 @@
     {
       "province": "CHUBUT",
       "count": 32,
-      "pct": 2.9
+      "pct": 2.8
     },
     {
       "province": "SALTA",
@@ -127,12 +127,12 @@
       "pct": 0.9
     },
     {
-      "province": "FORMOSA",
-      "count": 7,
-      "pct": 0.6
+      "province": "CATAMARCA",
+      "count": 8,
+      "pct": 0.7
     },
     {
-      "province": "CATAMARCA",
+      "province": "FORMOSA",
       "count": 7,
       "pct": 0.6
     },
