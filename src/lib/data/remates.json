@@ -20632,7 +20632,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1089,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Faena",
@@ -20651,7 +20651,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1090,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Remate Televisado de Haciendas Generales",
@@ -20670,7 +20670,7 @@
     "source": "web",
     "sourceUrl": "www.umcsa.net/",
     "id": 1091,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Feria Maria Dolores",
@@ -20688,7 +20688,7 @@
     "catalogUrl": "https://ftp.rural-server.com/remates/images/FVlvefgWjbUNguby.jpg",
     "source": "tv",
     "sourceUrl": "https://clicrural.com.ar/remate/29278",
-    "status": "scheduled",
+    "status": "live",
     "id": 1092
   },
   {
@@ -20708,7 +20708,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1093,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Faena, Invernada y Cria",
@@ -20727,7 +20727,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1094,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Remate Aniversario",
@@ -20746,7 +20746,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1095,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "GORDO, INVERNADA y CRÍA",
@@ -20765,7 +20765,7 @@
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
     "id": 1096,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Abasto e Invernada",
@@ -20784,7 +20784,7 @@
     "source": "web",
     "sourceUrl": "ganaderosdeceres.com.ar",
     "id": 1097,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "PORCINOS Cabaña \"La Blanquita\" Porcinos M. y H. Razas: Duroc Jersey, Yorkshire, Landrace, Spotted Poland, Hampshire y cruza con Pietrain",
@@ -20803,7 +20803,7 @@
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
     "id": 1098,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "UMC HV — TV 217 3-11 Posadas",
@@ -20822,7 +20822,7 @@
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/b04cf6cf-a036-457f-88b8-a0f72463b259",
     "id": 1099,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Gordo, Invernada y Cría",
@@ -20841,7 +20841,7 @@
     "source": "web",
     "sourceUrl": "www.ganaderasalliquelo.com",
     "id": 1100,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Faena, Invernada y Cria",
@@ -20860,7 +20860,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1101,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "GORDO, INVERNADA y CRÍA",
@@ -20879,7 +20879,7 @@
     "source": "web",
     "sourceUrl": "www.chsrl.com.ar",
     "id": 1102,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Gordo y Conserva",
@@ -21091,25 +21091,6 @@
     "status": "scheduled"
   },
   {
-    "title": "GORDO, INVERNADA y CRÍA",
-    "consignatariaName": "SÁENZ VALIENTE, BULLRICH Y CIA. S.A.",
-    "consignatariaSlug": "saenz-valiente-bullrich-y-cia-s-a",
-    "date": "2026-11-04",
-    "time": "11:00",
-    "location": "LAS FLORES, BUENOS AIRES",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": 1000,
-    "description": "GORDO, INVERNADA y CRÍA",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1114,
-    "status": "scheduled"
-  },
-  {
     "title": "Remate Aniversario - 11.00hs.",
     "consignatariaName": "Arribere",
     "consignatariaSlug": "arribere",
@@ -21125,6 +21106,25 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1114,
+    "status": "scheduled"
+  },
+  {
+    "title": "GORDO, INVERNADA y CRÍA",
+    "consignatariaName": "SÁENZ VALIENTE, BULLRICH Y CIA. S.A.",
+    "consignatariaSlug": "saenz-valiente-bullrich-y-cia-s-a",
+    "date": "2026-11-04",
+    "time": "11:00",
+    "location": "LAS FLORES, BUENOS AIRES",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "vaca_gorda",
+    "estimatedHeads": 1000,
+    "description": "GORDO, INVERNADA y CRÍA",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "www.saenz-valiente.com.ar",
     "id": 1115,
     "status": "scheduled"
   },
@@ -23181,25 +23181,6 @@
     "status": "scheduled"
   },
   {
-    "title": "Haciendas generales",
-    "consignatariaName": "GANADERA SALLIQUELÓ S.A.",
-    "consignatariaSlug": "ganadera-salliquelo-s-a",
-    "date": "2026-11-17",
-    "time": "14:30",
-    "location": "SALLIQUELO, BUENOS AIRES",
-    "province": "BUENOS AIRES",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Haciendas generales",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.ganaderasalliquelo.com",
-    "id": 1224,
-    "status": "scheduled"
-  },
-  {
     "title": "Invernada - 14.30hs.",
     "consignatariaName": "Madelán y Cía.",
     "consignatariaSlug": "madelan-y-cia",
@@ -23215,6 +23196,25 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1224,
+    "status": "scheduled"
+  },
+  {
+    "title": "Haciendas generales",
+    "consignatariaName": "GANADERA SALLIQUELÓ S.A.",
+    "consignatariaSlug": "ganadera-salliquelo-s-a",
+    "date": "2026-11-17",
+    "time": "14:30",
+    "location": "SALLIQUELO, BUENOS AIRES",
+    "province": "BUENOS AIRES",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Haciendas generales",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "www.ganaderasalliquelo.com",
     "id": 1225,
     "status": "scheduled"
   },
@@ -23295,6 +23295,25 @@
     "status": "scheduled"
   },
   {
+    "title": "Faena, Invernada y Cria",
+    "consignatariaName": "Goenaga",
+    "consignatariaSlug": "goenaga",
+    "date": "2026-11-18",
+    "time": null,
+    "location": "Azul, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": 1500,
+    "description": "Azul Faena, Invernada y Cria",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1230,
+    "status": "scheduled"
+  },
+  {
     "title": "Abasto e invernada",
     "consignatariaName": "GANADEROS DE CERES COOPERATIVA LTDA.",
     "consignatariaSlug": "ganaderos-de-ceres-cooperativa-ltda",
@@ -23310,7 +23329,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "ganaderosdeceres.com.ar",
-    "id": 1230,
+    "id": 1231,
     "status": "scheduled"
   },
   {
@@ -23329,25 +23348,6 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1231,
-    "status": "scheduled"
-  },
-  {
-    "title": "Faena, Invernada y Cria",
-    "consignatariaName": "Goenaga",
-    "consignatariaSlug": "goenaga",
-    "date": "2026-11-18",
-    "time": null,
-    "location": "Azul, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "mixto",
-    "estimatedHeads": 1500,
-    "description": "Azul Faena, Invernada y Cria",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1232,
     "status": "scheduled"
   },
@@ -23770,25 +23770,6 @@
     "status": "scheduled"
   },
   {
-    "title": "Haciendas Generales",
-    "consignatariaName": "VICAR GANADERA S.A.",
-    "consignatariaSlug": "vicar-ganadera-s-a",
-    "date": "2026-11-19",
-    "time": "14:30",
-    "location": "VICTORICA, LA PAMPA",
-    "province": "LA PAMPA",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Haciendas Generales",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.vicar.com.ar",
-    "id": 1255,
-    "status": "scheduled"
-  },
-  {
     "title": "Invernada - 14.30hs",
     "consignatariaName": "Madelán y Cía.",
     "consignatariaSlug": "madelan-y-cia",
@@ -23804,6 +23785,25 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1255,
+    "status": "scheduled"
+  },
+  {
+    "title": "Haciendas Generales",
+    "consignatariaName": "VICAR GANADERA S.A.",
+    "consignatariaSlug": "vicar-ganadera-s-a",
+    "date": "2026-11-19",
+    "time": "14:30",
+    "location": "VICTORICA, LA PAMPA",
+    "province": "LA PAMPA",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Haciendas Generales",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "www.vicar.com.ar",
     "id": 1256,
     "status": "scheduled"
   },
