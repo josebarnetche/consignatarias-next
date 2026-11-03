@@ -432,9 +432,14 @@ def hembras_franja(puntos: list[dict], ancho_mm: float = 180, alto_mm: float = 5
         if n <= 12 or i % 3 == (n - 1) % 3:
             o.append(texto(x(i), H - B + 13, p["ym"][2:], 7, TINTA_3, 500, "middle", mono=True))
     u = puntos[-1]
-    # El último valor va del lado de la línea que no tiene los rótulos de la franja.
-    dy = 16 if u["pct"] < med else -9
-    o.append(texto(x(n - 1) - 8, y(u["pct"]) + dy, f'{_fc(u["pct"])}%', 8, TINTA, 600, "end"))
+    # El último valor va a la derecha del punto, en la columna de los rótulos de la
+    # franja: arriba o abajo del punto lo cruza la línea cuando el mes anterior se
+    # movió fuerte. Si queda pegado a un rótulo de la franja, se corre afuera de él.
+    yu = y(u["pct"]) + 3
+    for yr in sorted((y3 + 3, y(med) + 3, y1 + 3), key=lambda r: abs(r - yu)):
+        if abs(yu - yr) < 10:
+            yu = yr + 10 if yu >= yr else yr - 10
+    o.append(texto(W - R + 6, yu, f'{_fc(u["pct"])}% · {_mm_aa(u["ym"])}', 8, TINTA, 600))
     o.append(texto(L, T - 5, f"Franja gris: entre el cuartil 1 y el 3 de los {n} meses medidos", 7, TINTA_3, 400))
     o.append("</svg>")
     return "".join(o)
@@ -819,7 +824,8 @@ def stock_paneles(puntos: list[dict], cats: list[tuple[str, str]], ancho_mm: flo
         pad = (hi - lo) * 0.15 or hi * 0.05
         x = _escala(0, len(vals) - 1, ox + 4, ox + pw - 4)
         y = _escala(lo - pad, hi + pad, oy + ph - 14, oy + 26)
-        o.append(f'<rect x="{_f(ox)}" y="{_f(oy + 20)}" width="{_f(pw)}" height="{_f(ph - 30)}" fill="none" '
+        # Medio píxel adentro: el trazo del último panel caía sobre el borde del SVG y se cortaba.
+        o.append(f'<rect x="{_f(ox + 0.5)}" y="{_f(oy + 20)}" width="{_f(pw - 1)}" height="{_f(ph - 30)}" fill="none" '
                  f'stroke="{FILETE}" stroke-width="1"/>')
         o.append(texto(ox, oy + 8, nombre, 7.5, TINTA, 600))
         u, a = vals[-1], vals[-2]
