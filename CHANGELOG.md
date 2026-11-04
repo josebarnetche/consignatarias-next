@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.257.1] — 2026-11-08
+
+### Seguridad
+- **Tres alertas de Dependabot cerradas con `pnpm.overrides`** (todas transitivas):
+  - `follow-redirects` 1.16.1 → 1.16.2 (alta, viene por `axios` de `@coinbase/cdp-sdk`): podía reenviar credenciales en un redirect.
+  - `zod` 3.25.76 → 4.6.7 (alta, lo pedía `@coinbase/cdp-sdk` y `abitype`): agotamiento de memoria con colecciones grandes. No hay parche en la rama 3; se probó la firma JWT de `@coinbase/cdp-sdk/auth` (lo único que usa `src/lib/x402.ts`) con zod 4.
+  - `minimatch` (moderada, DoS por patrones): `rimraf` 5 → 6.1.4 (trae `glob` 14 con `minimatch` 11) y la copia 10.x de `@typescript-eslint/typescript-estree` → 11.0.4. **No se forzó `minimatch` 11 sobre `glob` 10:** no da error pero deja de encontrar archivos.
+- **`minimatch` 3.1.5 (la que pide ESLint 9 y sus plugins) → adaptador local `vendor/minimatch-v3-compat`.** ESLint, `@eslint/eslintrc`, `@eslint/config-array`, `eslint-plugin-import`, `-jsx-a11y` y `-react` piden `^3` y la usan como función por defecto (`require('minimatch')(…)`, `import minimatch from`), que la 11 no exporta; ni sus últimas versiones la actualizaron. El adaptador se llama `minimatch` 3.99.0 y devuelve la función `minimatch` de la 11, que ya trae colgados `Minimatch`, `filter`, `sep` y el resto (override `minimatch@<4` → `file:`). Lo único que esos paquetes llaman es `minimatch()` y `new Minimatch()`. Verificado: ESLint recorre los mismos 1069 archivos con 0 mensajes que antes, una violación de prueba sigue saltando y `pnpm audit` (con dev) queda sin vulnerabilidades. `vendor/**` va al `ignores` de ESLint.
+- **Cuando se actualice ESLint**, si ya pide `minimatch` ≥ 11, borrar `vendor/minimatch-v3-compat` y su override.
+
 ## [1.257.0] — 2026-11-05
 
 ### Agregado
