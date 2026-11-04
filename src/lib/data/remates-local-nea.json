@@ -1,113 +1,5 @@
 [
   {
-    "title": "Especial Madres Superiores - 11.00hs.",
-    "consignatariaName": "Madelán y Cía.",
-    "consignatariaSlug": "madelan-y-cia",
-    "date": "2026-11-03",
-    "time": "11:00",
-    "location": "Olavarría, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": 1000,
-    "description": "Olavarría Especial Madres Superiores - 11.00hs.",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
-    "liveLink": null
-  },
-  {
-    "title": "DIFERIDO AL 4 / 11",
-    "consignatariaName": "Arribere",
-    "consignatariaSlug": "arribere",
-    "date": "2026-11-03",
-    "time": null,
-    "location": "Rauch, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": 1500,
-    "description": "Rauch DIFERIDO AL 4 / 11",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
-    "liveLink": null
-  },
-  {
-    "title": "Faena, Invernada y Cria - 10.30hs.",
-    "consignatariaName": "Oregui",
-    "consignatariaSlug": "oregui",
-    "date": "2026-11-03",
-    "time": "10:30",
-    "location": "Saavedra, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "mixto",
-    "estimatedHeads": 1000,
-    "description": "Saavedra Faena, Invernada y Cria - 10.30hs.",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
-    "liveLink": null
-  },
-  {
-    "title": "Faena",
-    "consignatariaName": "Sivero y Cía. S.A.",
-    "consignatariaSlug": "sivero-y-cia-s-a",
-    "date": "2026-11-03",
-    "time": null,
-    "location": "Saladillo, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Saladillo Faena",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
-    "liveLink": null
-  },
-  {
-    "title": "Faena, Invernada y Cria - 15.00hs.",
-    "consignatariaName": "Martín G. Lalor",
-    "consignatariaSlug": "martin-g-lalor",
-    "date": "2026-11-03",
-    "time": "15:00",
-    "location": "Venado Tuerto, Santa Fe",
-    "province": "SANTA FE",
-    "type": "invernada",
-    "mainCategory": "mixto",
-    "estimatedHeads": 700,
-    "description": "Venado Tuerto Faena, Invernada y Cria - 15.00hs.",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
-    "liveLink": null
-  },
-  {
-    "title": "SUSPENDIDO",
-    "consignatariaName": "Goenaga",
-    "consignatariaSlug": "goenaga",
-    "date": "2026-11-04",
-    "time": null,
-    "location": "Azul, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": 500,
-    "description": "Azul SUSPENDIDO",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
-    "liveLink": null
-  },
-  {
     "title": "Faena, Invernada y Cria - 10.00hs.",
     "consignatariaName": "Nestor Hugo Fuentes",
     "consignatariaSlug": "nestor-hugo-fuentes",
@@ -261,7 +153,7 @@
     "province": "BUENOS AIRES",
     "type": "invernada",
     "mainCategory": "mixto",
-    "estimatedHeads": 2800,
+    "estimatedHeads": 3200,
     "description": "Bahía Blanca Faena, Invernada y Cria - 10.00hs.",
     "youtubeUrl": null,
     "catalogUrl": null,
@@ -306,7 +198,7 @@
     "liveLink": null
   },
   {
-    "title": "DIFERIDO - NUEVA FECHA A CONFIRMAR",
+    "title": "DIFERIDO AL 19 / 11",
     "consignatariaName": "F Rauch",
     "consignatariaSlug": "f-rauch",
     "date": "2026-11-05",
@@ -316,7 +208,7 @@
     "type": "general",
     "mainCategory": "mixto",
     "estimatedHeads": null,
-    "description": "Navarro DIFERIDO - NUEVA FECHA A CONFIRMAR",
+    "description": "Navarro DIFERIDO AL 19 / 11",
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
@@ -918,6 +810,24 @@
     "liveLink": null
   },
   {
+    "title": "Haciendas Generales - 14.00hs.",
+    "consignatariaName": "Mondino",
+    "consignatariaSlug": "mondino",
+    "date": "2026-11-13",
+    "time": "14:00",
+    "location": "Buena Esperanza, San Luis",
+    "province": "SAN LUIS",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Buena Esperanza Haciendas Generales - 14.00hs.",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "liveLink": null
+  },
+  {
     "title": ". Televisado NOA.- 10.00hs",
     "consignatariaName": "Colombo Y Maliagno2",
     "consignatariaSlug": "colombo-y-maliagno2",
@@ -1001,6 +911,24 @@
     "mainCategory": "mixto",
     "estimatedHeads": 400,
     "description": "Tres Arroyos. Faena, Invernada y Cria - 14.30hs.",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "liveLink": null
+  },
+  {
+    "title": "Haciendas Generales - 10.00hs.",
+    "consignatariaName": "Mondino",
+    "consignatariaSlug": "mondino",
+    "date": "2026-11-13",
+    "time": "10:00",
+    "location": "Villa Huidobro, Córdoba",
+    "province": "CORDOBA",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Villa Huidobro Haciendas Generales - 10.00hs.",
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
@@ -1386,6 +1314,24 @@
     "liveLink": null
   },
   {
+    "title": "Faena, Invernada y Cria",
+    "consignatariaName": "F Rauch",
+    "consignatariaSlug": "f-rauch",
+    "date": "2026-11-19",
+    "time": null,
+    "location": "Navarro, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Navarro Faena, Invernada y Cria",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "liveLink": null
+  },
+  {
     "title": "Faena, Invernada y Cria - 11.00hs.",
     "consignatariaName": "Hourcade Albelo y Cía.",
     "consignatariaSlug": "hourcade-albelo-y-cia",
@@ -1458,6 +1404,24 @@
     "liveLink": null
   },
   {
+    "title": ". Faena, Invernada y Cria - 14.00hs.",
+    "consignatariaName": "Mondino",
+    "consignatariaSlug": "mondino",
+    "date": "2026-11-20",
+    "time": "14:00",
+    "location": "Tres Arroyos, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Tres Arroyos. Faena, Invernada y Cria - 14.00hs.",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "liveLink": null
+  },
+  {
     "title": ". Remate por Internet - 9.30hs",
     "consignatariaName": "Madelán y Cía.",
     "consignatariaSlug": "madelan-y-cia",
@@ -1469,6 +1433,24 @@
     "mainCategory": "mixto",
     "estimatedHeads": null,
     "description": "Capital Federal. Remate por Internet - 9.30hs",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "liveLink": null
+  },
+  {
+    "title": "Faena, Invernada y Cria",
+    "consignatariaName": "Casalago",
+    "consignatariaSlug": "casalago",
+    "date": "2026-11-24",
+    "time": null,
+    "location": "General La Madrid, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "General La Madrid Faena, Invernada y Cria",
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
@@ -1667,6 +1649,24 @@
     "mainCategory": "mixto",
     "estimatedHeads": null,
     "description": "General Alvear Remate Aniversario",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "liveLink": null
+  },
+  {
+    "title": "Faena, Invernada y Cria",
+    "consignatariaName": "F Rauch",
+    "consignatariaSlug": "f-rauch",
+    "date": "2026-11-26",
+    "time": null,
+    "location": "Las Flores, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Las Flores Faena, Invernada y Cria",
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
@@ -2070,24 +2070,6 @@
     "liveLink": null
   },
   {
-    "title": "UMC y Haciendas Villaguay | Invernada y Cría",
-    "consignatariaName": "UMC - Haciendas Villaguay",
-    "consignatariaSlug": "umc-haciendas-villaguay",
-    "date": "2026-11-03",
-    "time": "14:00",
-    "location": "",
-    "province": null,
-    "type": "invernada",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "UMC y Haciendas Villaguay | Invernada y Cría",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6742-umc-y-haciendas-villaguay-invernada-y-cria",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
-    "status": "live"
-  },
-  {
     "title": "MAG | Especial Exportación",
     "consignatariaName": "MAG",
     "consignatariaSlug": "mag",
@@ -2103,7 +2085,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6743-mag-especial-exportacion",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Sociedad Rural de Rauch | Remate general",
@@ -2121,7 +2103,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6775-sociedad-rural-de-rauch-remate-general",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Colombo y Magliano | Invernada y cría",
@@ -2139,7 +2121,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6757-colombo-y-magliano-invernada-y-cria",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "HK Agro | Invernada, gordo y cría",
@@ -2157,7 +2139,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6704-hk-agro-invernada-gordo-y-cria",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "AFA | Marcos Juárez | Especial de invernada y cría",
@@ -2250,22 +2232,22 @@
     "status": "scheduled"
   },
   {
-    "title": "UMC y Haciendas Villaguay | Invernada y Cría",
-    "consignatariaName": "UMC - Haciendas Villaguay",
-    "consignatariaSlug": "umc-haciendas-villaguay",
-    "date": "2026-11-03",
-    "time": "14:00",
+    "title": "AFA | Totoras | Gordos, Conserva e Invernada",
+    "consignatariaName": "AFA",
+    "consignatariaSlug": "afa",
+    "date": "2026-11-10",
+    "time": "10:00",
     "location": "",
     "province": null,
     "type": "invernada",
-    "mainCategory": "mixto",
+    "mainCategory": "vaca_gorda",
     "estimatedHeads": null,
-    "description": "UMC y Haciendas Villaguay | Invernada y Cría",
+    "description": "AFA | Totoras | Gordos, Conserva e Invernada",
     "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6742-umc-y-haciendas-villaguay-invernada-y-cria",
+    "catalogUrl": "https://remates.elrural.com/remate/6726-afa-totoras-gordos-conserva-e-invernada",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "live"
+    "status": "scheduled"
   },
   {
     "title": "MAG | Especial Exportación",
@@ -2283,7 +2265,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6743-mag-especial-exportacion",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Sociedad Rural de Rauch | Remate general",
@@ -2301,7 +2283,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6775-sociedad-rural-de-rauch-remate-general",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "Colombo y Magliano | Invernada y cría",
@@ -2319,7 +2301,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6757-colombo-y-magliano-invernada-y-cria",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "HK Agro | Invernada, gordo y cría",
@@ -2337,7 +2319,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6704-hk-agro-invernada-gordo-y-cria",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "AFA | Marcos Juárez | Especial de invernada y cría",
@@ -2425,6 +2407,24 @@
     "description": "UMC y Haciendas Villaguay | Invernada y cría",
     "youtubeUrl": null,
     "catalogUrl": "https://remates.elrural.com/remate/6756-umc-y-haciendas-villaguay-invernada-y-cria",
+    "source": "tv",
+    "sourceUrl": "https://remates.elrural.com/",
+    "status": "scheduled"
+  },
+  {
+    "title": "AFA | Totoras | Gordos, Conserva e Invernada",
+    "consignatariaName": "AFA",
+    "consignatariaSlug": "afa",
+    "date": "2026-11-10",
+    "time": "10:00",
+    "location": "",
+    "province": null,
+    "type": "invernada",
+    "mainCategory": "vaca_gorda",
+    "estimatedHeads": null,
+    "description": "AFA | Totoras | Gordos, Conserva e Invernada",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6726-afa-totoras-gordos-conserva-e-invernada",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
     "status": "scheduled"
