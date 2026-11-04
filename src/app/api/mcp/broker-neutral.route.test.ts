@@ -87,4 +87,14 @@ describe('find_livestock_broker: orden neutral, sin marca PRO', () => {
     }
     expect(route).not.toMatch(/getFeaturedSlugs/)
   })
+
+  it('subscribe_broker_pro aclara que el plan es del sitio y no cambia las respuestas del MCP', () => {
+    // Lo lee el revisor del directorio de conectores: "primera en el directorio" sonaba a contenido patrocinado.
+    const route = readFileSync(join(process.cwd(), 'src/app/api/mcp/route.ts'), 'utf8')
+    const card = readFileSync(join(process.cwd(), 'public/.well-known/mcp/server-card.json'), 'utf8')
+    for (const txt of [route, card]) {
+      expect(txt).not.toMatch(/primera en el directorio y en el muro/i)
+      expect(txt).toMatch(/Las respuestas de este servidor MCP no cambian con el plan/)
+    }
+  })
 })

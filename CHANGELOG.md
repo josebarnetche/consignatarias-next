@@ -7,6 +7,11 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.256.3] — 2026-11-03
+
+### Cambiado
+- **`subscribe_broker_pro` aclara que PRO es un plan del sitio web.** La descripción decía "primera en el directorio y en el muro de la home", y el revisor del directorio de conectores de Claude podía leerla como contenido patrocinado dentro del MCP. Ahora dice que los beneficios valen en el sitio y en el newsletter, y que las respuestas del servidor MCP no cambian con el plan. Mismo texto en la server card. Test nuevo en `broker-neutral.route.test.ts`.
+
 ## [1.256.2] — 2026-11-02
 
 ### Corregido
