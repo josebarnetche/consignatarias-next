@@ -7,7 +7,7 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
-## [1.257.0] — 2026-11-02
+## [1.257.0] — 2026-11-05
 
 ### Agregado
 - **Tope diario por dirección para el agente** (`src/lib/agente/tope.ts`). Cada dirección recibe como máximo un correo proactivo cada 24 h, sumando hacienda, campos, recordatorios y confirmaciones. Quedan afuera el BAJA, las presentaciones tras un ACEPTO, la respuesta directa a quien acaba de escribir, los traslados y el aviso de comisión. `mandar` lo vuelve a controlar como red de seguridad: si un llamador no lo respetó, el correo queda para la próxima corrida y nunca sale de más. En la oferta de campo, la oferta que no sale se borra y la tanda no cuenta.
@@ -16,6 +16,11 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ### Cambiado
 - **Un ACEPTO con condiciones no presenta.** Si la firma acepta pero agrega porcentaje, comisión, exclusividad, montos o condiciones (`aceptacionConCondiciones`, `reglas.ts`), el agente no pasa el contacto: el caso va a José. El agente sigue sin pactar precio ni comisión.
+
+## [1.256.3] — 2026-11-03
+
+### Cambiado
+- **`subscribe_broker_pro` aclara que PRO es un plan del sitio web.** La descripción decía "primera en el directorio y en el muro de la home", y el revisor del directorio de conectores de Claude podía leerla como contenido patrocinado dentro del MCP. Ahora dice que los beneficios valen en el sitio y en el newsletter, y que las respuestas del servidor MCP no cambian con el plan. Mismo texto en la server card. Test nuevo en `broker-neutral.route.test.ts`.
 
 ## [1.256.2] — 2026-11-02
 
