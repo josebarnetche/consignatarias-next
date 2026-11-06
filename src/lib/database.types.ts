@@ -1182,6 +1182,27 @@ export type Database = {
           },
         ]
       }
+      el_corredor_envios: {
+        Row: {
+          email: string
+          enviado_at: string
+          tipo: string
+          ym: string
+        }
+        Insert: {
+          email: string
+          enviado_at?: string
+          tipo?: string
+          ym: string
+        }
+        Update: {
+          email?: string
+          enviado_at?: string
+          tipo?: string
+          ym?: string
+        }
+        Relationships: []
+      }
       email_events: {
         Row: {
           bounce_type: string | null
@@ -2492,6 +2513,7 @@ export type Database = {
         Row: {
           capture_context: string | null
           created_at: string | null
+          el_corredor: boolean
           email: string
           id: string
           lease_hectareas: number | null
@@ -2505,6 +2527,7 @@ export type Database = {
         Insert: {
           capture_context?: string | null
           created_at?: string | null
+          el_corredor?: boolean
           email: string
           id?: string
           lease_hectareas?: number | null
@@ -2518,6 +2541,7 @@ export type Database = {
         Update: {
           capture_context?: string | null
           created_at?: string | null
+          el_corredor?: boolean
           email?: string
           id?: string
           lease_hectareas?: number | null

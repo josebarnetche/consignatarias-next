@@ -98,6 +98,7 @@ export const EXPECTED_CRONS: Record<string, number> = {
   // Mensuales (~720h)
   'arrendamiento-cierre': 720,      // día 3 (faltaba → default 24 daba falso overdue)
   'el-corredor-publish': 720,       // día 1 (era 168, mal: es mensual)
+  'el-corredor-continuar': 720,     // días 2 a 7, sigue el envío del día 1
   'faena-newsletter': 720,          // día 3
   'monthly-close': 720,             // día 1
 }
