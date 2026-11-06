@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.257.0] — 2026-11-05
+
+### Agregado
+- **Tope diario por dirección para el agente** (`src/lib/agente/tope.ts`). Cada dirección recibe como máximo un correo proactivo cada 24 h, sumando hacienda, campos, recordatorios y confirmaciones. Quedan afuera el BAJA, las presentaciones tras un ACEPTO, la respuesta directa a quien acaba de escribir, los traslados y el aviso de comisión. `mandar` lo vuelve a controlar como red de seguridad: si un llamador no lo respetó, el correo queda para la próxima corrida y nunca sale de más. En la oferta de campo, la oferta que no sale se borra y la tanda no cuenta.
+- **Candado por corrida** (`src/lib/agente/candado.ts`, migración `20261030_agente_candado.sql`). Dos corridas superpuestas del cron ya no pueden mandar el mismo correo dos veces: la corrida toma un candado con vencimiento (10 min, tope 15) y la segunda se saltea. Si la migración no está aplicada, el agente corre igual que antes.
+- **Tablero `/admin/agente` con los casos de campo.** Muestra tipo, hectáreas, aptitud, zona, tanda N/3 y las ofertas enviadas, sin respuesta y con ACEPTO, sin suponer que todo es hacienda. La comisión aparece como estimación interna en USD, marcada «no pactado».
+
+### Cambiado
+- **Un ACEPTO con condiciones no presenta.** Si la firma acepta pero agrega porcentaje, comisión, exclusividad, montos o condiciones (`aceptacionConCondiciones`, `reglas.ts`), el agente no pasa el contacto: el caso va a José. El agente sigue sin pactar precio ni comisión.
+
 ## [1.256.3] — 2026-11-03
 
 ### Cambiado

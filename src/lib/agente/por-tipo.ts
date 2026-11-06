@@ -72,6 +72,7 @@ interface FilaTierra {
   provincia: string
   zona: string | null
   kg_ha_mes_canon: number | null
+  usd_ha?: number | null
 }
 
 /**
@@ -86,5 +87,20 @@ export function kgHaMesTipico(provincia: string | null | undefined, filas: reado
   const fila = deProv.find((f) => !f.zona) ?? deProv[0]
   if (fila?.kg_ha_mes_canon) return fila.kg_ha_mes_canon
   const todos = filas.map((f) => f.kg_ha_mes_canon).filter((n): n is number => !!n).sort((a, b) => a - b)
+  return todos.length ? todos[Math.floor(todos.length / 2)] : 0
+}
+
+/**
+ * USD por hectárea típico de una provincia, del mismo relevamiento: la fila de la
+ * provincia sin zona si la hay, si no la primera de la provincia, si no la mediana
+ * del país. Referencia para un ESTIMADO interno, no la tasación de ningún campo.
+ */
+export function usdHaTipico(provincia: string | null | undefined, filas: readonly FilaTierra[] = tierra as FilaTierra[]): number {
+  const norm = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim()
+  const p = provincia ? norm(provincia) : ''
+  const deProv = filas.filter((f) => f.usd_ha && norm(f.provincia) === p)
+  const fila = deProv.find((f) => !f.zona) ?? deProv[0]
+  if (fila?.usd_ha) return fila.usd_ha
+  const todos = filas.map((f) => f.usd_ha).filter((n): n is number => !!n).sort((a, b) => a - b)
   return todos.length ? todos[Math.floor(todos.length / 2)] : 0
 }

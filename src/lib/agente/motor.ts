@@ -27,6 +27,7 @@ import { enviar, leerBandeja, CASILLA, type Entrante } from './correo'
 import { triageLead, leerRespuesta } from './ia'
 import * as M from './mensajes'
 import { ordenarCola } from './cola'
+import { puedeCorrer, soltarCandado, tomarCandado } from './candado'
 import { cobroCorto, ofertaHacienda } from './mensajes-contacto'
 import { tomable } from './verificacion'
 import { TIPOS_CAMPO_ACTIVOS, esCasoDeHacienda, ofrecerCampos, trabajarCampos } from './campos-agente'
@@ -34,7 +35,10 @@ import { presentacionCampo, type DatosCampo } from './mensajes-tipos'
 import { pedirConfirmaciones } from './confirmacion'
 import { comisionEstimada } from './tablero'
 import { crearChequeoMx } from './dominios'
+import { topeParaTodos, type MensajeLog } from './tope'
 import {
+  aceptacionConCondiciones,
+  DIA_MS,
   DIAS_ESPERA_CONTRAPARTE,
   MAX_CONTACTOS_NUEVOS_DIA,
   MAX_RECORDATORIOS,
@@ -123,7 +127,33 @@ export interface Informe {
 
 const LEAD_COLS = 'id,intent,category,head_count,province,zona,name,email,phone,message,source,desired_price_ars,status'
 
+/**
+ * Una corrida, con candado: si otra corrida está viva, esta sale sin leer ni
+ * mandar nada (candado.ts). En seco no hace falta: no manda ni escribe.
+ */
 export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean; ahora?: Date } = {}): Promise<Informe> {
+  const enSeco = !!opts.dryRun || !process.env.AGENTE_IMAP_PASSWORD
+  if (enSeco) return correrAgenteSinCandado(db, opts)
+  const candado = await tomarCandado(db)
+  if (!puedeCorrer(candado)) {
+    const inf: Informe = { dryRun: false, bandeja: { leidos: 0, errores: [] }, nuevos: 0, descartados: 0, enviados: 0, escalados: 0, cierres: 0, notas: [] }
+    inf.notas.push(
+      candado.estado === 'ocupado'
+        ? 'otra corrida del agente está en curso: esta sale sin hacer nada'
+        : `no pude verificar el candado (${candado.estado === 'error' ? candado.detalle : candado.estado}): no corro para no duplicar envíos`,
+    )
+    return inf
+  }
+  try {
+    const inf = await correrAgenteSinCandado(db, opts)
+    if (candado.estado === 'sin_migracion') inf.notas.push(`sin candado (falta la migración 20261030_agente_candado): corrí igual, como antes — ${candado.detalle}`)
+    return inf
+  } finally {
+    if (candado.estado === 'tomado') await soltarCandado(db, candado.duenio)
+  }
+}
+
+async function correrAgenteSinCandado(db: SupabaseClient, opts: { dryRun?: boolean; ahora?: Date } = {}): Promise<Informe> {
   const ahora = opts.ahora ?? new Date()
   const dryRun = !!opts.dryRun || !process.env.AGENTE_IMAP_PASSWORD
   const inf: Informe = { dryRun, bandeja: { leidos: 0, errores: [] }, nuevos: 0, descartados: 0, enviados: 0, escalados: 0, cierres: 0, notas: [] }
@@ -158,6 +188,28 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
 
   const tieneMx = crearChequeoMx()
 
+  // Tope diario por dirección (tope.ts): lo que entró y salió en las últimas 24 h, más lo
+  // de esta corrida. El reloj de la corrida avanza 1 ms por evento para que «escribió
+  // después de lo último que le mandamos» se pueda ordenar aunque todo pase en un minuto.
+  const log24h: MensajeLog[] = []
+  {
+    const { data } = await db
+      .from('agente_mensajes')
+      .select('dir,de,para,lead_id,creado_at')
+      .gte('creado_at', new Date(ahora.getTime() - DIA_MS).toISOString())
+      .limit(5000)
+    for (const r of data ?? []) log24h.push(r as MensajeLog)
+  }
+  let tic = 0
+  const marca = () => new Date(ahora.getTime() + ++tic).toISOString()
+  /** ¿Hasta cuándo espera este correo por el tope diario? null = puede salir ahora. */
+  const tope = (para: string[], plantilla: string, leadId?: number | null): Date | null => {
+    const destino = para.map((p) => p.trim().toLowerCase()).filter((p) => p && !bajas.has(p))
+    const v = topeParaTodos(destino, log24h, plantilla, { ahora: new Date(ahora.getTime() + tic), leadId })
+    return v.ok ? null : v.hasta
+  }
+  const nota = (s: string) => inf.notas.push(s)
+
   /** Manda y registra. Devuelve el Message-ID, o null si no salió. */
   const mandar = async (o: {
     leadId: number
@@ -173,8 +225,17 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
     const para = candidatos.filter((_, i) => recibe[i])
     for (const p of candidatos.filter((_, i) => !recibe[i])) inf.notas.push(`no mandé ${o.plantilla} a ${p}: el dominio no recibe correo (sin MX)`)
     if (para.length === 0) return null
+    // Red de seguridad: cada llamador difiere ANTES (mueve proximo_at); si alguno no lo
+    // hace, el correo igual no sale (queda para la próxima corrida, nunca de más).
+    const espera = tope(para, o.plantilla, o.leadId)
+    if (espera) {
+      nota(`${dryRun ? '[seco] ' : ''}tope diario: ${o.plantilla} a ${para.join(', ')} espera hasta ${espera.toISOString()}`)
+      return null
+    }
+    const registrarSalida = () => log24h.push({ dir: 'out', de: CASILLA, para: para.join(', '), lead_id: o.leadId, creado_at: marca() })
     if (dryRun) {
       inf.notas.push(`[seco] ${o.plantilla} → ${para.join(', ')} · ${o.correo.asunto}`)
+      registrarSalida()
       return `<seco-${Math.random()}>`
     }
     const r = await enviar({ para, correo: o.correo, enRespuestaA: o.enRespuestaA, conBaja: o.conBaja })
@@ -183,6 +244,7 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
       return null
     }
     inf.enviados++
+    registrarSalida()
     await db.from('agente_mensajes').insert({
       lead_id: o.leadId,
       oferta_id: o.ofertaId ?? null,
@@ -259,8 +321,9 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
       }
     }
 
-    const registrar = (clasificacion: Record<string, unknown>) =>
-      db.from('agente_mensajes').insert({
+    const registrar = (clasificacion: Record<string, unknown>) => {
+      log24h.push({ dir: 'in', de: m.de, para: CASILLA, lead_id: leadId, creado_at: marca() })
+      return db.from('agente_mensajes').insert({
         lead_id: leadId,
         oferta_id: ofertaId,
         dir: 'in',
@@ -272,6 +335,7 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
         in_reply_to: m.inReplyTo,
         clasificacion,
       })
+    }
 
     if (esAutomatica(m.asunto, m.texto, m.headers)) {
       await registrar({ tipo: 'automatica' })
@@ -332,6 +396,19 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
         return
       }
       if (esFirma && ofCampo && pareceAceptacion(texto) && ['enviada', 'sin_respuesta'].includes(ofCampo.estado) && caso.estado === 'ofreciendo') {
+        // El agente no pacta precios ni comisiones: un ACEPTO con condiciones no presenta.
+        // La oferta queda como está y José decide (y le contesta directo a la firma).
+        const condiciones = aceptacionConCondiciones(texto)
+        if (condiciones) {
+          await registrar({ tipo: 'acepta_con_condiciones', quien: 'contraparte', condiciones })
+          await escalar(
+            `Campo #${lead.id}: ${ofCampo.nombre} aceptó CON CONDICIONES, NO los presenté`,
+            `Su ACEPTO trae ${condiciones}. El agente no pacta precios ni comisiones, así que no le pasé el contacto del dueño y la oferta sigue como estaba.\n\nDe: ${m.de}\nAsunto: ${m.asunto}\n\n${texto}\n\nSi respondés este correo, le llega directo a ${m.de}.`,
+            m.de,
+          )
+          await bitacora(lead.id, `${ofCampo.nombre} respondió ACEPTO con condiciones (${condiciones}): escalado a José, sin presentar`, 'pendiente', { oferta_id: ofCampo.id })
+          return
+        }
         const ahoraIso = new Date().toISOString()
         await registrar({ tipo: 'acepta', quien: 'contraparte' })
         await guardarOferta(ofCampo.id, { estado: 'acepto', aceptacion: texto.slice(0, 2000), respondida_at: ahoraIso })
@@ -670,7 +747,7 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
   await pedirConfirmaciones({ db, ahora, dryRun, bajas, mandar, bitacora: (id, body) => bitacora(id, body), nota: (n) => inf.notas.push(n) })
 
   // Leads de campo (arrendamiento, tasación): solo con AGENTE_TIPOS=on, y solo al lead que consultó.
-  const ctxCampos = { db, ahora, dryRun, mandar, bajas, bitacora: (id: number, body: string) => bitacora(id, body), avisar: escalar, nota: (n: string) => inf.notas.push(n) }
+  const ctxCampos = { db, ahora, dryRun, mandar, tope, bajas, bitacora: (id: number, body: string) => bitacora(id, body), avisar: escalar, nota: (n: string) => inf.notas.push(n) }
   await trabajarCampos(ctxCampos)
   if (TIPOS_CAMPO_ACTIVOS) await ofrecerCampos(ctxCampos)
 
@@ -704,6 +781,14 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
       if (falta.length === 0 && (caso.datos.cabezas ?? 0) < CABEZAS_MINIMAS) {
         await guardarCaso(lead.id, { estado: 'descartado', motivo: `chico: ${caso.datos.cabezas} cabezas, debajo del mínimo de ${CABEZAS_MINIMAS}` })
         await bitacora(lead.id, `No se ofrece: ${caso.datos.cabezas} cabezas, debajo del mínimo de ${CABEZAS_MINIMAS}`)
+        continue
+      }
+      // Lo proactivo que no entra en el tope diario espera: se corre proximo_at (tope.ts).
+      const plantillaCaso = falta.length === 0 ? 'aviso_ofreciendo' : 'pedir_datos'
+      const esperaCaso = tope([lead.email], plantillaCaso, lead.id)
+      if (esperaCaso && !(caso.estado === 'pidiendo_datos' && falta.length > 0 && caso.recordatorios >= MAX_RECORDATORIOS)) {
+        await guardarCaso(lead.id, { proximo_at: esperaCaso.toISOString() })
+        nota(`#${lead.id}: ${plantillaCaso} espera hasta ${esperaCaso.toISOString()} (tope diario)`)
         continue
       }
       if (falta.length === 0) {
@@ -743,6 +828,14 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
     // Recordatorios en el mismo hilo según la cadencia 0/3/7/14.
     const diasDesde = (iso: string) => (ahora.getTime() - new Date(iso).getTime()) / 86_400_000
     for (const o of vivas.filter((x) => tocaRecordatorio(x.seguimientos, diasDesde(x.enviada_at)) && !bajas.has(x.email))) {
+      // proximo_at de una oferta enviada solo lo usa el tope diario: el recordatorio espera hasta ahí.
+      if (o.proximo_at && new Date(o.proximo_at) > ahora) continue
+      const esperaRec = tope([o.email], 'recordatorio_oferta', lead.id)
+      if (esperaRec) {
+        await guardarOferta(o.id, { proximo_at: esperaRec.toISOString() })
+        nota(`oferta #${o.id}: recordatorio espera hasta ${esperaRec.toISOString()} (tope diario)`)
+        continue
+      }
       const { data: orig } = await db.from('agente_mensajes').select('message_id').eq('oferta_id', o.id).eq('dir', 'out').order('creado_at').limit(1)
       const id = await mandar({ leadId: lead.id, ofertaId: o.id, para: [o.email], correo: M.recordatorioOferta({ leadId: lead.id, ofertaId: o.id, lado: caso.lado, datos: caso.datos, cobro: cobroCorto() }), plantilla: 'recordatorio_oferta', enRespuestaA: orig?.[0]?.message_id ?? null, conBaja: true })
       if (id) {
@@ -764,6 +857,8 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
     // A nadie se le escribe dos veces en el mismo día, aunque sea por casos distintos.
     const { data: recientes } = await db.from('agente_ofertas').select('email').gte('enviada_at', new Date(ahora.getTime() - 86_400_000).toISOString())
     const bloqueados = new Set([...bajas, ...(recientes ?? []).map((r) => String(r.email).toLowerCase()), lead.email.toLowerCase()])
+    // Y a nadie que ya recibió cualquier otro correo del agente en 24 h (tope.ts): se elige otra contraparte.
+    for (const r of log24h) if (r.dir === 'out') for (const p of String(r.para ?? '').split(/[,;\s]+/)) if (p && tope([p], 'oferta', lead.id)) bloqueados.add(p.toLowerCase())
 
     const firmasTodas = process.env.AGENTE_FIRMAS === 'todas'
     const todos = (await candidatos()).filter(
@@ -803,6 +898,12 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
 
     if (elegidos.length === 0) {
       const consultadas = ofertas.length
+      const esperaSin = tope([lead.email], 'sin_contraparte', lead.id)
+      if (esperaSin) {
+        await guardarCaso(lead.id, { proximo_at: esperaSin.toISOString() })
+        nota(`#${lead.id}: sin_contraparte espera hasta ${esperaSin.toISOString()} (tope diario)`)
+        continue
+      }
       await mandar({ leadId: lead.id, para: [lead.email], correo: M.sinContraparte({ leadId: lead.id, nombre: lead.name, lado: caso.lado, datos: caso.datos, consultadas }), plantilla: 'sin_contraparte' })
       await guardarCaso(lead.id, { estado: 'sin_contraparte', motivo: consultadas ? `${consultadas} consultadas, ninguna aceptó` : 'no hay contrapartes en la zona' })
       await bitacora(lead.id, consultadas ? `Sin comprador después de ${consultadas} consultas` : 'No hay contrapartes con mail en la zona', 'no_interesa')
@@ -846,6 +947,12 @@ export async function correrAgente(db: SupabaseClient, opts: { dryRun?: boolean;
       if (o.seguimientos >= SEGUIMIENTO_DIAS.length) {
         await guardarOferta(o.id, { estado: 'caida', proximo_at: null })
         await bitacora(lead.id, `Sin novedades de ${o.nombre} después de ${o.seguimientos} seguimientos: la doy por caída`, 'sin_respuesta')
+        continue
+      }
+      const esperaSeg = tope([lead.email, o.email], 'seguimiento', lead.id)
+      if (esperaSeg) {
+        await guardarOferta(o.id, { proximo_at: esperaSeg.toISOString() })
+        nota(`oferta #${o.id}: seguimiento espera hasta ${esperaSeg.toISOString()} (tope diario)`)
         continue
       }
       const id = await mandar({ leadId: lead.id, ofertaId: o.id, para: [lead.email, o.email], correo: M.seguimiento({ leadId: lead.id, ofertaId: o.id, datos: caso.datos, contraparte: o.nombre, vez: o.seguimientos }), plantilla: 'seguimiento' })
