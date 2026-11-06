@@ -1882,15 +1882,15 @@
     },
     "terneros": {
       "current": 4603,
-      "prev": 4787,
-      "change": -3.8,
+      "prev": 4603,
+      "change": 0,
       "source": "MAG (derived from INMAG)"
     }
   },
   "corn": {
     "current": 219.75,
-    "prev": 219.5,
-    "change": 0.1,
+    "prev": 219.75,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
@@ -2035,8 +2035,8 @@
         "category": "VACAS Regular",
         "minPrice": 2300,
         "maxPrice": 3500,
-        "avgPrice": 2800.52,
-        "cabezas": 779
+        "avgPrice": 2802.23,
+        "cabezas": 793
       },
       {
         "category": "VACAS Conserva Buena",
@@ -2077,8 +2077,8 @@
         "category": "Totales",
         "minPrice": 0,
         "maxPrice": 0,
-        "avgPrice": 3617.56,
-        "cabezas": 4765
+        "avgPrice": 3615.42,
+        "cabezas": 4779
       }
     ]
   },
@@ -2173,8 +2173,8 @@
   },
   "soy": {
     "current": 461.5,
-    "prev": 461,
-    "change": 0.1,
+    "prev": 461.5,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API",
     "date": "2026-11-06"

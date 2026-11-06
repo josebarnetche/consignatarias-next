@@ -22459,25 +22459,6 @@
     "status": "scheduled"
   },
   {
-    "title": "Especial Gordo y Invernada",
-    "consignatariaName": "PEPA, KNUBEL Y FERRERO S.R.L.",
-    "consignatariaSlug": "pepa-knubel-y-ferrero-s-r-l",
-    "date": "2026-11-13",
-    "time": null,
-    "location": "SAN CRISTOBAL, SANTA FE",
-    "province": "SANTA FE",
-    "type": "invernada",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": null,
-    "description": "Especial Gordo y Invernada",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "pkf.com.ar/",
-    "id": 1186,
-    "status": "scheduled"
-  },
-  {
     "title": ". Invernada , Cria y Consumo.",
     "consignatariaName": "Pedro Noel Irey S.R.L.",
     "consignatariaSlug": "pedro-noel-irey-s-r-l",
@@ -22493,6 +22474,25 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1186,
+    "status": "scheduled"
+  },
+  {
+    "title": "Especial Gordo y Invernada",
+    "consignatariaName": "PEPA, KNUBEL Y FERRERO S.R.L.",
+    "consignatariaSlug": "pepa-knubel-y-ferrero-s-r-l",
+    "date": "2026-11-13",
+    "time": null,
+    "location": "SAN CRISTOBAL, SANTA FE",
+    "province": "SANTA FE",
+    "type": "invernada",
+    "mainCategory": "vaca_gorda",
+    "estimatedHeads": null,
+    "description": "Especial Gordo y Invernada",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "pkf.com.ar/",
     "id": 1187,
     "status": "scheduled"
   },
@@ -23124,6 +23124,25 @@
     "status": "scheduled"
   },
   {
+    "title": "Remate por Internet",
+    "consignatariaName": "Wallace Sa",
+    "consignatariaSlug": "wallace-sa",
+    "date": "2026-11-18",
+    "time": null,
+    "location": "Azul, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": 500,
+    "description": "Azul Remate por Internet",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1221,
+    "status": "scheduled"
+  },
+  {
     "title": "Hacienda GORDA, INVERNADA y CRÏA",
     "consignatariaName": "DARWASH S.A.",
     "consignatariaSlug": "darwash-s-a",
@@ -23139,7 +23158,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://cacg.org.ar/remates",
-    "id": 1221,
+    "id": 1222,
     "status": "scheduled"
   },
   {
@@ -23158,7 +23177,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "ganaderosdeceres.com.ar",
-    "id": 1222,
+    "id": 1223,
     "status": "scheduled"
   },
   {
@@ -23177,25 +23196,6 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1223,
-    "status": "scheduled"
-  },
-  {
-    "title": "Remate por Internet",
-    "consignatariaName": "Wallace Sa",
-    "consignatariaSlug": "wallace-sa",
-    "date": "2026-11-18",
-    "time": null,
-    "location": "Azul, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": 500,
-    "description": "Azul Remate por Internet",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1224,
     "status": "scheduled"
   },

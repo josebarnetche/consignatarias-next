@@ -1,5 +1,5 @@
 {
-  "generado": "2026-11-06T21:56:48.585Z",
+  "generado": "2026-11-06T23:42:03.998Z",
   "leads_de_compra": 11,
   "matches": [
     {
@@ -288,17 +288,6 @@
           "url": "https://www.decampoacampo.com/__dcac/110-Terneros-y-Terneras-170kg-invernada-34564"
         },
         {
-          "sku": "34555",
-          "titulo": "50 Novillitos Braford de 315kg",
-          "score": 50,
-          "motivos": [
-            "el lead no declaró categoría",
-            "misma provincia",
-            "el lote es grande (50 contra 11 pedidas)"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/50-Novillitos-315kg-invernada-34555"
-        },
-        {
           "sku": "34535",
           "titulo": "35 Vacas de invernada Braford de 410kg",
           "score": 50,
@@ -308,6 +297,17 @@
             "el lote es grande (35 contra 11 pedidas)"
           ],
           "url": "https://www.decampoacampo.com/__dcac/35-Vacas-de-invernada-410kg-invernada-34535"
+        },
+        {
+          "sku": "34555",
+          "titulo": "50 Novillitos Braford de 315kg",
+          "score": 50,
+          "motivos": [
+            "el lead no declaró categoría",
+            "misma provincia",
+            "el lote es grande (50 contra 11 pedidas)"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/50-Novillitos-315kg-invernada-34555"
         },
         {
           "sku": "34491",
@@ -440,14 +440,14 @@
           "url": "https://www.decampoacampo.com/__dcac/45-Vaquillonas-Prenadas-460kg-invernada-34579"
         },
         {
-          "sku": "34547",
-          "titulo": "40 Vacas preñadas Aberdeen Angus Negro y Colorado de 400kg",
+          "sku": "34572",
+          "titulo": "50 Novillitos Hereford de 310kg",
           "score": 50,
           "motivos": [
             "el lead no declaró categoría",
             "misma provincia"
           ],
-          "url": "https://www.decampoacampo.com/__dcac/40-Vacas-prenadas-400kg-invernada-34547"
+          "url": "https://www.decampoacampo.com/__dcac/50-Novillitos-310kg-invernada-34572"
         }
       ]
     },
