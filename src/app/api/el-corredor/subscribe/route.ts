@@ -46,26 +46,46 @@ export async function POST(req: NextRequest) {
 
     const supabase = requireServiceClient()
 
-    // Upsert into newsletter_subscribers — re-send PDF on duplicate
-    const { error: upsertErr } = await supabase
+    // Quien ya está suscripto por otro lado (cierre mensual, faena, canon) conserva su
+    // source: se marca el_corredor y el envío mensual lo incluye. Antes un upsert le
+    // pisaba el source con 'el-corredor' y dejaba de recibir el mail que había pedido.
+    const { data: existente, error: selErr } = await supabase
       .from('newsletter_subscribers')
-      .upsert(
-        {
-          email: normalizedEmail,
-          // Must be 'el-corredor' (mapped to the corredor segment) so the
-          // subscriber receives the monthly El Corredor blast, not just the
-          // immediate delivery below.
-          source: 'el-corredor',
-          status: 'active',
-          // Reactivate if previously unsubscribed
-          unsubscribed_at: null,
-          resubscribed_at: new Date().toISOString(),
-        },
-        { onConflict: 'email' }
-      )
+      .select('id, source, status')
+      .eq('email', normalizedEmail)
+      .maybeSingle()
 
-    if (upsertErr) {
-      console.error('[el-corredor/subscribe] supabase upsert error:', upsertErr.message)
+    const ahora = new Date().toISOString()
+    const { error: saveErr } = selErr
+      ? { error: selErr }
+      : !existente
+        ? await supabase.from('newsletter_subscribers').insert({
+            email: normalizedEmail,
+            // 'el-corredor' es el source del segmento corredor (newsletter-segments.ts):
+            // recibe el envío mensual, no solo el envío inmediato de abajo.
+            source: 'el-corredor',
+            status: 'active',
+            subscribed_at: ahora,
+          })
+        : existente.status === 'active'
+          ? await supabase
+              .from('newsletter_subscribers')
+              .update({ el_corredor: true, resubscribed_at: ahora })
+              .eq('id', existente.id)
+          : // Se había dado de baja de todo: vuelve por el Corredor.
+            await supabase
+              .from('newsletter_subscribers')
+              .update({
+                source: 'el-corredor',
+                el_corredor: true,
+                status: 'active',
+                unsubscribed_at: null,
+                resubscribed_at: ahora,
+              })
+              .eq('id', existente.id)
+
+    if (saveErr) {
+      console.error('[el-corredor/subscribe] supabase error:', saveErr.message)
       // Continue: even if storage fails, try to deliver the PDF — value-first.
     }
 

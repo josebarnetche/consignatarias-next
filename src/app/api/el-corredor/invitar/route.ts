@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { sendElCorredorInvitacion } from '@/lib/email'
-import { SEGMENT_SOURCES } from '@/lib/newsletter-segments'
+import { EL_CORREDOR_AUDIENCE } from '@/lib/newsletter-segments'
 import { capForFreePlan } from '@/lib/email-limits'
 import { trackCron } from '@/lib/ops'
 import { authorizeCron } from '@/lib/cron-auth'
@@ -22,7 +22,6 @@ export const maxDuration = 300
  *
  * Body: { test_email? } → si viene, manda UNA sola copia ahí y no toca la base.
  */
-const EL_CORREDOR_AUDIENCE = [...SEGMENT_SOURCES.corredor, 'reporte-semanal', 'remates']
 
 export async function POST(req: NextRequest) {
   if (!authorizeCron(req)) {
@@ -48,6 +47,8 @@ export async function POST(req: NextRequest) {
       .select('email, source')
       .eq('status', 'active')
       .not('source', 'in', `(${EL_CORREDOR_AUDIENCE.join(',')})`)
+      // Quien ya pidió el Corredor desde otra suscripción no se invita.
+      .eq('el_corredor', false)
 
     if (error) {
       return {
