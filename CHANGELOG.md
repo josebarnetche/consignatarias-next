@@ -7,6 +7,13 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.259.1] — 2026-11-08
+
+### Corregido
+- **El Corredor llega a todos, no a los primeros 80.** El envío del día 1 se topea por día (`capForFreePlan`) y lo que pasaba del tope no salía nunca: **17 de 97** en septiembre y **34 de 114** en octubre (`cron_runs`). Ahora cada envío queda en `el_corredor_envios` (edición, tipo, correo) y `/api/el-corredor/blast` manda solo a quien no tiene fila. `el-corredor-continuar.yml` (días 2 a 7, 15:00 ART) lo llama con `mode: "continuar"` hasta terminar; si el día 1 no mandó nada, `continuar` no abre la edición. Re-disparar el envío del día 1 ya no duplica, y un rechazo de Resend queda pendiente para el día siguiente.
+- **Pedir El Corredor no le quita a nadie su mail.** `/api/el-corredor/subscribe` hacía upsert con `source='el-corredor'`: quien estaba por el cierre mensual, la faena o el canon de arrendamiento dejaba de recibirlo. Ahora el source se conserva y el pedido se marca en `newsletter_subscribers.el_corredor`; el envío y la invitación (`/api/el-corredor/invitar`) lo leen. La audiencia (`EL_CORREDOR_AUDIENCE`) pasa a `src/lib/newsletter-segments.ts`.
+- Migración `20261106_el_corredor_envios.sql` (columna + tabla con RLS, sin acceso para anon/authenticated). Tests nuevos: `blast/route.test.ts` (6) y `subscribe/route.test.ts` (3).
+
 ## [1.259.0] — 2026-11-08
 
 ### Agregado
