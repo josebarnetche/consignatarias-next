@@ -1882,22 +1882,22 @@
     },
     "terneros": {
       "current": 4787,
-      "prev": 4340,
-      "change": 10.3,
+      "prev": 4787,
+      "change": 0,
       "source": "MAG (derived from INMAG)"
     }
   },
   "corn": {
     "current": 219.5,
-    "prev": 221.9,
-    "change": -1.1,
+    "prev": 219.5,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
     "current": 1555,
-    "prev": 1560,
-    "change": -0.3,
+    "prev": 1555,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
@@ -2138,8 +2138,8 @@
   },
   "soy": {
     "current": 461,
-    "prev": 465.5,
-    "change": -1,
+    "prev": 461,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API",
     "date": "2026-11-05"
