@@ -17,6 +17,7 @@ import { getProveedoresPublicados } from '@/lib/proveedores'
 import { getDepartamentosPublicables, ultimoAnio, fichaIndexable, META as PRODUCTIVIDAD_META } from '@/lib/productividad/panel'
 import { getSlugsConBanda, vrCobertura } from '@/lib/vr'
 import { remateSlug } from '@/lib/remate-slug'
+import { getEdiciones as getEdicionesCorredor } from '@/lib/el-corredor-archivo'
 import { getOrigenSlugs } from '@/lib/mercado-origen'
 import { CATEGORIAS_GEO_SLUGS, PROVINCIAS_GEO_SLUGS } from '@/lib/precios-geo'
 import {
@@ -502,6 +503,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     },
+    // Una URL por edición de El Corredor (los cinco hechos en HTML + el PDF).
+    ...getEdicionesCorredor().map((e) => ({
+      url: `${baseUrl}${e.path}`,
+      lastModified: e.publicadaEl ? new Date(e.publicadaEl) : undefined,
+      changeFrequency: 'yearly' as const,
+      priority: e.esVigente ? 0.7 : 0.5,
+    })),
     {
       url: `${baseUrl}/el-oraculo`,
       lastModified: editado('/el-oraculo'),

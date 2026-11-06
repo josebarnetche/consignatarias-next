@@ -1,0 +1,25 @@
+{
+  "_nota": "Los cinco hechos de cada edición, transcriptos de la página 2 del PDF publicado ('Si sólo leés una página, es ésta'). Los números son los del PDF; solo se normalizó el formato (coma decimal, punto de miles, sin doble signo). Es el respaldo para las ediciones cuyo manifest no trae 'hechos': cuando publish.py los escriba en el manifest, el manifest manda. Abril-agosto 2026 salieron con el generador anterior, que no tenía esta página (y medía las hembras al revés), así que no se transcriben.",
+  "ediciones": {
+    "2026-10": {
+      "hechos": [
+        "El Índice Novillo cerró en $4.010 por kilo vivo: bajó 1,1% contra el mes anterior y subió 26,8% en doce meses.",
+        "Medido en dólares, el novillo ganó 19,5% interanual: USD 2,65 de promedio en el mes. Es la lectura que el precio en pesos no da.",
+        "La categoría más operada fue VACA, con una banda de $2.600 a $3.600 por kilo sobre 1.935 lotes: 38,5% de amplitud entre lo que se pagó barato y lo que se pagó caro.",
+        "Las hembras fueron el 60,9% de las cabezas operadas, +0,8 pp contra el mes anterior. Es el dato de oferta futura: cada vaca que se vende hoy es un ternero que no nace.",
+        "La relación maíz/novillo quedó en 12,3 kg de maíz por kilo de novillo (julio de 2026), contra un umbral de referencia de 12."
+      ],
+      "faltantes": ["SIO Carnes"]
+    },
+    "2026-09": {
+      "hechos": [
+        "El Índice Novillo cerró en $4.242 por kilo vivo: bajó 2,9% contra el mes anterior y subió 33,0% en doce meses.",
+        "Medido en dólares, el novillo ganó 21,5% interanual: USD 2,69 de promedio en el mes. Es la lectura que el precio en pesos no da.",
+        "La categoría más operada fue VACA, con una banda de $2.500 a $3.600 por kilo sobre 1.701 lotes: 44% de amplitud entre lo que se pagó barato y lo que se pagó caro.",
+        "Las hembras fueron el 60,1% de las cabezas operadas, -3,4 pp contra el mes anterior. Es el dato de oferta futura: cada vaca que se vende hoy es un ternero que no nace.",
+        "La relación maíz/novillo quedó en 12,3 kg de maíz por kilo de novillo (julio de 2026), contra un umbral de referencia de 12."
+      ],
+      "faltantes": ["subcategorías del mes"]
+    }
+  }
+}
