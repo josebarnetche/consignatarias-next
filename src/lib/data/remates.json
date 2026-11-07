@@ -21069,7 +21069,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1112,
-    "status": "live"
+    "status": "completed"
   },
   {
     "title": "Haciendas Generales",
@@ -21088,7 +21088,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1113,
-    "status": "live"
+    "status": "completed"
   },
   {
     "title": "Invernada, Cria y Consumo",
@@ -21107,7 +21107,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1114,
-    "status": "live"
+    "status": "completed"
   },
   {
     "title": "Diferido al 11/ 11",
@@ -21126,7 +21126,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1115,
-    "status": "live"
+    "status": "completed"
   },
   {
     "title": ". Remate por Internet - 9.30hs.",
@@ -21145,7 +21145,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1116,
-    "status": "live"
+    "status": "completed"
   },
   {
     "title": "Remate por Internet - 9.30hs.",
@@ -21164,7 +21164,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1117,
-    "status": "live"
+    "status": "completed"
   },
   {
     "title": "Esteban Abelenda | Invernada y Cría.",
@@ -21182,7 +21182,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6745-esteban-abelenda-invernada-y-cria",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "live",
+    "status": "completed",
     "id": 1118
   },
   {
@@ -21201,7 +21201,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6782-alfredo-s-mondino-feria-mensual-villa-huidobro",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "live",
+    "status": "completed",
     "id": 1119
   },
   {
@@ -21221,7 +21221,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1120,
-    "status": "live"
+    "status": "completed"
   },
   {
     "title": "Televisado Especial Conjunto con el Rodeo",
@@ -21239,7 +21239,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6746-reggi-y-cia-el-rodeo-invernada-y-cria",
     "source": "tv",
     "sourceUrl": "https://reggiycia.com/remate/32045",
-    "status": "live",
+    "status": "completed",
     "id": 1121
   },
   {
@@ -21259,7 +21259,7 @@
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1122,
-    "status": "live"
+    "status": "completed"
   },
   {
     "title": "Ganados Remates | Remate Anual Braford | Monte Grande Cabaña Braford",
@@ -21277,7 +21277,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6781-ganados-remates-remate-anual-braford-monte-grande-cabana-braford",
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
-    "status": "live",
+    "status": "completed",
     "id": 1123
   },
   {
@@ -21297,7 +21297,7 @@
     "source": "web",
     "sourceUrl": "www.umcsa.net/",
     "id": 1124,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "UMC HV — TV 218 7-11 San Salvador ER",
@@ -21316,7 +21316,7 @@
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/32b49286-4349-4465-ba1e-840dc533fcfd",
     "id": 1125,
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "id": 1126,

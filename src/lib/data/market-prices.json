@@ -1837,48 +1837,48 @@
   },
   "categories": {
     "novillos": {
-      "current": 4352.11,
+      "current": 4184.37,
       "prev": 4352.11,
-      "change": 0,
+      "change": -3.9,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 943,
-      "observedDate": "05/11/2026"
+      "latestVolume": 325,
+      "observedDate": "06/11/2026"
     },
     "novillitos": {
-      "current": 4648.98,
+      "current": 4343.03,
       "prev": 4648.98,
-      "change": 0,
+      "change": -6.6,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 562,
-      "observedDate": "05/11/2026"
+      "latestVolume": 1206,
+      "observedDate": "06/11/2026"
     },
     "vaquillonas": {
-      "current": 4423.28,
+      "current": 4104.73,
       "prev": 4423.28,
-      "change": 0,
+      "change": -7.2,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 841,
-      "observedDate": "05/11/2026"
+      "latestVolume": 1471,
+      "observedDate": "06/11/2026"
     },
     "vacas": {
-      "current": 3303.71,
+      "current": 2749.63,
       "prev": 3303.71,
-      "change": 0,
+      "change": -16.8,
       "source": "mercadoagroganadero.com.ar (observed)",
-      "latestVolume": 210,
-      "observedDate": "05/11/2026"
+      "latestVolume": 1526,
+      "observedDate": "06/11/2026"
     },
     "toros": {
-      "current": 3077.89,
+      "current": 3414.54,
       "prev": 3077.89,
-      "change": 0,
+      "change": 10.9,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 8,
-      "observedDate": "05/11/2026"
+      "latestVolume": 186,
+      "observedDate": "06/11/2026"
     },
     "terneros": {
       "current": 4603,
@@ -1908,9 +1908,9 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-11-06",
+  "lastUpdate": "2026-11-07",
   "provinceEntry": {
-    "date": "2026-11-06",
+    "date": "2026-11-07",
     "totalCabezas": 4792,
     "provinces": [
       {
@@ -1952,7 +1952,7 @@
     ]
   },
   "detailedCategories": {
-    "date": "2026-11-06",
+    "date": "2026-11-07",
     "categories": [
       {
         "category": "NOVILLOS Esp.Joven + 430",
@@ -2166,9 +2166,9 @@
   "arrendamientoOficial": {
     "date": "2026-11-06",
     "index": 4230.476,
-    "periodStart": "2026-10-27",
+    "periodStart": "2026-10-28",
     "periodEnd": "2026-11-06",
-    "periodIndex": 4223.906,
+    "periodIndex": 4212.281,
     "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)"
   },
   "soy": {
