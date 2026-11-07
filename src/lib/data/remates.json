@@ -22307,6 +22307,25 @@
     "status": "scheduled"
   },
   {
+    "title": "Aguerre y Duhalde | Remate del Litoral",
+    "consignatariaName": "Aguerre SRL - Duhalde y CIA. SRL",
+    "consignatariaSlug": "aguerre-srl-duhalde-y-cia-srl",
+    "date": "2026-11-12",
+    "time": "16:00",
+    "location": "",
+    "province": "",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Aguerre y Duhalde | Remate del Litoral",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6720-aguerre-y-duhalde-remate-del-litoral",
+    "source": "tv",
+    "sourceUrl": "https://remates.elrural.com/",
+    "status": "scheduled",
+    "id": 1178
+  },
+  {
     "title": "Remate de Haciendas Generales",
     "consignatariaName": "CARLOS J. LANSER S.A.",
     "consignatariaSlug": "carlos-j-lanser-s-a",
@@ -22322,7 +22341,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6778-carlos-j-lanser-coronel-moldes",
     "source": "web",
     "sourceUrl": "www.facebook.com/Carlosjlansersa",
-    "id": 1178,
+    "id": 1179,
     "status": "scheduled"
   },
   {
@@ -22341,7 +22360,7 @@
     "catalogUrl": "https://www.aguerresrl.com.ar/wp-content/uploads/2026/10/WhatsApp-Image-2026-10-19-at-08.14.47.jpeg",
     "source": "web",
     "sourceUrl": "www.aguerresrl.com.ar",
-    "id": 1179,
+    "id": 1180,
     "status": "scheduled"
   },
   {
@@ -22360,27 +22379,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://cacg.org.ar/remates",
-    "id": 1180,
+    "id": 1181,
     "status": "scheduled"
-  },
-  {
-    "title": "Aguerre y Duhalde | Remate del Litoral",
-    "consignatariaName": "Aguerre SRL - Duhalde y CIA. SRL",
-    "consignatariaSlug": "aguerre-srl-duhalde-y-cia-srl",
-    "date": "2026-11-12",
-    "time": "16:00",
-    "location": "",
-    "province": "",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Aguerre y Duhalde | Remate del Litoral",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6720-aguerre-y-duhalde-remate-del-litoral",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled",
-    "id": 1181
   },
   {
     "title": "Remate Nocturno - 9º Aniversario - Desde las 19.00hs",
@@ -22535,25 +22535,6 @@
     "status": "scheduled"
   },
   {
-    "title": "GORDOS, CONSERVA e INVERNADA",
-    "consignatariaName": "AGRICULTORES FEDERADOS ARGENTINOS SOC COOP LT",
-    "consignatariaSlug": "agricultores-federados-argentinos-soc-coop-lt",
-    "date": "2026-11-13",
-    "time": "10:00",
-    "location": "JUNIN, BUENOS AIRES",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": null,
-    "description": "GORDOS, CONSERVA e INVERNADA",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.afascl.com",
-    "id": 1190,
-    "status": "scheduled"
-  },
-  {
     "title": "AFA | Junín | Gordos, conserva e invernada",
     "consignatariaName": "AFA",
     "consignatariaSlug": "afa",
@@ -22570,7 +22551,26 @@
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
     "status": "scheduled",
-    "id": 1191
+    "id": 1190
+  },
+  {
+    "title": "GORDOS, CONSERVA e INVERNADA",
+    "consignatariaName": "AGRICULTORES FEDERADOS ARGENTINOS SOC COOP LT",
+    "consignatariaSlug": "agricultores-federados-argentinos-soc-coop-lt",
+    "date": "2026-11-13",
+    "time": "10:00",
+    "location": "JUNIN, BUENOS AIRES",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "vaca_gorda",
+    "estimatedHeads": null,
+    "description": "GORDOS, CONSERVA e INVERNADA",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "www.afascl.com",
+    "id": 1191,
+    "status": "scheduled"
   },
   {
     "title": "Faena, Invernada y Cria",
@@ -23143,6 +23143,25 @@
     "status": "scheduled"
   },
   {
+    "title": "Faena, invernada y cria.",
+    "consignatariaName": "Nestor Hugo Fuentes",
+    "consignatariaSlug": "nestor-hugo-fuentes",
+    "date": "2026-11-18",
+    "time": null,
+    "location": "Algarrobo del Aguila, La Pampa",
+    "province": "LA PAMPA",
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": 1000,
+    "description": "Algarrobo del Aguila Faena, invernada y cria.",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1222,
+    "status": "scheduled"
+  },
+  {
     "title": "Hacienda GORDA, INVERNADA y CRÏA",
     "consignatariaName": "DARWASH S.A.",
     "consignatariaSlug": "darwash-s-a",
@@ -23158,7 +23177,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://cacg.org.ar/remates",
-    "id": 1222,
+    "id": 1223,
     "status": "scheduled"
   },
   {
@@ -23177,7 +23196,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "ganaderosdeceres.com.ar",
-    "id": 1223,
+    "id": 1224,
     "status": "scheduled"
   },
   {
@@ -23196,25 +23215,6 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1224,
-    "status": "scheduled"
-  },
-  {
-    "title": "Faena, invernada y cria.",
-    "consignatariaName": "Nestor Hugo Fuentes",
-    "consignatariaSlug": "nestor-hugo-fuentes",
-    "date": "2026-11-18",
-    "time": null,
-    "location": "Algarrobo del Aguila, La Pampa",
-    "province": "LA PAMPA",
-    "type": "invernada",
-    "mainCategory": "mixto",
-    "estimatedHeads": 1000,
-    "description": "Algarrobo del Aguila Faena, invernada y cria.",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1225,
     "status": "scheduled"
   },
@@ -23580,6 +23580,25 @@
     "status": "scheduled"
   },
   {
+    "title": "Remate Especial en el MAG",
+    "consignatariaName": "Lanusse Santillan",
+    "consignatariaSlug": "lanusse-santillan",
+    "date": "2026-11-19",
+    "time": null,
+    "location": "Cañuelas, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "especial",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Cañuelas Remate Especial en el MAG",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1245,
+    "status": "scheduled"
+  },
+  {
     "title": "Remate Aniversario - Abasto e Invernada",
     "consignatariaName": "GANADEROS DE CERES COOPERATIVA LTDA.",
     "consignatariaSlug": "ganaderos-de-ceres-cooperativa-ltda",
@@ -23595,7 +23614,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "ganaderosdeceres.com.ar",
-    "id": 1245,
+    "id": 1246,
     "status": "scheduled"
   },
   {
@@ -23614,25 +23633,6 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1246,
-    "status": "scheduled"
-  },
-  {
-    "title": "Remate Especial en el MAG",
-    "consignatariaName": "Lanusse Santillan",
-    "consignatariaSlug": "lanusse-santillan",
-    "date": "2026-11-19",
-    "time": null,
-    "location": "Cañuelas, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "especial",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Cañuelas Remate Especial en el MAG",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1247,
     "status": "scheduled"
   },

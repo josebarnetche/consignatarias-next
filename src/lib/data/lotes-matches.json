@@ -1,5 +1,5 @@
 {
-  "generado": "2026-11-07T20:40:28.646Z",
+  "generado": "2026-11-07T22:36:02.945Z",
   "leads_de_compra": 11,
   "matches": [
     {
@@ -333,6 +333,17 @@
       },
       "lotes": [
         {
+          "sku": "34444",
+          "titulo": "200 Vaquillonas Preñadas Aberdeen Angus Negro y Colorado 430kg",
+          "score": 35,
+          "motivos": [
+            "el lead no declaró categoría",
+            "otra provincia (Buenos Aires)",
+            "cantidad compatible"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/200-Vaquillonas-Prenadas-430kg-invernada-34444"
+        },
+        {
           "sku": "34414",
           "titulo": "160 Vaquillonas Preñadas Aberdeen Angus Colorado de 400kg",
           "score": 35,
@@ -364,17 +375,6 @@
             "cantidad compatible"
           ],
           "url": "https://www.decampoacampo.com/__dcac/210-Novillitos-340kg-invernada-34561"
-        },
-        {
-          "sku": "34444",
-          "titulo": "200 Vaquillonas Preñadas Aberdeen Angus Negro y Colorado 430kg",
-          "score": 35,
-          "motivos": [
-            "el lead no declaró categoría",
-            "otra provincia (Buenos Aires)",
-            "cantidad compatible"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/200-Vaquillonas-Prenadas-430kg-invernada-34444"
         },
         {
           "sku": "34413",
