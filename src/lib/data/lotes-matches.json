@@ -1,5 +1,5 @@
 {
-  "generado": "2026-11-08T20:58:03.078Z",
+  "generado": "2026-11-08T22:44:12.766Z",
   "leads_de_compra": 11,
   "matches": [
     {
@@ -333,6 +333,17 @@
       },
       "lotes": [
         {
+          "sku": "34561",
+          "titulo": "210 Novillitos Careta de 340kg",
+          "score": 35,
+          "motivos": [
+            "el lead no declaró categoría",
+            "otra provincia (Chaco)",
+            "cantidad compatible"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/210-Novillitos-340kg-invernada-34561"
+        },
+        {
           "sku": "34444",
           "titulo": "200 Vaquillonas Preñadas Aberdeen Angus Negro y Colorado 430kg",
           "score": 35,
@@ -364,17 +375,6 @@
             "cantidad compatible"
           ],
           "url": "https://www.decampoacampo.com/__dcac/150-Vacas-con-cria-400kg-invernada-34247"
-        },
-        {
-          "sku": "34561",
-          "titulo": "210 Novillitos Careta de 340kg",
-          "score": 35,
-          "motivos": [
-            "el lead no declaró categoría",
-            "otra provincia (Chaco)",
-            "cantidad compatible"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/210-Novillitos-340kg-invernada-34561"
         },
         {
           "sku": "34413",
@@ -440,14 +440,14 @@
           "url": "https://www.decampoacampo.com/__dcac/200-Vaquillonas-Prenadas-430kg-invernada-34444"
         },
         {
-          "sku": "34599",
-          "titulo": "85 Novillitos Aberdeen Angus Negro y Colorado de 300kg",
+          "sku": "34119",
+          "titulo": "40 Vaquillonas Preñadas Aberdeen Angus Negro de 400kg",
           "score": 50,
           "motivos": [
             "el lead no declaró categoría",
             "misma provincia"
           ],
-          "url": "https://www.decampoacampo.com/__dcac/85-Novillitos-300kg-invernada-34599"
+          "url": "https://www.decampoacampo.com/__dcac/40-Vaquillonas-Prenadas-400kg-invernada-34119"
         }
       ]
     },
