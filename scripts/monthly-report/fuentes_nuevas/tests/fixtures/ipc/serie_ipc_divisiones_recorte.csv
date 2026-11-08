@@ -1,0 +1,34 @@
+Codigo;Descripcion;Clasificador;Periodo;Indice_IPC;v_m_IPC;v_i_a_IPC;Region
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201612;100;NA;NA;GBA
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201612;100;NA;NA;Nacional
+01;Alimentos y bebidas no alcohólicas;Nivel general y divisiones COICOP;201612;100;NA;NA;Nacional
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201701;101,313;1,3;NA;GBA
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201701;101,5859;1,6;NA;Nacional
+01;Alimentos y bebidas no alcohólicas;Nivel general y divisiones COICOP;201701;101,3024;1,3;NA;Nacional
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201702;103,8085;2,5;NA;GBA
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201702;103,6859;2,1;NA;Nacional
+01;Alimentos y bebidas no alcohólicas;Nivel general y divisiones COICOP;201702;103,1605;1,8;NA;Nacional
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201703;106,2627;2,4;NA;GBA
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201703;106,1476;2,4;NA;Nacional
+01;Alimentos y bebidas no alcohólicas;Nivel general y divisiones COICOP;201703;106,0143;2,8;NA;Nacional
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201704;108,9667;2,7;NA;Nacional
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201705;110,5301;1,4;NA;Nacional
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201706;111,8477;1,2;NA;Nacional
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201707;113,7852;1,7;NA;Nacional
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201708;115,3819;1,4;NA;Nacional
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201709;117,5719;1,9;NA;Nacional
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201710;119,3528;1,5;NA;Nacional
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201711;120,994;1,4;NA;Nacional
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201712;124,7956;3,1;24,8;Nacional
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201801;126,9887;1,8;25;Nacional
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201802;130,0606;2,4;25,4;Nacional
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201803;133,1054;2,3;25,4;Nacional
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201804;136,7512;2,7;25,5;Nacional
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201805;139,5893;2,1;26,3;Nacional
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201806;144,8053;3,7;29,5;Nacional
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201807;149,2966;3,1;31,2;Nacional
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201808;155,1034;3,9;34,4;Nacional
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201809;165,2383;6,5;40,5;Nacional
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201810;174,1473;5,4;45,9;Nacional
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201811;179,6388;3,2;48,5;Nacional
+0;NIVEL GENERAL;Nivel general y divisiones COICOP;201812;184,2552;2,6;47,6;Nacional

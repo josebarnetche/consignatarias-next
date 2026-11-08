@@ -49,6 +49,9 @@ jobs:
         with:
           chrome-version: stable
 
+      - name: Install poppler (pdftotext para la faena del MAGyP)
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+
       - name: Run publish pipeline
         env:
           CHROME_BIN: ${{ steps.setup-chrome.outputs.chrome-path }}
@@ -67,6 +70,13 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add public/el-corredor/
+          # Los caches de las fuentes públicas que refrescó publish.py. Van al repo
+          # porque el de exportaciones se COMBINA con el commiteado (solo se bajan el
+          # año en curso y el anterior): si no se commitea, al año siguiente queda un
+          # hueco y la serie no se puede armar. El .gitignore de cache/ deja afuera la FAO;
+          # el patrón va entre comillas para que lo expanda git (que respeta ese ignore)
+          # y no el shell (un path ignorado explícito hace fallar el `git add`).
+          git add 'scripts/monthly-report/cache/externa-*.json'
           if git diff --cached --quiet; then
             echo "No changes to commit"
             echo "changed=false" >> $GITHUB_OUTPUT

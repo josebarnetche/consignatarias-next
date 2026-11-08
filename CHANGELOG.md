@@ -7,6 +7,19 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.258.0] — 2026-11-08
+
+### Agregado
+- **El Corredor v2 es el formato mensual por defecto** (`scripts/monthly-report/`: `informe_v2.py`, `datos_v2.py`, `graficos_v2.py`, `plantilla_v2.html`, `piezas.py`); `--v1` arma el anterior. Reemplaza a los PR #126 y #128.
+- **Fuentes públicas en la corrida mensual** (`fuentes_nuevas/`, tolerantes a fallo: si una no baja queda el cache con su fecha y la página se omite; flag `--sin-fuentes-nuevas`). Páginas nuevas, 17 en total:
+  - **Precio real:** novillito e Índice Novillo deflactados por el IPC del INDEC, desde 2017-01.
+  - **Exportación:** toneladas peso producto, USD FOB, USD/t con y sin la 0202.20 y destinos contra el año anterior.
+  - **Faena y stock nacional:** % de hembras, categorías, peso de res y producción (MAGyP); stock al 31/12 desde 2012 (SENASA).
+  - **Clima:** RONI (índice operativo del CPC desde el 01-02-2026) con el ONI, y lluvias contra la normal 1991–2020 en 16 estaciones.
+- Semáforo con faena y peso de res; línea de ausencias con el feedlot; piezas nuevas (destinos, hembras nacional). La FAO no se publica (licencia).
+- Sale la planilla "Tu lote, tu cuenta"; la metodología remite a `/valuar-hacienda`.
+- `el-corredor-publish.yml` instala poppler y commitea `cache/externa-*.json`; no cambian ni el cron ni el disparador.
+
 ## [1.257.1] — 2026-11-08
 
 ### Seguridad
