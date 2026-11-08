@@ -7,6 +7,15 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.259.0] — 2026-11-08
+
+### Agregado
+- **Una página por edición de El Corredor**, `/el-corredor/[edicion]` (p. ej. `/el-corredor/octubre-2026`), estática desde el manifest: los cinco hechos del mes en HTML, lo que la edición no pudo medir, tapa y PDF, compartir (WhatsApp primero) con la cita lista, alta a la próxima y navegación entre ediciones.
+- **Piezas compartibles** leídas del manifest (`piezas: [{ tipo, ruta, titulo, texto? }]`, ver `src/lib/el-corredor-ediciones.ts`): en el celular se comparte la imagen con Web Share y, si no se puede, `wa.me`; sin piezas, la sección no aparece.
+- `opengraph-image` por edición con el primer hecho; JSON-LD `Report` (helper `buildReport` en `schemas.ts`); archivo en `/el-corredor#archivo` y una URL por edición en el sitemap.
+- Respaldo de hechos de septiembre y octubre en `src/lib/data/el-corredor-hechos.json`; si el manifest trae `hechos`, manda el manifest.
+- Eventos GA4: `el_corredor_pdf`, `el_corredor_pieza_compartir`, `el_corredor_pieza_descarga`.
+
 ## [1.258.0] — 2026-11-08
 
 ### Agregado

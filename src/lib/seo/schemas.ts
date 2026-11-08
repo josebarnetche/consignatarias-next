@@ -372,3 +372,68 @@ export function buildRemateVideo(v: RemateVideoInput) {
     ...(v.publisherName ? { publisher: { '@type': 'Organization', name: v.publisherName } } : {}),
   }
 }
+
+/* ------------------------------------------------------------------ */
+/*  INFORME PERIÓDICO → Report (una edición de El Corredor)             */
+/* ------------------------------------------------------------------ */
+
+export interface ReportInput {
+  name: string
+  description: string
+  url: string
+  /** Número de edición tal cual se publica ("10/2026"). */
+  reportNumber: string
+  datePublished?: string | null
+  image?: string | null
+  /** PDF de la edición (contentUrl absoluto). */
+  pdfUrl: string
+  /** Serie a la que pertenece (p. ej. El Corredor en /el-corredor). */
+  serie: { name: string; url: string }
+  /** Los hechos del mes: van como `abstract`, en texto plano. */
+  hechos?: string[]
+  /** Período que cubre, "YYYY-MM". */
+  temporalCoverage?: string
+  citas?: Array<{ name: string; url?: string }>
+}
+
+/**
+ * Report de schema.org para una edición de un informe periódico. Autor y editor son
+ * la org (@id); el PDF va como `encoding`, la serie como `isPartOf` (Periodical) y los
+ * hechos del mes como `abstract`, para que el texto citable viaje con el schema.
+ */
+export function buildReport(r: ReportInput) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Report',
+    name: r.name,
+    headline: r.name,
+    description: r.description,
+    url: r.url,
+    reportNumber: r.reportNumber,
+    inLanguage: 'es-AR',
+    isAccessibleForFree: true,
+    author: ORG_REF,
+    publisher: ORG_REF,
+    ...(r.datePublished ? { datePublished: r.datePublished } : {}),
+    ...(r.image ? { image: r.image } : {}),
+    ...(r.temporalCoverage ? { temporalCoverage: r.temporalCoverage } : {}),
+    ...(r.hechos?.length ? { abstract: r.hechos.join(' ') } : {}),
+    spatialCoverage: { '@type': 'Place', name: 'Argentina' },
+    isPartOf: { '@type': 'Periodical', name: r.serie.name, url: r.serie.url, publisher: ORG_REF },
+    encoding: {
+      '@type': 'MediaObject',
+      contentUrl: r.pdfUrl,
+      encodingFormat: 'application/pdf',
+    },
+    ...(r.citas?.length
+      ? {
+          citation: r.citas.map((c) => ({
+            '@type': 'CreativeWork',
+            name: c.name,
+            ...(c.url ? { url: c.url } : {}),
+          })),
+        }
+      : {}),
+    mainEntityOfPage: { '@type': 'WebPage', '@id': r.url },
+  }
+}
