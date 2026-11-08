@@ -21259,7 +21259,7 @@
     "source": "web",
     "sourceUrl": "www.umcsa.net/",
     "id": 1122,
-    "status": "live"
+    "status": "completed"
   },
   {
     "title": "UMC HV — TV 218 7-11 San Salvador ER",
@@ -21278,7 +21278,7 @@
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/32b49286-4349-4465-ba1e-840dc533fcfd",
     "id": 1123,
-    "status": "live"
+    "status": "completed"
   },
   {
     "id": 1124,
@@ -21297,7 +21297,7 @@
     "catalogUrl": null,
     "source": "tv",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "status": "scheduled"
+    "status": "live"
   },
   {
     "title": "GORDO, INVERNADA y CRÍA",
