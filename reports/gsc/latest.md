@@ -1,57 +1,57 @@
-# Reporte SEO/Tráfico — 2026-W44
+# Reporte SEO/Tráfico — 2026-W45
 
-GSC: 2026-10-24 → 2026-10-30. Generado 2026-11-02.
+GSC: 2026-10-31 → 2026-11-06. Generado 2026-11-09.
 
 ## Search Console
-- Clicks: 911 (5.2%)
-- Impresiones: 52.337 (-0.9%)
-- CTR: 1.74% · Posición: 6.3
+- Clicks: 940 (3.2%)
+- Impresiones: 53.979 (3.1%)
+- CTR: 1.74% · Posición: 6.2
 
 ### Top queries
-- precio novillo arrendamiento mercado de liniers — 9 clicks, pos 7.0
-- precio novillo arrendamiento mensual — 5 clicks, pos 7.3
-- precio novillo para arrendamiento hoy — 4 clicks, pos 7.8
-- agroindustrias quilmes — 3 clicks, pos 1.6
-- cuanto vale una vaca viva en pesos argentinos — 3 clicks, pos 1.8
-- cuánto sale una vaca en argentina 2026 — 3 clicks, pos 1.4
-- indice novillo arrendamiento mercado de cañuelas — 3 clicks, pos 7.8
-- precio novillo para arrendamiento hoy canal rural — 3 clicks, pos 3.6
-- tarifa transporte de hacienda 2026 — 3 clicks, pos 7.8
-- campos bajos srl — 2 clicks, pos 7.3
-- consignataria de hacienda — 2 clicks, pos 3.7
-- consignatarias — 2 clicks, pos 1.0
+- precio novillo para arrendamiento hoy — 12 clicks, pos 7.4
+- indice novillo arrendamiento — 8 clicks, pos 8.0
+- precio novillo arrendamiento mercado de cañuelas — 8 clicks, pos 7.0
+- precio novillo arrendamiento mensual — 7 clicks, pos 7.7
+- precio novillo arrendamiento mercado de liniers — 7 clicks, pos 7.2
+- precio novillo para arrendamiento hoy canal rural — 7 clicks, pos 3.8
+- indice novillo arrendamiento mercado de cañuelas — 5 clicks, pos 6.7
+- agroindustrias quilmes — 4 clicks, pos 2.5
+- precio del kg de novillo para arrendamiento diario la nacion — 4 clicks, pos 7.2
+- novillo arrendamiento — 3 clicks, pos 7.4
+- precio de toros para faena — 3 clicks, pos 4.8
+- precio novillo arrendamiento octubre 2026 — 3 clicks, pos 2.2
 
 ### Top páginas
-- /mercado/arrendamiento — 93 clicks
-- /mercado/arrendamiento/liniers — 27 clicks
-- /cuanto-cuesta-el-flete-de-hacienda — 25 clicks
-- /cuanto-vale-una-vaca — 22 clicks
-- / — 16 clicks
-- /frigorificos — 14 clicks
-- /mercado/arrendamiento/mensual — 14 clicks
-- /frigorificos/buenos-aires — 10 clicks
-- /consignatarias — 9 clicks
-- /frigorificos/santa-fe — 9 clicks
+- /mercado/arrendamiento — 142 clicks
+- /mercado/arrendamiento/mensual — 66 clicks
+- /mercado/arrendamiento/liniers — 38 clicks
+- /cuanto-cuesta-el-flete-de-hacienda — 21 clicks
+- /cuanto-vale-una-vaca — 17 clicks
+- /mercado/arrendamiento/canuelas — 16 clicks
+- /precios/hacienda-en-pie — 11 clicks
+- /frigorificos — 10 clicks
+- /frigorificos/cordoba — 10 clicks
+- /frigorificos/santa-fe — 10 clicks
 
 ## Tráfico (últimos 7 días)
-- Visitantes: 1.767 · Desde IA: 54 · Vistas de perfil: 109
+- Visitantes: 1.759 · Desde IA: 40 · Vistas de perfil: 112
 
 ### Motores de IA
-- chatgpt: 47
-- gemini: 6
-- perplexity: 1
+- chatgpt: 36
+- gemini: 3
+- claude: 1
 
 ### Perfiles más visitados
-- colombo-y-magliano — 14
-- etchevehere-rural — 10
+- haciendas-federales — 14
+- rosgan — 9
+- colombo-y-magliano — 8
 - umc-villaguay — 7
-- hasenkamp — 5
-- pedro-noel-irey — 4
-- pepa-knubel-ferrero — 3
-- arzuaga — 3
-- sivero — 2
-- ferias-rauch — 2
-- wallace-hnos — 2
-- saenz-valiente-bullrich — 2
-- travaglia — 2
+- bressan-y-cia — 6
+- reggi — 6
+- sivero — 5
+- hasenkamp — 4
+- monasterio-tattersall — 4
+- ofarrell — 4
+- afa — 3
+- pastore — 3
 
