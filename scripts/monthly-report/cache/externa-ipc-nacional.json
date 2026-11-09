@@ -1,0 +1,610 @@
+{
+ "version_esquema": 1,
+ "id": "ipc-nacional",
+ "unidad": "índice dic-2016=100",
+ "frecuencia": "mensual",
+ "puntos": [
+  {
+   "periodo": "2016-12",
+   "indice": 100.0
+  },
+  {
+   "periodo": "2017-01",
+   "indice": 101.5859,
+   "var_mensual_pct": 1.6
+  },
+  {
+   "periodo": "2017-02",
+   "indice": 103.6859,
+   "var_mensual_pct": 2.1
+  },
+  {
+   "periodo": "2017-03",
+   "indice": 106.1476,
+   "var_mensual_pct": 2.4
+  },
+  {
+   "periodo": "2017-04",
+   "indice": 108.9667,
+   "var_mensual_pct": 2.7
+  },
+  {
+   "periodo": "2017-05",
+   "indice": 110.5301,
+   "var_mensual_pct": 1.4
+  },
+  {
+   "periodo": "2017-06",
+   "indice": 111.8477,
+   "var_mensual_pct": 1.2
+  },
+  {
+   "periodo": "2017-07",
+   "indice": 113.7852,
+   "var_mensual_pct": 1.7
+  },
+  {
+   "periodo": "2017-08",
+   "indice": 115.3819,
+   "var_mensual_pct": 1.4
+  },
+  {
+   "periodo": "2017-09",
+   "indice": 117.5719,
+   "var_mensual_pct": 1.9
+  },
+  {
+   "periodo": "2017-10",
+   "indice": 119.3528,
+   "var_mensual_pct": 1.5
+  },
+  {
+   "periodo": "2017-11",
+   "indice": 120.994,
+   "var_mensual_pct": 1.4
+  },
+  {
+   "periodo": "2017-12",
+   "indice": 124.7956,
+   "var_mensual_pct": 3.1
+  },
+  {
+   "periodo": "2018-01",
+   "indice": 126.9887,
+   "var_mensual_pct": 1.8
+  },
+  {
+   "periodo": "2018-02",
+   "indice": 130.0606,
+   "var_mensual_pct": 2.4
+  },
+  {
+   "periodo": "2018-03",
+   "indice": 133.1054,
+   "var_mensual_pct": 2.3
+  },
+  {
+   "periodo": "2018-04",
+   "indice": 136.7512,
+   "var_mensual_pct": 2.7
+  },
+  {
+   "periodo": "2018-05",
+   "indice": 139.5893,
+   "var_mensual_pct": 2.1
+  },
+  {
+   "periodo": "2018-06",
+   "indice": 144.8053,
+   "var_mensual_pct": 3.7
+  },
+  {
+   "periodo": "2018-07",
+   "indice": 149.2966,
+   "var_mensual_pct": 3.1
+  },
+  {
+   "periodo": "2018-08",
+   "indice": 155.1034,
+   "var_mensual_pct": 3.9
+  },
+  {
+   "periodo": "2018-09",
+   "indice": 165.2383,
+   "var_mensual_pct": 6.5
+  },
+  {
+   "periodo": "2018-10",
+   "indice": 174.1473,
+   "var_mensual_pct": 5.4
+  },
+  {
+   "periodo": "2018-11",
+   "indice": 179.6388,
+   "var_mensual_pct": 3.2
+  },
+  {
+   "periodo": "2018-12",
+   "indice": 184.2552,
+   "var_mensual_pct": 2.6
+  },
+  {
+   "periodo": "2019-01",
+   "indice": 189.6101,
+   "var_mensual_pct": 2.9
+  },
+  {
+   "periodo": "2019-02",
+   "indice": 196.7501,
+   "var_mensual_pct": 3.8
+  },
+  {
+   "periodo": "2019-03",
+   "indice": 205.9571,
+   "var_mensual_pct": 4.7
+  },
+  {
+   "periodo": "2019-04",
+   "indice": 213.0517,
+   "var_mensual_pct": 3.4
+  },
+  {
+   "periodo": "2019-05",
+   "indice": 219.5691,
+   "var_mensual_pct": 3.1
+  },
+  {
+   "periodo": "2019-06",
+   "indice": 225.537,
+   "var_mensual_pct": 2.7
+  },
+  {
+   "periodo": "2019-07",
+   "indice": 230.494,
+   "var_mensual_pct": 2.2
+  },
+  {
+   "periodo": "2019-08",
+   "indice": 239.6077,
+   "var_mensual_pct": 4.0
+  },
+  {
+   "periodo": "2019-09",
+   "indice": 253.7102,
+   "var_mensual_pct": 5.9
+  },
+  {
+   "periodo": "2019-10",
+   "indice": 262.0661,
+   "var_mensual_pct": 3.3
+  },
+  {
+   "periodo": "2019-11",
+   "indice": 273.2158,
+   "var_mensual_pct": 4.3
+  },
+  {
+   "periodo": "2019-12",
+   "indice": 283.4442,
+   "var_mensual_pct": 3.7
+  },
+  {
+   "periodo": "2020-01",
+   "indice": 289.8299,
+   "var_mensual_pct": 2.3
+  },
+  {
+   "periodo": "2020-02",
+   "indice": 295.666,
+   "var_mensual_pct": 2.0
+  },
+  {
+   "periodo": "2020-03",
+   "indice": 305.5515,
+   "var_mensual_pct": 3.3
+  },
+  {
+   "periodo": "2020-04",
+   "indice": 310.1243,
+   "var_mensual_pct": 1.5
+  },
+  {
+   "periodo": "2020-05",
+   "indice": 314.9087,
+   "var_mensual_pct": 1.5
+  },
+  {
+   "periodo": "2020-06",
+   "indice": 321.9738,
+   "var_mensual_pct": 2.2
+  },
+  {
+   "periodo": "2020-07",
+   "indice": 328.2014,
+   "var_mensual_pct": 1.9
+  },
+  {
+   "periodo": "2020-08",
+   "indice": 337.0632,
+   "var_mensual_pct": 2.7
+  },
+  {
+   "periodo": "2020-09",
+   "indice": 346.6207,
+   "var_mensual_pct": 2.8
+  },
+  {
+   "periodo": "2020-10",
+   "indice": 359.657,
+   "var_mensual_pct": 3.8
+  },
+  {
+   "periodo": "2020-11",
+   "indice": 371.0211,
+   "var_mensual_pct": 3.2
+  },
+  {
+   "periodo": "2020-12",
+   "indice": 385.8826,
+   "var_mensual_pct": 4.0
+  },
+  {
+   "periodo": "2021-01",
+   "indice": 401.5071,
+   "var_mensual_pct": 4.0
+  },
+  {
+   "periodo": "2021-02",
+   "indice": 415.8595,
+   "var_mensual_pct": 3.6
+  },
+  {
+   "periodo": "2021-03",
+   "indice": 435.8657,
+   "var_mensual_pct": 4.8
+  },
+  {
+   "periodo": "2021-04",
+   "indice": 453.6503,
+   "var_mensual_pct": 4.1
+  },
+  {
+   "periodo": "2021-05",
+   "indice": 468.725,
+   "var_mensual_pct": 3.3
+  },
+  {
+   "periodo": "2021-06",
+   "indice": 483.6049,
+   "var_mensual_pct": 3.2
+  },
+  {
+   "periodo": "2021-07",
+   "indice": 498.0987,
+   "var_mensual_pct": 3.0
+  },
+  {
+   "periodo": "2021-08",
+   "indice": 510.3942,
+   "var_mensual_pct": 2.5
+  },
+  {
+   "periodo": "2021-09",
+   "indice": 528.4968,
+   "var_mensual_pct": 3.5
+  },
+  {
+   "periodo": "2021-10",
+   "indice": 547.0802,
+   "var_mensual_pct": 3.5
+  },
+  {
+   "periodo": "2021-11",
+   "indice": 560.9184,
+   "var_mensual_pct": 2.5
+  },
+  {
+   "periodo": "2021-12",
+   "indice": 582.4575,
+   "var_mensual_pct": 3.8
+  },
+  {
+   "periodo": "2022-01",
+   "indice": 605.0317,
+   "var_mensual_pct": 3.9
+  },
+  {
+   "periodo": "2022-02",
+   "indice": 633.4341,
+   "var_mensual_pct": 4.7
+  },
+  {
+   "periodo": "2022-03",
+   "indice": 676.0566,
+   "var_mensual_pct": 6.7
+  },
+  {
+   "periodo": "2022-04",
+   "indice": 716.9399,
+   "var_mensual_pct": 6.0
+  },
+  {
+   "periodo": "2022-05",
+   "indice": 753.147,
+   "var_mensual_pct": 5.1
+  },
+  {
+   "periodo": "2022-06",
+   "indice": 793.0278,
+   "var_mensual_pct": 5.3
+  },
+  {
+   "periodo": "2022-07",
+   "indice": 851.761,
+   "var_mensual_pct": 7.4
+  },
+  {
+   "periodo": "2022-08",
+   "indice": 911.1316,
+   "var_mensual_pct": 7.0
+  },
+  {
+   "periodo": "2022-09",
+   "indice": 967.3076,
+   "var_mensual_pct": 6.2
+  },
+  {
+   "periodo": "2022-10",
+   "indice": 1028.706,
+   "var_mensual_pct": 6.3
+  },
+  {
+   "periodo": "2022-11",
+   "indice": 1079.2787,
+   "var_mensual_pct": 4.9
+  },
+  {
+   "periodo": "2022-12",
+   "indice": 1134.5875,
+   "var_mensual_pct": 5.1
+  },
+  {
+   "periodo": "2023-01",
+   "indice": 1202.979,
+   "var_mensual_pct": 6.0
+  },
+  {
+   "periodo": "2023-02",
+   "indice": 1282.7091,
+   "var_mensual_pct": 6.6
+  },
+  {
+   "periodo": "2023-03",
+   "indice": 1381.1601,
+   "var_mensual_pct": 7.7
+  },
+  {
+   "periodo": "2023-04",
+   "indice": 1497.2147,
+   "var_mensual_pct": 8.4
+  },
+  {
+   "periodo": "2023-05",
+   "indice": 1613.5895,
+   "var_mensual_pct": 7.8
+  },
+  {
+   "periodo": "2023-06",
+   "indice": 1709.6115,
+   "var_mensual_pct": 6.0
+  },
+  {
+   "periodo": "2023-07",
+   "indice": 1818.0838,
+   "var_mensual_pct": 6.3
+  },
+  {
+   "periodo": "2023-08",
+   "indice": 2044.2832,
+   "var_mensual_pct": 12.4
+  },
+  {
+   "periodo": "2023-09",
+   "indice": 2304.9242,
+   "var_mensual_pct": 12.7
+  },
+  {
+   "periodo": "2023-10",
+   "indice": 2496.273,
+   "var_mensual_pct": 8.3
+  },
+  {
+   "periodo": "2023-11",
+   "indice": 2816.0628,
+   "var_mensual_pct": 12.8
+  },
+  {
+   "periodo": "2023-12",
+   "indice": 3533.1922,
+   "var_mensual_pct": 25.5
+  },
+  {
+   "periodo": "2024-01",
+   "indice": 4261.5324,
+   "var_mensual_pct": 20.6
+  },
+  {
+   "periodo": "2024-02",
+   "indice": 4825.7881,
+   "var_mensual_pct": 13.2
+  },
+  {
+   "periodo": "2024-03",
+   "indice": 5357.0929,
+   "var_mensual_pct": 11.0
+  },
+  {
+   "periodo": "2024-04",
+   "indice": 5830.227,
+   "var_mensual_pct": 8.8
+  },
+  {
+   "periodo": "2024-05",
+   "indice": 6073.717,
+   "var_mensual_pct": 4.2
+  },
+  {
+   "periodo": "2024-06",
+   "indice": 6351.715,
+   "var_mensual_pct": 4.6
+  },
+  {
+   "periodo": "2024-07",
+   "indice": 6607.748,
+   "var_mensual_pct": 4.0
+  },
+  {
+   "periodo": "2024-08",
+   "indice": 6883.441,
+   "var_mensual_pct": 4.2
+  },
+  {
+   "periodo": "2024-09",
+   "indice": 7122.242,
+   "var_mensual_pct": 3.5
+  },
+  {
+   "periodo": "2024-10",
+   "indice": 7313.954,
+   "var_mensual_pct": 2.7
+  },
+  {
+   "periodo": "2024-11",
+   "indice": 7491.431,
+   "var_mensual_pct": 2.4
+  },
+  {
+   "periodo": "2024-12",
+   "indice": 7694.0075,
+   "var_mensual_pct": 2.7
+  },
+  {
+   "periodo": "2025-01",
+   "indice": 7864.1257,
+   "var_mensual_pct": 2.2
+  },
+  {
+   "periodo": "2025-02",
+   "indice": 8052.9927,
+   "var_mensual_pct": 2.4
+  },
+  {
+   "periodo": "2025-03",
+   "indice": 8353.3158,
+   "var_mensual_pct": 3.7
+  },
+  {
+   "periodo": "2025-04",
+   "indice": 8585.6078,
+   "var_mensual_pct": 2.8
+  },
+  {
+   "periodo": "2025-05",
+   "indice": 8714.4871,
+   "var_mensual_pct": 1.5
+  },
+  {
+   "periodo": "2025-06",
+   "indice": 8855.5681,
+   "var_mensual_pct": 1.6
+  },
+  {
+   "periodo": "2025-07",
+   "indice": 9023.973,
+   "var_mensual_pct": 1.9
+  },
+  {
+   "periodo": "2025-08",
+   "indice": 9193.2441,
+   "var_mensual_pct": 1.9
+  },
+  {
+   "periodo": "2025-09",
+   "indice": 9384.0922,
+   "var_mensual_pct": 2.1
+  },
+  {
+   "periodo": "2025-10",
+   "indice": 9603.8623,
+   "var_mensual_pct": 2.3
+  },
+  {
+   "periodo": "2025-11",
+   "indice": 9841.3581,
+   "var_mensual_pct": 2.5
+  },
+  {
+   "periodo": "2025-12",
+   "indice": 10121.3715,
+   "var_mensual_pct": 2.8
+  },
+  {
+   "periodo": "2026-01",
+   "indice": 10413.0309,
+   "var_mensual_pct": 2.9
+  },
+  {
+   "periodo": "2026-02",
+   "indice": 10714.6255,
+   "var_mensual_pct": 2.9
+  },
+  {
+   "periodo": "2026-03",
+   "indice": 11077.0608,
+   "var_mensual_pct": 3.4
+  },
+  {
+   "periodo": "2026-04",
+   "indice": 11363.0904,
+   "var_mensual_pct": 2.6
+  },
+  {
+   "periodo": "2026-05",
+   "indice": 11607.3937,
+   "var_mensual_pct": 2.1
+  },
+  {
+   "periodo": "2026-06",
+   "indice": 11826.4103,
+   "var_mensual_pct": 1.9
+  },
+  {
+   "periodo": "2026-07",
+   "indice": 12076.3937,
+   "var_mensual_pct": 2.1
+  },
+  {
+   "periodo": "2026-08",
+   "indice": 12276.766,
+   "var_mensual_pct": 1.7
+  },
+  {
+   "periodo": "2026-09",
+   "indice": 12514.1508,
+   "var_mensual_pct": 1.9
+  }
+ ],
+ "procedencia": {
+  "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+  "url": "https://www.indec.gob.ar/ftp/cuadros/economia/serie_ipc_divisiones.csv",
+  "fecha_observacion": "2026-11-02",
+  "fecha_dato": "2026-09",
+  "rezago": "~día 12-15 del mes siguiente (INDEC); la API de datos.gob.ar suma ~1 mes más",
+  "licencia": "CC BY-SA 4.0 · INDEC (https://www.indec.gob.ar/indec/web/Institucional-Indec-TerminosCondiciones). Citar: INDEC, IPC.",
+  "nota": "Arranca en 2016-12. Para 2006-2016 usar ipc-empalmado-2006 (ver docstring)."
+ },
+ "columnas": {
+  "indice": "IPC nivel general nacional, dic-2016=100",
+  "var_mensual_pct": "variación mensual % publicada por la fuente (INDEC: 1 decimal)"
+ }
+}

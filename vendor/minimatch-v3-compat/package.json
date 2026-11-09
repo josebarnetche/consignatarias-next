@@ -1,0 +1,11 @@
+{
+  "name": "minimatch",
+  "version": "3.99.0",
+  "description": "Adaptador local: minimatch 11 con la forma de la 3 (función por defecto) para ESLint 9 y sus plugins. Ver CHANGELOG v1.257.1.",
+  "main": "index.js",
+  "license": "ISC",
+  "private": true,
+  "dependencies": {
+    "minimatch-11": "npm:minimatch@^11.0.4"
+  }
+}

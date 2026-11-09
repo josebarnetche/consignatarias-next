@@ -472,7 +472,17 @@ def main() -> int:
     ap = argparse.ArgumentParser(description="El Corredor — informe mensual")
     ap.add_argument("--mes", default="auto", help="YYYY-MM o 'auto' (el mes anterior)")
     ap.add_argument("--pdf", action="store_true")
+    # Desde la edición de noviembre de 2026 el informe por defecto es el v2
+    # (informe_v2.py). --v1 vuelve al informe anterior, que sale byte por byte igual
+    # que antes. --v2 queda aceptado para no romper llamadas viejas: es el default.
+    ap.add_argument("--v1", action="store_true", help="armar el informe anterior (v1) en lugar del v2")
+    ap.add_argument("--v2", action="store_true", help=argparse.SUPPRESS)
+    ap.add_argument("--salida", default=None, help="carpeta de salida (default: output/)")
     a = ap.parse_args()
+    if a.v1 and a.v2:
+        ap.error("--v1 y --v2 se excluyen")
+    a.v2 = not a.v1
+    salida = Path(a.salida) if a.salida else SALIDA
 
     if a.mes == "auto":
         hoy = date.today()
@@ -480,20 +490,34 @@ def main() -> int:
     else:
         ym = a.mes
 
-    print(f"El Corredor · {ym}")
-    p = D.cargar(ym)
+    print(f"El Corredor{' v2' if a.v2 else ''} · {ym}")
+    if a.v2:
+        import datos_v2 as D2
+        import informe_v2 as I2
+        p, extra = D2.cargar(ym)
+    else:
+        p = D.cargar(ym)
     print(f"  {len(p.ruedas_mes)} ruedas · cierre {G.ars(p.cierre['ars'])} · {len(p.inmag)} ruedas de histórico")
     if p.faltantes:
         print(f"  ⚠ sin dato: {', '.join(p.faltantes)}")
 
-    html = construir(p)
-    SALIDA.mkdir(parents=True, exist_ok=True)
-    hp = SALIDA / f"el-corredor-{ym}.html"
+    if a.v2:
+        if extra.faltantes:
+            print(f"  ⚠ sin dato (v2): {', '.join(extra.faltantes)}")
+        for aviso in extra.avisos:
+            print(f"  ⚠ control: {aviso}")
+        html, sin_dato = I2.construir(p, extra)
+        if sin_dato:
+            print(f"  ⚠ páginas que no van por falta de dato: {', '.join(sin_dato)}")
+    else:
+        html = construir(p)
+    salida.mkdir(parents=True, exist_ok=True)
+    hp = salida / f"el-corredor-{ym}.html"
     hp.write_text(html, encoding="utf-8")
     print(f"  HTML: {hp} ({len(html)//1024} KB)")
 
     if a.pdf:
-        pp = SALIDA / f"el-corredor-{ym}.pdf"
+        pp = salida / f"el-corredor-{ym}.pdf"
         if a_pdf(hp, pp):
             print(f"  PDF: {pp} ({pp.stat().st_size//1024} KB)")
         else:

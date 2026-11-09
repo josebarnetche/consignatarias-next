@@ -7,6 +7,45 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.259.1] — 2026-11-08
+
+### Corregido
+- **El Corredor llega a todos, no a los primeros 80.** El envío del día 1 se topea por día (`capForFreePlan`) y lo que pasaba del tope no salía nunca: **17 de 97** en septiembre y **34 de 114** en octubre (`cron_runs`). Ahora cada envío queda en `el_corredor_envios` (edición, tipo, correo) y `/api/el-corredor/blast` manda solo a quien no tiene fila. `el-corredor-continuar.yml` (días 2 a 7, 15:00 ART) lo llama con `mode: "continuar"` hasta terminar; si el día 1 no mandó nada, `continuar` no abre la edición. Re-disparar el envío del día 1 ya no duplica, y un rechazo de Resend queda pendiente para el día siguiente.
+- **Pedir El Corredor no le quita a nadie su mail.** `/api/el-corredor/subscribe` hacía upsert con `source='el-corredor'`: quien estaba por el cierre mensual, la faena o el canon de arrendamiento dejaba de recibirlo. Ahora el source se conserva y el pedido se marca en `newsletter_subscribers.el_corredor`; el envío y la invitación (`/api/el-corredor/invitar`) lo leen. La audiencia (`EL_CORREDOR_AUDIENCE`) pasa a `src/lib/newsletter-segments.ts`.
+- Migración `20261106_el_corredor_envios.sql` (columna + tabla con RLS, sin acceso para anon/authenticated). Tests nuevos: `blast/route.test.ts` (6) y `subscribe/route.test.ts` (3).
+
+## [1.259.0] — 2026-11-08
+
+### Agregado
+- **Una página por edición de El Corredor**, `/el-corredor/[edicion]` (p. ej. `/el-corredor/octubre-2026`), estática desde el manifest: los cinco hechos del mes en HTML, lo que la edición no pudo medir, tapa y PDF, compartir (WhatsApp primero) con la cita lista, alta a la próxima y navegación entre ediciones.
+- **Piezas compartibles** leídas del manifest (`piezas: [{ tipo, ruta, titulo, texto? }]`, ver `src/lib/el-corredor-ediciones.ts`): en el celular se comparte la imagen con Web Share y, si no se puede, `wa.me`; sin piezas, la sección no aparece.
+- `opengraph-image` por edición con el primer hecho; JSON-LD `Report` (helper `buildReport` en `schemas.ts`); archivo en `/el-corredor#archivo` y una URL por edición en el sitemap.
+- Respaldo de hechos de septiembre y octubre en `src/lib/data/el-corredor-hechos.json`; si el manifest trae `hechos`, manda el manifest.
+- Eventos GA4: `el_corredor_pdf`, `el_corredor_pieza_compartir`, `el_corredor_pieza_descarga`.
+
+## [1.258.0] — 2026-11-08
+
+### Agregado
+- **El Corredor v2 es el formato mensual por defecto** (`scripts/monthly-report/`: `informe_v2.py`, `datos_v2.py`, `graficos_v2.py`, `plantilla_v2.html`, `piezas.py`); `--v1` arma el anterior. Reemplaza a los PR #126 y #128.
+- **Fuentes públicas en la corrida mensual** (`fuentes_nuevas/`, tolerantes a fallo: si una no baja queda el cache con su fecha y la página se omite; flag `--sin-fuentes-nuevas`). Páginas nuevas, 17 en total:
+  - **Precio real:** novillito e Índice Novillo deflactados por el IPC del INDEC, desde 2017-01.
+  - **Exportación:** toneladas peso producto, USD FOB, USD/t con y sin la 0202.20 y destinos contra el año anterior.
+  - **Faena y stock nacional:** % de hembras, categorías, peso de res y producción (MAGyP); stock al 31/12 desde 2012 (SENASA).
+  - **Clima:** RONI (índice operativo del CPC desde el 01-02-2026) con el ONI, y lluvias contra la normal 1991–2020 en 16 estaciones.
+- Semáforo con faena y peso de res; línea de ausencias con el feedlot; piezas nuevas (destinos, hembras nacional). La FAO no se publica (licencia).
+- Sale la planilla "Tu lote, tu cuenta"; la metodología remite a `/valuar-hacienda`.
+- `el-corredor-publish.yml` instala poppler y commitea `cache/externa-*.json`; no cambian ni el cron ni el disparador.
+
+## [1.257.1] — 2026-11-08
+
+### Seguridad
+- **Tres alertas de Dependabot cerradas con `pnpm.overrides`** (todas transitivas):
+  - `follow-redirects` 1.16.1 → 1.16.2 (alta, viene por `axios` de `@coinbase/cdp-sdk`): podía reenviar credenciales en un redirect.
+  - `zod` 3.25.76 → 4.6.7 (alta, lo pedía `@coinbase/cdp-sdk` y `abitype`): agotamiento de memoria con colecciones grandes. No hay parche en la rama 3; se probó la firma JWT de `@coinbase/cdp-sdk/auth` (lo único que usa `src/lib/x402.ts`) con zod 4.
+  - `minimatch` (moderada, DoS por patrones): `rimraf` 5 → 6.1.4 (trae `glob` 14 con `minimatch` 11) y la copia 10.x de `@typescript-eslint/typescript-estree` → 11.0.4. **No se forzó `minimatch` 11 sobre `glob` 10:** no da error pero deja de encontrar archivos.
+- **`minimatch` 3.1.5 (la que pide ESLint 9 y sus plugins) → adaptador local `vendor/minimatch-v3-compat`.** ESLint, `@eslint/eslintrc`, `@eslint/config-array`, `eslint-plugin-import`, `-jsx-a11y` y `-react` piden `^3` y la usan como función por defecto (`require('minimatch')(…)`, `import minimatch from`), que la 11 no exporta; ni sus últimas versiones la actualizaron. El adaptador se llama `minimatch` 3.99.0 y devuelve la función `minimatch` de la 11, que ya trae colgados `Minimatch`, `filter`, `sep` y el resto (override `minimatch@<4` → `file:`). Lo único que esos paquetes llaman es `minimatch()` y `new Minimatch()`. Verificado: ESLint recorre los mismos 1069 archivos con 0 mensajes que antes, una violación de prueba sigue saltando y `pnpm audit` (con dev) queda sin vulnerabilidades. `vendor/**` va al `ignores` de ESLint.
+- **Cuando se actualice ESLint**, si ya pide `minimatch` ≥ 11, borrar `vendor/minimatch-v3-compat` y su override.
+
 ## [1.257.0] — 2026-11-05
 
 ### Agregado

@@ -8,6 +8,8 @@ import { getCurrentSession } from '@/lib/user-tier'
 import { createAdminClient } from '@/lib/supabase-server'
 import { SubscribeForm } from './SubscribeForm'
 import { SectionBreadcrumbSchema, TechArticleSchema } from '@/components/seo/JsonLd'
+import { getEdiciones } from '@/lib/el-corredor-archivo'
+import { fechaLarga } from '@/lib/el-corredor-ediciones'
 
 // El stat de cabezas por consignatario lee la DB en vivo; sin esto, el Data Cache
 // de Next sirve el query de Supabase con lag (se veía 7.5k vs 35.6k reales).
@@ -128,6 +130,8 @@ export default async function ElCorredorLanding() {
   const { user } = await getCurrentSession()
   const userEmail = user?.email ?? null
   const consigStats = await getMonthlyConsignatarioStats()
+  const ediciones = getEdiciones()
+  const vigente = ediciones.find((e) => e.esVigente) ?? ediciones[0]
   return (
     <div className="min-h-screen bg-zinc-950">
       <SectionBreadcrumbSchema section="el-corredor" sectionName="El Corredor" />
@@ -191,6 +195,18 @@ export default async function ElCorredorLanding() {
               <p className="text-xs font-mono text-zinc-600 mt-4">
                 Sin tarjeta. Sin trial. Próxima edición en {NEXT_SALE}. Te podés desuscribir en cualquier momento.
               </p>
+
+              {vigente && (
+                <p className="mt-6 text-sm font-mono">
+                  <Link href={vigente.path} className="text-sky-400 underline-offset-4 hover:underline">
+                    {vigente.hechos.length ? `Leé los cinco hechos de ${vigente.titulo.toLowerCase()} →` : `Abrí la edición de ${vigente.titulo.toLowerCase()} →`}
+                  </Link>
+                  <span className="mx-2 text-zinc-700">·</span>
+                  <a href="#archivo" className="text-zinc-500 hover:text-zinc-300">
+                    {ediciones.length} ediciones en el archivo
+                  </a>
+                </p>
+              )}
             </div>
 
             {/* RIGHT: cover preview */}
@@ -213,6 +229,45 @@ export default async function ElCorredorLanding() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ARCHIVO — todas las ediciones, de la más nueva a la más vieja */}
+      <section id="archivo" className="border-b border-zinc-800 scroll-mt-20">
+        <div className="max-w-6xl mx-auto px-4 py-16 lg:py-20">
+          <div className="text-xs font-mono uppercase tracking-[0.22em] text-sky-400 font-semibold mb-4">
+            · Archivo
+          </div>
+          <h2 className="text-3xl lg:text-4xl font-mono font-bold text-ink tracking-tight mb-8">Todas las ediciones</h2>
+          <ul className="border border-zinc-800 rounded divide-y divide-zinc-800">
+            {ediciones.map((e) => (
+              <li key={e.ym} className="flex flex-col gap-2 px-4 py-4 sm:flex-row sm:items-center sm:justify-between bg-zinc-950">
+                <div className="min-w-0">
+                  <Link href={e.path} className="font-mono font-semibold text-ink hover:text-sky-400">
+                    {e.titulo}
+                  </Link>
+                  <span className="ml-3 text-xs font-mono text-zinc-500">
+                    Edición {e.numero}
+                    {e.esVigente && <span className="text-sky-400"> · la más reciente</span>}
+                  </span>
+                  {e.hechos[0] && (
+                    <p className="mt-1 text-sm font-mono text-zinc-400 leading-relaxed">{e.hechos[0]}</p>
+                  )}
+                </div>
+                <div className="flex shrink-0 gap-4 text-xs font-mono uppercase tracking-widest">
+                  <Link href={e.path} className="text-sky-400 hover:text-sky-300">
+                    {e.hechos.length ? 'Hechos' : 'Ver'}
+                  </Link>
+                  <a href={e.pdfPath} target="_blank" rel="noopener" className="text-zinc-400 hover:text-zinc-200">
+                    PDF
+                  </a>
+                  {fechaLarga(e.publicadaEl) && (
+                    <span className="hidden text-zinc-600 normal-case tracking-normal sm:inline">{fechaLarga(e.publicadaEl)}</span>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 

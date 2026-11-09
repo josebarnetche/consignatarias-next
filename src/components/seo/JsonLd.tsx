@@ -12,11 +12,13 @@ import {
   buildRemateEvent,
   buildRematesItemList,
   buildRemateVideo,
+  buildReport,
   finDelAnioSiguiente,
   type BreadcrumbNodo,
   type DatasetInput,
   type RemateEventInput,
   type RemateEventOpts,
+  type ReportInput,
 } from '@/lib/seo/schemas'
 
 // Server components: ninguno usa hooks ni estado. Sin 'use client' el JSON-LD sale
@@ -747,4 +749,9 @@ export function GuiaPremiumSchema({
   };
 
   return <Ld data={schema} />;
+}
+
+/** Report (una edición de un informe periódico). La lógica vive en buildReport (schemas.ts). */
+export function ReportSchema(props: ReportInput) {
+  return <Ld data={buildReport(props)} />;
 }

@@ -1,0 +1,2266 @@
+{
+ "version_esquema": 1,
+ "id": "ipc-empalmado-2006",
+ "unidad": "índice dic-2016=100 (empalmado)",
+ "frecuencia": "mensual",
+ "puntos": [
+  {
+   "periodo": "2006-01",
+   "indice": 8.715945720557212,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 119.32,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2006-02",
+   "indice": 8.732746487534484,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 119.55,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2006-03",
+   "indice": 8.804332364220254,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 120.53,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2006-04",
+   "indice": 8.854004197022626,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 121.21,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2006-05",
+   "indice": 8.883953390329939,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 121.62,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2006-06",
+   "indice": 8.929972882485076,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 122.25,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2006-07",
+   "indice": 8.957000203274601,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 122.62,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2006-08",
+   "indice": 8.974531438381321,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 122.86,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2006-09",
+   "indice": 9.012515781112546,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 123.38,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2006-10",
+   "indice": 9.057074337008789,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 123.99,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2006-11",
+   "indice": 9.151304725707405,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 125.28,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2006-12",
+   "indice": 9.300320224114518,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 127.32,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2007-01",
+   "indice": 9.404046698495941,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 128.74,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2007-02",
+   "indice": 9.466136489498904,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 129.59,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2007-03",
+   "indice": 9.564749686974197,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 130.94,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2007-04",
+   "indice": 9.781698721419849,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 133.91,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2007-05",
+   "indice": 9.985499329535457,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 136.7,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2007-06",
+   "indice": 10.250659260524587,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 140.33,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2007-07",
+   "indice": 10.51216685086648,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 143.91,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2007-08",
+   "indice": 10.86133061674197,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 148.69,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2007-09",
+   "indice": 11.079010119317067,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 151.67,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2007-10",
+   "indice": 11.237521703406985,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 153.84,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2007-11",
+   "indice": 11.192232679381295,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 153.22,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2007-12",
+   "indice": 11.30180289879829,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 154.72,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2008-01",
+   "indice": 11.530439423315086,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 157.85,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2008-02",
+   "indice": 11.788294673009746,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 161.38,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2008-03",
+   "indice": 12.267481765926737,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 167.94,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2008-04",
+   "indice": 12.634176766908947,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 172.96,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2008-05",
+   "indice": 12.66558689647515,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 173.39,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2008-06",
+   "indice": 12.972383510842736,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 177.59,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2008-07",
+   "indice": 13.15427007507495,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 180.08,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2008-08",
+   "indice": 13.261648890103604,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 181.55,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2008-09",
+   "indice": 13.404820643475142,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 183.51,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2008-10",
+   "indice": 13.482980733325933,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 184.58,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2008-11",
+   "indice": 13.569175972600634,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 185.76,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2008-12",
+   "indice": 13.629804827344707,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 186.59,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2009-01",
+   "indice": 13.787585943305178,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 188.75,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2009-02",
+   "indice": 13.786125007046286,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 188.73,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2009-03",
+   "indice": 14.10826145213225,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 193.14,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2009-04",
+   "indice": 14.365386233697464,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 196.66,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2009-05",
+   "indice": 14.489565815703394,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 198.36,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2009-06",
+   "indice": 14.566264969295288,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 199.41,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2009-07",
+   "indice": 14.712358595184615,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 201.41,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2009-08",
+   "indice": 14.985553675597655,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 205.15,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2009-09",
+   "indice": 15.216381604502791,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 208.31,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2009-10",
+   "indice": 15.469123577291324,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 211.77,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2009-11",
+   "indice": 15.646627332746855,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 214.2,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2009-12",
+   "indice": 16.147728469547246,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 221.06,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2010-01",
+   "indice": 16.505657852976096,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 225.96,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2010-02",
+   "indice": 17.22443849235158,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 235.8,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2010-03",
+   "indice": 17.677328732608494,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 242.0,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2010-04",
+   "indice": 17.91911368345533,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 245.31,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2010-05",
+   "indice": 18.20253531768062,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 249.19,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2010-06",
+   "indice": 18.40049218076066,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 251.9,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2010-07",
+   "indice": 18.670034920526465,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 255.59,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2010-08",
+   "indice": 18.867991783606506,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 258.3,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2010-09",
+   "indice": 19.16748371667962,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 262.4,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2010-10",
+   "indice": 19.79349490361539,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 270.97,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2010-11",
+   "indice": 20.168955522150956,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 276.11,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2010-12",
+   "indice": 20.51227554299087,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 280.81,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2011-01",
+   "indice": 20.73799019498988,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 283.9,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2011-02",
+   "indice": 20.96151344260055,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 286.96,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2011-03",
+   "indice": 21.51886062536833,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 294.59,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2011-04",
+   "indice": 22.077668744395005,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 302.24,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2011-05",
+   "indice": 22.461894980483933,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 307.5,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2011-06",
+   "indice": 22.800101724417722,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 312.13,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2011-07",
+   "indice": 23.196745918707244,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 317.56,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2011-08",
+   "indice": 23.760667314640042,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 325.28,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2011-09",
+   "indice": 24.21647942741474,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 331.52,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2011-10",
+   "indice": 24.483100294662766,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 335.17,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2011-11",
+   "indice": 24.823498442984892,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 339.83,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2011-12",
+   "indice": 25.28661523705406,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 346.17,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2012-01",
+   "indice": 25.57880248883271,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 350.17,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2012-02",
+   "indice": 25.954993575497728,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 355.32,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2012-03",
+   "indice": 26.834477203351472,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 367.36,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2012-04",
+   "indice": 27.371371278494745,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 374.71,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2012-05",
+   "indice": 27.893655991049087,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 381.86,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2012-06",
+   "indice": 28.26619473706687,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 386.96,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2012-07",
+   "indice": 28.96817460946508,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 396.57,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2012-08",
+   "indice": 29.264014201890973,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 400.62,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2012-09",
+   "indice": 29.724209123442346,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 406.92,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2012-10",
+   "indice": 30.168333746145898,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 413.0,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2012-11",
+   "indice": 30.74102075963206,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 420.84,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2012-12",
+   "indice": 31.104063419967037,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 425.81,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2013-01",
+   "indice": 31.622695791874147,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 432.91,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2013-02",
+   "indice": 32.41525371232374,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 443.76,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2013-03",
+   "indice": 33.21803818658559,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 454.75,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2013-04",
+   "indice": 33.76077600676444,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 462.18,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2013-05",
+   "indice": 34.40577936506581,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 471.01,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2013-06",
+   "indice": 35.21294664810434,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 482.06,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2013-07",
+   "indice": 36.009887377330614,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 492.97,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2013-08",
+   "indice": 36.69360554649266,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 502.33,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2013-09",
+   "indice": 37.3912026101142,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 511.88,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2013-10",
+   "indice": 38.64249451585628,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 529.01,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2013-11",
+   "indice": 39.74623185945014,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 544.12,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2013-12",
+   "indice": 41.039890916700124,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 561.83,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2014-01",
+   "indice": 42.757221489029156,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 585.34,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2014-02",
+   "indice": 45.82372669644612,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 627.32,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2014-03",
+   "indice": 47.65501029696882,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 652.39,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2014-04",
+   "indice": 48.63822039920399,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 665.85,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2014-05",
+   "indice": 49.87928575113382,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 682.84,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2014-06",
+   "indice": 50.77703108222373,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 695.13,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2014-07",
+   "indice": 51.77631148330672,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 708.81,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2014-08",
+   "indice": 53.078005689980614,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 726.63,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2014-09",
+   "indice": 54.720098044976645,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 749.11,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2014-10",
+   "indice": 55.406738086656475,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 758.51,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2014-11",
+   "indice": 56.21974911473059,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 769.64,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2014-12",
+   "indice": 57.04883044165251,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 780.99,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2015-01",
+   "indice": 57.907130493752305,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 792.74,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2015-02",
+   "indice": 59.066383415184106,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 808.61,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2015-03",
+   "indice": 60.28115191445386,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 825.24,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2015-04",
+   "indice": 61.38050644927103,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 840.29,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2015-05",
+   "indice": 62.58212652221075,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 856.74,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2015-06",
+   "indice": 63.27680171331449,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 866.25,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2015-07",
+   "indice": 64.73481609968998,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 886.21,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2015-08",
+   "indice": 65.9744205153609,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 903.18,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2015-09",
+   "indice": 67.58510274079073,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 925.23,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2015-10",
+   "indice": 68.52010194648241,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 938.03,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2015-11",
+   "indice": 70.4872526190822,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 964.96,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2015-12",
+   "indice": 75.05852217315922,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 1027.54,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2016-01",
+   "indice": 78.20537887481531,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 1070.62,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2016-02",
+   "indice": 80.32665832272833,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 1099.66,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2016-03",
+   "indice": 82.71748051040716,
+   "empalmada": true,
+   "fuente": "Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100",
+   "serie_id": "197.1_NIVEL_GENERAL_2014_0_13",
+   "indice_original": 1132.39,
+   "enlace": "2016-04"
+  },
+  {
+   "periodo": "2016-04",
+   "indice": 85.5254,
+   "empalmada": true,
+   "fuente": "INDEC · IPC-GBA, nivel general, base dic-2016=100",
+   "serie_id": "101.1_I2NG_2016_M_22",
+   "indice_original": 85.5254,
+   "enlace": "2016-12"
+  },
+  {
+   "periodo": "2016-05",
+   "indice": 89.1118,
+   "empalmada": true,
+   "fuente": "INDEC · IPC-GBA, nivel general, base dic-2016=100",
+   "serie_id": "101.1_I2NG_2016_M_22",
+   "indice_original": 89.1118,
+   "enlace": "2016-12"
+  },
+  {
+   "periodo": "2016-06",
+   "indice": 91.8528,
+   "empalmada": true,
+   "fuente": "INDEC · IPC-GBA, nivel general, base dic-2016=100",
+   "serie_id": "101.1_I2NG_2016_M_22",
+   "indice_original": 91.8528,
+   "enlace": "2016-12"
+  },
+  {
+   "periodo": "2016-07",
+   "indice": 93.73279999999998,
+   "empalmada": true,
+   "fuente": "INDEC · IPC-GBA, nivel general, base dic-2016=100",
+   "serie_id": "101.1_I2NG_2016_M_22",
+   "indice_original": 93.7328,
+   "enlace": "2016-12"
+  },
+  {
+   "periodo": "2016-08",
+   "indice": 93.92209999999999,
+   "empalmada": true,
+   "fuente": "INDEC · IPC-GBA, nivel general, base dic-2016=100",
+   "serie_id": "101.1_I2NG_2016_M_22",
+   "indice_original": 93.9221,
+   "enlace": "2016-12"
+  },
+  {
+   "periodo": "2016-09",
+   "indice": 95.00140000000002,
+   "empalmada": true,
+   "fuente": "INDEC · IPC-GBA, nivel general, base dic-2016=100",
+   "serie_id": "101.1_I2NG_2016_M_22",
+   "indice_original": 95.0014,
+   "enlace": "2016-12"
+  },
+  {
+   "periodo": "2016-10",
+   "indice": 97.2428,
+   "empalmada": true,
+   "fuente": "INDEC · IPC-GBA, nivel general, base dic-2016=100",
+   "serie_id": "101.1_I2NG_2016_M_22",
+   "indice_original": 97.2428,
+   "enlace": "2016-12"
+  },
+  {
+   "periodo": "2016-11",
+   "indice": 98.8166,
+   "empalmada": true,
+   "fuente": "INDEC · IPC-GBA, nivel general, base dic-2016=100",
+   "serie_id": "101.1_I2NG_2016_M_22",
+   "indice_original": 98.8166,
+   "enlace": "2016-12"
+  },
+  {
+   "periodo": "2016-12",
+   "indice": 100.0,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 100.0
+  },
+  {
+   "periodo": "2017-01",
+   "indice": 101.5859,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 101.5859,
+   "var_mensual_pct": 1.6
+  },
+  {
+   "periodo": "2017-02",
+   "indice": 103.6859,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 103.6859,
+   "var_mensual_pct": 2.1
+  },
+  {
+   "periodo": "2017-03",
+   "indice": 106.1476,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 106.1476,
+   "var_mensual_pct": 2.4
+  },
+  {
+   "periodo": "2017-04",
+   "indice": 108.9667,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 108.9667,
+   "var_mensual_pct": 2.7
+  },
+  {
+   "periodo": "2017-05",
+   "indice": 110.5301,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 110.5301,
+   "var_mensual_pct": 1.4
+  },
+  {
+   "periodo": "2017-06",
+   "indice": 111.8477,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 111.8477,
+   "var_mensual_pct": 1.2
+  },
+  {
+   "periodo": "2017-07",
+   "indice": 113.7852,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 113.7852,
+   "var_mensual_pct": 1.7
+  },
+  {
+   "periodo": "2017-08",
+   "indice": 115.3819,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 115.3819,
+   "var_mensual_pct": 1.4
+  },
+  {
+   "periodo": "2017-09",
+   "indice": 117.5719,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 117.5719,
+   "var_mensual_pct": 1.9
+  },
+  {
+   "periodo": "2017-10",
+   "indice": 119.3528,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 119.3528,
+   "var_mensual_pct": 1.5
+  },
+  {
+   "periodo": "2017-11",
+   "indice": 120.994,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 120.994,
+   "var_mensual_pct": 1.4
+  },
+  {
+   "periodo": "2017-12",
+   "indice": 124.7956,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 124.7956,
+   "var_mensual_pct": 3.1
+  },
+  {
+   "periodo": "2018-01",
+   "indice": 126.9887,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 126.9887,
+   "var_mensual_pct": 1.8
+  },
+  {
+   "periodo": "2018-02",
+   "indice": 130.0606,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 130.0606,
+   "var_mensual_pct": 2.4
+  },
+  {
+   "periodo": "2018-03",
+   "indice": 133.1054,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 133.1054,
+   "var_mensual_pct": 2.3
+  },
+  {
+   "periodo": "2018-04",
+   "indice": 136.7512,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 136.7512,
+   "var_mensual_pct": 2.7
+  },
+  {
+   "periodo": "2018-05",
+   "indice": 139.5893,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 139.5893,
+   "var_mensual_pct": 2.1
+  },
+  {
+   "periodo": "2018-06",
+   "indice": 144.8053,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 144.8053,
+   "var_mensual_pct": 3.7
+  },
+  {
+   "periodo": "2018-07",
+   "indice": 149.2966,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 149.2966,
+   "var_mensual_pct": 3.1
+  },
+  {
+   "periodo": "2018-08",
+   "indice": 155.1034,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 155.1034,
+   "var_mensual_pct": 3.9
+  },
+  {
+   "periodo": "2018-09",
+   "indice": 165.2383,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 165.2383,
+   "var_mensual_pct": 6.5
+  },
+  {
+   "periodo": "2018-10",
+   "indice": 174.1473,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 174.1473,
+   "var_mensual_pct": 5.4
+  },
+  {
+   "periodo": "2018-11",
+   "indice": 179.6388,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 179.6388,
+   "var_mensual_pct": 3.2
+  },
+  {
+   "periodo": "2018-12",
+   "indice": 184.2552,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 184.2552,
+   "var_mensual_pct": 2.6
+  },
+  {
+   "periodo": "2019-01",
+   "indice": 189.6101,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 189.6101,
+   "var_mensual_pct": 2.9
+  },
+  {
+   "periodo": "2019-02",
+   "indice": 196.7501,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 196.7501,
+   "var_mensual_pct": 3.8
+  },
+  {
+   "periodo": "2019-03",
+   "indice": 205.9571,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 205.9571,
+   "var_mensual_pct": 4.7
+  },
+  {
+   "periodo": "2019-04",
+   "indice": 213.0517,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 213.0517,
+   "var_mensual_pct": 3.4
+  },
+  {
+   "periodo": "2019-05",
+   "indice": 219.5691,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 219.5691,
+   "var_mensual_pct": 3.1
+  },
+  {
+   "periodo": "2019-06",
+   "indice": 225.537,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 225.537,
+   "var_mensual_pct": 2.7
+  },
+  {
+   "periodo": "2019-07",
+   "indice": 230.494,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 230.494,
+   "var_mensual_pct": 2.2
+  },
+  {
+   "periodo": "2019-08",
+   "indice": 239.6077,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 239.6077,
+   "var_mensual_pct": 4.0
+  },
+  {
+   "periodo": "2019-09",
+   "indice": 253.7102,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 253.7102,
+   "var_mensual_pct": 5.9
+  },
+  {
+   "periodo": "2019-10",
+   "indice": 262.0661,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 262.0661,
+   "var_mensual_pct": 3.3
+  },
+  {
+   "periodo": "2019-11",
+   "indice": 273.2158,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 273.2158,
+   "var_mensual_pct": 4.3
+  },
+  {
+   "periodo": "2019-12",
+   "indice": 283.4442,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 283.4442,
+   "var_mensual_pct": 3.7
+  },
+  {
+   "periodo": "2020-01",
+   "indice": 289.8299,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 289.8299,
+   "var_mensual_pct": 2.3
+  },
+  {
+   "periodo": "2020-02",
+   "indice": 295.666,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 295.666,
+   "var_mensual_pct": 2.0
+  },
+  {
+   "periodo": "2020-03",
+   "indice": 305.5515,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 305.5515,
+   "var_mensual_pct": 3.3
+  },
+  {
+   "periodo": "2020-04",
+   "indice": 310.1243,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 310.1243,
+   "var_mensual_pct": 1.5
+  },
+  {
+   "periodo": "2020-05",
+   "indice": 314.9087,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 314.9087,
+   "var_mensual_pct": 1.5
+  },
+  {
+   "periodo": "2020-06",
+   "indice": 321.9738,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 321.9738,
+   "var_mensual_pct": 2.2
+  },
+  {
+   "periodo": "2020-07",
+   "indice": 328.2014,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 328.2014,
+   "var_mensual_pct": 1.9
+  },
+  {
+   "periodo": "2020-08",
+   "indice": 337.0632,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 337.0632,
+   "var_mensual_pct": 2.7
+  },
+  {
+   "periodo": "2020-09",
+   "indice": 346.6207,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 346.6207,
+   "var_mensual_pct": 2.8
+  },
+  {
+   "periodo": "2020-10",
+   "indice": 359.657,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 359.657,
+   "var_mensual_pct": 3.8
+  },
+  {
+   "periodo": "2020-11",
+   "indice": 371.0211,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 371.0211,
+   "var_mensual_pct": 3.2
+  },
+  {
+   "periodo": "2020-12",
+   "indice": 385.8826,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 385.8826,
+   "var_mensual_pct": 4.0
+  },
+  {
+   "periodo": "2021-01",
+   "indice": 401.5071,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 401.5071,
+   "var_mensual_pct": 4.0
+  },
+  {
+   "periodo": "2021-02",
+   "indice": 415.8595,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 415.8595,
+   "var_mensual_pct": 3.6
+  },
+  {
+   "periodo": "2021-03",
+   "indice": 435.8657,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 435.8657,
+   "var_mensual_pct": 4.8
+  },
+  {
+   "periodo": "2021-04",
+   "indice": 453.6503,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 453.6503,
+   "var_mensual_pct": 4.1
+  },
+  {
+   "periodo": "2021-05",
+   "indice": 468.725,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 468.725,
+   "var_mensual_pct": 3.3
+  },
+  {
+   "periodo": "2021-06",
+   "indice": 483.6049,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 483.6049,
+   "var_mensual_pct": 3.2
+  },
+  {
+   "periodo": "2021-07",
+   "indice": 498.0987,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 498.0987,
+   "var_mensual_pct": 3.0
+  },
+  {
+   "periodo": "2021-08",
+   "indice": 510.3942,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 510.3942,
+   "var_mensual_pct": 2.5
+  },
+  {
+   "periodo": "2021-09",
+   "indice": 528.4968,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 528.4968,
+   "var_mensual_pct": 3.5
+  },
+  {
+   "periodo": "2021-10",
+   "indice": 547.0802,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 547.0802,
+   "var_mensual_pct": 3.5
+  },
+  {
+   "periodo": "2021-11",
+   "indice": 560.9184,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 560.9184,
+   "var_mensual_pct": 2.5
+  },
+  {
+   "periodo": "2021-12",
+   "indice": 582.4575,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 582.4575,
+   "var_mensual_pct": 3.8
+  },
+  {
+   "periodo": "2022-01",
+   "indice": 605.0317,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 605.0317,
+   "var_mensual_pct": 3.9
+  },
+  {
+   "periodo": "2022-02",
+   "indice": 633.4341,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 633.4341,
+   "var_mensual_pct": 4.7
+  },
+  {
+   "periodo": "2022-03",
+   "indice": 676.0566,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 676.0566,
+   "var_mensual_pct": 6.7
+  },
+  {
+   "periodo": "2022-04",
+   "indice": 716.9399,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 716.9399,
+   "var_mensual_pct": 6.0
+  },
+  {
+   "periodo": "2022-05",
+   "indice": 753.147,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 753.147,
+   "var_mensual_pct": 5.1
+  },
+  {
+   "periodo": "2022-06",
+   "indice": 793.0278,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 793.0278,
+   "var_mensual_pct": 5.3
+  },
+  {
+   "periodo": "2022-07",
+   "indice": 851.761,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 851.761,
+   "var_mensual_pct": 7.4
+  },
+  {
+   "periodo": "2022-08",
+   "indice": 911.1316,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 911.1316,
+   "var_mensual_pct": 7.0
+  },
+  {
+   "periodo": "2022-09",
+   "indice": 967.3076,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 967.3076,
+   "var_mensual_pct": 6.2
+  },
+  {
+   "periodo": "2022-10",
+   "indice": 1028.706,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 1028.706,
+   "var_mensual_pct": 6.3
+  },
+  {
+   "periodo": "2022-11",
+   "indice": 1079.2787,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 1079.2787,
+   "var_mensual_pct": 4.9
+  },
+  {
+   "periodo": "2022-12",
+   "indice": 1134.5875,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 1134.5875,
+   "var_mensual_pct": 5.1
+  },
+  {
+   "periodo": "2023-01",
+   "indice": 1202.979,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 1202.979,
+   "var_mensual_pct": 6.0
+  },
+  {
+   "periodo": "2023-02",
+   "indice": 1282.7091,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 1282.7091,
+   "var_mensual_pct": 6.6
+  },
+  {
+   "periodo": "2023-03",
+   "indice": 1381.1601,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 1381.1601,
+   "var_mensual_pct": 7.7
+  },
+  {
+   "periodo": "2023-04",
+   "indice": 1497.2147,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 1497.2147,
+   "var_mensual_pct": 8.4
+  },
+  {
+   "periodo": "2023-05",
+   "indice": 1613.5895,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 1613.5895,
+   "var_mensual_pct": 7.8
+  },
+  {
+   "periodo": "2023-06",
+   "indice": 1709.6115,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 1709.6115,
+   "var_mensual_pct": 6.0
+  },
+  {
+   "periodo": "2023-07",
+   "indice": 1818.0838,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 1818.0838,
+   "var_mensual_pct": 6.3
+  },
+  {
+   "periodo": "2023-08",
+   "indice": 2044.2832,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 2044.2832,
+   "var_mensual_pct": 12.4
+  },
+  {
+   "periodo": "2023-09",
+   "indice": 2304.9242,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 2304.9242,
+   "var_mensual_pct": 12.7
+  },
+  {
+   "periodo": "2023-10",
+   "indice": 2496.273,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 2496.273,
+   "var_mensual_pct": 8.3
+  },
+  {
+   "periodo": "2023-11",
+   "indice": 2816.0628,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 2816.0628,
+   "var_mensual_pct": 12.8
+  },
+  {
+   "periodo": "2023-12",
+   "indice": 3533.1922,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 3533.1922,
+   "var_mensual_pct": 25.5
+  },
+  {
+   "periodo": "2024-01",
+   "indice": 4261.5324,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 4261.5324,
+   "var_mensual_pct": 20.6
+  },
+  {
+   "periodo": "2024-02",
+   "indice": 4825.7881,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 4825.7881,
+   "var_mensual_pct": 13.2
+  },
+  {
+   "periodo": "2024-03",
+   "indice": 5357.0929,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 5357.0929,
+   "var_mensual_pct": 11.0
+  },
+  {
+   "periodo": "2024-04",
+   "indice": 5830.227,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 5830.227,
+   "var_mensual_pct": 8.8
+  },
+  {
+   "periodo": "2024-05",
+   "indice": 6073.717,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 6073.717,
+   "var_mensual_pct": 4.2
+  },
+  {
+   "periodo": "2024-06",
+   "indice": 6351.715,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 6351.715,
+   "var_mensual_pct": 4.6
+  },
+  {
+   "periodo": "2024-07",
+   "indice": 6607.748,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 6607.748,
+   "var_mensual_pct": 4.0
+  },
+  {
+   "periodo": "2024-08",
+   "indice": 6883.441,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 6883.441,
+   "var_mensual_pct": 4.2
+  },
+  {
+   "periodo": "2024-09",
+   "indice": 7122.242,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 7122.242,
+   "var_mensual_pct": 3.5
+  },
+  {
+   "periodo": "2024-10",
+   "indice": 7313.954,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 7313.954,
+   "var_mensual_pct": 2.7
+  },
+  {
+   "periodo": "2024-11",
+   "indice": 7491.431,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 7491.431,
+   "var_mensual_pct": 2.4
+  },
+  {
+   "periodo": "2024-12",
+   "indice": 7694.0075,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 7694.0075,
+   "var_mensual_pct": 2.7
+  },
+  {
+   "periodo": "2025-01",
+   "indice": 7864.1257,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 7864.1257,
+   "var_mensual_pct": 2.2
+  },
+  {
+   "periodo": "2025-02",
+   "indice": 8052.9927,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 8052.9927,
+   "var_mensual_pct": 2.4
+  },
+  {
+   "periodo": "2025-03",
+   "indice": 8353.3158,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 8353.3158,
+   "var_mensual_pct": 3.7
+  },
+  {
+   "periodo": "2025-04",
+   "indice": 8585.6078,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 8585.6078,
+   "var_mensual_pct": 2.8
+  },
+  {
+   "periodo": "2025-05",
+   "indice": 8714.4871,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 8714.4871,
+   "var_mensual_pct": 1.5
+  },
+  {
+   "periodo": "2025-06",
+   "indice": 8855.5681,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 8855.5681,
+   "var_mensual_pct": 1.6
+  },
+  {
+   "periodo": "2025-07",
+   "indice": 9023.973,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 9023.973,
+   "var_mensual_pct": 1.9
+  },
+  {
+   "periodo": "2025-08",
+   "indice": 9193.2441,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 9193.2441,
+   "var_mensual_pct": 1.9
+  },
+  {
+   "periodo": "2025-09",
+   "indice": 9384.0922,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 9384.0922,
+   "var_mensual_pct": 2.1
+  },
+  {
+   "periodo": "2025-10",
+   "indice": 9603.8623,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 9603.8623,
+   "var_mensual_pct": 2.3
+  },
+  {
+   "periodo": "2025-11",
+   "indice": 9841.3581,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 9841.3581,
+   "var_mensual_pct": 2.5
+  },
+  {
+   "periodo": "2025-12",
+   "indice": 10121.3715,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 10121.3715,
+   "var_mensual_pct": 2.8
+  },
+  {
+   "periodo": "2026-01",
+   "indice": 10413.0309,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 10413.0309,
+   "var_mensual_pct": 2.9
+  },
+  {
+   "periodo": "2026-02",
+   "indice": 10714.6255,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 10714.6255,
+   "var_mensual_pct": 2.9
+  },
+  {
+   "periodo": "2026-03",
+   "indice": 11077.0608,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 11077.0608,
+   "var_mensual_pct": 3.4
+  },
+  {
+   "periodo": "2026-04",
+   "indice": 11363.0904,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 11363.0904,
+   "var_mensual_pct": 2.6
+  },
+  {
+   "periodo": "2026-05",
+   "indice": 11607.3937,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 11607.3937,
+   "var_mensual_pct": 2.1
+  },
+  {
+   "periodo": "2026-06",
+   "indice": 11826.4103,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 11826.4103,
+   "var_mensual_pct": 1.9
+  },
+  {
+   "periodo": "2026-07",
+   "indice": 12076.3937,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 12076.3937,
+   "var_mensual_pct": 2.1
+  },
+  {
+   "periodo": "2026-08",
+   "indice": 12276.766,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 12276.766,
+   "var_mensual_pct": 1.7
+  },
+  {
+   "periodo": "2026-09",
+   "indice": 12514.1508,
+   "empalmada": false,
+   "fuente": "INDEC · IPC nacional, nivel general, base dic-2016=100",
+   "serie_id": "ipc-nacional",
+   "indice_original": 12514.1508,
+   "var_mensual_pct": 1.9
+  }
+ ],
+ "procedencia": {
+  "fuente": "Empalme de El Corredor: Dir. Prov. de Estadística y Censos de San Luis · IPC San Luis, base 2003=100 (2006-01..2016-03) + INDEC · IPC-GBA, nivel general, base dic-2016=100 (2016-04..2016-11) + INDEC · IPC nacional, nivel general, base dic-2016=100 (2016-12..)",
+  "url": "https://apis.datos.gob.ar/series/api/series/?ids=197.1_NIVEL_GENERAL_2014_0_13,101.1_I2NG_2016_M_22&start_date=2006-01-01&end_date=2016-12-01&limit=1000&format=json + https://www.indec.gob.ar/ftp/cuadros/economia/serie_ipc_divisiones.csv",
+  "fecha_observacion": "2026-11-02",
+  "fecha_dato": "2026-09",
+  "rezago": "~día 12-15 del mes siguiente (INDEC); la API de datos.gob.ar suma ~1 mes más",
+  "licencia": "CC BY-SA 4.0 · INDEC (https://www.indec.gob.ar/indec/web/Institucional-Indec-TerminosCondiciones). Citar: INDEC, IPC. · tramos viejos: Creative Commons Attribution 4.0 (metadatos del catálogo sspm de apis.datos.gob.ar, https://datos.gob.ar)",
+  "nota": "NO es serie oficial: empalme por retropolación de variaciones en 2016-12 y 2016-04. Antes de 2016-04 refleja el IPC de San Luis, no el nacional. El IPC de INDEC 2007-2015 (intervenido) no se usa."
+ },
+ "columnas": {
+  "indice": "índice empalmado, dic-2016=100",
+  "empalmada": "true si el punto viene de un tramo reescalado",
+  "fuente": "organismo y serie del tramo",
+  "serie_id": "id de la serie de origen",
+  "indice_original": "índice tal cual lo publica la fuente del tramo",
+  "enlace": "mes en que el tramo se pegó al siguiente",
+  "var_mensual_pct": "solo tramo nacional: variación publicada por INDEC"
+ }
+}

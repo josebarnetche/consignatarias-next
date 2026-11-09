@@ -1,0 +1,2 @@
+JAHR;Jan;Feb;Mrz;Apr;Mai;Jun;Jul;Aug;Sep;Okt;Nov;Dez
+2025;;;;;;;;;159.0;;;

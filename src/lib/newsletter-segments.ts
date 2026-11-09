@@ -56,6 +56,23 @@ export const SEGMENT_SOURCES = {
   faena: ['frigorificos'],
 } as const
 
+// El Corredor (monthly market close) goes to the corredor segment AND the other
+// market-interested segments — they subscribed for cattle-market content and the
+// monthly close is exactly that. Excludes product-only sources (exportar-datos).
+// As the corredor segment grows via the lead-magnet CTAs, it becomes the core.
+// Audiencia de El Corredor (PDF mensual, día 1). NO incluir sources que ya tienen
+// su propio email de mercado el mismo período (2026-07-18): 'cierre-mensual' y
+// 'valuation_widget' reciben monthly-close (día 1) y 'frigorificos' recibe faena
+// (día 3) → doble email de mercado. Quedan los que opt-in a El Corredor + el weekly
+// (contenido distinto: digest de remates vs informe mensual).
+export const EL_CORREDOR_AUDIENCE: readonly string[] = [
+  ...SEGMENT_SOURCES.corredor, // 'el-corredor'
+  'reporte-semanal',
+  'remates',
+]
+// Además de estos sources, quien lo pidió estando suscripto por otro lado
+// (newsletter_subscribers.el_corredor = true): lo suman el envío y la invitación.
+
 export type Segment = keyof typeof SEGMENT_SOURCES
 
 /** Sources that asked only for product-update notices — never get market emails. */
