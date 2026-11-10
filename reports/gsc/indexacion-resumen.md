@@ -1,10 +1,10 @@
-# Indexación — 2026-11-09
+# Indexación — 2026-11-10
 
-Inspeccionadas 3845 de 3057 URLs del sitemap.
+Inspeccionadas 3854 de 3053 URLs del sitemap.
 
 | Sección | Inspeccionadas | Indexadas | NO indexadas | % |
 |---|---:|---:|---:|---:|
-| /remates | 1693 | 1253 | 440 | 26% |
+| /remates | 1695 | 1254 | 441 | 26% |
 | /productividad | 479 | 168 | 311 | 65% |
 | /consignatarias | 93 | 72 | 21 | 23% |
 | /frigorificos | 1148 | 1136 | 12 | 1% |
@@ -90,7 +90,7 @@ Inspeccionadas 3845 de 3057 URLs del sitemap.
 | /calidad | 1 | 1 | 0 | 0% |
 | /glosario | 1 | 1 | 0 | 0% |
 | /preguntas-frecuentes | 1 | 1 | 0 | 0% |
-| /el-corredor | 1 | 1 | 0 | 0% |
+| /el-corredor | 8 | 8 | 0 | 0% |
 | /terminos | 1 | 1 | 0 | 0% |
 | /privacidad | 1 | 1 | 0 | 0% |
 | /aviso-legal | 1 | 1 | 0 | 0% |
@@ -114,9 +114,9 @@ Inspeccionadas 3845 de 3057 URLs del sitemap.
 
 | Motivo | URLs |
 |---|---:|
-| Enviada e indexada | 3038 |
+| Enviada e indexada | 3046 |
 | Descubierta: actualmente sin indexar | 476 |
-| Google no reconoce esta URL | 252 |
+| Google no reconoce esta URL | 253 |
 | Rastreada: actualmente sin indexar | 40 |
 | Excluida por una etiqueta "noindex" | 21 |
 | Soft 404 | 8 |
