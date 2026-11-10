@@ -21813,6 +21813,25 @@
     "status": "scheduled"
   },
   {
+    "title": "Consumo y Conserva - 14.00hs.",
+    "consignatariaName": "Colombo y Magliano S.A.",
+    "consignatariaSlug": "colombo-y-magliano-s-a",
+    "date": "2026-11-11",
+    "time": "14:00",
+    "location": "Brandsen, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Brandsen Consumo y Conserva - 14.00hs.",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1152,
+    "status": "scheduled"
+  },
+  {
     "title": "Remate Haciendas generales Bella Vista",
     "consignatariaName": "Reggi & Cía",
     "consignatariaSlug": "reggi-y-cia",
@@ -21829,26 +21848,7 @@
     "source": "tv",
     "sourceUrl": "https://reggiycia.com/remate/32073",
     "status": "scheduled",
-    "id": 1152
-  },
-  {
-    "title": "Consumo y Conserva - 14.00hs.",
-    "consignatariaName": "Colombo y Magliano S.A.",
-    "consignatariaSlug": "colombo-y-magliano-s-a",
-    "date": "2026-11-11",
-    "time": "14:00",
-    "location": "Brandsen, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Brandsen Consumo y Conserva - 14.00hs.",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1153,
-    "status": "scheduled"
+    "id": 1153
   },
   {
     "title": "Haciendas Generales - 14.30hs.",
@@ -22335,7 +22335,7 @@
     "province": "CORDOBA",
     "type": "general",
     "mainCategory": "mixto",
-    "estimatedHeads": 1700,
+    "estimatedHeads": 2800,
     "description": "Remate de Haciendas Generales",
     "youtubeUrl": null,
     "catalogUrl": "https://remates.elrural.com/remate/6778-carlos-j-lanser-coronel-moldes",
@@ -24378,25 +24378,6 @@
     "status": "scheduled"
   },
   {
-    "title": "Haciendas Generales - 11.00hs.",
-    "consignatariaName": "Sociedad Agricola Ganadera Ltda",
-    "consignatariaSlug": "sociedad-agricola-ganadera-ltda",
-    "date": "2026-11-25",
-    "time": "11:00",
-    "location": "General san Martín, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "General san Martín Haciendas Generales - 11.00hs.",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1287,
-    "status": "scheduled"
-  },
-  {
     "title": "Faena, Invernada y Cria - 11.00hs.",
     "consignatariaName": "Sucesores de Brivio",
     "consignatariaSlug": "sucesores-de-brivio",
@@ -24408,6 +24389,25 @@
     "mainCategory": "mixto",
     "estimatedHeads": 400,
     "description": "Tandil Faena, Invernada y Cria - 11.00hs.",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1287,
+    "status": "scheduled"
+  },
+  {
+    "title": "Haciendas Generales - 11.00hs.",
+    "consignatariaName": "Sociedad Agricola Ganadera Ltda",
+    "consignatariaSlug": "sociedad-agricola-ganadera-ltda",
+    "date": "2026-11-25",
+    "time": "11:00",
+    "location": "General san Martín, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "General san Martín Haciendas Generales - 11.00hs.",
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
@@ -24796,6 +24796,25 @@
     "status": "scheduled"
   },
   {
+    "title": "Invernada, Cria y Consumo - 14.00hs.",
+    "consignatariaName": "Colombo y Magliano S.A.",
+    "consignatariaSlug": "colombo-y-magliano-s-a",
+    "date": "2026-11-26",
+    "time": "14:00",
+    "location": "Tapalqué, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Tapalqué Invernada, Cria y Consumo - 14.00hs.",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1309,
+    "status": "scheduled"
+  },
+  {
     "title": "Remate Haciendas generales de Monte Caseros",
     "consignatariaName": "Reggi & Cía",
     "consignatariaSlug": "reggi-y-cia",
@@ -24812,26 +24831,7 @@
     "source": "web",
     "sourceUrl": "https://reggiycia.com/remate/32076",
     "status": "scheduled",
-    "id": 1309
-  },
-  {
-    "title": "Invernada, Cria y Consumo - 14.00hs.",
-    "consignatariaName": "Colombo y Magliano S.A.",
-    "consignatariaSlug": "colombo-y-magliano-s-a",
-    "date": "2026-11-26",
-    "time": "14:00",
-    "location": "Tapalqué, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Tapalqué Invernada, Cria y Consumo - 14.00hs.",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1310,
-    "status": "scheduled"
+    "id": 1310
   },
   {
     "title": "Faena, Invernada y Cria - 15.00hs.",
@@ -25670,6 +25670,25 @@
     "status": "scheduled"
   },
   {
+    "title": "Haciendas Generales - 11.00hs.",
+    "consignatariaName": "Sociedad Agricola Ganadera Ltda",
+    "consignatariaSlug": "sociedad-agricola-ganadera-ltda",
+    "date": "2026-12-17",
+    "time": "11:00",
+    "location": "General San Martín, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "General San Martín Haciendas Generales - 11.00hs.",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1355,
+    "status": "scheduled"
+  },
+  {
     "title": "hacienda gorda",
     "consignatariaName": "EDUARDO A. TRAVAGLIA Y CIA. S.A.",
     "consignatariaSlug": "eduardo-a-travaglia-y-cia-s-a",
@@ -25685,7 +25704,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1355,
+    "id": 1356,
     "status": "scheduled"
   },
   {
@@ -25704,7 +25723,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1356,
+    "id": 1357,
     "status": "scheduled"
   },
   {
@@ -25723,7 +25742,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://cacg.org.ar/remates",
-    "id": 1357,
+    "id": 1358,
     "status": "scheduled"
   },
   {
@@ -25742,7 +25761,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1358,
+    "id": 1359,
     "status": "scheduled"
   },
   {
@@ -25761,7 +25780,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1359,
+    "id": 1360,
     "status": "scheduled"
   },
   {
@@ -25780,7 +25799,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1360,
+    "id": 1361,
     "status": "scheduled"
   },
   {
@@ -25799,7 +25818,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.ferialvarez.com.ar",
-    "id": 1361,
+    "id": 1362,
     "status": "scheduled"
   },
   {
