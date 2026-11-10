@@ -1910,44 +1910,38 @@
   },
   "lastUpdate": "2026-11-10",
   "provinceEntry": {
-    "date": "2026-11-07",
-    "totalCabezas": 4792,
+    "date": "2026-11-10",
+    "totalCabezas": 6275,
     "provinces": [
       {
         "province": "BUENOS AIRES",
-        "enPie": 4093,
-        "total": 4102,
-        "percentage": 85.6
-      },
-      {
-        "province": "SANTA FE",
-        "enPie": 280,
-        "total": 280,
-        "percentage": 5.84
+        "enPie": 4831,
+        "total": 4837,
+        "percentage": 77.08
       },
       {
         "province": "LA PAMPA",
-        "enPie": 191,
-        "total": 191,
-        "percentage": 3.99
+        "enPie": 389,
+        "total": 389,
+        "percentage": 6.2
+      },
+      {
+        "province": "SANTA FE",
+        "enPie": 364,
+        "total": 364,
+        "percentage": 5.8
       },
       {
         "province": "ENTRE RIOS",
-        "enPie": 144,
-        "total": 144,
-        "percentage": 3.01
-      },
-      {
-        "province": "SAN LUIS",
-        "enPie": 57,
-        "total": 57,
-        "percentage": 1.19
+        "enPie": 347,
+        "total": 347,
+        "percentage": 5.53
       },
       {
         "province": "CORDOBA",
-        "enPie": 18,
-        "total": 18,
-        "percentage": 0.38
+        "enPie": 338,
+        "total": 338,
+        "percentage": 5.39
       }
     ]
   },
@@ -2083,83 +2077,196 @@
     ]
   },
   "auctionDayEntries": {
-    "date": "2026-11-05",
+    "date": "2026-11-10",
     "consignatarias": {
-      "campos-y-ganados": {
-        "magId": "110",
-        "totalCabezas": 56,
+      "colombo-y-magliano": {
+        "magId": "165",
+        "totalCabezas": 843,
         "entries": [
           {
-            "remitente": "OCHOA HNOS. S.A.",
-            "localidad": "CASTELLI",
+            "remitente": "ALBERTI MARIANA FERNANDA A. SH",
+            "localidad": "PTE. PERON",
             "provincia": "BUE",
-            "cabezas": 36
+            "cabezas": 11
           },
           {
-            "remitente": "TIERRAS UNIDAS S.A.",
-            "localidad": "RAMALLO",
-            "provincia": "BUE",
-            "cabezas": 20
-          }
-        ],
-        "period": "06/10/2026 - 05/11/2026"
-      },
-      "umc-haciendas-villaguay": {
-        "magId": "48",
-        "totalCabezas": 43,
-        "entries": [
-          {
-            "remitente": "ALBERTO O GONZALES",
-            "localidad": "LAPRIDA",
-            "provincia": "BUE",
-            "cabezas": 7
-          },
-          {
-            "remitente": "COLANTONIO LUCAS ROBERTO",
-            "localidad": "LAPRIDA",
-            "provincia": "BUE",
-            "cabezas": 4
-          },
-          {
-            "remitente": "LORAY GABRIELA SOLEDAD",
-            "localidad": "LAPRIDA",
-            "provincia": "BUE",
-            "cabezas": 5
-          },
-          {
-            "remitente": "MAFFONI PEDRO HORACIO",
-            "localidad": "LAPRIDA",
-            "provincia": "BUE",
-            "cabezas": 2
-          },
-          {
-            "remitente": "RODRIGO ISLAS",
-            "localidad": "LAPRIDA",
+            "remitente": "ALTOJA S.R.L.",
+            "localidad": "BRAGADO",
             "provincia": "BUE",
             "cabezas": 10
           },
           {
-            "remitente": "SACIDO CARLOS D.",
-            "localidad": "LAPRIDA",
+            "remitente": "ATON S.C.A.",
+            "localidad": "BRAGADO",
+            "provincia": "BUE",
+            "cabezas": 4
+          },
+          {
+            "remitente": "CIMERO S.A",
+            "localidad": "GRAL. VILLEGAS",
+            "provincia": "BUE",
+            "cabezas": 88
+          },
+          {
+            "remitente": "DANES S.R.L.",
+            "localidad": "OLAVARRIA",
+            "provincia": "BUE",
+            "cabezas": 37
+          },
+          {
+            "remitente": "DANES S.R.L.",
+            "localidad": "OLAVARRIA",
+            "provincia": "BUE",
+            "cabezas": 37
+          },
+          {
+            "remitente": "ECHENIQUE JERONIMO JOSE",
+            "localidad": "CNEL. SUAREZ",
+            "provincia": "BUE",
+            "cabezas": 7
+          },
+          {
+            "remitente": "FELIX Y MAURICIO CAPECCE",
+            "localidad": "BOLIVAR",
+            "provincia": "BUE",
+            "cabezas": 9
+          },
+          {
+            "remitente": "GANADOS DON RAULIO S.R.L.",
+            "localidad": "SAN A. DE ARECO",
+            "provincia": "BUE",
+            "cabezas": 48
+          },
+          {
+            "remitente": "GARCIA CARLOS ALBERTO",
+            "localidad": "CARLOS TEJEDOR",
+            "provincia": "BUE",
+            "cabezas": 44
+          },
+          {
+            "remitente": "GAVI�A NAON MATIAS",
+            "localidad": "BRAGADO",
+            "provincia": "BUE",
+            "cabezas": 8
+          },
+          {
+            "remitente": "INDUSTRIAS C.E.P. S.A.",
+            "localidad": "TORNQUIST",
+            "provincia": "BUE",
+            "cabezas": 64
+          },
+          {
+            "remitente": "KENTAVROS S.A.E.F.",
+            "localidad": "PERGAMINO",
+            "provincia": "BUE",
+            "cabezas": 31
+          },
+          {
+            "remitente": "LA ESCAMPADA S.A.",
+            "localidad": "AZUL",
+            "provincia": "BUE",
+            "cabezas": 42
+          },
+          {
+            "remitente": "LA ROPA S.A",
+            "localidad": "LEZAMA",
+            "provincia": "BUE",
+            "cabezas": 47
+          },
+          {
+            "remitente": "LA ROPA S.A",
+            "localidad": "LEZAMA",
+            "provincia": "BUE",
+            "cabezas": 48
+          },
+          {
+            "remitente": "LOS AROMOS S.A.",
+            "localidad": "PELLEGRINI",
+            "provincia": "BUE",
+            "cabezas": 19
+          },
+          {
+            "remitente": "LOS AROMOS S.A.",
+            "localidad": "PELLEGRINI",
+            "provincia": "BUE",
+            "cabezas": 12
+          },
+          {
+            "remitente": "MILGUS S.R.L.",
+            "localidad": "AZUL",
+            "provincia": "BUE",
+            "cabezas": 62
+          },
+          {
+            "remitente": "MILGUS S.R.L.",
+            "localidad": "AZUL",
+            "provincia": "BUE",
+            "cabezas": 18
+          },
+          {
+            "remitente": "MILGUS S.R.L.",
+            "localidad": "AZUL",
+            "provincia": "BUE",
+            "cabezas": 80
+          },
+          {
+            "remitente": "MUSCOLO DOMINGO LUIS",
+            "localidad": "GRAL. LAVALLE   B",
+            "provincia": "BUE",
+            "cabezas": 32
+          },
+          {
+            "remitente": "MUSCOLO DOMINGO LUIS",
+            "localidad": "GRAL. LAVALLE   B",
+            "provincia": "BUE",
+            "cabezas": 35
+          },
+          {
+            "remitente": "RAYGRASS S.A.",
+            "localidad": "CASTELLI",
+            "provincia": "BUE",
+            "cabezas": 10
+          },
+          {
+            "remitente": "SANCHEZ ROBERTO ISIDRO",
+            "localidad": "BOLIVAR",
+            "provincia": "BUE",
+            "cabezas": 4
+          },
+          {
+            "remitente": "TORELLO JOSE MARIA",
+            "localidad": "BRAGADO",
+            "provincia": "BUE",
+            "cabezas": 7
+          },
+          {
+            "remitente": "VAQUERO LORENZO VICTOR",
+            "localidad": "BOLIVAR",
             "provincia": "BUE",
             "cabezas": 15
+          },
+          {
+            "remitente": "VOLPI ALEJANDRO JOSE",
+            "localidad": "BOLIVAR",
+            "provincia": "BUE",
+            "cabezas": 14
           }
         ],
-        "period": "06/10/2026 - 05/11/2026"
+        "period": "11/10/2026 - 10/11/2026"
       }
     }
   },
   "consignatarioEntry": {
-    "date": "04/11/2026",
+    "date": "10/11/2026",
     "entries": [
       {
-        "remitente": "BARREIRO PEDRO OSCAR",
-        "localidad": "A. ALSINA",
-        "provincia": "BUE",
-        "enPie": 8,
+        "remitente": "MONTEPARDO AGROP. S.R.L.",
+        "localidad": "HUINCA RENANCO",
+        "provincia": "CBA",
+        "enPie": 11,
         "muertos": 0,
         "caidos": 0,
-        "total": 8
+        "total": 11
       }
     ]
   },
