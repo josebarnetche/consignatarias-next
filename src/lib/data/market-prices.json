@@ -1837,48 +1837,48 @@
   },
   "categories": {
     "novillos": {
-      "current": 4103.17,
+      "current": 4122.91,
       "prev": 4103.17,
-      "change": 0,
+      "change": 0.5,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 821,
-      "observedDate": "10/11/2026"
+      "latestVolume": 226,
+      "observedDate": "11/11/2026"
     },
     "novillitos": {
-      "current": 4473.58,
+      "current": 4171.69,
       "prev": 4473.58,
-      "change": 0,
+      "change": -6.7,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 1601,
-      "observedDate": "10/11/2026"
+      "latestVolume": 599,
+      "observedDate": "11/11/2026"
     },
     "vaquillonas": {
-      "current": 4243.39,
+      "current": 3978.6,
       "prev": 4243.39,
-      "change": 0,
+      "change": -6.2,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 1961,
-      "observedDate": "10/11/2026"
+      "latestVolume": 843,
+      "observedDate": "11/11/2026"
     },
     "vacas": {
-      "current": 2865.53,
+      "current": 2867.63,
       "prev": 2865.53,
-      "change": 0,
+      "change": 0.1,
       "source": "mercadoagroganadero.com.ar (observed)",
-      "latestVolume": 1946,
-      "observedDate": "10/11/2026"
+      "latestVolume": 945,
+      "observedDate": "11/11/2026"
     },
     "toros": {
-      "current": 3325.88,
+      "current": 3298.77,
       "prev": 3325.88,
-      "change": 0,
+      "change": -0.8,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 164,
-      "observedDate": "10/11/2026"
+      "latestVolume": 144,
+      "observedDate": "11/11/2026"
     },
     "terneros": {
       "current": 4513,
@@ -1889,15 +1889,15 @@
   },
   "corn": {
     "current": 222.5,
-    "prev": 222.1,
-    "change": 0.2,
+    "prev": 222.5,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
     "current": 1570,
-    "prev": 1555,
-    "change": 1,
+    "prev": 1570,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
@@ -1908,9 +1908,9 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-11-11",
+  "lastUpdate": "2026-11-12",
   "provinceEntry": {
-    "date": "2026-11-11",
+    "date": "2026-11-12",
     "totalCabezas": 3120,
     "provinces": [
       {
@@ -1946,7 +1946,7 @@
     ]
   },
   "detailedCategories": {
-    "date": "2026-11-11",
+    "date": "2026-11-12",
     "categories": [
       {
         "category": "NOVILLOS Esp.Joven + 430",
@@ -2084,188 +2084,26 @@
     ]
   },
   "auctionDayEntries": {
-    "date": "2026-11-10",
+    "date": "2026-11-12",
     "consignatarias": {
-      "colombo-y-magliano": {
-        "magId": "165",
-        "totalCabezas": 886,
+      "gananor-pujol": {
+        "magId": "520",
+        "totalCabezas": 8,
         "entries": [
           {
-            "remitente": "ALBERTI MARIANA FERNANDA A. SH",
-            "localidad": "PTE. PERON",
-            "provincia": "BUE",
-            "cabezas": 11
+            "remitente": "BRAGULAT FEDERICO SERGIO",
+            "localidad": "GRAL. ROCA      (COR",
+            "provincia": "CBA",
+            "cabezas": 2
           },
           {
-            "remitente": "ALTOJA S.R.L.",
-            "localidad": "BRAGADO",
-            "provincia": "BUE",
-            "cabezas": 10
-          },
-          {
-            "remitente": "ATON S.C.A.",
-            "localidad": "BRAGADO",
-            "provincia": "BUE",
-            "cabezas": 4
-          },
-          {
-            "remitente": "CIMERO S.A",
-            "localidad": "GRAL. VILLEGAS",
-            "provincia": "BUE",
-            "cabezas": 88
-          },
-          {
-            "remitente": "DANES S.R.L.",
-            "localidad": "OLAVARRIA",
-            "provincia": "BUE",
-            "cabezas": 37
-          },
-          {
-            "remitente": "DANES S.R.L.",
-            "localidad": "OLAVARRIA",
-            "provincia": "BUE",
-            "cabezas": 37
-          },
-          {
-            "remitente": "ECHENIQUE JERONIMO JOSE",
-            "localidad": "CNEL. SUAREZ",
-            "provincia": "BUE",
-            "cabezas": 7
-          },
-          {
-            "remitente": "ESTABLECIMIENTO MARALJO S.A.",
-            "localidad": "URUGUAY",
-            "provincia": "ERI",
-            "cabezas": 47
-          },
-          {
-            "remitente": "FELIX Y MAURICIO CAPECCE",
-            "localidad": "BOLIVAR",
-            "provincia": "BUE",
-            "cabezas": 9
-          },
-          {
-            "remitente": "GANADOS DON RAULIO S.R.L.",
-            "localidad": "SAN A. DE ARECO",
-            "provincia": "BUE",
-            "cabezas": 48
-          },
-          {
-            "remitente": "GARCIA CARLOS ALBERTO",
-            "localidad": "CARLOS TEJEDOR",
-            "provincia": "BUE",
-            "cabezas": 44
-          },
-          {
-            "remitente": "GAVI�A NAON MATIAS",
-            "localidad": "BRAGADO",
-            "provincia": "BUE",
-            "cabezas": 8
-          },
-          {
-            "remitente": "INDUSTRIAS C.E.P. S.A.",
-            "localidad": "TORNQUIST",
-            "provincia": "BUE",
-            "cabezas": 64
-          },
-          {
-            "remitente": "KENTAVROS S.A.E.F.",
-            "localidad": "PERGAMINO",
-            "provincia": "BUE",
-            "cabezas": 31
-          },
-          {
-            "remitente": "LA ESCAMPADA S.A.",
-            "localidad": "AZUL",
-            "provincia": "BUE",
-            "cabezas": 42
-          },
-          {
-            "remitente": "LA ROPA S.A",
-            "localidad": "LEZAMA",
-            "provincia": "BUE",
-            "cabezas": 47
-          },
-          {
-            "remitente": "LA ROPA S.A",
-            "localidad": "LEZAMA",
-            "provincia": "BUE",
-            "cabezas": 48
-          },
-          {
-            "remitente": "LOS AROMOS S.A.",
-            "localidad": "PELLEGRINI",
-            "provincia": "BUE",
-            "cabezas": 19
-          },
-          {
-            "remitente": "LOS AROMOS S.A.",
-            "localidad": "PELLEGRINI",
-            "provincia": "BUE",
-            "cabezas": 12
-          },
-          {
-            "remitente": "MILGUS S.R.L.",
-            "localidad": "AZUL",
-            "provincia": "BUE",
-            "cabezas": 62
-          },
-          {
-            "remitente": "MILGUS S.R.L.",
-            "localidad": "AZUL",
-            "provincia": "BUE",
-            "cabezas": 18
-          },
-          {
-            "remitente": "MILGUS S.R.L.",
-            "localidad": "AZUL",
-            "provincia": "BUE",
-            "cabezas": 80
-          },
-          {
-            "remitente": "MUSCOLO DOMINGO LUIS",
-            "localidad": "GRAL. LAVALLE   B",
-            "provincia": "BUE",
-            "cabezas": 32
-          },
-          {
-            "remitente": "MUSCOLO DOMINGO LUIS",
-            "localidad": "GRAL. LAVALLE   B",
-            "provincia": "BUE",
-            "cabezas": 31
-          },
-          {
-            "remitente": "RAYGRASS S.A.",
-            "localidad": "CASTELLI",
-            "provincia": "BUE",
-            "cabezas": 10
-          },
-          {
-            "remitente": "SANCHEZ ROBERTO ISIDRO",
-            "localidad": "BOLIVAR",
-            "provincia": "BUE",
-            "cabezas": 4
-          },
-          {
-            "remitente": "TORELLO JOSE MARIA",
-            "localidad": "BRAGADO",
-            "provincia": "BUE",
-            "cabezas": 7
-          },
-          {
-            "remitente": "VAQUERO LORENZO VICTOR",
-            "localidad": "BOLIVAR",
-            "provincia": "BUE",
-            "cabezas": 15
-          },
-          {
-            "remitente": "VOLPI ALEJANDRO JOSE",
-            "localidad": "BOLIVAR",
-            "provincia": "BUE",
-            "cabezas": 14
+            "remitente": "MARTINEZ ALEJANDRO ALFREDO",
+            "localidad": "HUINCA RENANCO",
+            "provincia": "CBA",
+            "cabezas": 6
           }
         ],
-        "period": "11/10/2026 - 10/11/2026"
+        "period": "13/10/2026 - 12/11/2026"
       }
     }
   },
