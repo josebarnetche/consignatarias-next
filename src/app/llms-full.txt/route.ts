@@ -77,6 +77,7 @@ Todas gratis y sin cupo.
 - price_dispersion_history — serie de la banda P10–P90 por categoría: si la dispersión se abre o se cierra. Página: https://www.consignatarias.com.ar/banda
 - value_cattle_lot — valuación de un lote de hacienda con la banda observada (P10/mediana/P90), ARS y USD.
 - upcoming_auctions — calendario de remates, con filtro por provincia.
+- live_auctions — remates en vivo ahora: al aire con link a la transmisión, en horario según el calendario y más tarde hoy.
 - find_livestock_broker — directorio de consignatarias por nombre o zona, con CUIT.
 - broker_activity_ranking — ranking de cabezas operadas y precio promedio por firma en el MAG.
 - find_meat_plant — frigoríficos habilitados MAGYP/SENASA por nombre, provincia o CUIT.

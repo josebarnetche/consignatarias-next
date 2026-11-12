@@ -7,6 +7,15 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.260.0] — 2026-11-12
+
+### Agregado
+- **MCP: `live_auctions` — qué remate está en vivo AHORA** (alias `remates_en_vivo`, param opcional `provincia`). Usa la misma pared que `/remates/en-vivo` (`construirPared`: YouTube y nuestro capturador) y la cruza con el calendario del día en hora argentina. La respuesta separa `al_aire` (transmisión confirmada, con link), `en_horario` (el calendario lo pone entre su inicio y 3 h después, sin transmisión que lo confirme), `mas_tarde` y `sin_hora`. Si YouTube no contesta en 8 s, responde con el calendario solo. Lógica pura en `src/lib/mcp/remates-ahora.ts` (7 tests); outputSchema propio; cita a `/remates/en-vivo`. Dada de alta en las superficies: `/mcp`, `llms.txt`, `llms-full.txt`, server card e `instructions`.
+
+### Corregido
+- **`upcoming_auctions` no mostraba los remates del día.** Filtraba `status === 'scheduled'` y el scraper marca `live` a todos los de hoy: el 12-11-2026 quedaban afuera los 25 del día y la lista arrancaba mañana. Ahora entran `scheduled` y `live`, también en la región sugerida (`remates-region.ts`).
+- **`upcoming_auctions` usaba la fecha UTC.** De 21 a 24 h (hora argentina) "hoy" ya era mañana y los remates del día desaparecían. Ahora usa la fecha argentina.
+
 ## [1.259.1] — 2026-11-08
 
 ### Corregido

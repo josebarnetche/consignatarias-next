@@ -212,7 +212,7 @@
     {
       "name": "upcoming_auctions",
       "title": "Próximos remates de hacienda",
-      "description": "Calendario de próximos remates de hacienda en Argentina: solo programados, fecha ≥ hoy, ordenados por fecha. Devuelve fecha, hora, consignataria, localidad/provincia, categoría principal y si hay transmisión en vivo. Params: provincia (subcadena, opcional), limite (default 10, máx 50). No da precios ni INMAG: usá livestock_prices/cattle_price_index. [EN] Calendar of upcoming Argentine cattle auctions, filterable by province.",
+      "description": "Calendario de próximos remates de hacienda en Argentina: de hoy (hora argentina) en adelante, ordenados por fecha. Devuelve fecha, hora, consignataria, localidad/provincia, categoría principal y si el remate tiene link de transmisión. Params: provincia (subcadena, opcional), limite (default 10, máx 50). Qué se está rematando AHORA → live_auctions. No da precios ni INMAG: usá livestock_prices/cattle_price_index. [EN] Calendar of upcoming Argentine cattle auctions, filterable by province.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -223,6 +223,28 @@
           "limite": {
             "type": "number",
             "description": "Máximo de remates (default 10)"
+          }
+        },
+        "additionalProperties": false
+      },
+      "annotations": {
+        "title": "Próximos remates de hacienda",
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "live_auctions",
+      "title": "Remates en vivo ahora",
+      "description": "Remates de hacienda en vivo AHORA en Argentina (hora argentina). Separa: al_aire = con transmisión al aire confirmada por YouTube o por nuestro capturador, con el link para verla; en_horario = según el calendario está entre su hora de inicio y 3 h después, sin transmisión que lo confirme (puede estar rematándose sin cámara o haberse corrido); mas_tarde = de hoy, todavía no empezó; sin_hora = de hoy sin hora informada. Param: provincia (subcadena, opcional). Fechas de otros días → upcoming_auctions. No da precios: usá livestock_prices/cattle_price_index. [EN] Argentine cattle auctions live right now: streaming now (with link), within scheduled hours, later today.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "provincia": {
+            "type": "string",
+            "description": "Filtra por provincia (ej. \"Corrientes\")"
           }
         },
         "additionalProperties": false
