@@ -8,6 +8,9 @@ import { validarContacto, consultaALead } from '@/lib/mcp/registrar-lead'
 import { insertarLeadConDedupe } from '@/lib/leads/insertar-lead'
 import type { LeadFila } from '@/lib/mercado/leads-mesa'
 import { rematesDeLaRegion, sugerenciaPedido } from '@/lib/mcp/remates-region'
+import { rematesAhora, ahoraArgentina, type FilaAhora } from '@/lib/mcp/remates-ahora'
+import { construirPared, nombreDeFirma } from '@/lib/remates-en-vivo'
+import { getCanonicalSlug } from '@/lib/data/consignataria-slugs'
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { authenticate } from '@/lib/api-auth'
@@ -126,6 +129,7 @@ const TOOL_TITLES: Record<string, string> = {
   macro_context: 'Contexto macro ganadero',
   herd_liquidation_index: 'Índice de Liquidación (% hembras)',
   upcoming_auctions: 'Próximos remates de hacienda',
+  live_auctions: 'Remates en vivo ahora',
   find_livestock_broker: 'Buscar consignataria',
   broker_activity_ranking: 'Ranking de actividad de consignatarias',
   find_meat_plant: 'Buscar frigorífico',
@@ -344,6 +348,7 @@ const ALIAS_DE_TOOL: Record<string, string> = {
   estacionalidad_precio: 'price_seasonality',
   renta_campo: 'farmland_yield',
   remates_programados: 'upcoming_auctions',
+  remates_en_vivo: 'live_auctions',
   buscar_consignataria: 'find_livestock_broker',
   buscar_frigorifico: 'find_meat_plant',
   actividad_consignatarias: 'broker_activity_ranking',
@@ -434,6 +439,25 @@ const OUTPUT_UPCOMING_AUCTIONS = conFuenteSchema(
     corte: { type: 'string', description: 'Presente solo si el listado se cortó por el techo de consultas.' },
   },
   ['remates'],
+)
+const FILA_AHORA_SCHEMA = {
+  type: 'object',
+  properties: {
+    consignataria: str, consignataria_slug: strONull, hora: strONull, lugar: str,
+    provincia: str, categoria: strONull,
+    ver: { type: ['string', 'null'], description: 'Link a la transmisión. Solo en al_aire.' },
+  },
+  required: ['consignataria', 'consignataria_slug', 'hora', 'lugar', 'provincia', 'categoria', 'ver'],
+}
+const OUTPUT_LIVE_AUCTIONS = conFuenteSchema(
+  {
+    hora_argentina: str,
+    al_aire: { type: 'array', items: FILA_AHORA_SCHEMA, description: 'Con transmisión al aire ahora (YouTube o nuestro capturador).' },
+    en_horario: { type: 'array', items: FILA_AHORA_SCHEMA, description: 'Según el calendario, entre la hora de inicio y 3 h después, sin transmisión que lo confirme.' },
+    mas_tarde: { type: 'array', items: FILA_AHORA_SCHEMA, description: 'Hoy, todavía no empezó.' },
+    sin_hora: { type: 'array', items: FILA_AHORA_SCHEMA, description: 'Hoy, sin hora informada por la firma.' },
+  },
+  ['hora_argentina', 'al_aire', 'en_horario', 'mas_tarde', 'sin_hora'],
 )
 const OUTPUT_VALUE_CATTLE_LOT = conFuenteSchema(
   {
@@ -728,7 +752,7 @@ const TOOLS: Tool[] = [
   {
     name: 'upcoming_auctions',
     description:
-      'Calendario de próximos remates de hacienda en Argentina: solo programados, fecha ≥ hoy, ordenados por fecha. Devuelve fecha, hora, consignataria, localidad/provincia, categoría principal y si hay transmisión en vivo. Params: provincia (subcadena, opcional), limite (default 10, máx 50). No da precios ni INMAG: usá livestock_prices/cattle_price_index. [EN] Calendar of upcoming Argentine cattle auctions, filterable by province.',
+      'Calendario de próximos remates de hacienda en Argentina: de hoy (hora argentina) en adelante, ordenados por fecha. Devuelve fecha, hora, consignataria, localidad/provincia, categoría principal y si el remate tiene link de transmisión. Params: provincia (subcadena, opcional), limite (default 10, máx 50). Qué se está rematando AHORA → live_auctions. No da precios ni INMAG: usá livestock_prices/cattle_price_index. [EN] Calendar of upcoming Argentine cattle auctions, filterable by province.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -739,7 +763,8 @@ const TOOLS: Tool[] = [
     },
     outputSchema: OUTPUT_UPCOMING_AUCTIONS,
     async run(args, req) {
-      const today = new Date().toISOString().slice(0, 10)
+      // Fecha ARGENTINA: con la de UTC, de 21 a 24 h los remates de hoy desaparecían.
+      const today = ahoraArgentina().fecha
       const prov = typeof args.provincia === 'string' ? args.provincia.toLowerCase() : null
       const techo = await techoListado({
         tool: 'upcoming_auctions', req, autorizado: await tieneKey(args, req),
@@ -763,7 +788,9 @@ const TOOLS: Tool[] = [
         `${f.date}${f.time ? ' ' + f.time : ''} · ${f.consignataria} · ${f.lugar}` +
         `${f.categoria ? ' · ' + f.categoria : ''}${f.en_vivo ? ' · 🔴 en vivo' : ''}`
       const upcoming = remates
-        .filter((r) => r.status === 'scheduled' && r.date >= today && (!prov || r.province.toLowerCase().includes(prov)))
+        // 'live' también: el scraper marca así a TODOS los de hoy, y con 'scheduled' solo
+        // los remates del día no aparecían (25 de 25 el 12-11-2026).
+        .filter((r) => (r.status === 'scheduled' || r.status === 'live') && r.date >= today && (!prov || r.province.toLowerCase().includes(prov)))
         .sort((a, b) => a.date.localeCompare(b.date))
         .slice(0, limite)
         .map(fila)
@@ -788,6 +815,52 @@ const TOOLS: Tool[] = [
         )
       }
       return okData(`Próximos ${upcoming.length} remates:\n${upcoming.map(linea).join('\n')}`, { remates: upcoming })
+    },
+  },
+  {
+    name: 'live_auctions',
+    description:
+      'Remates de hacienda en vivo AHORA en Argentina (hora argentina). Separa: al_aire = con transmisión al aire confirmada por YouTube o por nuestro capturador, con el link para verla; en_horario = según el calendario está entre su hora de inicio y 3 h después, sin transmisión que lo confirme (puede estar rematándose sin cámara o haberse corrido); mas_tarde = de hoy, todavía no empezó; sin_hora = de hoy sin hora informada. Param: provincia (subcadena, opcional). Fechas de otros días → upcoming_auctions. No da precios: usá livestock_prices/cattle_price_index. [EN] Argentine cattle auctions live right now: streaming now (with link), within scheduled hours, later today.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        provincia: { type: 'string', description: 'Filtra por provincia (ej. "Corrientes")' },
+      },
+      additionalProperties: false,
+    },
+    outputSchema: OUTPUT_LIVE_AUCTIONS,
+    async run(args) {
+      const ahora = ahoraArgentina()
+      const provincia = typeof args.provincia === 'string' && args.provincia.trim() ? args.provincia.trim() : null
+      // La misma pared que /remates/en-vivo, con 60 s de frescura contra YouTube. Si
+      // YouTube no contesta a tiempo, se sigue con el calendario solo: mejor decir
+      // "en horario" que no contestar.
+      let corte: ReturnType<typeof setTimeout> | undefined
+      const pared = await Promise.race([
+        construirPared(ahora.fecha, 60).catch(() => []),
+        new Promise<[]>((ok) => { corte = setTimeout(() => ok([]), 8000) }),
+      ])
+      clearTimeout(corte)
+      const r = rematesAhora({
+        remates,
+        pared,
+        hoy: ahora.fecha,
+        ahoraMin: ahora.minutos,
+        provincia,
+        canonico: (s) => getCanonicalSlug(s) ?? s,
+        nombre: (x) => nombreDeFirma(x),
+      })
+      const linea = (f: FilaAhora) =>
+        `${f.hora ? f.hora + ' · ' : ''}${f.consignataria} · ${f.lugar}${f.categoria ? ' · ' + f.categoria : ''}${f.ver ? ' · ver: ' + f.ver : ''}`
+      const donde = provincia ? ` en ${provincia}` : ''
+      const partes: string[] = [`Remates${donde} ahora (${ahora.fecha} ${ahora.hora}, hora argentina):`]
+      if (r.al_aire.length) partes.push(`🔴 Al aire:\n${r.al_aire.map(linea).join('\n')}`)
+      if (r.en_horario.length) partes.push(`En horario según el calendario (sin transmisión confirmada):\n${r.en_horario.map(linea).join('\n')}`)
+      if (!r.al_aire.length && !r.en_horario.length) partes.push('No hay ningún remate al aire ni en horario en este momento.')
+      if (r.mas_tarde.length) partes.push(`Más tarde hoy:\n${r.mas_tarde.map(linea).join('\n')}`)
+      if (r.sin_hora.length) partes.push(`Hoy, sin hora informada:\n${r.sin_hora.map(linea).join('\n')}`)
+      if (!r.mas_tarde.length && !r.al_aire.length && !r.en_horario.length) partes.push('Los próximos días: upcoming_auctions.')
+      return okData(partes.join('\n\n'), { hora_argentina: `${ahora.fecha} ${ahora.hora}`, ...r })
     },
   },
   {
@@ -1912,6 +1985,7 @@ const PAGINA_DE_LA_TOOL: Record<string, string> = {
   // Todavía no tiene página propia: se manda a la del índice que ancla la comparación.
   international_price_gap: '/mercado/inmag',
   upcoming_auctions: '/remates',
+  live_auctions: '/remates/en-vivo',
   find_livestock_broker: '/consignatarias',
   broker_activity_ranking: '/mercado/actividad',
   find_meat_plant: '/frigorificos',
@@ -2525,7 +2599,7 @@ export async function POST(req: NextRequest) {
           '• LA BRECHA CONTRA EL MUNDO: international_price_gap compara el novillo argentino con Estados Unidos, Uruguay y Australia en dólares por kilo VIVO, sin estimar rendimiento de carcasa en ningún país. Es la pregunta del comprador del exterior. OJO: Argentina opera POR ENCIMA de Brasil, así que no afirmes que es la más barata de la región — la brecha que se sostiene es contra el hemisferio norte y Uruguay.\n' +
           '• ¿Conviene comprar AHORA?: price_seasonality da el índice estacional del novillo en dólares desde 2015 (razón sobre media móvil centrada de 12 meses) y dice si el mes corriente es típicamente caro o barato PARA SU ÉPOCA (el desvío real se mide con ~6 meses de rezago). El precio del día no contesta eso. En el relevamiento 2015-2026 la amplitud punta a punta es de ~28%: septiembre y octubre son los meses más baratos, febrero y marzo los más caros.\n' +
           '• ¿Cuánto rinde un dólar en campo argentino?: farmland_yield devuelve, por zona ganadera, USD/hectárea, cuántos KILOS DE NOVILLO cuesta esa hectárea, la renta anual del arrendamiento (que acá se pacta en kg de novillo por ha, no en pesos, así que el rendimiento no depende del tipo de cambio), el rendimiento sobre el valor de la tierra y los años de repago. Aceptá un presupuesto en dólares y lo reparte en hectáreas. Es la herramienta para el comprador del exterior.\n' +
-          '• Directorio y remates: find_livestock_broker, broker_activity_ranking, find_meat_plant, upcoming_auctions.\n' +
+          '• Directorio y remates: find_livestock_broker, broker_activity_ranking, find_meat_plant, upcoming_auctions; qué remate está en vivo AHORA (con link a la transmisión): live_auctions.\n' +
           '• Herramientas: calculate_farmland_rent.\n' +
           '• Sanidad SENASA (dato regulatorio, con la resolución citada): animal_health_plan, fmd_vaccination_calendar, livestock_movement_rules, renspa_lookup (valida/decodifica RENSPA), dte_lookup (DT-e / número de tropa).\n' +
           '• Buenas Prácticas Ganaderas (14 temas, Guía Red BPA): good_farming_practices.\n' +

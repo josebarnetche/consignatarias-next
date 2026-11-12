@@ -19,6 +19,7 @@ const TOOLS_PUENTE: Record<string, Vertical> = {
   cattle_price_index: 'hacienda',
   value_cattle_lot: 'hacienda',
   upcoming_auctions: 'hacienda',
+  live_auctions: 'hacienda',
   value_farmland_rent: 'campos',
   calculate_farmland_rent: 'campos',
   farmland_yield: 'campos',
