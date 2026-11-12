@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.259.2] — 2026-11-12
+
+### Corregido
+- **El Corredor v2: un solo dólar de cierre.** La página de la tierra tomaba el último dólar de la serie (posterior al cierre: USD 2,69 en la edición de octubre) mientras la portada y la brecha internacional usaban el del cierre del mes (USD 2,56). Ahora las tres usan el cierre.
+- **El Corredor v2: título del precio real.** Cuando el último mes con IPC es la base, el título nombraba el mismo mes dos veces ("en pesos de septiembre… en septiembre"). Ahora lo dice una vez y aclara que la variación es descontada la inflación.
+
 ## [1.259.1] — 2026-11-08
 
 ### Corregido

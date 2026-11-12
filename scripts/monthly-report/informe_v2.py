@@ -891,8 +891,11 @@ def p_real(p: D.Paquete, x: D2.Extra) -> str:
     v = D2._var(u["valor"], a and a["valor"])
     previos = [q["valor"] for q in nov if q["ym"][:4] < u["ym"][:4]]
     prom = sum(previos) / len(previos) if previos else None
-    titulo = (f'En pesos de {ym_largo(base)}, el novillito promedió {G.ars(u["valor"])} el kilo en {_mes_ym(u["ym"])}, '
-              f'{_d(abs(v))}% {"más" if v >= 0 else "menos"} que un año antes' if v is not None
+    # Si el último mes con IPC es la base, decir los dos meses repite el mismo.
+    cuando = (f'en {ym_largo(base)}' if u["ym"] == base
+              else f'en {_mes_ym(u["ym"])}, en pesos de {ym_largo(base)}')
+    titulo = (f'El novillito promedió {G.ars(u["valor"])} el kilo {cuando}: '
+              f'{_d(abs(v))}% {"más" if v >= 0 else "menos"} que un año antes, descontada la inflación' if v is not None
               else f'El novillito en pesos de {ym_largo(base)}, desde 2017')
     series = [{"nombre": "novillito", "puntos": nov, "color": G.SERIE, "grosor": 1.75}]
     if len(r.get("inmag") or []) >= 24:

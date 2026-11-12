@@ -804,7 +804,10 @@ def cargar(ym: str) -> tuple[D.Paquete, Extra]:
     intl = seguro("brecha internacional", lambda: internacional(p.cierre and p.cierre.get("usd_blue")), {})
     if not intl and not any(f.startswith("brecha internacional") for f in faltan):
         faltan.append("brecha internacional")
-    ultimo_usd = next((x["usd_blue"] for x in reversed(p.inmag.puntos) if x.get("usd_blue")), None)
+    # El mismo dólar que la portada y la brecha: el cierre del mes. El último punto de
+    # p.inmag cae después del cierre (la edición sale en noviembre) y daba otra cifra.
+    ultimo_usd = (p.cierre and p.cierre.get("usd_blue")) or next(
+        (x["usd_blue"] for x in reversed(p.inmag.puntos) if x.get("usd_blue")), None)
     tie = seguro("valor de la tierra", lambda: renta_tierra(ultimo_usd, p.mes), serie_vacia)
     rm = seguro("remates del mes", lambda: remates_mes(p.mes), {})
     if not rm and not any(f.startswith("remates del mes") for f in faltan):
