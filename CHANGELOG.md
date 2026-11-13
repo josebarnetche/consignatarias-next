@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.259.4] — 2026-11-13
+
+### Agregado
+- **`/banda`: «pedíselo a tu asistente de IA».** Bloque con el JSON de conexión del servidor MCP y la tool `consignatarias_band`, con link a `/mcp#conectar`.
+- **Bienvenida PRO: «usá tu asistente de IA con nuestros datos».** Tres prompts listos (valuar un lote, la banda de la semana, aftosa por provincia) y link para conectar Claude, ChatGPT o Cursor. No promete posicionamiento en el MCP: el plan PRO es del sitio (#132).
+
 ## [1.259.3] — 2026-11-13
 
 ### Corregido
