@@ -449,23 +449,42 @@ def construir(p: D.Paquete) -> str:
     return Template(plantilla).substitute(ctx)
 
 
-def a_pdf(html_path: Path, pdf_path: Path) -> bool:
+def chrome(flags: list[str], salida: Path, html_path: Path, timeout: int) -> bool:
+    """Corre Chrome headless y dice si dejó `salida`. Lo que vale es el archivo, no el
+    código de salida: con el perfil de la máquina Chrome escribe el PDF y después sale
+    con 2 ("Teardown watchdog expired"), y eso se contaba como falla y se callaba
+    (13/11/2026). Por eso: perfil propio y descartable, el archivo viejo se borra antes,
+    y si no sale nada se imprime por qué."""
     import os
+    import tempfile
     candidatos = [os.environ.get("CHROME_BIN"), "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
                   "google-chrome", "chromium", "chromium-browser"]
+    motivos = []
     for c in candidatos:
         if not c:
             continue
-        try:
-            subprocess.run(
-                [c, "--headless", "--disable-gpu", "--no-sandbox", "--no-pdf-header-footer",
-                 f"--print-to-pdf={pdf_path}", html_path.as_uri()],
-                check=True, capture_output=True, timeout=180,
-            )
-            return pdf_path.exists()
-        except (FileNotFoundError, subprocess.CalledProcessError, subprocess.TimeoutExpired):
-            continue
+        salida.unlink(missing_ok=True)
+        with tempfile.TemporaryDirectory(prefix="corredor-chrome-") as perfil:
+            try:
+                r = subprocess.run(
+                    [c, "--headless", "--disable-gpu", "--no-sandbox", f"--user-data-dir={perfil}",
+                     *flags, html_path.as_uri()],
+                    capture_output=True, timeout=timeout,
+                )
+            except (FileNotFoundError, subprocess.TimeoutExpired) as e:
+                motivos.append(f"{c}: {type(e).__name__}")
+                continue
+        if salida.exists() and salida.stat().st_size > 0:
+            return True
+        cola = (r.stderr or b"").decode(errors="replace").strip().splitlines()[-2:]
+        motivos.append(f"{c}: exit {r.returncode} · {' | '.join(cola)}")
+    for m in motivos:
+        print(f"  ✗ chrome {m}")
     return False
+
+
+def a_pdf(html_path: Path, pdf_path: Path) -> bool:
+    return chrome(["--no-pdf-header-footer", f"--print-to-pdf={pdf_path}"], pdf_path, html_path, 180)
 
 
 def main() -> int:

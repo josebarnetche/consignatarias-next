@@ -13,6 +13,7 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 - **El Corredor v2: un solo dólar de cierre.** La página de la tierra tomaba el último dólar de la serie (posterior al cierre: USD 2,69 en la edición de octubre) mientras la portada y la brecha internacional usaban el del cierre del mes (USD 2,56). Ahora las tres usan el cierre.
 - **El Corredor v2: título del precio real.** Cuando el último mes con IPC es la base, el título nombraba el mismo mes dos veces ("en pesos de septiembre… en septiembre"). Ahora lo dice una vez y aclara que la variación es descontada la inflación.
 - **Mail de El Corredor: describe el informe v2.** El mail de envío seguía describiendo el v1 ("12 páginas… 18 buckets del MAG… tesis del mes próximo") y firmaba consignatarias.com. Ahora describe lo que trae el v2, sin cantidad fija de páginas, y firma consignatarias.com.ar.
+- **El Corredor: el PDF y las piezas ya no se pierden por el código de salida de Chrome.** Con el perfil de la máquina Chrome escribe el PDF y sale con 2 ("Teardown watchdog expired"); el render lo contaba como falla, lo callaba y la publicación cortaba con "¿chromium?" (dos veces el 12 y el 13/11). Ahora corre con un perfil propio y descartable, decide por el archivo y no por el código, y si no sale nada imprime el motivo. `informe.chrome()` lo usan el PDF y las piezas.
 
 ## [1.259.1] — 2026-11-08
 
