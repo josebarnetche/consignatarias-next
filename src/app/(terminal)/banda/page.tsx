@@ -291,6 +291,16 @@ export default async function BandaPage() {
             La misma banda por MCP →
           </Link>
         </div>
+        <div className="mt-6 max-w-2xl border border-terminal-border rounded px-4 py-3">
+          <p className="text-zinc-300 text-sm">
+            Pedíselo a tu asistente de IA: conectá el servidor MCP y preguntale «¿cuánto se abrió la banda esta semana?».
+            Responde con la tool <code className="text-accent">consignatarias_band</code> y la cita ya redactada.
+          </p>
+          <pre className="mt-2 mb-2 text-xs text-zinc-400 whitespace-pre-wrap break-all">{`{ "mcpServers": { "consignatarias": { "url": "https://www.consignatarias.com.ar/api/mcp" } } }`}</pre>
+          <Link href="/mcp#conectar" className="text-accent hover:underline text-xs">
+            Cómo conectarlo en Claude, ChatGPT o Cursor →
+          </Link>
+        </div>
         {origen === 'archivo' && (
           <p className="text-zinc-600 text-xs mt-4">
             Dato de la banda vigente publicada; la serie completa no estuvo disponible al generar esta página.

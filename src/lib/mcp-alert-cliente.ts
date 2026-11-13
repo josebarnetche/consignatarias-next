@@ -28,7 +28,7 @@ const DENY_RX = /probe|crawler|scanner|scoring|registry|spec[-_ ]?check|health[-
 
 export function isNoise(name: string): boolean {
   const n = name.trim().toLowerCase()
-  return DENY_EXACT.has(n) || DENY_RX.test(n) || /^(smoke|verif)[-_]/.test(n)
+  return DENY_EXACT.has(n) || DENY_RX.test(n) || /^(smoke|verif|memola)[-_]/.test(n)
 }
 
 // Librerías HTTP genéricas: un UA así no identifica a nadie.
@@ -68,4 +68,12 @@ export function esProxyLLM(args: unknown): boolean {
   }
   if (!a || typeof a !== 'object' || Array.isArray(a)) return false
   return 'model' in a || 'messages' in a
+}
+
+/**
+ * IPs propias de Memola (45.175.x): todo lo que sale de ahí es nuestro (memola-civ,
+ * pruebas con curl…), con cualquier nombre de cliente. Visto 12-11-2026.
+ */
+export function esIpPropia(ip: unknown): boolean {
+  return typeof ip === 'string' && ip.startsWith('45.175.')
 }

@@ -7,7 +7,7 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
-## [1.259.4] — 2026-11-13
+## [1.259.5] — 2026-11-13
 
 ### Corregido
 - **El Corredor v2: un solo dólar de cierre.** La página de la tierra tomaba el último dólar de la serie (posterior al cierre: USD 2,69 en la edición de octubre) mientras la portada y la brecha internacional usaban el del cierre del mes (USD 2,56). Ahora las tres usan el cierre.
@@ -15,6 +15,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 - **Mail de El Corredor: describe el informe v2.** El mail de envío seguía describiendo el v1 ("12 páginas… 18 buckets del MAG… tesis del mes próximo") y firmaba consignatarias.com. Ahora describe lo que trae el v2, sin cantidad fija de páginas, y firma consignatarias.com.ar.
 - **El Corredor: el PDF y las piezas ya no se pierden por el código de salida de Chrome.** Con el perfil de la máquina Chrome escribe el PDF y sale con 2 ("Teardown watchdog expired"); el render lo contaba como falla, lo callaba y la publicación cortaba con "¿chromium?" (dos veces el 12 y el 13/11). Ahora corre con un perfil propio y descartable, decide por el archivo y no por el código, y si no sale nada imprime el motivo. `informe.chrome()` lo usan el PDF y las piezas.
 - **El Corredor: un rechazo de Resend ya no cuenta como envío.** `sendElCorredorDelivery` y `sendElCorredorCorreccion` usaban `resend.emails.send` sin mirar `{ error }` (el SDK no lanza). Un mail rechazado, por ejemplo por el tope de 100 por día, quedaba registrado en `el_corredor_envios` como enviado, y la continuación del día 2 nunca se lo reintentaba. Ahora pasan por `enviarOFallar`. Tiene test propio (`email-el-corredor.test.ts`). Importa el 01/12/2026, que cae martes: ese día también sale la segunda tanda del newsletter semanal (40–72 mails los martes medidos) y juntos superan el tope.
+
+## [1.259.4] — 2026-11-13
+
+### Agregado
+- **`/banda`: «pedíselo a tu asistente de IA».** Bloque con el JSON de conexión del servidor MCP y la tool `consignatarias_band`, con link a `/mcp#conectar`.
+- **Bienvenida PRO: «usá tu asistente de IA con nuestros datos».** Tres prompts listos (valuar un lote, la banda de la semana, aftosa por provincia) y link para conectar Claude, ChatGPT o Cursor. No promete posicionamiento en el MCP: el plan PRO es del sitio (#132).
 
 ## [1.259.3] — 2026-11-13
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { esProxyLLM, isNoise, nombreDesdeUA, resolverCliente } from './mcp-alert-cliente'
+import { esIpPropia, esProxyLLM, isNoise, nombreDesdeUA, resolverCliente } from './mcp-alert-cliente'
 
 const vacio = new Map<string, { name: string; version: string | null }>()
 
@@ -29,7 +29,7 @@ describe('nombreDesdeUA', () => {
 
 describe('isNoise', () => {
   it('excluye proyectos propios, sesiones Claude de José, pruebas propias y escáneres', () => {
-    for (const n of ['trazabilidad-simple', 'verif-39', 'smoke-39', 'MCPCheckup-Probe', 'BrickBlueBot', 'supermarket-probe', 'agent-index-prober', 'aisonar', 'evyAI MCP Check', 'agent-collector', 'mcpyp-incremental', 'creora-verified-execution', 'rokmcp-probe', 'mcp-checkup-prober', 'claude-code', 'Claude-User', 'claude-ai', 'Anthropic/ClaudeAI', 'Agoranome-seller-tools', 'polly-catalog-verify', 'dollardollardollar-signals', 'mcp-index', 'mcp-discovery-measurement']) {
+    for (const n of ['trazabilidad-simple', 'verif-39', 'smoke-39', 'MCPCheckup-Probe', 'BrickBlueBot', 'supermarket-probe', 'agent-index-prober', 'aisonar', 'evyAI MCP Check', 'agent-collector', 'mcpyp-incremental', 'creora-verified-execution', 'rokmcp-probe', 'mcp-checkup-prober', 'claude-code', 'Claude-User', 'claude-ai', 'Anthropic/ClaudeAI', 'Agoranome-seller-tools', 'polly-catalog-verify', 'dollardollardollar-signals', 'mcp-index', 'mcp-discovery-measurement', 'memola-civ']) {
       expect(isNoise(n)).toBe(true)
     }
   })
@@ -48,5 +48,13 @@ describe('esProxyLLM', () => {
     expect(esProxyLLM(null)).toBe(false)
     expect(esProxyLLM('no es json')).toBe(false)
     expect(esProxyLLM([1, 2])).toBe(false)
+  })
+})
+
+describe('esIpPropia', () => {
+  it('45.175.x es propia; el resto y lo que no es string, no', () => {
+    expect(esIpPropia('45.175.150.23')).toBe(true)
+    expect(esIpPropia('190.2.112.4')).toBe(false)
+    expect(esIpPropia(undefined)).toBe(false)
   })
 })
