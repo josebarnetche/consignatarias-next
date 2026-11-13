@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { esIpPropia, esProxyLLM, isNoise, nombreDesdeUA, resolverCliente } from './mcp-alert-cliente'
+import { diaART, diasHabilesPrevios, esFirmaMisiones, esIpPropia, esProxyLLM, evaluarMisiones, isNoise, nombreDesdeUA, resolverCliente } from './mcp-alert-cliente'
 
 const vacio = new Map<string, { name: string; version: string | null }>()
 
@@ -56,5 +56,36 @@ describe('esIpPropia', () => {
     expect(esIpPropia('45.175.150.23')).toBe(true)
     expect(esIpPropia('190.2.112.4')).toBe(false)
     expect(esIpPropia(undefined)).toBe(false)
+  })
+})
+
+describe('vigilancia de Misiones', () => {
+  const firma = { tool: 'get_indice_novillo', ip: '172.70.1.1' }
+  it('esFirmaMisiones: alias, sin UA, IP no propia, no probe', () => {
+    expect(esFirmaMisiones(firma)).toBe(true)
+    expect(esFirmaMisiones({ ...firma, ua: '' })).toBe(true)
+    expect(esFirmaMisiones({ ...firma, ua: 'curl/8' })).toBe(false)
+    expect(esFirmaMisiones({ ...firma, ip: '45.175.150.23' })).toBe(false)
+    expect(esFirmaMisiones({ ...firma, probe: true })).toBe(false)
+    expect(esFirmaMisiones({ ...firma, tool: 'cattle_price_index' })).toBe(false)
+  })
+  it('diaART corta el día a la medianoche de Argentina', () => {
+    expect(diaART('2026-11-13T02:59:00Z')).toBe('2026-11-12')
+    expect(diaART('2026-11-13T03:00:00Z')).toBe('2026-11-13')
+  })
+  it('diasHabilesPrevios saltea el fin de semana', () => {
+    expect(diasHabilesPrevios('2026-11-16', 2)).toEqual(['2026-11-13', '2026-11-12']) // lunes
+    expect(diasHabilesPrevios('2026-11-13', 2)).toEqual(['2026-11-12', '2026-11-11'])
+  })
+  it('evaluarMisiones: un día bajo no alarma; dos seguidos sí', () => {
+    // serie real: 09/11 = 68, 10/11 = 108
+    const real = new Map([['2026-11-09', 68], ['2026-11-10', 108], ['2026-11-06', 84]])
+    expect(evaluarMisiones(real, '2026-11-10').alarma).toBe(false)
+    expect(evaluarMisiones(real, '2026-11-11').alarma).toBe(false)
+    const caida = new Map([['2026-11-11', 40], ['2026-11-12', 0]])
+    const r = evaluarMisiones(caida, '2026-11-13')
+    expect(r.alarma).toBe(true)
+    expect(r.clave).toBe('2026-11-12|2026-11-11')
+    expect(r.dias).toEqual([{ dia: '2026-11-12', n: 0 }, { dia: '2026-11-11', n: 40 }])
   })
 })

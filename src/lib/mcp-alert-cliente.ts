@@ -77,3 +77,54 @@ export function esProxyLLM(args: unknown): boolean {
 export function esIpPropia(ip: unknown): boolean {
   return typeof ip === 'string' && ip.startsWith('45.175.')
 }
+
+/* ------------------------------------------------------------------ */
+/*  Vigilancia de la integración anónima de Misiones (13-11-2026).     */
+/*  Es el único consumidor externo sostenido y entra SIN UA ni         */
+/*  initialize: la alerta por cliente nombrado no la ve nunca. Se la   */
+/*  sigue por su firma: 4 alias en castellano, sin UA, IP no propia.   */
+/* ------------------------------------------------------------------ */
+export const MISIONES_ALIAS = ['get_indice_novillo', 'get_precios_hacienda', 'get_contexto_macro', 'list_remates'] as const
+/** Piso por día hábil. 15/10–12/11/2026: 21 días hábiles, mínimo 68, sólo 1 debajo de 76. */
+export const MISIONES_PISO = 76
+
+export function esFirmaMisiones(md: Record<string, unknown>): boolean {
+  if (md.probe === true) return false
+  if (typeof md.tool !== 'string' || !(MISIONES_ALIAS as readonly string[]).includes(md.tool)) return false
+  if (typeof md.ua === 'string' && md.ua.trim() !== '') return false
+  return !esIpPropia(md.ip)
+}
+
+/** Día calendario en Argentina (UTC−3 fijo, sin horario de verano) como YYYY-MM-DD. */
+export function diaART(iso: string): string {
+  return new Date(new Date(iso).getTime() - 3 * 3600_000).toISOString().slice(0, 10)
+}
+
+/** Los `n` días lunes–viernes ANTERIORES a `hoy` (YYYY-MM-DD), el más reciente primero. */
+export function diasHabilesPrevios(hoy: string, n: number): string[] {
+  const out: string[] = []
+  const d = new Date(`${hoy}T12:00:00Z`)
+  while (out.length < n) {
+    d.setUTCDate(d.getUTCDate() - 1)
+    const w = d.getUTCDay()
+    if (w !== 0 && w !== 6) out.push(d.toISOString().slice(0, 10))
+  }
+  return out
+}
+
+/**
+ * Alarma si los DOS últimos días hábiles cerrados quedaron debajo del piso.
+ * Un solo día bajo (09/11: 68, y al otro día 108) no alcanza. No conoce los
+ * feriados: dos feriados hábiles seguidos darían una falsa alarma, y el mail lo aclara.
+ */
+export function evaluarMisiones(
+  conteo: Map<string, number>,
+  hoy: string,
+): { dias: { dia: string; n: number }[]; alarma: boolean; clave: string } {
+  const dias = diasHabilesPrevios(hoy, 2).map((dia) => ({ dia, n: conteo.get(dia) ?? 0 }))
+  return {
+    dias,
+    alarma: dias.every((x) => x.n < MISIONES_PISO),
+    clave: dias.map((x) => x.dia).join('|'),
+  }
+}

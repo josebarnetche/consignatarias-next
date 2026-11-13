@@ -1,7 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
-import { sendMcpConsumptionAlert, type McpConsumptionEvent } from '@/lib/email'
-import { esIpPropia, esProxyLLM, isNoise, resolverCliente } from '@/lib/mcp-alert-cliente'
+import { sendMcpConsumptionAlert, sendMisionesCaidaAlert, type McpConsumptionEvent } from '@/lib/email'
+import {
+  MISIONES_ALIAS,
+  MISIONES_PISO,
+  diaART,
+  esFirmaMisiones,
+  esIpPropia,
+  esProxyLLM,
+  evaluarMisiones,
+  isNoise,
+  resolverCliente,
+} from '@/lib/mcp-alert-cliente'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -116,13 +126,27 @@ export async function POST(req: NextRequest) {
     if (!res.success) console.error('mcp-consumption-alert: email failed', res.error)
   }
 
+  // 4b) Misiones: la integración anónima no tiene nombre, así que el paso 4
+  // nunca la ve. Se la cuenta por su firma en los últimos 7 días y se avisa
+  // si los dos últimos días hábiles quedaron debajo del piso (una vez por par).
+  const misiones = await vigilarMisiones(supabase, (wm?.metadata ?? null) as { misiones_alerta?: string } | null)
+
   // 5) Avanzar el watermark (aunque no haya "reales", para no re-escanear ruido).
-  if (newMaxId > watermark) {
+  // También se escribe si salió el aviso de Misiones, para no repetirlo mañana.
+  if (newMaxId > watermark || misiones.emailed) {
     await supabase.from('ops_events').insert({
       event_type: 'mcp_alert_watermark',
       status: 'ok',
       route: '/api/cron/mcp-consumption-alert',
-      metadata: { max_id: newMaxId, real_found: real.length, emailed, scanned: all.length, origenes_resueltos: clientePorOrigen.size },
+      metadata: {
+        max_id: newMaxId,
+        real_found: real.length,
+        emailed,
+        scanned: all.length,
+        origenes_resueltos: clientePorOrigen.size,
+        misiones: misiones.estado,
+        misiones_alerta: misiones.alertaClave,
+      },
     })
   }
 
@@ -133,5 +157,48 @@ export async function POST(req: NextRequest) {
     watermark_to: newMaxId,
     real_consumption: real.length,
     emailed,
+    misiones: misiones.estado,
+    misiones_emailed: misiones.emailed,
   })
+}
+
+type Supa = ReturnType<typeof requireServiceClient>
+type MisionesEstado = 'error' | { dias: { dia: string; n: number }[]; alarma: boolean }
+
+async function vigilarMisiones(
+  supabase: Supa,
+  wmPrevio: { misiones_alerta?: string } | null,
+): Promise<{ estado: MisionesEstado; emailed: boolean; alertaClave: string | null }> {
+  const previa = wmPrevio?.misiones_alerta ?? null
+  // 7 días: ~600 filas. PostgREST corta en 1000; se ordena desc para que, si corta, pierda lo viejo.
+  const desde = new Date(Date.now() - 7 * 86400_000).toISOString()
+  const { data, error } = await supabase
+    .from('ops_events')
+    .select('created_at, metadata')
+    .eq('event_type', 'mcp_call')
+    .filter('metadata->>method', 'eq', 'tools/call')
+    .filter('metadata->>tool', 'in', `(${MISIONES_ALIAS.join(',')})`)
+    .gte('created_at', desde)
+    .order('created_at', { ascending: false })
+    .limit(1000)
+  if (error) {
+    // REGLA verificador-no-traga-errores: si no pudo mirar, no cuenta cero.
+    console.error('mcp-consumption-alert: misiones query failed', error)
+    return { estado: 'error', emailed: false, alertaClave: previa }
+  }
+  const conteo = new Map<string, number>()
+  for (const r of data ?? []) {
+    if (!esFirmaMisiones((r.metadata ?? {}) as Record<string, unknown>)) continue
+    const d = diaART(r.created_at as string)
+    conteo.set(d, (conteo.get(d) ?? 0) + 1)
+  }
+  const hoy = diaART(new Date().toISOString())
+  const ev = evaluarMisiones(conteo, hoy)
+  const estado = { dias: ev.dias, alarma: ev.alarma }
+  if (!ev.alarma) return { estado, emailed: false, alertaClave: null }
+  if (previa === ev.clave) return { estado, emailed: false, alertaClave: previa }
+  const serie = [...conteo.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([dia, n]) => ({ dia, n }))
+  const res = await sendMisionesCaidaAlert({ dias: ev.dias, serie, piso: MISIONES_PISO })
+  if (!res.success) console.error('mcp-consumption-alert: misiones email failed', res.error)
+  return { estado, emailed: res.success, alertaClave: res.success ? ev.clave : previa }
 }
