@@ -170,7 +170,7 @@ async function vigilarMisiones(
   wmPrevio: { misiones_alerta?: string } | null,
 ): Promise<{ estado: MisionesEstado; emailed: boolean; alertaClave: string | null }> {
   const previa = wmPrevio?.misiones_alerta ?? null
-  // 7 días: ~600 filas. PostgREST corta en 1000; se ordena desc para que, si corta, pierda lo viejo.
+  // 7 días: 448 filas al 13-11-2026. PostgREST corta en 1000; se ordena desc para que, si corta, pierda lo viejo.
   const desde = new Date(Date.now() - 7 * 86400_000).toISOString()
   const { data, error } = await supabase
     .from('ops_events')
@@ -197,7 +197,10 @@ async function vigilarMisiones(
   const estado = { dias: ev.dias, alarma: ev.alarma }
   if (!ev.alarma) return { estado, emailed: false, alertaClave: null }
   if (previa === ev.clave) return { estado, emailed: false, alertaClave: previa }
-  const serie = [...conteo.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([dia, n]) => ({ dia, n }))
+  // La serie lleva TODOS los días de la ventana, también los de cero: una caída se ve como ceros, no como huecos.
+  const serie = Array.from({ length: 7 }, (_, i) => diaART(new Date(Date.now() - (6 - i) * 86400_000).toISOString())).map(
+    (dia) => ({ dia, n: conteo.get(dia) ?? 0 }),
+  )
   const res = await sendMisionesCaidaAlert({ dias: ev.dias, serie, piso: MISIONES_PISO })
   if (!res.success) console.error('mcp-consumption-alert: misiones email failed', res.error)
   return { estado, emailed: res.success, alertaClave: res.success ? ev.clave : previa }
