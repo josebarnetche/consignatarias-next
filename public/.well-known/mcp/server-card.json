@@ -324,7 +324,7 @@
     {
       "name": "farmland_yield",
       "title": "Renta de un campo ganadero en dólares",
-      "description": "El RENDIMIENTO ANUAL de un campo argentino sobre el capital invertido, por zona y para las tres aptitudes (ganadera, agrícola y mixta). Devuelve: USD/hectárea (el capital), la renta anual del arrendamiento, el canon en su unidad real —kg de novillo o quintales de soja por ha/año—, el rendimiento como % sobre el capital y los años de repago. Lo particular: el canon se pacta en PRODUCTO, no en moneda, así que el yield está nominado en carne o grano y no se licúa con una devaluación. Para el comprador del exterior que evalúa entrar. Args: presupuesto_usd (opcional, lo reparte en hectáreas), provincia, aptitud (ganadera|agricola|mixta), limite (def 10). Cada aptitud rinde por lo suyo: la zona núcleo vale por la soja, no por los novillos. [EN] What a dollar buys and earns in Argentine farmland, by zone: USD per hectare, annual rental yield, payback years. Covers grazing, cropping and mixed land.",
+      "description": "El RENDIMIENTO ANUAL de un campo argentino sobre el capital invertido, por zona y para las tres aptitudes (ganadera, agrícola y mixta). Devuelve: USD/hectárea (el capital), la renta anual del arrendamiento, el canon en su unidad real —kg de novillo o quintales de soja por ha/año—, el rendimiento como % sobre el capital y los años de repago. El canon se pacta en PRODUCTO, no en moneda, así que el yield está nominado en carne o grano y no se licúa con una devaluación. Con presupuesto_usd reparte el monto en hectáreas. Usala para comparar zonas por rendimiento; para el valor de un campo puntual, value_farmland; para el canon de un arrendamiento, value_farmland_rent. [EN] Argentine farmland yield by zone: USD/ha, rental yield, payback years.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -358,7 +358,7 @@
     {
       "name": "international_price_gap",
       "title": "Brecha del novillo contra EE.UU., Uruguay y Australia",
-      "description": "La brecha: cuánto más barato (o más caro) está el novillo argentino contra Estados Unidos, Uruguay y Australia, en dólares por kilo VIVO. Es la pregunta del que mira el país desde afuera para comprar hacienda o campos, y no la publica nadie armada. ⚠️ Argentina NO es la más barata de la región: opera por ENCIMA de Brasil, así que la brecha defendible es contra el hemisferio norte y Uruguay, no contra el vecino. No se estima rendimiento de carcasa en ningún país: sólo entran fuentes que publican peso vivo. [EN] How much cheaper (or dearer) Argentine cattle is versus the US, Uruguay and Australia, in USD per live kilogram. Live weight everywhere — no carcass yield assumptions.",
+      "description": "Cuánto más barato (o más caro) está el novillo argentino contra Estados Unidos, Uruguay y Australia, en dólares por kilo VIVO. Devuelve una FOTO, no una serie: por país, USD/kg vivo, % contra Argentina, la moneda nativa y la fecha de cada fuente; si un país faltó en la corrida, lo dice. ⚠️ Argentina NO es la más barata de la región: opera por ENCIMA de Brasil, así que la brecha defendible es contra el hemisferio norte y Uruguay. No se estima rendimiento de carcasa: sólo entran fuentes que publican peso vivo. Para la evolución del precio argentino usá inmag_history. [EN] Argentine steer vs US, Uruguay, Australia, USD/kg live.",
       "inputSchema": {
         "type": "object",
         "properties": {},
@@ -475,7 +475,7 @@
     {
       "name": "fmd_vaccination_calendar",
       "title": "Calendario de vacunación antiaftosa",
-      "description": "Calendario de vacunación antiaftosa 2026 de SENASA (Res. 711/2025) y estado de zona por provincia. Devuelve las ventanas de la 1ra campaña (todas las categorías) y 2da campaña (solo terneros/terneras), y si la provincia está en zona CON o SIN vacunación (Patagonia/Calingasta). El día exacto por distrito lo fija el Plan Local del Ente Sanitario — devuelve la ventana + la cita, nunca un día inventado. [EN] Foot-and-mouth disease vaccination calendar in Argentina, by region and period.",
+      "description": "Calendario de vacunación antiaftosa 2026 de SENASA (Res. 711/2025). Devuelve las ventanas de la 1ra campaña (todas las categorías) y de la 2da (solo terneros/terneras). Sin provincia devuelve sólo las dos campañas; con provincia suma si está en zona CON o SIN vacunación (Patagonia/Calingasta). El día exacto por distrito lo fija el Plan Local del Ente Sanitario: devuelve la ventana + la cita, nunca un día inventado. Para los requisitos de un movimiento usá livestock_movement_rules; para el plan sanitario completo, animal_health_plan. [EN] Foot-and-mouth disease vaccination calendar in Argentina.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -633,7 +633,7 @@
     {
       "name": "consignatarias_band",
       "title": "Banda Consignatarias (dispersión semanal)",
-      "description": "La BANDA CONSIGNATARIAS: cuánto se abre el precio de la hacienda esta semana — la distancia entre el 10% que menos cobró y el 10% que más cobró, por la misma categoría y el mismo día, sobre los lotes realmente operados en el Mercado Agroganadero. Es un indicador propio: los precios de referencia publicados suelen dar el promedio, no la dispersión. Cuando la banda se abre, la misma hacienda vale cada vez más distinto según quién la venda. Devuelve la cita ya redactada para publicar. Página pública: https://www.consignatarias.com.ar/banda. [EN] The Consignatarias Band: how wide Argentine cattle prices spread in a given week — the gap between the bottom and top deciles for the same category, from actual lot sales. A proprietary indicator; everyone else publishes the average and keeps the dispersion.",
+      "description": "La BANDA CONSIGNATARIAS de una semana: la distancia entre el 10% que menos cobró y el 10% que más cobró (P10–P90), por categoría, sobre los lotes realmente operados en el Mercado Agroganadero, con la variación contra 7 días antes y la cita ya redactada para publicar. Sin fecha, el último dato; fecha=YYYY-MM-DD es un corte: devuelve el último dato hasta ese día. Para la serie (¿el mercado se abre o se cierra?) usá price_dispersion_history; para el precio promedio, livestock_prices. Página pública: https://www.consignatarias.com.ar/banda. [EN] Weekly P10–P90 cattle price spread, by category.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -718,7 +718,7 @@
     {
       "name": "value_farmland",
       "title": "Valor de la hectárea por zona",
-      "description": "¿Cuánto vale la hectárea en Corrientes? ¿Cuánto vale un campo de 800 has en la cuenca del Salado? Valor de la tierra en dólares por hectárea, con el rango real de la zona, el arrendamiento típico en kg de novillo y la fuente de cada dato. Relevamiento propio: 15 provincias y 52 zonas, cruzando tasadores con serie publicada, catastro provincial y avisos de venta. Distingue campo ganadero de agrícola y valúa cada uno en SU moneda: el ganadero en kg de novillo por ha por mes, el agrícola en quintales de soja por ha por año. GRATIS, sin cupo. Params: provincia (obligatoria), hectareas (opcional), zona (opcional — acepta el nombre de la zona o el partido), kg_ha_mes (opcional, canon pactado). [EN] Value Argentine farmland by province and zone, with the observed range and the survey date.",
+      "description": "Valor de la tierra en dólares por hectárea, por provincia y zona (relevamiento propio de 15 provincias y 52 zonas, con la fuente fechada de cada dato): rango real de la zona, arrendamiento típico y años de arrendamiento equivalentes. Distingue campo ganadero de agrícola y valúa cada uno en SU moneda: el ganadero en kg de novillo por ha por mes, el agrícola en quintales de soja por ha por año. Con hectareas devuelve también el valor total del campo. Si la provincia no está, lo dice en vez de estimar. Para el canon de un arrendamiento usá value_farmland_rent; para el rendimiento sobre el capital, farmland_yield. [EN] Argentine farmland value per hectare, by province and zone.",
       "inputSchema": {
         "type": "object",
         "properties": {
