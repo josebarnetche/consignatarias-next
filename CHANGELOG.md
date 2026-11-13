@@ -7,6 +7,11 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.259.3] — 2026-11-13
+
+### Corregido
+- MCP: textos que un revisor del directorio de Claude podía leer como contenido patrocinado. La respuesta de `subscribe_broker_pro` aclara que los beneficios valen en el sitio web y el newsletter, no en las respuestas del servidor; el bullet de PRO en `instructions` ya no promete "perfil destacado"; la Banda deja de decir que "no existe en ninguna otra fuente" (route.ts y server-card). Sin cambios de comportamiento.
+
 ## [1.259.2] — 2026-11-13
 
 ### Corregido
