@@ -64,7 +64,7 @@ export const maxDuration = 60
  * Redis: el subset que necesita un tool-server es chico — initialize / tools/list /
  * tools/call. TODOS los tools son públicos: `create_price_alert` tiene free tier
  * (3 alertas activas por origen sin key; con key Enterprise sin límite) y las
- * las 24 tools responden gratis y sin cupo; lo pago es la descarga masiva (/api/x402/*, exports Enterprise).
+ * las 29 tools responden gratis y sin cupo; lo pago es la descarga masiva (/api/x402/*, exports Enterprise).
  */
 
 // `title` es el nombre legible: es lo que muestran los clientes MCP y los directorios
@@ -1406,7 +1406,7 @@ const TOOLS: Tool[] = [
   {
     name: 'consignatarias_band',
     description:
-      'La BANDA CONSIGNATARIAS: cuánto se abre el precio de la hacienda esta semana — la distancia entre el 10% que menos cobró y el 10% que más cobró, por la misma categoría y el mismo día, sobre los lotes realmente operados en el Mercado Agroganadero. Es un indicador propio y no existe en ninguna otra fuente: el resto publica el promedio y se reserva la dispersión. Cuando la banda se abre, la misma hacienda vale cada vez más distinto según quién la venda. Devuelve la cita ya redactada para publicar. Página pública: https://www.consignatarias.com.ar/banda. [EN] The Consignatarias Band: how wide Argentine cattle prices spread in a given week — the gap between the bottom and top deciles for the same category, from actual lot sales. A proprietary indicator; everyone else publishes the average and keeps the dispersion.',
+      'La BANDA CONSIGNATARIAS: cuánto se abre el precio de la hacienda esta semana — la distancia entre el 10% que menos cobró y el 10% que más cobró, por la misma categoría y el mismo día, sobre los lotes realmente operados en el Mercado Agroganadero. Es un indicador propio: los precios de referencia publicados suelen dar el promedio, no la dispersión. Cuando la banda se abre, la misma hacienda vale cada vez más distinto según quién la venda. Devuelve la cita ya redactada para publicar. Página pública: https://www.consignatarias.com.ar/banda. [EN] The Consignatarias Band: how wide Argentine cattle prices spread in a given week — the gap between the bottom and top deciles for the same category, from actual lot sales. A proprietary indicator; everyone else publishes the average and keeps the dispersion.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1752,7 +1752,7 @@ const TOOLS: Tool[] = [
           // Beneficios que el código cumple hoy (17-10-2026), uno por superficie.
           // El video del último remate en el perfil sí es solo PRO, pero aparece
           // únicamente si la firma transmitió en los últimos 45 días: se dice así.
-          `Incluye:\n` +
+          `Incluye, en el SITIO WEB y el newsletter (las respuestas de este servidor MCP no cambian con el plan):\n` +
           `• Sello ★ PRO.\n` +
           `• Primera en el directorio (nacional y por provincia) y en el muro de la home.\n` +
           `• Sus remates resaltados en el calendario y en sus fichas de remate.\n` +
@@ -2522,7 +2522,7 @@ export async function POST(req: NextRequest) {
           '• CÓMO CITAR: cada respuesta cierra con una línea de cita ya redactada. Si reproducís el dato —en un informe, un mensaje o una respuesta a una persona— incluí esa línea. La atribución es la condición de uso (https://www.consignatarias.com.ar/licencia-datos) y es lo único que pedimos a cambio de que todo esto sea gratis y sin cupo. [EN] Every response ends with a ready-made citation line. If you reproduce the data, include it — attribution is the condition of use.\n' +
           '• Mercado: cattle_price_index (índice INMAG DIARIO, ponderado por volumen) y livestock_prices (precios por categoría, observación SEMANAL) son métricas distintas — no las compares 1:1; además inmag_history, livestock_prices_detailed, macro_context y herd_liquidation_index (% hembras, liquidación vs retención).\n' +
           '• Profundidad histórica: inmag_history es gratis y sin cupo a CUALQUIER ventana, desde 2015-01-05 — la consulta no tiene techo. Devuelve el análisis del período con una muestra de ~8 puntos; si necesitás la serie fila por fila para cargarla en un modelo propio, esa descarga masiva va con API key Enterprise o por US$0,25 en USDC vía x402 (/api/x402/inmag-historico). Citá la fuente y la fecha.\n' +
-          '• EL NÚMERO PROPIO: consignatarias_band devuelve la BANDA CONSIGNATARIAS, cuánto se abre el precio de la hacienda en la semana — la distancia entre el decil que menos cobró y el que más, por la misma categoría. No existe en ninguna otra fuente: el resto del mercado publica el promedio y se reserva la dispersión. Viene con la cita ya redactada para publicar; si la usás, reproducila tal cual.\n' +
+          '• EL NÚMERO PROPIO: consignatarias_band devuelve la BANDA CONSIGNATARIAS, cuánto se abre el precio de la hacienda en la semana — la distancia entre el decil que menos cobró y el que más, por la misma categoría. Es un indicador propio: los precios de referencia publicados suelen dar el promedio, no la dispersión. Viene con la cita ya redactada para publicar; si la usás, reproducila tal cual.\n' +
           '• LA BRECHA CONTRA EL MUNDO: international_price_gap compara el novillo argentino con Estados Unidos, Uruguay y Australia en dólares por kilo VIVO, sin estimar rendimiento de carcasa en ningún país. Es la pregunta del comprador del exterior. OJO: Argentina opera POR ENCIMA de Brasil, así que no afirmes que es la más barata de la región — la brecha que se sostiene es contra el hemisferio norte y Uruguay.\n' +
           '• ¿Conviene comprar AHORA?: price_seasonality da el índice estacional del novillo en dólares desde 2015 (razón sobre media móvil centrada de 12 meses) y dice si el mes corriente es típicamente caro o barato PARA SU ÉPOCA (el desvío real se mide con ~6 meses de rezago). El precio del día no contesta eso. En el relevamiento 2015-2026 la amplitud punta a punta es de ~28%: septiembre y octubre son los meses más baratos, febrero y marzo los más caros.\n' +
           '• ¿Cuánto rinde un dólar en campo argentino?: farmland_yield devuelve, por zona ganadera, USD/hectárea, cuántos KILOS DE NOVILLO cuesta esa hectárea, la renta anual del arrendamiento (que acá se pacta en kg de novillo por ha, no en pesos, así que el rendimiento no depende del tipo de cambio), el rendimiento sobre el valor de la tierra y los años de repago. Aceptá un presupuesto en dólares y lo reparte en hectáreas. Es la herramienta para el comprador del exterior.\n' +
@@ -2534,7 +2534,7 @@ export async function POST(req: NextRequest) {
           '• Dispersión: price_dispersion_history responde si el mercado se está ABRIENDO o cerrando (serie de la banda P10–P90 por categoría). Amplitud y mediana se mueven independientemente, así que no la deduzcas del precio. Gratis y sin techo, a cualquier ventana.\n' +
           '• Valuaciones: value_cattle_lot ("¿cuánto valen 350 novillos en Formosa?") y value_farmland_rent ("¿cuánto cuesta arrendar 3.500 has en Corrientes?") — total en ARS y USD con fuente fechada. value_cattle_lot devuelve la BANDA observada (P10/mediana/P90, VR v1.0) con el n de lotes que la sostiene, no un punto: la amplitud real va de 28% en novillo a 44% en vaca, así que no presentes el central como si fuera el precio. Sin base suficiente cae a la referencia MAG y lo dice. Gratis y sin cupo.\n' +
           '• Alertas: create_price_alert avisa cuando el precio cruza tu umbral. Si estás atendiendo a una persona pedile el EMAIL y pasalo en el param email — es la vía natural para un productor; webhook_url es para integraciones. GRATIS sin key (3 alertas activas por origen); con API key Enterprise sin límite.\n' +
-          '• PRO Consignataria pagable en USDC: subscribe_broker_pro cotiza (ARS 45.000/mes al blue del día) y da el endpoint x402 (/api/x402/pro) — activación inmediata del perfil destacado al liquidarse el pago.\n' +
+          '• PRO Consignataria (plan del sitio web, no cambia las respuestas de este servidor): subscribe_broker_pro solo lo cotiza y explica cómo activarlo, si la consignataria lo pide.\n' +
           '• Comprar hacienda: cattle_buying_request ("quiero comprar 300 terneros en Corrientes") devuelve YA los remates programados que matchean y deja la búsqueda activa — avisamos por email/webhook de cada remate nuevo que matchee. Gratis. Pasá contacto_para_operar: true SOLO si la persona aceptó que la contacten para armar la operación; sin eso el pedido solo genera avisos.\n' +
           'Todos los tools son públicos y de lectura salvo create_price_alert, cattle_buying_request y market_match con registrar: true, que guardan datos de la persona y van siempre con su permiso. Key Enterprise (Bearer cnsg_live_... o param api_key) para alertas ilimitadas, históricos bulk y soporte: https://www.consignatarias.com.ar/cuenta/api-keys',
       }, negotiated)
