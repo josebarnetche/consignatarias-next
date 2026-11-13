@@ -2385,7 +2385,7 @@ export async function sendElCorredorDelivery(email: string, edition: string, pdf
   const safeUrl = escapeHtml(pdfUrl)
 
   try {
-    await resend.emails.send({
+    await enviarOFallar(resend, {
       from: FROM,
       to: email,
       subject: `El Corredor · ${edition} — tu copia adentro`,
@@ -2420,7 +2420,7 @@ export async function sendElCorredorDelivery(email: string, edition: string, pdf
             Mesa de mercado &middot; consignatarias.com.ar
           </p>
       `),
-    })
+    }, `El Corredor ${edition}`)
     return { success: true }
   } catch (err) {
     return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
@@ -2443,7 +2443,7 @@ export async function sendElCorredorCorreccion(email: string, edition: string, p
   const waUrl = `https://wa.me/5493773418130?text=${waText}`
 
   try {
-    await resend.emails.send({
+    await enviarOFallar(resend, {
       from: FROM,
       to: email,
       subject: `Perdón — te mandamos El Corredor equivocado. Acá va el de ${edition}`,
@@ -2491,7 +2491,7 @@ export async function sendElCorredorCorreccion(email: string, edition: string, p
             Mesa de mercado &middot; consignatarias.com
           </p>
       `),
-    })
+    }, `la corrección de El Corredor ${edition}`)
     return { success: true }
   } catch (err) {
     return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
