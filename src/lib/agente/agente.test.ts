@@ -78,6 +78,12 @@ describe('reglas', () => {
     expect(pareceBaja('BAJA')).toBe(true)
     expect(pareceBaja('no me escriban más')).toBe(true)
     expect(pareceBaja('Me interesa, ¿qué peso tienen?')).toBe(false)
+    // Caso real del 06-11-2026: con cortesía adelante y con la errata.
+    expect(pareceBaja('Por favor NO isistir.')).toBe(true)
+    expect(pareceBaja('Por favor, no insistan más')).toBe(true)
+    expect(pareceBaja('No nos vuelvan a contactar')).toBe(true)
+    expect(pareceBaja('Por favor mandame fotos de la hacienda')).toBe(false)
+    expect(pareceBaja('No, gracias, por ahora no')).toBe(false)
   })
 
   it('escala lo legal y la negociación de comisión', () => {

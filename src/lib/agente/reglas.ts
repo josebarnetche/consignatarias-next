@@ -193,8 +193,15 @@ export function aceptacionConCondiciones(texto: string): string | null {
 
 /** ¿Pide la baja? Respaldo determinista: siempre se respeta, con o sin modelo. */
 export function pareceBaja(texto: string): boolean {
-  const t = texto.trim().toLowerCase().slice(0, 300)
-  return /^(baja|no me escriban|no (me )?escriban m[aá]s|no nos interesa,? no escriban|desuscrib|unsubscribe|remove me)/.test(t)
+  const t = texto
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .slice(0, 300)
+    // "Por favor NO insistir" (06-11-2026): el pedido viene después de la cortesía.
+    .replace(/^(por favor|porfavor|x favor|le pido|les pido|les pedimos)[,.:]?\s+/, '')
+  return /^(baja|no me escriban|no (me |nos )?escriban mas|no nos interesa,? no escriban|no (in|i)sist|no (nos |me )?(vuelvan a )?(escribir|contactar|molestar)|no nos molesten|desuscrib|unsubscribe|remove me)/.test(t)
 }
 
 /** Respuesta automática de vacaciones, fuera de oficina, etc. No es una respuesta. */

@@ -7,6 +7,15 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.260.1] — 2026-11-12
+
+### Corregido
+- **El agente no respetaba la baja que leía el modelo.** El 06-11 una consignataria contestó "Por favor NO isistir" en el caso #50. El modelo lo clasificó `baja`, pero el motor solo daba de baja si coincidía la regla fija `pareceBaja`, que pedía que el texto ARRANCARA con "baja" o "no me escriban", y la frase quedó afuera. El mail nunca entró en `agente_bajas`. Ahora:
+  - una respuesta clasificada `baja` por el modelo hace lo mismo que la regla: entra en `agente_bajas`, se confirma la baja, la oferta queda en rechazo y se anota en la bitácora;
+  - `pareceBaja` acepta la cortesía adelante ("por favor", "les pido") y reconoce "no insistir/isistir" y "no nos vuelvan a contactar/escribir/molestar", sin tildes;
+  - una firma que pide la baja sin oferta identificada se da de baja ella, pero ya no le retira el caso al productor. Solo el productor retira su caso.
+- Tests nuevos en `agente.test.ts` (5 frases).
+
 ## [1.259.1] — 2026-11-08
 
 ### Corregido
