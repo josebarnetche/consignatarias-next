@@ -106,6 +106,26 @@ export default function ProActivatedModule({
                 ))}
               </ul>
             </div>
+
+            {/* Usá la IA con nuestros datos. El plan PRO es del SITIO: el MCP responde igual
+                a todos (no ordena ni marca por pago, #132). Esto es un uso, no un beneficio. */}
+            <div className="space-y-1.5 pt-1">
+              <p className="text-xxs font-terminal text-zinc-500 uppercase tracking-wider">
+                Usá tu asistente de IA con nuestros datos
+              </p>
+              <ul className="space-y-1">
+                {[
+                  '«Valuá un lote de 40 novillos de 420 kg antes del remate del jueves»',
+                  '«¿Cuánto se abrió la banda de la semana en terneros?»',
+                  '«¿Cuándo vacuno contra aftosa en Corrientes?»',
+                ].map((q) => (
+                  <li key={q} className="text-xxs font-terminal text-zinc-300 leading-snug">{q}</li>
+                ))}
+              </ul>
+              <a href="/mcp#conectar" className="text-xxs font-terminal text-accent hover:underline">
+                Conectar Claude, ChatGPT o Cursor →
+              </a>
+            </div>
           </>
         )}
 
