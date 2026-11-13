@@ -2398,9 +2398,10 @@ export async function sendElCorredorDelivery(email: string, edition: string, pdf
           <div style="font-size: 14px; color: #38bdf8; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 24px;">${safeEdition}</div>
 
           <p style="font-size: 14px; line-height: 1.6; color: #d4d4d8; margin: 0 0 20px 0;">
-            Acá va tu copia del cierre mensual del mercado bovino argentino.
-            12 páginas con INMAG en USD reales, comparable interanual, 18 buckets del MAG,
-            lectura del ciclo y tesis del mes próximo.
+            Acá va tu copia del cierre mensual del mercado de hacienda: el Índice Novillo en
+            pesos y en dólares, la Banda Consignatarias de cada categoría, las hembras, la
+            brecha con el exterior, faena, exportaciones, clima y valor de la tierra. Cada
+            número con su fuente y su fecha.
           </p>
 
           <p style="margin: 28px 0;">
@@ -2416,7 +2417,7 @@ export async function sendElCorredorDelivery(email: string, edition: string, pdf
             <a href="${urlBaja(email)}" style="color: #71717a;">desuscribite acá</a>.
           </p>
           <p style="font-size: 11px; color: #71717a; margin: 16px 0 0 0;">
-            Mesa de mercado &middot; consignatarias.com
+            Mesa de mercado &middot; consignatarias.com.ar
           </p>
       `),
     })
