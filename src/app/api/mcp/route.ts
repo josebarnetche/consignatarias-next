@@ -2208,9 +2208,10 @@ function rematesProximos(provincia?: string) {
   const p = provincia ? sinAcentos(provincia) : null
   return remates
     // Se compara contra el dato crudo ("CAPITAL FEDERAL") y contra el nombre que
-    // devolvemos ("CABA"): el cliente puede pedir cualquiera de los dos.
+    // devolvemos ("CABA"): el cliente puede pedir cualquiera de los dos. Igualdad,
+    // no `includes`: "Buenos Aires" no tiene que traer la Ciudad Autónoma (13-11-2026).
     .filter((r) => r.status === 'scheduled' && r.date >= hoy &&
-      (!p || sinAcentos(r.province || '').includes(p) || sinAcentos(provinciaNombre(r.province)).includes(p)))
+      (!p || sinAcentos(r.province || '') === p || sinAcentos(provinciaNombre(r.province)) === p))
     .sort((a, b) => a.date.localeCompare(b.date))
     .slice(0, TOPE_RECURSO_REMATES)
     .map((r) => ({

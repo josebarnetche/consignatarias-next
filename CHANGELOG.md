@@ -7,7 +7,7 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
-## [1.259.2] — 2026-11-12
+## [1.259.3] — 2026-11-13
 
 ### Corregido
 - **El Corredor v2: un solo dólar de cierre.** La página de la tierra tomaba el último dólar de la serie (posterior al cierre: USD 2,69 en la edición de octubre) mientras la portada y la brecha internacional usaban el del cierre del mes (USD 2,56). Ahora las tres usan el cierre.
@@ -15,6 +15,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 - **Mail de El Corredor: describe el informe v2.** El mail de envío seguía describiendo el v1 ("12 páginas… 18 buckets del MAG… tesis del mes próximo") y firmaba consignatarias.com. Ahora describe lo que trae el v2, sin cantidad fija de páginas, y firma consignatarias.com.ar.
 - **El Corredor: el PDF y las piezas ya no se pierden por el código de salida de Chrome.** Con el perfil de la máquina Chrome escribe el PDF y sale con 2 ("Teardown watchdog expired"); el render lo contaba como falla, lo callaba y la publicación cortaba con "¿chromium?" (dos veces el 12 y el 13/11). Ahora corre con un perfil propio y descartable, decide por el archivo y no por el código, y si no sale nada imprime el motivo. `informe.chrome()` lo usan el PDF y las piezas.
 - **El Corredor: un rechazo de Resend ya no cuenta como envío.** `sendElCorredorDelivery` y `sendElCorredorCorreccion` usaban `resend.emails.send` sin mirar `{ error }` (el SDK no lanza). Un mail rechazado, por ejemplo por el tope de 100 por día, quedaba registrado en `el_corredor_envios` como enviado, y la continuación del día 2 nunca se lo reintentaba. Ahora pasan por `enviarOFallar`. Tiene test propio (`email-el-corredor.test.ts`). Importa el 01/12/2026, que cae martes: ese día también sale la segunda tanda del newsletter semanal (40–72 mails los martes medidos) y juntos superan el tope.
+## [1.259.2] — 2026-11-13
+
+### Corregido
+- **La alerta de consumo MCP ya no está ciega.** `/api/cron/mcp-consumption-alert` buscaba `metadata.client` en los `tools/call`, pero el clientInfo solo viaja en `initialize` (0 de 13.550 `tools/call` lo traían en 60 días): el `real_found: 0` diario no probaba nada. Ahora el cliente se resuelve por el `initialize` de su mismo `origen`, con el user-agent como respaldo (`src/lib/mcp-alert-cliente.ts`). Si la consulta de `initialize` falla, devuelve 500 sin avanzar el watermark.
+- **Fuera de la alerta:** probes, el proyecto propio trazabilidad-simple, las sesiones Claude de José (claude-code, Claude-User, claude-ai, Anthropic/ClaudeAI), las pruebas propias (verif-39, smoke-39), cinco escáneres nuevos (Agoranome-seller-tools, polly-catalog-verify, dollardollardollar-signals, mcp-index, mcp-discovery-measurement) y el uso del MCP como proxy de un LLM (args con `model` o `messages`, visto el 06-11). 9 tests.
+- **El recurso MCP `consignatarias://remates/provincia/{provincia}` filtra por provincia exacta.** Comparaba con `includes`: «Buenos Aires» traía también los remates de la Ciudad Autónoma de Buenos Aires, y el test `resources.route.test.ts` quedó rojo con la carga de remates del 13-11. No toca la tool `list_remates`.
 
 ## [1.259.1] — 2026-11-08
 
