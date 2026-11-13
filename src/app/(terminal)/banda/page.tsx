@@ -296,7 +296,7 @@ export default async function BandaPage() {
             Pedíselo a tu asistente de IA: conectá el servidor MCP y preguntale «¿cuánto se abrió la banda esta semana?».
             Responde con la tool <code className="text-accent">consignatarias_band</code> y la cita ya redactada.
           </p>
-          <pre className="mt-2 text-xs text-zinc-400 overflow-x-auto">{`{ "mcpServers": { "consignatarias": { "url": "https://www.consignatarias.com.ar/api/mcp" } } }`}</pre>
+          <pre className="mt-2 mb-2 text-xs text-zinc-400 whitespace-pre-wrap break-all">{`{ "mcpServers": { "consignatarias": { "url": "https://www.consignatarias.com.ar/api/mcp" } } }`}</pre>
           <Link href="/mcp#conectar" className="text-accent hover:underline text-xs">
             Cómo conectarlo en Claude, ChatGPT o Cursor →
           </Link>
