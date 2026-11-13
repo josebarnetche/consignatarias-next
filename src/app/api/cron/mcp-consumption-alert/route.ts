@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { sendMcpConsumptionAlert, type McpConsumptionEvent } from '@/lib/email'
-import { isNoise, resolverCliente } from '@/lib/mcp-alert-cliente'
+import { esProxyLLM, isNoise, resolverCliente } from '@/lib/mcp-alert-cliente'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
   const real: McpConsumptionEvent[] = []
   for (const r of all) {
     const md = (r.metadata ?? {}) as Record<string, unknown>
-    if (md.probe === true) continue
+    if (md.probe === true || esProxyLLM(md.args)) continue
     const client = resolverCliente(md, clientePorOrigen)
     const name = client?.name
     if (!name || isNoise(name)) continue

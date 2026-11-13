@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.259.2] — 2026-11-13
+
+### Corregido
+- **La alerta de consumo MCP ya no está ciega.** `/api/cron/mcp-consumption-alert` buscaba `metadata.client` en los `tools/call`, pero el clientInfo solo viaja en `initialize` (0 de 13.550 `tools/call` lo traían en 60 días): el `real_found: 0` diario no probaba nada. Ahora el cliente se resuelve por el `initialize` de su mismo `origen`, con el user-agent como respaldo (`src/lib/mcp-alert-cliente.ts`). Si la consulta de `initialize` falla, devuelve 500 sin avanzar el watermark.
+- **Fuera de la alerta:** probes, el proyecto propio trazabilidad-simple, las sesiones Claude de José (claude-code, Claude-User, claude-ai, Anthropic/ClaudeAI), las pruebas propias (verif-39, smoke-39), cinco escáneres nuevos (Agoranome-seller-tools, polly-catalog-verify, dollardollardollar-signals, mcp-index, mcp-discovery-measurement) y el uso del MCP como proxy de un LLM (args con `model` o `messages`, visto el 06-11). 9 tests.
+
 ## [1.259.1] — 2026-11-08
 
 ### Corregido

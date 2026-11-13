@@ -18,6 +18,9 @@ export const DENY_EXACT = new Set(
     'claude-code', 'claude-user', 'claude-ai', 'anthropic/claudeai',
     // Pruebas propias con curl (verif-39, smoke-39…) y clientes de un solo carácter.
     't', 'probe', 'verif-39', 'smoke-39', 'smoke-verif-39',
+    // Escáneres/directorios vistos 03→09-11-2026 que la heurística no atrapa.
+    'agoranome-seller-tools', 'polly-catalog-verify', 'dollardollardollar-signals',
+    'mcp-index', 'mcp-discovery-measurement',
   ].map((s) => s.toLowerCase()),
 )
 // Heurística: cualquier cosa que huela a herramienta automatizada.
@@ -52,4 +55,17 @@ export function resolverCliente(
   if (delInit) return delInit
   const ua = nombreDesdeUA(md.ua)
   return ua ? { name: ua, version: null } : null
+}
+
+/**
+ * Uso del MCP como proxy gratis de un LLM (06-11-2026: "17*23=?" con model gpt-4o-mini).
+ * Ninguna tool nuestra acepta `model`/`messages`: si los args los traen, no es demanda real.
+ */
+export function esProxyLLM(args: unknown): boolean {
+  let a: unknown = args
+  if (typeof a === 'string') {
+    try { a = JSON.parse(a) } catch { return false }
+  }
+  if (!a || typeof a !== 'object' || Array.isArray(a)) return false
+  return 'model' in a || 'messages' in a
 }

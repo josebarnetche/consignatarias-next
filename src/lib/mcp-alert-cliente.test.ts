@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isNoise, nombreDesdeUA, resolverCliente } from './mcp-alert-cliente'
+import { esProxyLLM, isNoise, nombreDesdeUA, resolverCliente } from './mcp-alert-cliente'
 
 const vacio = new Map<string, { name: string; version: string | null }>()
 
@@ -29,11 +29,24 @@ describe('nombreDesdeUA', () => {
 
 describe('isNoise', () => {
   it('excluye proyectos propios, sesiones Claude de José, pruebas propias y escáneres', () => {
-    for (const n of ['trazabilidad-simple', 'verif-39', 'smoke-39', 'MCPCheckup-Probe', 'BrickBlueBot', 'supermarket-probe', 'agent-index-prober', 'aisonar', 'evyAI MCP Check', 'agent-collector', 'mcpyp-incremental', 'creora-verified-execution', 'rokmcp-probe', 'mcp-checkup-prober', 'claude-code', 'Claude-User', 'claude-ai', 'Anthropic/ClaudeAI']) {
+    for (const n of ['trazabilidad-simple', 'verif-39', 'smoke-39', 'MCPCheckup-Probe', 'BrickBlueBot', 'supermarket-probe', 'agent-index-prober', 'aisonar', 'evyAI MCP Check', 'agent-collector', 'mcpyp-incremental', 'creora-verified-execution', 'rokmcp-probe', 'mcp-checkup-prober', 'claude-code', 'Claude-User', 'claude-ai', 'Anthropic/ClaudeAI', 'Agoranome-seller-tools', 'polly-catalog-verify', 'dollardollardollar-signals', 'mcp-index', 'mcp-discovery-measurement']) {
       expect(isNoise(n)).toBe(true)
     }
   })
   it('deja pasar agentes reales', () => {
     for (const n of ['cursor-vscode', 'cline', 'windsurf']) expect(isNoise(n)).toBe(false)
+  })
+})
+
+describe('esProxyLLM', () => {
+  it('detecta args con model o messages (objeto o string JSON)', () => {
+    expect(esProxyLLM({ query: '17*23=? just the number', model: 'gpt-4o-mini' })).toBe(true)
+    expect(esProxyLLM('{"messages":[{"role":"user","content":"hola"}]}')).toBe(true)
+  })
+  it('deja pasar args normales, null y strings no-JSON', () => {
+    expect(esProxyLLM({ provincia: 'Misiones' })).toBe(false)
+    expect(esProxyLLM(null)).toBe(false)
+    expect(esProxyLLM('no es json')).toBe(false)
+    expect(esProxyLLM([1, 2])).toBe(false)
   })
 })
