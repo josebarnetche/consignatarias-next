@@ -23124,6 +23124,25 @@
     "status": "scheduled"
   },
   {
+    "title": "AFA | Marcos Juárez | Gordos y Conserva",
+    "consignatariaName": "AFA",
+    "consignatariaSlug": "afa",
+    "date": "2026-11-19",
+    "time": "10:00",
+    "location": "",
+    "province": "SANTA FE",
+    "type": "general",
+    "mainCategory": "vaca_gorda",
+    "estimatedHeads": null,
+    "description": "AFA | Marcos Juárez | Gordos y Conserva",
+    "youtubeUrl": null,
+    "catalogUrl": "https://remates.elrural.com/remate/6724-afa-marcos-juarez-gordos-y-conserva",
+    "source": "tv",
+    "sourceUrl": "https://remates.elrural.com/",
+    "status": "scheduled",
+    "id": 1221
+  },
+  {
     "title": "GORDOS y CONSERVA",
     "consignatariaName": "AGRICULTORES FEDERADOS ARGENTINOS SOC COOP LT",
     "consignatariaSlug": "agricultores-federados-argentinos-soc-coop-lt",
@@ -23139,7 +23158,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.afascl.com",
-    "id": 1221,
+    "id": 1222,
     "status": "scheduled"
   },
   {
@@ -23158,7 +23177,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "epastore.com.ar",
-    "id": 1222,
+    "id": 1223,
     "status": "scheduled"
   },
   {
@@ -23177,27 +23196,8 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/e1a43803-9844-4e6b-a3f1-049c0263ae61",
-    "id": 1223,
+    "id": 1224,
     "status": "scheduled"
-  },
-  {
-    "title": "AFA | Marcos Juárez | Gordos y Conserva",
-    "consignatariaName": "AFA",
-    "consignatariaSlug": "afa",
-    "date": "2026-11-19",
-    "time": "10:00",
-    "location": "",
-    "province": "SANTA FE",
-    "type": "general",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": null,
-    "description": "AFA | Marcos Juárez | Gordos y Conserva",
-    "youtubeUrl": null,
-    "catalogUrl": "https://remates.elrural.com/remate/6724-afa-marcos-juarez-gordos-y-conserva",
-    "source": "tv",
-    "sourceUrl": "https://remates.elrural.com/",
-    "status": "scheduled",
-    "id": 1224
   },
   {
     "title": "Faena, Invernada y Cria - 11.00hs.",
@@ -23295,25 +23295,6 @@
     "status": "scheduled"
   },
   {
-    "title": "Remate Televisado por Canal Rural Invernada y Cría / Gordos",
-    "consignatariaName": "TALANO HERMANOS S.R.L.",
-    "consignatariaSlug": "talano-hermanos-s-r-l",
-    "date": "2026-11-19",
-    "time": "14:00",
-    "location": "HERNANDO, CORDOBA",
-    "province": "CORDOBA",
-    "type": "invernada",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": null,
-    "description": "Remate Televisado por Canal Rural\r\nInvernada y Cría / Gordos",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.talanohermanos.com.ar",
-    "id": 1230,
-    "status": "scheduled"
-  },
-  {
     "title": "Talano Hnos | Invernada y Cría",
     "consignatariaName": "Talano Hnos. S.A.",
     "consignatariaSlug": "talano-hnos-s-a",
@@ -23330,7 +23311,26 @@
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
     "status": "scheduled",
-    "id": 1231
+    "id": 1230
+  },
+  {
+    "title": "Remate Televisado por Canal Rural Invernada y Cría / Gordos",
+    "consignatariaName": "TALANO HERMANOS S.R.L.",
+    "consignatariaSlug": "talano-hermanos-s-r-l",
+    "date": "2026-11-19",
+    "time": "14:00",
+    "location": "HERNANDO, CORDOBA",
+    "province": "CORDOBA",
+    "type": "invernada",
+    "mainCategory": "vaca_gorda",
+    "estimatedHeads": null,
+    "description": "Remate Televisado por Canal Rural\r\nInvernada y Cría / Gordos",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "www.talanohermanos.com.ar",
+    "id": 1231,
+    "status": "scheduled"
   },
   {
     "title": ". Faena, invernada y cria.",

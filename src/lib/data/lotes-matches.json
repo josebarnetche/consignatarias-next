@@ -1,5 +1,5 @@
 {
-  "generado": "2026-11-14T21:05:47.418Z",
+  "generado": "2026-11-14T22:55:23.489Z",
   "leads_de_compra": 14,
   "matches": [
     {
@@ -556,6 +556,17 @@
           "url": "https://www.decampoacampo.com/__dcac/230-Terneras-220kg-invernada-34706"
         },
         {
+          "sku": "34705",
+          "titulo": "345 Terneras Braford de 170kg",
+          "score": 35,
+          "motivos": [
+            "el lead no declaró categoría",
+            "otra provincia (Formosa)",
+            "cantidad compatible"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/345-Terneras-170kg-invernada-34705"
+        },
+        {
           "sku": "34444",
           "titulo": "200 Vaquillonas Preñadas Aberdeen Angus Negro y Colorado 430kg",
           "score": 35,
@@ -576,17 +587,6 @@
             "cantidad compatible"
           ],
           "url": "https://www.decampoacampo.com/__dcac/150-Vaquillonas-Prenadas-380kg-invernada-34116"
-        },
-        {
-          "sku": "34680",
-          "titulo": "200 Novillitos Aberdeen Angus Negro y Colorado de 290kg",
-          "score": 35,
-          "motivos": [
-            "el lead no declaró categoría",
-            "otra provincia (Buenos Aires)",
-            "cantidad compatible"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/200-Novillitos-290kg-invernada-34680"
         }
       ]
     },
@@ -609,6 +609,16 @@
             "misma provincia"
           ],
           "url": "https://www.decampoacampo.com/__dcac/80-Novillitos-y-Vaquillonas-295kg-invernada-34712"
+        },
+        {
+          "sku": "34707",
+          "titulo": "100 Vacas preñadas Aberdeen Angus Negro y Colorado de 420kg",
+          "score": 50,
+          "motivos": [
+            "el lead no declaró categoría",
+            "misma provincia"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/100-Vacas-prenadas-420kg-invernada-34707"
         },
         {
           "sku": "34706",
@@ -639,16 +649,6 @@
             "misma provincia"
           ],
           "url": "https://www.decampoacampo.com/__dcac/45-Vaquillonas-para-madre-305kg-invernada-34699"
-        },
-        {
-          "sku": "34697",
-          "titulo": "90 Terneros y Terneras Aberdeen Angus Negro y Colorado de 195kg",
-          "score": 50,
-          "motivos": [
-            "el lead no declaró categoría",
-            "misma provincia"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/90-Terneros-y-Terneras-195kg-invernada-34697"
         }
       ]
     },
@@ -708,6 +708,17 @@
           "url": "https://www.decampoacampo.com/__dcac/225-Terneros-y-Terneras-230kg-invernada-34720"
         },
         {
+          "sku": "34717",
+          "titulo": "85 Novillitos Aberdeen Angus Negro y Colorado de 260kg",
+          "score": 35,
+          "motivos": [
+            "el lead no declaró categoría",
+            "otra provincia (Entre Ríos)",
+            "cantidad compatible"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/85-Novillitos-260kg-invernada-34717"
+        },
+        {
           "sku": "34712",
           "titulo": "80 Novillitos y Vaquillonas Aberdeen Angus Negro y Colorado 295kg",
           "score": 35,
@@ -719,6 +730,17 @@
           "url": "https://www.decampoacampo.com/__dcac/80-Novillitos-y-Vaquillonas-295kg-invernada-34712"
         },
         {
+          "sku": "34707",
+          "titulo": "100 Vacas preñadas Aberdeen Angus Negro y Colorado de 420kg",
+          "score": 35,
+          "motivos": [
+            "el lead no declaró categoría",
+            "otra provincia (Buenos Aires)",
+            "cantidad compatible"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/100-Vacas-prenadas-420kg-invernada-34707"
+        },
+        {
           "sku": "34703",
           "titulo": "30 Vacas preñadas Aberdeen Angus Colorado de 440kg",
           "score": 35,
@@ -728,28 +750,6 @@
             "cantidad compatible"
           ],
           "url": "https://www.decampoacampo.com/__dcac/30-Vacas-prenadas-440kg-invernada-34703"
-        },
-        {
-          "sku": "34701",
-          "titulo": "40 Novillitos Hereford de 300kg",
-          "score": 35,
-          "motivos": [
-            "el lead no declaró categoría",
-            "otra provincia (Corrientes)",
-            "cantidad compatible"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/40-Novillitos-300kg-invernada-34701"
-        },
-        {
-          "sku": "34699",
-          "titulo": "45 Vaquillonas para madre Aberdeen Angus Negro de 305kg",
-          "score": 35,
-          "motivos": [
-            "el lead no declaró categoría",
-            "otra provincia (Buenos Aires)",
-            "cantidad compatible"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/45-Vaquillonas-para-madre-305kg-invernada-34699"
         }
       ]
     },
@@ -763,6 +763,17 @@
         "estado": "routed"
       },
       "lotes": [
+        {
+          "sku": "34717",
+          "titulo": "85 Novillitos Aberdeen Angus Negro y Colorado de 260kg",
+          "score": 100,
+          "motivos": [
+            "misma categoría",
+            "misma provincia",
+            "cantidad compatible"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/85-Novillitos-260kg-invernada-34717"
+        },
         {
           "sku": "34593",
           "titulo": "85 Novillitos Aberdeen Angus Negro y Colorado de 315kg",
@@ -806,17 +817,6 @@
             "cantidad compatible"
           ],
           "url": "https://www.decampoacampo.com/__dcac/100-Novillitos-330kg-invernada-34532"
-        },
-        {
-          "sku": "34712",
-          "titulo": "80 Novillitos y Vaquillonas Aberdeen Angus Negro y Colorado 295kg",
-          "score": 70,
-          "motivos": [
-            "misma categoría",
-            "otra provincia (Buenos Aires)",
-            "cantidad compatible"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/80-Novillitos-y-Vaquillonas-295kg-invernada-34712"
         }
       ]
     }
