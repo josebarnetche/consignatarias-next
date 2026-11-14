@@ -24492,6 +24492,25 @@
     "status": "scheduled"
   },
   {
+    "title": "Invernada, Cria y Consumo - 14.00hs.",
+    "consignatariaName": "Colombo y Magliano S.A.",
+    "consignatariaSlug": "colombo-y-magliano-s-a",
+    "date": "2026-11-26",
+    "time": "14:00",
+    "location": "Tapalqué, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Tapalqué Invernada, Cria y Consumo - 14.00hs.",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1293,
+    "status": "scheduled"
+  },
+  {
     "title": "Remate Haciendas generales de Monte Caseros",
     "consignatariaName": "Reggi & Cía",
     "consignatariaSlug": "reggi-y-cia",
@@ -24508,26 +24527,7 @@
     "source": "web",
     "sourceUrl": "https://reggiycia.com/remate/32076",
     "status": "scheduled",
-    "id": 1293
-  },
-  {
-    "title": "Invernada, Cria y Consumo - 14.00hs.",
-    "consignatariaName": "Colombo y Magliano S.A.",
-    "consignatariaSlug": "colombo-y-magliano-s-a",
-    "date": "2026-11-26",
-    "time": "14:00",
-    "location": "Tapalqué, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Tapalqué Invernada, Cria y Consumo - 14.00hs.",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1294,
-    "status": "scheduled"
+    "id": 1294
   },
   {
     "title": "Faena, Invernada y Cria - 15.00hs.",
