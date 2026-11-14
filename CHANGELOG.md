@@ -7,6 +7,11 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.259.5] — 2026-11-13
+
+### Cambiado
+- **MCP: descripciones de las 5 tools con peor nota en Glama (TDQS).** value_farmland, consignatarias_band, farmland_yield, international_price_gap y fmd_vaccination_calendar: sin lista de parámetros que repite el schema, sin el bloque `[EN]` que traducía el castellano (queda una frase corta), sin tono de venta, y con una línea "para X usá Y" hacia la tool vecina. consignatarias_band documenta que `fecha` es un corte (último dato hasta ese día, contra 7 días antes), tal como lo hace `bandaSemanal()`. Sin cambios de schema, nombre ni respuesta. Espejo en `server-card.json`.
+
 ## [1.259.4] — 2026-11-13
 
 ### Agregado
