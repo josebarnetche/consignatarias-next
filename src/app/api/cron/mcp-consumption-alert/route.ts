@@ -134,7 +134,7 @@ export async function POST(req: NextRequest) {
   // 5) Avanzar el watermark (aunque no haya "reales", para no re-escanear ruido).
   // También se escribe si salió el aviso de Misiones, para no repetirlo mañana.
   if (newMaxId > watermark || misiones.emailed) {
-    await supabase.from('ops_events').insert({
+    const { error: wmErr } = await supabase.from('ops_events').insert({
       event_type: 'mcp_alert_watermark',
       status: 'ok',
       route: '/api/cron/mcp-consumption-alert',
@@ -148,6 +148,11 @@ export async function POST(req: NextRequest) {
         misiones_alerta: misiones.alertaClave,
       },
     })
+    if (wmErr) {
+      // Sin la fila no queda registrado el aviso de Misiones y mañana se repetiría.
+      console.error('mcp-consumption-alert: watermark insert failed', wmErr)
+      return NextResponse.json({ error: 'db_error_watermark' }, { status: 500 })
+    }
   }
 
   return NextResponse.json({
@@ -186,6 +191,11 @@ async function vigilarMisiones(
     console.error('mcp-consumption-alert: misiones query failed', error)
     return { estado: 'error', emailed: false, alertaClave: previa }
   }
+  if ((data ?? []).length >= 1000) {
+    // Llegó al tope de PostgREST: faltan filas viejas y contaría de menos. No es un cero.
+    console.error('mcp-consumption-alert: misiones query hit the 1000-row cap')
+    return { estado: 'error', emailed: false, alertaClave: previa }
+  }
   const conteo = new Map<string, number>()
   for (const r of data ?? []) {
     if (!esFirmaMisiones((r.metadata ?? {}) as Record<string, unknown>)) continue
@@ -197,8 +207,8 @@ async function vigilarMisiones(
   const estado = { dias: ev.dias, alarma: ev.alarma }
   if (!ev.alarma) return { estado, emailed: false, alertaClave: null }
   if (previa === ev.clave) return { estado, emailed: false, alertaClave: previa }
-  // La serie lleva TODOS los días de la ventana, también los de cero: una caída se ve como ceros, no como huecos.
-  const serie = Array.from({ length: 7 }, (_, i) => diaART(new Date(Date.now() - (6 - i) * 86400_000).toISOString())).map(
+  // La serie lleva los 7 días CERRADOS antes de hoy, también los de cero: una caída se ve como ceros, no como huecos.
+  const serie = Array.from({ length: 7 }, (_, i) => diaART(new Date(Date.now() - (7 - i) * 86400_000).toISOString())).map(
     (dia) => ({ dia, n: conteo.get(dia) ?? 0 }),
   )
   const res = await sendMisionesCaidaAlert({ dias: ev.dias, serie, piso: MISIONES_PISO })

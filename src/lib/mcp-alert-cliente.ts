@@ -24,7 +24,7 @@ export const DENY_EXACT = new Set(
   ].map((s) => s.toLowerCase()),
 )
 // Heurística: cualquier cosa que huela a herramienta automatizada.
-const DENY_RX = /probe|crawler|scanner|scoring|registry|spec[-_ ]?check|health[-_ ]?check|indexer|router|discover|inspector|monitor|uptime|glimind|siglume|collector|incremental|sonar|verifi|\bcheck\b|\btest\b|bot\b/i
+const DENY_RX = /probe|crawler|scanner|scoring|registry|spec[-_ ]?check|health[-_ ]?check|indexer|router|discover|inspector|monitor|uptime|glimind|siglume|collector|incremental|sonar|verifi|verify|census|\bscan\b|\bcheck\b|\btest\b|bot\b/i
 
 export function isNoise(name: string): boolean {
   const n = name.trim().toLowerCase()

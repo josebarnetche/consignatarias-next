@@ -89,3 +89,18 @@ describe('vigilancia de Misiones', () => {
     expect(r.dias).toEqual([{ dia: '2026-11-12', n: 0 }, { dia: '2026-11-11', n: 40 }])
   })
 })
+
+describe('escáneres que se presentan con otro nombre en el initialize (30 días al 15-11-2026)', () => {
+  it('vouch-census, agoranome-mcp-scan y catalog-verify son ruido', () => {
+    // el nombre del initialize gana sobre el UA: "agoranome-seller-tools" y
+    // "polly-catalog-verify" (sus UA) ya estaban en la lista, pero no alcanzaba
+    expect(isNoise('vouch-census')).toBe(true)
+    expect(isNoise('agoranome-mcp-scan')).toBe(true)
+    expect(isNoise('catalog-verify')).toBe(true)
+  })
+  it('no se lleva puestos nombres comunes', () => {
+    expect(isNoise('scandinavia-agro')).toBe(false)
+    expect(isNoise('mi-agente')).toBe(false)
+    expect(isNoise('trazabilidad-ganadera')).toBe(false)
+  })
+})
