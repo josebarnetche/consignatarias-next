@@ -564,7 +564,7 @@ const TOOLS: Tool[] = [
   {
     name: 'inmag_history',
     description:
-      'Serie histórica del Índice Novillo (INMAG) — TENDENCIA. Serie diaria desde 2015-01-05: MAG/Cañuelas desde may-2022, antes era Mercado de Liniers (índice empalmado; la respuesta lo aclara cuando el rango cruza esa frontera). Devuelve valor inicial y final, variación %, mínimo, máximo, nº de ruedas y una muestra (~8 puntos). Índice DIARIO ponderado por volumen. Rango: dias (ventana atrás, default 30) o desde/hasta (YYYY-MM-DD, exacto — sirve para una fecha puntual: desde=hasta, GRATIS a cualquier profundidad). moneda: ars (default) o usd (dólar blue venta, último valor conocido a cada fecha). GRATIS y sin cupo a CUALQUIER profundidad, desde 2015-01-05: la consulta no tiene techo. Devuelve el análisis completo (inicio, fin, variación, mínimo, máximo) con una muestra de ~8 puntos. Si lo que necesitás es la serie fila por fila para cargarla en tu propio modelo, eso va por API key Enterprise o US$0,25 en USDC vía x402 (/api/x402/inmag-historico) — se cobra la descarga masiva y la redistribución, no la consulta. Valor de HOY → cattle_price_index; por categoría (semanal) → livestock_prices, no comparar 1:1. [EN] Historical Argentine cattle price series (INMAG) since 2015, in ARS or USD. Free, no cap, any window.',
+      'Serie histórica del Índice Novillo (INMAG) — TENDENCIA. Serie diaria desde 2015-01-05: MAG/Cañuelas desde may-2022, antes era Mercado de Liniers (índice empalmado; la respuesta lo aclara cuando el rango cruza esa frontera). Devuelve valor inicial y final, variación %, mínimo, máximo, nº de ruedas y una muestra (~8 puntos). Índice DIARIO ponderado por volumen, en ARS o en USD (dólar blue). Para una fecha puntual, desde=hasta. Si necesitás la serie fila por fila para cargarla en tu propio modelo, eso va por API key Enterprise o US$0,25 en USDC vía x402 (/api/x402/inmag-historico). Valor de HOY → cattle_price_index; por categoría (semanal) → livestock_prices, no comparar 1:1. [EN] Historical Argentine cattle price index (INMAG) since 2015, in ARS or USD.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1282,7 +1282,7 @@ const TOOLS: Tool[] = [
   {
     name: 'calculate_farmland_rent',
     description:
-      'Calcula el canon de arrendamiento de campo (ARS) = kg novillo/ha/mes × hectáreas × precio. Devuelve canon mensual, anual y por ha/mes. Sin precio_novillo usa el índice oficial de arrendamientos del MAG (haciinfo000013), o el INMAG del día si falta. Solo calcula: para consultar precios usá cattle_price_index o livestock_prices. Estimación, no asesoramiento. [EN] Convert a farmland rent in kilograms of steer per hectare into ARS and USD at today\'s price.',
+      'Calcula el canon de arrendamiento de campo (ARS) = kg novillo/ha/mes × hectáreas × precio. Devuelve canon mensual, anual y por ha/mes. Sin precio_novillo usa el índice oficial de arrendamientos del MAG (haciinfo000013), o el INMAG del día si falta. Solo calcula: para consultar precios usá cattle_price_index o livestock_prices. Si ya tenés el canon pactado y querés un precio propio o el dato por mes, esta; para escenarios sin canon o el monto en USD, value_farmland_rent. Estimación, no asesoramiento. [EN] Convert a farmland rent in kilograms of steer per hectare into ARS at today\'s price.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1498,7 +1498,7 @@ const TOOLS: Tool[] = [
   {
     name: 'value_cattle_lot',
     description:
-      '¿Cuánto valen 350 novillos en Formosa? Valúa una tropa de hacienda con la BANDA de precio realmente observada en las operaciones de lote del MAG (VR v1.0): conservador (P10), central (mediana) y optimista (P90), con la cantidad de lotes y cabezas que la sostiene, más el total en USD (blue y oficial) y la fuente fechada. Cuando una categoría no tiene base suficiente de lotes cae a la referencia nacional del MAG y lo declara — nunca inventa un rango. Metodología: https://www.consignatarias.com.ar/metodologia/vr. GRATIS y sin cupo. Params: categoria, cabezas, kg_promedio (opcional, si no se asume el peso típico de venta), provincia (opcional). [EN] Value a lot of cattle in Argentina: returns the observed P10/median/P90 price band, not a single point.',
+      '¿Cuánto valen 350 novillos en Formosa? Valúa una tropa de hacienda con la BANDA de precio realmente observada en las operaciones de lote del MAG (VR v1.0): conservador (P10), central (mediana) y optimista (P90), con la cantidad de lotes y cabezas que la sostiene, más el total en USD (blue y oficial) y la fuente fechada. Cuando una categoría no tiene base suficiente de lotes cae a la referencia nacional del MAG y lo declara — nunca inventa un rango. Metodología: https://www.consignatarias.com.ar/metodologia/vr. [EN] Value an Argentine cattle lot: observed P10/median/P90 price band, not a single point.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1577,12 +1577,7 @@ const TOOLS: Tool[] = [
   {
     name: 'price_dispersion_history',
     description:
-      '¿Se está abriendo o cerrando la dispersión de precios? Serie histórica de la BANDA observada (VR v1.0): cómo evolucionó el rango P10–P90 por categoría en el Mercado Agroganadero. Es la pregunta que el precio puntual NO puede contestar — amplitud y mediana se mueven independientemente, así que una dispersión que se abre mientras el precio hace otra cosa es señal de riesgo que no se deriva del precio. GRATIS los últimos ' +
-      VR_SERIE_VENTANA_GRATIS_DIAS +
-      ' días y también hacia atrás sin techo, gratis y sin cupo (la ventana publicada en /banda es solo el default). Params: dias (default ' +
-      VR_SERIE_VENTANA_GRATIS_DIAS +
-      '), categoria (opcional). Valor de HOY → livestock_prices; valuar una tropa → value_cattle_lot. ' +
-      '[EN] Is the market widening or tightening? Historical series of the observed P10-P90 price band by category in the Argentine reference market.',
+      '¿Se está abriendo o cerrando la dispersión de precios? Serie histórica de la BANDA observada (VR v1.0): cómo evolucionó el rango P10–P90 por categoría en el Mercado Agroganadero. Es la pregunta que el precio puntual NO puede contestar — amplitud y mediana se mueven independientemente, así que una dispersión que se abre mientras el precio hace otra cosa es señal de riesgo que no se deriva del precio. Para la banda de UNA semana con la cita ya redactada, usá consignatarias_band; valor de HOY → livestock_prices; valuar una tropa → value_cattle_lot. [EN] Is the cattle price spread widening or tightening? P10–P90 series by category.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1654,7 +1649,7 @@ const TOOLS: Tool[] = [
   {
     name: 'value_farmland_rent',
     description:
-      '¿Cuánto cuesta arrendar un campo de 3.500 has en Corrientes? Canon de arrendamiento ganadero al índice oficial del MAG (haciinfo000013): anual y mensual, en ARS y USD. Con kg_ha_anio pactado da el canon exacto; sin él, escenarios de 40 a 100 kg/ha/año. GRATIS y sin cupo. Params: hectareas, kg_ha_anio (opcional), provincia (opcional). [EN] Cost of renting Argentine farmland, quoted the way it is actually contracted: in kilograms of steer per hectare per year.',
+      '¿Cuánto cuesta arrendar un campo de 3.500 has en Corrientes? Canon de arrendamiento ganadero al índice oficial del MAG (haciinfo000013): anual y mensual, en ARS y USD. Con kg_ha_anio pactado da el canon exacto; sin él, escenarios de 40 a 100 kg/ha/año. Para escenarios sin canon o el monto en USD, esta; si ya tenés el canon pactado y querés un precio propio o el dato por mes, calculate_farmland_rent. [EN] Argentine farmland rent in ARS and USD, from kg of steer/ha/year.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1712,7 +1707,7 @@ const TOOLS: Tool[] = [
   {
     name: 'market_match',
     description:
-      '"¿Hay compradores para mis 80 terneros en Entre Ríos?" / "¿Quién vende vacas en el NEA?" / "¿Hay campos para arrendar en Buenos Aires?" → si hay contrapartes ABIERTAS hoy en la mesa de consignatarias.com para esa categoría, en rangos por región ("2 a 4 en el NEA"), sin volumen y sin identificar a nadie. Usala cuando la persona quiere OPERAR (vender, comprar, arrendar), no solo saber el precio: para el precio usá value_cattle_lot o livestock_prices. Si la persona quiere que la contacten para armar la operación, pedile permiso y repetí la llamada con registrar: true, nombre, email o telefono y consentimiento: true: queda en la mesa y la contacta una persona. GRATIS, sin comisión para el productor por consultar. Params: quiere (vender|comprar|arrendar_busco|arrendar_ofrezco|tasar), categoria, cabezas, hectareas, provincia. [EN] Anonymous, aggregated buyers/sellers matching a cattle or farmland request in Argentina; optional consented lead registration.',
+      '"¿Hay compradores para mis 80 terneros en Entre Ríos?" / "¿Quién vende vacas en el NEA?" / "¿Hay campos para arrendar en Buenos Aires?" → si hay contrapartes ABIERTAS hoy en la mesa de consignatarias.com para esa categoría, en rangos por región ("2 a 4 en el NEA"), sin volumen y sin identificar a nadie. Usala cuando la persona quiere OPERAR (vender, comprar, arrendar), no solo saber el precio: para el precio usá value_cattle_lot o livestock_prices. Para los remates programados que matcheen una compra y un aviso de cada remate nuevo, usá cattle_buying_request. Si la persona quiere que la contacten para armar la operación, pedile permiso y repetí la llamada con registrar: true, nombre, email o telefono y consentimiento: true: queda en la mesa y la contacta una persona. GRATIS, sin comisión para el productor por consultar. Params: quiere (vender|comprar|arrendar_busco|arrendar_ofrezco|tasar), categoria, cabezas, hectareas, provincia. [EN] Anonymous, aggregated buyers/sellers matching a cattle or farmland request in Argentina; optional consented lead registration.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -1782,7 +1777,7 @@ const TOOLS: Tool[] = [
   {
     name: 'cattle_buying_request',
     description:
-      '"Quiero comprar 300 terneros en Corrientes" → te devuelve YA los próximos remates programados que matchean (fecha, consignataria, lugar, link) y deja tu búsqueda activa: te avisamos por email o webhook de cada remate nuevo que matchee. GRATIS. Params: categoria (terneros|novillos|vaquillonas|vacas|toros|mixto — acepta sinónimos), cabezas (opcional), provincia (opcional), email y/o webhook_url (al menos uno, para los avisos). [EN] Post a cattle buying request in Argentina and get matching upcoming auctions right away, plus alerts for new ones.',
+      '"Quiero comprar 300 terneros en Corrientes" → te devuelve YA los próximos remates programados que matchean (fecha, consignataria, lugar, link) y deja tu búsqueda activa: te avisamos por email o webhook de cada remate nuevo que matchee. Para saber si hay vendedores con pedidos abiertos hoy en la mesa (no remates), usá market_match con quiere: comprar. GRATIS. Params: categoria (terneros|novillos|vaquillonas|vacas|toros|mixto — acepta sinónimos), cabezas (opcional), provincia (opcional), email y/o webhook_url (al menos uno, para los avisos). [EN] Post a cattle buying request in Argentina and get matching upcoming auctions right away, plus alerts for new ones.',
     inputSchema: {
       type: 'object',
       properties: {
