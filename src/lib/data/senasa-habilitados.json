@@ -1,13 +1,13 @@
 {
-  "scrapedAt": "2026-11-09T17:38:31.082Z",
+  "scrapedAt": "2026-11-16T17:08:41.970Z",
   "source": "https://aps2.senasa.gov.ar/registros/faces/publico/establecimientos/tc_frigorificospublico.jsp",
   "ciclos": [
     "CICLO I - MAT.FRIG.",
     "CICLO II - ELABORADOR",
     "CICLO III - DADOR DE FRIO"
   ],
-  "totalRowsScraped": 1009,
-  "distinctCuits": 871,
+  "totalRowsScraped": 1008,
+  "distinctCuits": 870,
   "unparsableCuits": 0,
   "byCuit": {
     "33714166099": {
@@ -59,7 +59,8 @@
         "I A - CABEZA DE BOVINO FAENADO",
         "I B - CABEZA DE PORCINO FAENADO",
         "I F - CABEZA DE LECHON FAENADO",
-        "LI H - 19. ELAB. HARINA DE SANGRE, PLASMA Y HEMOGLOBINA NO COMESTIBLE"
+        "LI H - 19. ELAB. HARINA DE SANGRE, PLASMA Y HEMOGLOBINA NO COMESTIBLE",
+        "LI A - 12. CUARTEO BOVINO DE PROPIA FAENA"
       ],
       "ciclos": [
         "CICLO I - MAT.FRIG."
@@ -1155,32 +1156,6 @@
         "CICLO I - MAT.FRIG."
       ]
     },
-    "30718380703": {
-      "cuit": "30718380703",
-      "tipo": "CICLO I - MAT.FRIG.",
-      "propietario": "DOR S. A.",
-      "nombre": "DOR S. A.",
-      "provincia": "TIERRA DEL FUEGO",
-      "partido": "RIO GRANDE",
-      "localidad": "RIO GRANDE",
-      "nroOficial": "3920",
-      "actividades": [
-        "I A - CABEZA DE BOVINO FAENADO",
-        "I C - CABEZA DE OVINO FAENADO",
-        "I G - CABEZA DE CABRITO FAENADO",
-        "XXVIII - DEPOSITO / BARRACA P/CUEROS",
-        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
-        "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
-        "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
-        "I G - 3. FAENA DE CORDERITOS",
-        "LI A - 10. MATADERO Y FRIGORIFICO C/FAENA, C/ELABORACION DE CARNE MECANICAMENTE SEPARADA",
-        "XIX - 25. MATERIA PRIMA P/ELAB. ALIMENTOS P/MASCOTAS",
-        "LI H - 20. MATERIA PRIMA P/ELAB. ALIMENTOS P/MASCOTAS"
-      ],
-      "ciclos": [
-        "CICLO I - MAT.FRIG."
-      ]
-    },
     "30642224952": {
       "cuit": "30642224952",
       "tipo": "CICLO I - MAT.FRIG.",
@@ -2049,7 +2024,8 @@
       "nroOficial": "2528",
       "actividades": [
         "I A - CABEZA DE BOVINO FAENADO",
-        "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS"
+        "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
+        "XXXIII - 10. DEPOSITO DE FRIO PARA TERCEROS (CARNES PORCINAS)"
       ],
       "ciclos": [
         "CICLO I - MAT.FRIG."
@@ -2592,10 +2568,13 @@
         "I A - CABEZA DE BOVINO FAENADO",
         "XII - CARNES EN TROZOS O CORTES",
         "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+        "LXII - IMPORTACION DE POLLOS",
+        "LXIV - IMPORTACION DE CARNE PORCINA",
         "I A - 1. SOLO BUBALINOS",
         "XXVIII - 1. SALADERO DE CUEROS",
         "XXXIII - 8. CAMARA FRIGORIFICA PARA DEPOSITO A TERCEROS",
-        "XII - 15. ELABORACION DE CARNE PICADA"
+        "XII - 15. ELABORACION DE CARNE PICADA",
+        "LXVII - IMPORTACION DE CARNE BOVINA"
       ],
       "ciclos": [
         "CICLO I - MAT.FRIG."
@@ -3398,13 +3377,19 @@
       "propietario": "MEATEX S. A.",
       "nombre": "MEATEX S. A.",
       "provincia": "SANTA FE",
-      "partido": "CASEROS",
-      "localidad": "CASILDA",
-      "nroOficial": "2620",
+      "partido": "ROSARIO",
+      "localidad": "VILLA GOBERNADOR GALVEZ",
+      "nroOficial": "1983",
       "actividades": [
         "I A - CABEZA DE BOVINO FAENADO",
+        "XVI B - ELABORACION DE CONSERVAS - ALIMENTOS P/PERROS, GATOS, ETC.",
+        "XXII - ELABORACION DE MENUDENCIAS",
+        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+        "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
         "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
-        "LI A - 12. CUARTEO BOVINO DE PROPIA FAENA"
+        "LI F - MATADERO Y FRIGORIFICO C/FAENA. GRASERIAS, PRODUCCION, COMERCIALIZACION",
+        "LI H - MATADERO Y FRIGORIFICO C/FAENA HARINA CARNE/HUESO",
+        "I A - 1. SOLO BUBALINOS"
       ],
       "ciclos": [
         "CICLO I - MAT.FRIG.",
@@ -3712,18 +3697,18 @@
       "provincia": "SANTA FE",
       "partido": "ROSARIO",
       "localidad": "VILLA GOBERNADOR GALVEZ",
-      "nroOficial": "2095",
+      "nroOficial": "1130",
       "actividades": [
-        "I A - CABEZA DE BOVINO FAENADO",
         "I B - CABEZA DE PORCINO FAENADO",
+        "I F - CABEZA DE LECHON FAENADO",
+        "II - FABRICA DE CHACINADOS Y AFINES",
         "XII - CARNES EN TROZOS O CORTES",
         "XXX - DEPOSITO PRODUCTOS CARNEOS",
         "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
         "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
+        "LI D - MATADERO Y FRIGORIFICO C/FAENA. FABRICA DE CHACINADOS Y AFINES",
         "LI E - MATADERO Y FRIGORIFICO C/FAENA, ELABORADOR MENUDENCIAS",
-        "LI F - MATADERO Y FRIGORIFICO C/FAENA. GRASERIAS, PRODUCCION, COMERCIALIZACION",
-        "LI G - MATADERO Y FRIGORIFICO C/FAENA. SEBERIA INCOMESTIBLE",
-        "LI H - MATADERO Y FRIGORIFICO C/FAENA HARINA CARNE/HUESO"
+        "LXIV - IMPORTACION DE CARNE PORCINA"
       ],
       "ciclos": [
         "CICLO I - MAT.FRIG.",
@@ -3773,23 +3758,14 @@
       "propietario": "PATAGONIA MEAT S.A. S. A.",
       "nombre": "PATAGONIA MEAT S.A.",
       "provincia": "LA PAMPA",
-      "partido": "MARACO",
-      "localidad": "GENERAL PICO",
-      "nroOficial": "4635",
+      "partido": "CATRILO",
+      "localidad": "URIBURU",
+      "nroOficial": "5521",
       "actividades": [
-        "I G - CABEZA DE CABRITO FAENADO",
-        "XII - CARNES EN TROZOS O CORTES",
-        "XXII - ELABORACION DE MENUDENCIAS",
-        "XXVIII - DEPOSITO / BARRACA P/CUEROS",
+        "I A - CABEZA DE BOVINO FAENADO",
         "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
-        "XLI D - POR C/CONEJO FAENADO",
-        "XLI F - POR C/LIEBRE FAENADA",
         "LI A - MATADERO Y FRIGORIFICO C/FAENA, C/PROCESAMIENTO P/CORTES ESPECIALES",
-        "I E - 1. FAENA DE ANTILOPE",
-        "I G - 3. FAENA DE CORDERITOS",
-        "XII - 4. DESPOSTADA BOVINA",
-        "XII - 15. ELABORACION DE CARNE PICADA",
-        "XIX - 25. MATERIA PRIMA P/ELAB. ALIMENTOS P/MASCOTAS"
+        "XII - 4. DESPOSTADA BOVINA"
       ],
       "ciclos": [
         "CICLO I - MAT.FRIG."
@@ -9008,7 +8984,8 @@
         "XXVI - PREPARADO PLASMA SANGUINEO USO COMESTIBLE",
         "XIX - 12. SECADO DE SANGRE POR SPRAY PARA USO INCOMESTIBLE",
         "XIX - 16. ELABORACIÓN PLASMA SANGUÍNEO - USO INCOMESTIBLE",
-        "XIX - 21. ELABORACIÓN DE HEMOGLOBINA P/ALIMENTACIÓN ANIMAL"
+        "XIX - 21. ELABORACIÓN DE HEMOGLOBINA P/ALIMENTACIÓN ANIMAL",
+        "LXIX - IMPORTACION SUBPRODUCTOS DE ORIGEN ANIMAL (NO APTO CONSUMO HUMANO) P/CONSUMO ANIMAL"
       ],
       "ciclos": [
         "CICLO II - ELABORADOR"
@@ -10035,9 +10012,13 @@
       "localidad": "PEREZ",
       "nroOficial": "5418",
       "actividades": [
+        "II - FABRICA DE CHACINADOS Y AFINES",
         "XII - CARNES EN TROZOS O CORTES",
         "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
-        "XII - 4. DESPOSTADA BOVINA"
+        "II - 9. SOLO ELABORACIÓN EMBUTIDOS SECOS",
+        "XII - 4. DESPOSTADA BOVINA",
+        "II - 13. ELABORACIÓN DE CHACINADOS FRESCOS Y HAMBURGUESAS",
+        "II - 19. ELABORACION DE MILANESAS ENFRIADAS Y CONGELADAS"
       ],
       "ciclos": [
         "CICLO II - ELABORADOR"
@@ -10187,6 +10168,7 @@
         "XII - CARNES EN TROZOS O CORTES",
         "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
         "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
+        "XII - 4. DESPOSTADA BOVINA",
         "XII - 8. DESPOSTADA CAPRINA"
       ],
       "ciclos": [
@@ -15433,7 +15415,9 @@
       "localidad": "RODEO DE LA CRUZ",
       "nroOficial": "5471",
       "actividades": [
-        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC."
+        "XXXIII - CAMARA FRIGORIFICA PARA DEPOSITO DE CARNES , MENUDENCIAS, ETC.",
+        "XXXV - CAMARA P/DEPOSITO DE AVES, HUEVOS, ETC.",
+        "XXXIII - 6. DEPÓSITO FRIGORÍFICO DE PESCADOS Y MARISCOS FRESCOS Y CONGELADOS"
       ],
       "ciclos": [
         "CICLO III - DADOR DE FRIO"
