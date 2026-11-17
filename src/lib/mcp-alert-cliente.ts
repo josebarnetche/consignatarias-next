@@ -21,6 +21,8 @@ export const DENY_EXACT = new Set(
     // Escáneres/directorios vistos 03→09-11-2026 que la heurística no atrapa.
     'agoranome-seller-tools', 'polly-catalog-verify', 'dollardollardollar-signals',
     'mcp-index', 'mcp-discovery-measurement',
+    // Directorio y auditor que dispararon el primer aviso (falso positivo) el 17-11-2026.
+    'stork-relay', 'signallabtester',
   ].map((s) => s.toLowerCase()),
 )
 // Heurística: cualquier cosa que huela a herramienta automatizada.
