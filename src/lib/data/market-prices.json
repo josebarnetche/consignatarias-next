@@ -1910,32 +1910,38 @@
   },
   "lastUpdate": "2026-11-17",
   "provinceEntry": {
-    "date": "2026-11-14",
-    "totalCabezas": 5331,
+    "date": "2026-11-17",
+    "totalCabezas": 9622,
     "provinces": [
       {
         "province": "BUENOS AIRES",
-        "enPie": 4899,
-        "total": 4908,
-        "percentage": 92.07
-      },
-      {
-        "province": "SANTA FE",
-        "enPie": 199,
-        "total": 199,
-        "percentage": 3.73
-      },
-      {
-        "province": "LA PAMPA",
-        "enPie": 182,
-        "total": 182,
-        "percentage": 3.41
+        "enPie": 7846,
+        "total": 7853,
+        "percentage": 81.62
       },
       {
         "province": "ENTRE RIOS",
-        "enPie": 42,
-        "total": 42,
-        "percentage": 0.79
+        "enPie": 603,
+        "total": 603,
+        "percentage": 6.27
+      },
+      {
+        "province": "SANTA FE",
+        "enPie": 554,
+        "total": 554,
+        "percentage": 5.76
+      },
+      {
+        "province": "LA PAMPA",
+        "enPie": 314,
+        "total": 314,
+        "percentage": 3.26
+      },
+      {
+        "province": "CORDOBA",
+        "enPie": 298,
+        "total": 298,
+        "percentage": 3.1
       }
     ]
   },
@@ -2071,92 +2077,188 @@
     ]
   },
   "auctionDayEntries": {
-    "date": "2026-11-13",
+    "date": "2026-11-17",
     "consignatarias": {
       "colombo-y-magliano": {
         "magId": "165",
-        "totalCabezas": 331,
+        "totalCabezas": 790,
         "entries": [
           {
-            "remitente": "ALESANDRONI AGUSTIN",
-            "localidad": "PERGAMINO",
-            "provincia": "BUE",
-            "cabezas": 6
+            "remitente": "AGRO PAIHUEN SAS",
+            "localidad": "RANCUL",
+            "provincia": "LPA",
+            "cabezas": 36
           },
           {
-            "remitente": "CONTI URABAYEN AMADEO VALENTIN",
-            "localidad": "LEANDRO N. ALEM",
+            "remitente": "AGROP. LA SIRENITA S.A.",
+            "localidad": "CHASCOMUS",
+            "provincia": "BUE",
+            "cabezas": 18
+          },
+          {
+            "remitente": "BIOFEEDS ARGENTINA S.R.L.",
+            "localidad": "ALCORTA",
+            "provincia": "SFE",
+            "cabezas": 32
+          },
+          {
+            "remitente": "BRAVO JORGE OSCAR",
+            "localidad": "RIVADAVIA         B",
+            "provincia": "BUE",
+            "cabezas": 82
+          },
+          {
+            "remitente": "CAMPO EL EDEN S.R.L.",
+            "localidad": "LOBOS",
+            "provincia": "BUE",
+            "cabezas": 17
+          },
+          {
+            "remitente": "CIMERO S.A",
+            "localidad": "GRAL. VILLEGAS",
+            "provincia": "BUE",
+            "cabezas": 29
+          },
+          {
+            "remitente": "COLOMBO Y MAGLIANO S.A.",
+            "localidad": "LEZAMA",
+            "provincia": "BUE",
+            "cabezas": 50
+          },
+          {
+            "remitente": "COSQUI S.A.",
+            "localidad": "BALCARCE",
+            "provincia": "BUE",
+            "cabezas": 40
+          },
+          {
+            "remitente": "DA-NES S.R.L.",
+            "localidad": "SAN A. DE ARECO",
             "provincia": "BUE",
             "cabezas": 22
           },
           {
-            "remitente": "FRIGORIFICO ANGELANI S.A.",
-            "localidad": "SALADILLO",
+            "remitente": "DANES S.R.L.",
+            "localidad": "OLAVARRIA",
             "provincia": "BUE",
-            "cabezas": 100
+            "cabezas": 55
+          },
+          {
+            "remitente": "DISTRIMEC S.R.L",
+            "localidad": "LOBOS",
+            "provincia": "BUE",
+            "cabezas": 1
+          },
+          {
+            "remitente": "EL TOLEDANO S.A.",
+            "localidad": "LEZAMA",
+            "provincia": "BUE",
+            "cabezas": 12
+          },
+          {
+            "remitente": "ESTAB.PRODUCTOR LOS TRES S.R.L",
+            "localidad": "MERCEDES",
+            "provincia": "BUE",
+            "cabezas": 1
+          },
+          {
+            "remitente": "FARALDO GERARDO LUJAN",
+            "localidad": "LOBOS",
+            "provincia": "BUE",
+            "cabezas": 3
+          },
+          {
+            "remitente": "FARBOR CHACABUCO SA",
+            "localidad": "CHACABUCO",
+            "provincia": "BUE",
+            "cabezas": 14
+          },
+          {
+            "remitente": "FUNDACION INST. LELOIR",
+            "localidad": "GRAL. ALVARADO",
+            "provincia": "BUE",
+            "cabezas": 41
           },
           {
             "remitente": "GANADOS DON RAULIO S.R.L.",
             "localidad": "SAN A. DE ARECO",
             "provincia": "BUE",
-            "cabezas": 60
+            "cabezas": 38
           },
           {
-            "remitente": "GAVEMAX S.A.",
-            "localidad": "ROJAS",
+            "remitente": "GRAZIA S.A",
+            "localidad": "NOGOYA",
+            "provincia": "ERI",
+            "cabezas": 56
+          },
+          {
+            "remitente": "HIJOS DE PEDRO VINCENTI SA",
+            "localidad": "CA�UELAS",
             "provincia": "BUE",
-            "cabezas": 11
+            "cabezas": 38
           },
           {
-            "remitente": "LA GUARIDA DEL ZORRO S.A.",
+            "remitente": "LA ESCAMPADA S.A.",
+            "localidad": "AZUL",
+            "provincia": "BUE",
+            "cabezas": 45
+          },
+          {
+            "remitente": "LA ESTELITA S.A.",
+            "localidad": "GRAL. VILLEGAS",
+            "provincia": "BUE",
+            "cabezas": 41
+          },
+          {
+            "remitente": "LA MANEA S.R.L",
             "localidad": "CHASCOMUS",
             "provincia": "BUE",
-            "cabezas": 32
+            "cabezas": 2
           },
           {
-            "remitente": "LA TIGRA SOC. SIMPLE",
-            "localidad": "ROJAS",
+            "remitente": "LA VIGNE S.A.",
+            "localidad": "CHASCOMUS",
             "provincia": "BUE",
-            "cabezas": 13
+            "cabezas": 37
           },
           {
-            "remitente": "OBERTI JULIANA BEATRIZ",
-            "localidad": "CAPITAN SARMIENTO",
+            "remitente": "PARCELA S.A.",
+            "localidad": "LEZAMA",
             "provincia": "BUE",
             "cabezas": 3
           },
           {
-            "remitente": "SANCHEZ MARIA ELENA",
-            "localidad": "SAN PEDRO",
+            "remitente": "PASSARELLA GASTON A. Y GONZALO",
+            "localidad": "BRAGADO",
             "provincia": "BUE",
-            "cabezas": 5
+            "cabezas": 8
           },
           {
-            "remitente": "SICUENEGUI MARIA VALENTINA",
-            "localidad": "LEANDRO N. ALEM",
+            "remitente": "RINCON DEL CHA�AR S.A.",
+            "localidad": "PEHUAJO",
             "provincia": "BUE",
-            "cabezas": 22
+            "cabezas": 28
           },
           {
-            "remitente": "SURITA NESTOR OMAR",
-            "localidad": "CAPITAN SARMIENTO",
+            "remitente": "ROSSI Y TU�ON SOC. SIMPLE",
+            "localidad": "GRAL. VIAMONTE",
             "provincia": "BUE",
-            "cabezas": 4
+            "cabezas": 14
           },
           {
-            "remitente": "TRAPALCO SA",
+            "remitente": "SERRAGO RODRIGO Y FELIPE S.H.",
             "localidad": "TRENQUE LAUQUEN",
             "provincia": "BUE",
-            "cabezas": 46
+            "cabezas": 19
           },
           {
-            "remitente": "VADILLO LILIANA",
-            "localidad": "9 DE JULIO",
+            "remitente": "SUC. DE JORGE BLANCO VILLEGAS",
+            "localidad": "PEHUAJO",
             "provincia": "BUE",
-            "cabezas": 7
+            "cabezas": 8
           }
         ],
-        "period": "14/10/2026 - 13/11/2026"
+        "period": "18/10/2026 - 17/11/2026"
       }
     }
   },

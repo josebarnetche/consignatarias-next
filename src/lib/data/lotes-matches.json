@@ -1,5 +1,5 @@
 {
-  "generado": "2026-11-17T02:23:58.539Z",
+  "generado": "2026-11-17T03:37:15.542Z",
   "leads_de_compra": 14,
   "matches": [
     {
@@ -169,6 +169,17 @@
           "url": "https://www.decampoacampo.com/__dcac/125-Terneras-235kg-invernada-34601"
         },
         {
+          "sku": "34715",
+          "titulo": "50 Terneros Braford de 200kg",
+          "score": 85,
+          "motivos": [
+            "categoría equivalente",
+            "misma provincia",
+            "cantidad compatible"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/50-Terneros-200kg-invernada-34715"
+        },
+        {
           "sku": "34710",
           "titulo": "95 Terneros Braford de 230kg",
           "score": 85,
@@ -189,17 +200,6 @@
             "cantidad compatible"
           ],
           "url": "https://www.decampoacampo.com/__dcac/60-Terneros-y-Terneras-210kg-invernada-34589"
-        },
-        {
-          "sku": "34425",
-          "titulo": "70 Terneros Aberdeen Angus Negro y Colorado de 245kg",
-          "score": 85,
-          "motivos": [
-            "categoría equivalente",
-            "misma provincia",
-            "cantidad compatible"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/70-Terneros-245kg-invernada-34425"
         }
       ]
     },
