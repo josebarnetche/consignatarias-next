@@ -23,6 +23,8 @@ export const DENY_EXACT = new Set(
     'mcp-index', 'mcp-discovery-measurement',
     // Directorio y auditor que dispararon el primer aviso (falso positivo) el 17-11-2026.
     'stork-relay', 'signallabtester',
+    // 18-11-2026: otros dos falsos positivos.
+    'radialscout', 'agent-index',
   ].map((s) => s.toLowerCase()),
 )
 // Heurística: cualquier cosa que huela a herramienta automatizada.
