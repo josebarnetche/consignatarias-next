@@ -1833,57 +1833,57 @@
       }
     ],
     "latestVolume": 10286,
-    "periodVolume": 148269
+    "periodVolume": 143380
   },
   "categories": {
     "novillos": {
-      "current": 3929.88,
+      "current": 4081.06,
       "prev": 3929.88,
-      "change": 0,
+      "change": 3.8,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 923,
-      "observedDate": "13/11/2026"
+      "latestVolume": 1745,
+      "observedDate": "17/11/2026"
     },
     "novillitos": {
-      "current": 4167.53,
+      "current": 4338.91,
       "prev": 4167.53,
-      "change": 0,
+      "change": 4.1,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 661,
-      "observedDate": "13/11/2026"
+      "latestVolume": 2207,
+      "observedDate": "17/11/2026"
     },
     "vaquillonas": {
-      "current": 4152,
+      "current": 4115.25,
       "prev": 4152,
-      "change": 0,
+      "change": -0.9,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 1417,
-      "observedDate": "13/11/2026"
+      "latestVolume": 3098,
+      "observedDate": "17/11/2026"
     },
     "vacas": {
-      "current": 2745.06,
+      "current": 2840.93,
       "prev": 2745.06,
-      "change": 0,
+      "change": 3.5,
       "source": "mercadoagroganadero.com.ar (observed)",
-      "latestVolume": 2048,
-      "observedDate": "13/11/2026"
+      "latestVolume": 2820,
+      "observedDate": "17/11/2026"
     },
     "toros": {
-      "current": 3220.09,
+      "current": 3094.13,
       "prev": 3220.09,
-      "change": 0,
+      "change": -3.9,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
-      "latestVolume": 183,
-      "observedDate": "13/11/2026"
+      "latestVolume": 241,
+      "observedDate": "17/11/2026"
     },
     "terneros": {
       "current": 4486,
-      "prev": 4323,
-      "change": 3.8,
+      "prev": 4486,
+      "change": 0,
       "source": "MAG (derived from INMAG)"
     }
   },
@@ -1896,8 +1896,8 @@
   },
   "usdBlue": {
     "current": 1605,
-    "prev": 1600,
-    "change": 0.3,
+    "prev": 1605,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
@@ -1908,9 +1908,9 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-11-17",
+  "lastUpdate": "2026-11-18",
   "provinceEntry": {
-    "date": "2026-11-17",
+    "date": "2026-11-18",
     "totalCabezas": 10241,
     "provinces": [
       {
@@ -1946,7 +1946,7 @@
     ]
   },
   "detailedCategories": {
-    "date": "2026-11-17",
+    "date": "2026-11-18",
     "categories": [
       {
         "category": "NOVILLOS Esp.Joven + 430",
@@ -2084,7 +2084,7 @@
     ]
   },
   "auctionDayEntries": {
-    "date": "2026-11-17",
+    "date": "2026-11-18",
     "consignatarias": {
       "colombo-y-magliano": {
         "magId": "165",
@@ -2265,7 +2265,122 @@
             "cabezas": 8
           }
         ],
-        "period": "18/10/2026 - 17/11/2026"
+        "period": "19/10/2026 - 18/11/2026"
+      },
+      "gananor-pujol": {
+        "magId": "520",
+        "totalCabezas": 247,
+        "entries": [
+          {
+            "remitente": "AMA AITA S.A",
+            "localidad": "CA�UELAS",
+            "provincia": "BUE",
+            "cabezas": 4
+          },
+          {
+            "remitente": "AMA AITA S.A",
+            "localidad": "CA�UELAS",
+            "provincia": "BUE",
+            "cabezas": 4
+          },
+          {
+            "remitente": "C.O.P.I.C.A.  S.A.",
+            "localidad": "GRAL. LAVALLE   B",
+            "provincia": "BUE",
+            "cabezas": 32
+          },
+          {
+            "remitente": "CABA�A SAN ESTEBAN S.A.",
+            "localidad": "MERCEDES",
+            "provincia": "BUE",
+            "cabezas": 4
+          },
+          {
+            "remitente": "ELBETO COMPA�IA AGRIC. GAN. SA",
+            "localidad": "CARLOS CASARES",
+            "provincia": "BUE",
+            "cabezas": 3
+          },
+          {
+            "remitente": "ENTRE TIERRAS S.A.",
+            "localidad": "SUIPACHA",
+            "provincia": "BUE",
+            "cabezas": 3
+          },
+          {
+            "remitente": "ENTRE TIERRAS S.A.",
+            "localidad": "SUIPACHA",
+            "provincia": "BUE",
+            "cabezas": 1
+          },
+          {
+            "remitente": "GEOGHEGAN PATRCIA MARCELA",
+            "localidad": "CHIVILCOY",
+            "provincia": "BUE",
+            "cabezas": 12
+          },
+          {
+            "remitente": "JALA LA JUANITA S.A.",
+            "localidad": "CARLOS CASARES",
+            "provincia": "BUE",
+            "cabezas": 32
+          },
+          {
+            "remitente": "JALA LA JUANITA S.A.",
+            "localidad": "CARLOS CASARES",
+            "provincia": "BUE",
+            "cabezas": 6
+          },
+          {
+            "remitente": "JALA LA JUANITA SA",
+            "localidad": "CARLOS CASARES",
+            "provincia": "BUE",
+            "cabezas": 13
+          },
+          {
+            "remitente": "JALA LA JUANITA SA",
+            "localidad": "CARLOS CASARES",
+            "provincia": "BUE",
+            "cabezas": 22
+          },
+          {
+            "remitente": "JALA LA JUANITA SA",
+            "localidad": "CARLOS CASARES",
+            "provincia": "BUE",
+            "cabezas": 5
+          },
+          {
+            "remitente": "MAETI PECUARIA S.A.",
+            "localidad": "BARADERO",
+            "provincia": "BUE",
+            "cabezas": 42
+          },
+          {
+            "remitente": "MAETI PECUARIA S.A.",
+            "localidad": "BARADERO",
+            "provincia": "BUE",
+            "cabezas": 5
+          },
+          {
+            "remitente": "PABLO INOCENCIO BOS",
+            "localidad": "ALBERTI",
+            "provincia": "BUE",
+            "cabezas": 3
+          },
+          {
+            "remitente": "PONTEZUELA S.A.",
+            "localidad": "ALBERTI",
+            "provincia": "BUE",
+            "cabezas": 9
+          },
+          {
+            "remitente": "VICAMPO S.R.L.",
+            "localidad": "BENITO JUAREZ",
+            "provincia": "BUE",
+            "cabezas": 47
+          }
+        ],
+        "period": "19/10/2026 - 18/11/2026"
       }
     }
   },
@@ -2293,8 +2408,8 @@
   },
   "soy": {
     "current": 472.5,
-    "prev": 472,
-    "change": 0.1,
+    "prev": 472.5,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API",
     "date": "2026-11-17"
