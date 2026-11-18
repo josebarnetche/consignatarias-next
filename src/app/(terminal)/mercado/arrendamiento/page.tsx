@@ -338,7 +338,7 @@ export default async function ArrendamientoPage() {
     },
     {
       q: '¿Qué es el índice de arrendamiento y cuánto vale hoy?',
-      a: `El índice de arrendamiento (índice de arrendamiento rural, o índice novillo arrendamiento) es el precio del kilo vivo de novillo que publica el Mercado Agroganadero como referencia para pasar a pesos los contratos rurales pactados en kilos de novillo por hectárea. Hoy vale $${fmt(arr.index)} por kilo (actualizado el ${fmtFecha(arr.date)}) y el promedio del período, que es el que se liquida, $${fmt(arr.periodIndex)}/kg. No es un índice agrícola en quintales de soja: es la referencia ganadera que usan los contratos de campo en toda la Argentina.`
+      a: `El índice de arrendamiento (índice de arrendamiento rural, o índice novillo arrendamiento) es el precio del kilo vivo de novillo que publica el Mercado Agroganadero como referencia para pasar a pesos los contratos rurales pactados en kilos de novillo por hectárea. Hoy vale $${fmt(arr.index)} por kilo (actualizado el ${fmtFecha(arr.date)}) y el promedio del período en curso, $${fmt(arr.periodIndex)}/kg.${arrMes ? ` El último cierre mensual (${arrMes.label}) fue $${fmt(arrMes.index)}/kg.` : ''} No es un índice agrícola en quintales de soja: es la referencia ganadera que usan los contratos de campo en toda la Argentina.`
     },
     {
       q: '¿Cuál es el índice novillo arrendamiento mensual?',
@@ -439,8 +439,8 @@ export default async function ArrendamientoPage() {
               <p className="text-zinc-200 text-base leading-relaxed">
                 <strong className="text-ink">Precio novillo para arrendamiento hoy: ${fmt(arr.index)}/kg.</strong>{' '}
                 Índice oficial sugerido para arrendamientos rurales del Mercado Agroganadero.
-                Período {fmtFecha(arr.periodStart)}–{fmtFecha(arr.periodEnd)} (promedio ${fmt(arr.periodIndex)}/kg,
-                el valor que se liquida). Actualizado {fmtFecha(arr.date)}.
+                Período {fmtFecha(arr.periodStart)}–{fmtFecha(arr.periodEnd)} (promedio del período ${fmt(arr.periodIndex)}/kg).
+                {arrMes && <> Cierre de {arrMes.label}: ${fmt(arrMes.index)}/kg.</>} Actualizado {fmtFecha(arr.date)}.
               </p>
             </div>
           </div>
@@ -535,7 +535,7 @@ export default async function ArrendamientoPage() {
               rural, o índice novillo arrendamiento— es el precio del kilo vivo de novillo que publica el
               Mercado Agroganadero para pasar a pesos los contratos de campo pactados en kilos de novillo
               por hectárea. Hoy vale <strong className="text-ink">${fmt(arr.index)} por kilo</strong>{' '}
-              (actualizado el {fmtFecha(arr.date)}); el promedio del período, que es el que se liquida,{' '}
+              (actualizado el {fmtFecha(arr.date)}); el promedio del período en curso,{' '}
               <strong className="text-ink">${fmt(arr.periodIndex)}/kg</strong>.
             </p>
             <p className="text-zinc-500 text-xs">
