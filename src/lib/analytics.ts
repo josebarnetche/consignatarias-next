@@ -81,6 +81,30 @@ export function trackEvent(
 }
 
 /* ------------------------------------------------------------------ */
+/*  PUENTE A MEMOLA                                                    */
+/* ------------------------------------------------------------------ */
+
+/** Lugares del sitio desde donde se enlaza a memola.com.ar (dimensión `placement` en GA4). */
+export type MemolaPlacement =
+  | 'footer'
+  | 'quienes_somos'
+  | 'quienes_somos_cta'
+  | 'para_consignatarias'
+
+/**
+ * URL a memola.com.ar con la UTM del puente. GA4 de memola.com.ar cuenta las
+ * sesiones por utm_campaign=puente_memola y utm_medium=<placement>.
+ */
+export function memolaUrl(placement: MemolaPlacement | 'newsletter_digest'): string {
+  return `https://memola.com.ar/?utm_source=consignatarias&utm_medium=${placement}&utm_campaign=puente_memola`
+}
+
+/** Click hacia memola.com.ar (evento `memola_click` en GA4 de consignatarias). */
+export function trackMemolaClick(placement: MemolaPlacement) {
+  trackEvent('memola_click', { placement, link_url: memolaUrl(placement) })
+}
+
+/* ------------------------------------------------------------------ */
 /*  DOMAIN EVENTS                                                      */
 /* ------------------------------------------------------------------ */
 

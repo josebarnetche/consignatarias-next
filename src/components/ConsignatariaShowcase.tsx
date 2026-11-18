@@ -1,6 +1,7 @@
 'use client'
 
 import { ImagenTema } from '@/components/ui/ImagenTema'
+import { MemolaBridge } from '@/components/MemolaBridge'
 import { useEffect, useRef, type ReactNode } from 'react'
 import Link from 'next/link'
 
@@ -235,6 +236,15 @@ export default function ConsignatariaShowcase({
           {stats.consignatarias} consignatarias en el directorio. Con PRO, las consultas te llegan con nombre y
           contacto.
         </p>
+      </section>
+
+      {/* ── Puente a MEMOLA: debajo del CTA de PRO, sin competir con él. Sin montos
+          de la agencia ni casos de clientes. ── */}
+      <section className="max-w-2xl mx-auto px-4 pb-16">
+        <MemolaBridge placement="para_consignatarias" variant="bloque" titulo="¿Necesitás más que aparecer?" cta="Hablemos con MEMOLA →">
+          Consignatarias.com.ar la creamos y la operamos en MEMOLA. Para consignatarias también hacemos el sitio
+          propio, el catálogo y el video del remate, y la difusión en redes. Mismo equipo, mismo dato.
+        </MemolaBridge>
       </section>
     </div>
   )

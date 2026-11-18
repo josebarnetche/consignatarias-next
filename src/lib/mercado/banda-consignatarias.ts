@@ -14,7 +14,8 @@
  * llegó primero. **Nadie cobra el número: cobran la dispersión alrededor del
  * número.** Nosotros la teníamos calculada y la estábamos regalando sin nombre.
  *
- * CÓMO SE LEE. Amplitud = (P90 − P10) / mediana, sobre los lotes realmente
+ * CÓMO SE LEE. Amplitud = P90 / P10 − 1 (metodología VR, ver /metodologia/vr y
+ * scripts/compute-vr-bandas.mjs), sobre los lotes realmente
  * operados en el Mercado Agroganadero en una ventana móvil de 30 días. Si sube, el
  * mercado se está abriendo: la misma hacienda vale cada vez más distinto según
  * quién la venda, y ahí es donde un consignatario bueno se paga solo. Si baja, el

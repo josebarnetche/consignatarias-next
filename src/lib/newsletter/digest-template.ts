@@ -45,6 +45,10 @@ function formatDayMonth(dateStr: string): string {
 }
 
 const money = (n: number) => '$' + Math.round(n).toLocaleString('es-AR')
+// Puente a MEMOLA: URL propia (no withDigestUtm) para que GA4 de memola.com.ar la cuente
+// junto al resto del puente (utm_campaign=puente_memola).
+const MEMOLA_DIGEST_URL =
+  'https://memola.com.ar/?utm_source=consignatarias&utm_medium=newsletter_digest&utm_campaign=puente_memola'
 
 export interface DigestEmail {
   subject: string
@@ -188,6 +192,11 @@ export function buildDigestEmail(model: DigestModel, recipient: string): DigestE
           <a href="${withDigestUtm('/consignatarias', 'footer-directorio')}" style="color:#71717a">Directorio</a>
         </p>
       </div>
+
+      <p style="color:#71717a;font-size:13px;margin:16px 0 0;line-height:1.5">
+        Consignatarias.com.ar la crea y la opera
+        <a href="${MEMOLA_DIGEST_URL}" style="color:#a1a1aa">MEMOLA</a>, datos y marketing para el agro.
+      </p>
 
       <p style="color:#52525b;font-size:12px;margin:18px 0 0;line-height:1.5">
         Recibís este email porque te suscribiste a consignatarias.com.ar

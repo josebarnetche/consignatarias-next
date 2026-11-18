@@ -43,6 +43,14 @@ interface OrganizationSchemaProps {
  * publisher/author/creator en vez de repetirla con un nombre distinto cada vez.
  * Marca: "consignatarias.com.ar". Razón social: legalName.
  */
+const MEMOLA_ORG = {
+  '@type': 'Organization',
+  name: 'Memola Medios S.A.S.',
+  alternateName: 'MEMOLA',
+  url: 'https://memola.com.ar/',
+  sameAs: ['https://memola.com.ar/', 'https://www.linkedin.com/company/memola-medios'],
+} as const
+
 export function OrganizationSchema({
   url = SITE,
   logo = `${SITE}/logo.png`,
@@ -70,6 +78,9 @@ export function OrganizationSchema({
       '@type': 'Person',
       name: 'José Barnetche',
     },
+    // La empresa que crea y opera el sitio, con su web: conecta la entidad
+    // consignatarias.com.ar con memola.com.ar en el knowledge graph.
+    parentOrganization: MEMOLA_ORG,
     areaServed: {
       '@type': 'Country',
       name: 'Argentina',

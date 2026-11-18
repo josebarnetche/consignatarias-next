@@ -1,0 +1,97 @@
+{
+  "updated": "2026-11-18",
+  "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales), fila Totales del mes",
+  "months": [
+    {
+      "year": 2026,
+      "month": 10,
+      "label": "octubre 2026",
+      "index": 4186.564,
+      "cabezas": 80045
+    },
+    {
+      "year": 2026,
+      "month": 9,
+      "label": "septiembre 2026",
+      "index": 4253.48,
+      "cabezas": 77599
+    },
+    {
+      "year": 2026,
+      "month": 8,
+      "label": "agosto 2026",
+      "index": 4373.766,
+      "cabezas": 67833
+    },
+    {
+      "year": 2026,
+      "month": 7,
+      "label": "julio 2026",
+      "index": 4353.665,
+      "cabezas": 84397
+    },
+    {
+      "year": 2026,
+      "month": 6,
+      "label": "junio 2026",
+      "index": 4242.244,
+      "cabezas": 83048
+    },
+    {
+      "year": 2026,
+      "month": 5,
+      "label": "mayo 2026",
+      "index": 4281.738,
+      "cabezas": 90448
+    },
+    {
+      "year": 2026,
+      "month": 4,
+      "label": "abril 2026",
+      "index": 4335.529,
+      "cabezas": 78953
+    },
+    {
+      "year": 2026,
+      "month": 3,
+      "label": "marzo 2026",
+      "index": 4491.046,
+      "cabezas": 86251
+    },
+    {
+      "year": 2026,
+      "month": 2,
+      "label": "febrero 2026",
+      "index": 4520.462,
+      "cabezas": 74457
+    },
+    {
+      "year": 2026,
+      "month": 1,
+      "label": "enero 2026",
+      "index": 4160.999,
+      "cabezas": 82059
+    },
+    {
+      "year": 2025,
+      "month": 12,
+      "label": "diciembre 2025",
+      "index": 4128.564,
+      "cabezas": 88366
+    },
+    {
+      "year": 2025,
+      "month": 11,
+      "label": "noviembre 2025",
+      "index": 3870.813,
+      "cabezas": 91516
+    },
+    {
+      "year": 2025,
+      "month": 10,
+      "label": "octubre 2025",
+      "index": 3279.961,
+      "cabezas": 95874
+    }
+  ]
+}

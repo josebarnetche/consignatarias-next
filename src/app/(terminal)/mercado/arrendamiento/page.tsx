@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { Suspense } from 'react'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import marketData from '@/lib/data/market-prices.json'
+import arrMensualData from '@/lib/data/arrendamiento-mensual.json'
 import { adminClientOpcional } from '@/lib/supabase-server'
 import ArrendamientoCalculator from './ArrendamientoCalculator'
 import LeadCapture from '@/components/leads/LeadCapture'
@@ -40,6 +41,17 @@ const arr = marketData.arrendamientoOficial as {
   source: string
 }
 
+// Cierres MENSUALES del índice oficial de arrendamiento (haciinfo000013, fila Totales del
+// mes; scripts/arrendamiento-mensual.mjs). OJO: no es el INMAG mensual de
+// inmag_monthly_close (haciinfo000011, todas las categorías). Octubre 2026: índice
+// arrendamiento $4.186,564 vs. INMAG $4.122,039, ambos con 80.045 cab. ingresadas.
+// Antes la página presentaba el INMAG como "el índice de arrendamiento mensual".
+type ArrMes = { year: number; month: number; label: string; index: number; cabezas: number | null }
+const arrMensual = (arrMensualData as { months: ArrMes[] }).months
+const arrMes = arrMensual[0] as ArrMes | undefined // el mes cerrado más reciente
+const arrMesPrev = arrMensual[1] as ArrMes | undefined
+const arrPorMes = new Map(arrMensual.map((m) => [`${m.year}-${m.month}`, m.index]))
+
 // Snapshot server para "Desde tu última visita" (mismo patrón que /overview).
 const TODAY = new Date().toISOString().slice(0, 10)
 const inmagSnapshotDate = series[series.length - 1]?.date ?? marketData.lastUpdate
@@ -53,6 +65,7 @@ const rematesUpcomingSnapshot = rematesData
 export const revalidate = 3600
 
 const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
+const MESES_CORTOS = ['ene.', 'feb.', 'mar.', 'abr.', 'may.', 'jun.', 'jul.', 'ago.', 'sep.', 'oct.', 'nov.', 'dic.']
 
 /**
  * Cierres mensuales OFICIALES del MAG (tabla inmag_monthly_close) — el promedio
@@ -88,12 +101,19 @@ export const metadata: Metadata = {
   // Oct-2026 (GSC W29→W39): el CTR del hub cayó de 1,7 % a 0,95 % mientras crecían
   // /liniers, /canuelas y /mensual. Title absoluto (sin el sufijo de marca, que lo
   // cortaba) y con el mes del índice que se liquida, para diferenciarlo de las hijas.
+  // Nov-2026 (GSC 28d: CTR 1,05 % en pos 6,8): el title decía el mes en curso sin
+  // número mensual, y la description llamaba "mensual" al promedio del período (una
+  // semana). Ahora: número del día + cierre mensual oficial con su mes, ambos del MAG.
   title: {
-    absolute: `Precio e índice novillo arrendamiento hoy: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg · ${MESES[new Date(arr.date + 'T12:00:00').getMonth()].toLowerCase()}`,
+    absolute: arrMes
+      ? `Índice novillo arrendamiento hoy $${fmt(arr.index)}/kg · ${MESES_CORTOS[arrMes.month - 1]} $${fmt(arrMes.index)}`
+      : `Precio e índice novillo arrendamiento hoy: $${fmt(arr.index)}/kg`,
   },
   // ≤160 caracteres con el dato primero: Google cortaba la anterior (~330) antes del
   // índice mensual, que es el que se liquida.
-  description: `Índice novillo arrendamiento hoy: $${arr.index.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg (MAG, ${fmtFecha(arr.date)}). Mensual, el que se liquida: $${arr.periodIndex.toLocaleString('es-AR', { maximumFractionDigits: 0 })}/kg. Calculá tu canon.`,
+  description: arrMes
+    ? `Precio del novillo para arrendamiento: $${fmt(arr.index)}/kg al ${fmtFecha(arr.date)}. Cierre de ${arrMes.label}: $${fmt(arrMes.index)}/kg. Índice oficial del MAG. Calculá tu canon.`
+    : `Índice novillo arrendamiento hoy: $${fmt(arr.index)}/kg (MAG, ${fmtFecha(arr.date)}). Calculá tu canon.`,
   keywords: [
     'índice novillo arrendamiento',
     'indice de arrendamiento',
@@ -155,6 +175,17 @@ function ArrendamientoSchema() {
         unitText: 'ARS/kg vivo',
         measurementTechnique: `Promedio del período ${arr.periodStart}/${arr.periodEnd} — el valor que se usa para liquidar`,
       },
+      ...(arrMes
+        ? [
+            {
+              '@type': 'PropertyValue',
+              name: `Índice de arrendamiento mensual (${arrMes.label})`,
+              value: arrMes.index,
+              unitText: 'ARS/kg vivo',
+              measurementTechnique: 'Fila Totales del mes del índice sugerido para arrendamientos rurales del Mercado Agroganadero (haciinfo000013)',
+            },
+          ]
+        : []),
       {
         '@type': 'PropertyValue',
         name: 'INMAG Novillo (referencia diaria)',
@@ -203,8 +234,12 @@ function fmtFecha(iso: string): string {
 export default async function ArrendamientoPage() {
   const closes = await getMonthlyCloses()
   const cierre = closes[0] // el mes cerrado más reciente — el número para facturar
-  const cierrePrev = closes[1]
-  const cierreChange = cierre && cierrePrev ? ((cierre.inmag - cierrePrev.inmag) / cierrePrev.inmag) * 100 : null
+  // El número mensual que se muestra como ÍNDICE DE ARRENDAMIENTO: el oficial del MAG.
+  // Si el JSON no tuviera el mes, cae al promedio del período vigente (nunca al INMAG).
+  const mensual = arrMes ? arrMes.index : arr.periodIndex
+  const arrMesChange = arrMes && arrMesPrev ? ((arrMes.index - arrMesPrev.index) / arrMesPrev.index) * 100 : null
+  // El INMAG del MISMO mes, para aclarar la diferencia (sólo si coincide el mes).
+  const inmagMismoMes = arrMes && cierre && cierre.year === arrMes.year && cierre.month === arrMes.month ? cierre : null
 
   const recentSeries = series.slice(-90) // 90 days for better trend visibility
   const last30 = series.slice(-30)
@@ -246,6 +281,7 @@ export default async function ArrendamientoPage() {
     return {
       label: m.label,
       inmag: m.inmag,
+      arrendamiento: arrPorMes.get(`${m.year}-${m.month}`) ?? null,
       cabezas: m.cabezas,
       change: prev ? ((m.inmag - prev.inmag) / prev.inmag) * 100 : null,
     }
@@ -258,8 +294,19 @@ export default async function ArrendamientoPage() {
       cell: (r) => <span className="text-zinc-300 capitalize">{r.label}</span>,
     },
     {
+      key: 'arrendamiento',
+      header: 'Índice arrendamiento',
+      numeric: true,
+      cell: (r) =>
+        r.arrendamiento != null ? (
+          <PriceCell value={r.arrendamiento} prefix="$" suffix="/kg" />
+        ) : (
+          <span className="text-zinc-600">—</span>
+        ),
+    },
+    {
       key: 'inmag',
-      header: 'Cierre INMAG',
+      header: 'INMAG (todas las cat.)',
       numeric: true,
       cell: (r) => (
         <span className="inline-flex items-baseline gap-2">
@@ -295,7 +342,7 @@ export default async function ArrendamientoPage() {
     },
     {
       q: '¿Cuál es el índice novillo arrendamiento mensual?',
-      a: `Para los contratos de arrendamiento se usa el índice novillo arrendamiento mensual —el promedio del período, no el valor de un solo día— para evitar la volatilidad diaria. El promedio mensual vigente del índice oficial es $${fmt(arr.periodIndex)} por kilo vivo. El canon mensual se calcula como kilos de novillo por hectárea × ese promedio mensual × cantidad de hectáreas; el canon anual es ese valor multiplicado por 12.`
+      a: `Para los contratos de arrendamiento se usa el índice novillo arrendamiento mensual —el promedio del período, no el valor de un solo día— para evitar la volatilidad diaria. ${arrMes ? `El último cierre mensual del índice oficial es el de ${arrMes.label}: $${fmt(arrMes.index)} por kilo vivo.` : `El promedio del período vigente del índice oficial es $${fmt(arr.periodIndex)} por kilo vivo.`} El canon mensual se calcula como kilos de novillo por hectárea × ese promedio mensual × cantidad de hectáreas; el canon anual es ese valor multiplicado por 12.`
     },
     {
       q: '¿Cómo se calcula el arrendamiento con el índice novillo?',
@@ -356,7 +403,7 @@ export default async function ArrendamientoPage() {
           <div className="relative">
         <MarketHero
           accent="amber"
-          priceLabel="Índice Hoy"
+          priceLabel="INMAG novillo hoy (referencia)"
           priceValue={inmag.current}
           priceChange={inmag.change}
           prevValue={fmt(inmag.prev)}
@@ -418,18 +465,24 @@ export default async function ArrendamientoPage() {
         <section className="max-w-3xl mx-auto px-4 pt-6">
           <div className="rounded-xl border border-terminal-border bg-terminal-panel/40 p-5">
             <h2 className="text-zinc-100 text-lg font-medium mb-2">
-              Índice novillo arrendamiento mensual: ${fmt(cierre ? cierre.inmag : arr.periodIndex)}/kg
+              Índice novillo arrendamiento mensual: ${fmt(mensual)}/kg
             </h2>
             <p className="speakable-content text-zinc-200 text-base leading-relaxed mb-3">
-              {cierre ? (
+              {arrMes ? (
                 <>
                   El índice novillo arrendamiento mensual de{' '}
-                  <strong className="text-ink">{cierre.label}</strong> cerró en{' '}
-                  <strong className="text-ink">${fmt(cierre.inmag)} por kilo vivo</strong> —el
-                  valor oficial que publica el Mercado Agroganadero para el mes completo, sobre{' '}
-                  {cierre.cabezas?.toLocaleString('es-AR') ?? '—'} cabezas—. Ese es el número con el que se
-                  liquidan los contratos de arrendamiento rural: se usa el cierre del mes y no el
-                  precio de un día suelto, para que la volatilidad diaria no cambie el canon.
+                  <strong className="text-ink">{arrMes.label}</strong> cerró en{' '}
+                  <strong className="text-ink">${fmt(arrMes.index)} por kilo vivo</strong>: es el índice
+                  sugerido para arrendamientos rurales que publica el Mercado Agroganadero para el mes
+                  completo. Para el canon se usa el valor del mes y no el precio de un día suelto, así la
+                  volatilidad diaria no lo mueve.
+                  {inmagMismoMes && (
+                    <>
+                      {' '}No es lo mismo que el INMAG de {inmagMismoMes.label} (${fmt(inmagMismoMes.inmag)}/kg),
+                      que promedia todas las categorías
+                      {inmagMismoMes.cabezas ? ` sobre ${inmagMismoMes.cabezas.toLocaleString('es-AR')} cabezas` : ''}.
+                    </>
+                  )}
                 </>
               ) : (
                 <>
@@ -444,15 +497,15 @@ export default async function ArrendamientoPage() {
             <p className="text-zinc-300 text-sm leading-relaxed mb-3">
               El cálculo es directo:{' '}
               <strong className="text-zinc-100">
-                canon mensual = kilos de novillo por hectárea × ${fmt(cierre ? cierre.inmag : arr.periodIndex)} × hectáreas
+                canon mensual = kilos de novillo por hectárea × ${fmt(mensual)} × hectáreas
               </strong>
               . Un campo de 500 ha pactado en 8 kg/ha por mes liquida{' '}
               <strong className="text-zinc-100">
-                ${fmt(Math.round(8 * (cierre ? cierre.inmag : arr.periodIndex) * 500))}
+                ${fmt(Math.round(8 * mensual * 500))}
               </strong>{' '}
               este período, y{' '}
               <strong className="text-zinc-100">
-                ${fmt(Math.round(8 * (cierre ? cierre.inmag : arr.periodIndex) * 500 * 12))}
+                ${fmt(Math.round(8 * mensual * 500 * 12))}
               </strong>{' '}
               al año si el canon se mantiene.
             </p>
@@ -669,7 +722,7 @@ export default async function ArrendamientoPage() {
 
         {/* Cierre mensual oficial (el número para facturar) + tabla */}
         <section className="max-w-6xl mx-auto px-4 pb-12">
-          {cierre && (
+          {arrMes && (
             <div className="terminal-panel mb-6" style={{ borderColor: 'rgba(56,189,248,0.4)' }}>
               <div
                 className="terminal-panel-header flex items-center justify-between"
@@ -677,36 +730,37 @@ export default async function ArrendamientoPage() {
               >
                 <span>Cierre del mes · el número para tu factura</span>
                 <span className="text-zinc-500 text-xxs font-terminal normal-case tracking-normal">
-                  fuente: MAG — INMAG oficial
+                  fuente: MAG — índice sugerido para arrendamientos rurales
                 </span>
               </div>
               <div className="px-panel py-5">
                 <div className="flex items-baseline gap-3 flex-wrap">
                   <span className="text-3xl font-terminal tabular-nums text-sky-300">
-                    ${cierre.inmag.toLocaleString('es-AR', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}
+                    ${arrMes.index.toLocaleString('es-AR', { minimumFractionDigits: 3, maximumFractionDigits: 3 })}
                   </span>
                   <span className="text-zinc-500 text-data">
-                    /kg · cierre de <span className="capitalize text-zinc-300">{cierre.label}</span>
+                    /kg · cierre de <span className="capitalize text-zinc-300">{arrMes.label}</span>
                   </span>
-                  {cierreChange != null && (
-                    <span className={`text-data ${cierreChange >= 0 ? 'text-positive' : 'text-negative'}`}>
-                      {cierreChange >= 0 ? '+' : ''}
-                      {cierreChange.toFixed(1)}% vs. mes anterior
+                  {arrMesChange != null && (
+                    <span className={`text-data ${arrMesChange >= 0 ? 'text-positive' : 'text-negative'}`}>
+                      {arrMesChange >= 0 ? '+' : ''}
+                      {arrMesChange.toFixed(1)}% vs. mes anterior
                     </span>
                   )}
                 </div>
                 <p className="text-zinc-600 text-xxs mt-2">
-                  Promedio ponderado del mes cerrado — el valor que se usa para liquidar el arrendamiento. Coincide
-                  exacto con el Mercado Agroganadero.
+                  Índice del mes cerrado que el Mercado Agroganadero publica para arrendamientos rurales
+                  (haciinfo000013).
+                  {inmagMismoMes && ` El INMAG del mismo mes, que promedia todas las categorías, fue $${fmt(inmagMismoMes.inmag)}/kg.`}
                 </p>
               </div>
             </div>
           )}
 
-          <h2 className="text-xl font-semibold text-ink mb-2">Cierre mensual del INMAG</h2>
+          <h2 className="text-xl font-semibold text-ink mb-2">Cierres mensuales: índice de arrendamiento e INMAG</h2>
           <p className="text-zinc-500 text-sm mb-4">
-            Los contratos de arrendamiento se liquidan con el cierre mensual del índice. Estos son los promedios
-            oficiales del MAG, mes a mes.
+            Mes a mes, el índice sugerido para arrendamientos rurales y el INMAG (todas las categorías), los dos
+            publicados por el Mercado Agroganadero. Para el canon se usa el índice de arrendamiento.
           </p>
 
           <div className="bg-zinc-900/30 border border-zinc-800/50 rounded-2xl overflow-hidden">

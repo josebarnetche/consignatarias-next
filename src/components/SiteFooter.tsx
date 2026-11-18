@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MemolaBridge } from "@/components/MemolaBridge";
 
 /**
  * EL footer del sitio — uno solo para el terminal (layout de `(terminal)`) y la portada.
@@ -143,7 +144,6 @@ export const FOOTER_COLUMNS: FooterColumn[] = [
           { label: "bovinos.com.ar", href: "https://bovinos.com.ar/" },
           { label: "ganado.com.ar", href: "https://ganado.com.ar/" },
           { label: "semen.com.ar", href: "https://semen.com.ar/" },
-          { label: "Memola Medios", href: "https://memola.com.ar/" },
         ],
       },
     ],
@@ -221,10 +221,19 @@ export default function SiteFooter({ compact = false }: { compact?: boolean }) {
         ))}
       </div>
 
+      {/* Puente a MEMOLA: la empresa que crea y opera el sitio. Antes era un link gris
+          más entre los dominios satélite (0 sesiones a memola.com.ar en 28 días sobre
+          9.835 de este sitio). Ahora tiene su propia línea, con UTM y evento memola_click. */}
+      <div
+        className={`max-w-6xl mx-auto text-xs ${compact ? "mb-2" : "mt-6 pt-4 border-t border-terminal-border"}`}
+      >
+        <MemolaBridge placement="footer" variant="linea" />
+      </div>
+
       {/* Línea de base: marca · copyright · compartir · contacto */}
       <div
         className={`max-w-6xl mx-auto flex items-center justify-between text-xxs text-zinc-500 flex-wrap gap-2 ${
-          compact ? "" : "mt-6 pt-4 border-t border-terminal-border"
+          compact ? "" : "mt-3"
         }`}
       >
         <span className="flex items-center gap-2">

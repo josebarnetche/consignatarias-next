@@ -2,6 +2,7 @@ import { ImagenTema } from '@/components/ui/ImagenTema'
 import { Metadata } from 'next'
 import { SectionBreadcrumbSchema } from '@/components/seo/JsonLd'
 import Link from 'next/link'
+import { MemolaBridge } from '@/components/MemolaBridge'
 import rematesData from '@/lib/data/remates.json'
 import frigorificosResumen from '@/lib/data/frigorificos-summary.json'
 import { getAllProfiles } from '@/lib/data/consignataria-slugs'
@@ -152,8 +153,16 @@ export default function QuienesSomosPage() {
 
         <h2 className="text-zinc-200 text-lg font-medium mt-8 mb-3">Quiénes somos</h2>
         <p className="text-zinc-400 mb-3">
-          Consignatarias.com.ar es un producto de <strong className="text-zinc-200">Memola Medios S.A.S.</strong>, con
-          base en Mercedes, Corrientes. Su fundador es <strong className="text-zinc-200">José Barnetche</strong>.
+          Consignatarias.com.ar es un producto de{' '}
+          <MemolaBridge placement="quienes_somos">
+            <strong className="text-zinc-200">Memola Medios S.A.S.</strong>
+          </MemolaBridge>
+          , con base en Mercedes, Corrientes. Su fundador es <strong className="text-zinc-200">José Barnetche</strong>.
+        </p>
+        <p className="text-zinc-400 mb-3">
+          En MEMOLA hacemos datos y marketing para el agro: sitios, catálogos y video de remates, y paneles de datos
+          como este.{' '}
+          <MemolaBridge placement="quienes_somos_cta">Conocé MEMOLA →</MemolaBridge>
         </p>
         <p className="text-zinc-400 mb-6">
           Para el productor todo es gratis. Lo sostienen las empresas que usan el dato en sus sistemas y las

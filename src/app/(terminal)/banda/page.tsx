@@ -67,7 +67,7 @@ export default async function BandaPage() {
         name="Banda Consignatarias — dispersión semanal del precio de la hacienda"
         description={
           `Percentil 10, mediana y percentil 90 del precio en ARS por kilo vivo de cada categoría de hacienda y su amplitud ` +
-          `((P90 − P10) / mediana), sobre los lotes operados en el Mercado Agroganadero en una ventana móvil de ${VR_VENTANA_DIAS} días. ` +
+          `(P90 / P10 − 1, la misma de /metodologia/vr), sobre los lotes operados en el Mercado Agroganadero en una ventana móvil de ${VR_VENTANA_DIAS} días. ` +
           `Indicador propio de consignatarias.com.ar.`
         }
         url={PAGINA_URL}
@@ -216,7 +216,8 @@ export default async function BandaPage() {
             </table>
           </div>
           <p className="text-zinc-500 text-xs mt-2 max-w-3xl">
-            ARS por kilo vivo. Amplitud = (P90 − P10) / mediana. Sobre {lotesTotal.toLocaleString('es-AR')} lotes; se
+            ARS por kilo vivo. Amplitud = P90 / P10 − 1: cuánto más por kilo cobró el lote del P90 que el del
+            P10. Sobre {lotesTotal.toLocaleString('es-AR')} lotes; se
             publica una categoría sólo con {MIN_LOTES_PUBLICAR} lotes o más en la ventana. Es una referencia de mercado
             observada, no una tasación.
             {banda.posicion &&
