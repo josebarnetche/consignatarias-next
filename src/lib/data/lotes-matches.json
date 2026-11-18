@@ -1,5 +1,5 @@
 {
-  "generado": "2026-11-18T01:32:43.820Z",
+  "generado": "2026-11-18T02:49:46.901Z",
   "leads_de_compra": 14,
   "matches": [
     {
@@ -80,6 +80,17 @@
       },
       "lotes": [
         {
+          "sku": "34768",
+          "titulo": "120 Terneros y Terneras Braford de 210kg",
+          "score": 100,
+          "motivos": [
+            "misma categoría",
+            "misma provincia",
+            "cantidad compatible"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/120-Terneros-y-Terneras-210kg-invernada-34768"
+        },
+        {
           "sku": "34608",
           "titulo": "90 Terneros y Terneras Brangus Negro y Colorado de 195kg",
           "score": 100,
@@ -122,17 +133,6 @@
             "cantidad compatible"
           ],
           "url": "https://www.decampoacampo.com/__dcac/110-Terneros-y-Terneras-170kg-invernada-34564"
-        },
-        {
-          "sku": "34491",
-          "titulo": "120 Terneros y Terneras Braford de 180kg",
-          "score": 100,
-          "motivos": [
-            "misma categoría",
-            "misma provincia",
-            "cantidad compatible"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/120-Terneros-y-Terneras-180kg-invernada-34491"
         }
       ]
     },
@@ -169,6 +169,17 @@
           "url": "https://www.decampoacampo.com/__dcac/125-Terneras-235kg-invernada-34601"
         },
         {
+          "sku": "34778",
+          "titulo": "50 Terneros Holando Argentino de 190kg",
+          "score": 85,
+          "motivos": [
+            "categoría equivalente",
+            "misma provincia",
+            "cantidad compatible"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/50-Terneros-190kg-invernada-34778"
+        },
+        {
           "sku": "34715",
           "titulo": "50 Terneros Braford de 200kg",
           "score": 85,
@@ -189,17 +200,6 @@
             "cantidad compatible"
           ],
           "url": "https://www.decampoacampo.com/__dcac/95-Terneros-230kg-invernada-34710"
-        },
-        {
-          "sku": "34589",
-          "titulo": "60 Terneros y Terneras Aberdeen Angus Negro y Colorado de 210kg",
-          "score": 85,
-          "motivos": [
-            "categoría equivalente",
-            "misma provincia",
-            "cantidad compatible"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/60-Terneros-y-Terneras-210kg-invernada-34589"
         }
       ]
     },
@@ -415,6 +415,16 @@
       },
       "lotes": [
         {
+          "sku": "34767",
+          "titulo": "55 Novillitos Aberdeen Angus Negro y Colorado de 320kg",
+          "score": 50,
+          "motivos": [
+            "el lead no declaró categoría",
+            "misma provincia"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/55-Novillitos-320kg-invernada-34767"
+        },
+        {
           "sku": "34318",
           "titulo": "40 Vacas con cría Aberdeen Angus Negro de 460kg",
           "score": 50,
@@ -456,6 +466,17 @@
         "estado": "new"
       },
       "lotes": [
+        {
+          "sku": "34768",
+          "titulo": "120 Terneros y Terneras Braford de 210kg",
+          "score": 50,
+          "motivos": [
+            "el lead no declaró categoría",
+            "misma provincia",
+            "el lote es grande (120 contra 11 pedidas)"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/120-Terneros-y-Terneras-210kg-invernada-34768"
+        },
         {
           "sku": "34701",
           "titulo": "40 Novillitos Hereford de 300kg",
@@ -499,17 +520,6 @@
             "el lote es grande (65 contra 11 pedidas)"
           ],
           "url": "https://www.decampoacampo.com/__dcac/65-Terneros-195kg-invernada-34607"
-        },
-        {
-          "sku": "34616",
-          "titulo": "70 Terneras Braford de 195kg",
-          "score": 50,
-          "motivos": [
-            "el lead no declaró categoría",
-            "misma provincia",
-            "el lote es grande (70 contra 11 pedidas)"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/70-Terneras-195kg-invernada-34616"
         }
       ]
     },
@@ -611,6 +621,16 @@
           "url": "https://www.decampoacampo.com/__dcac/120-Terneros-245kg-invernada-34777"
         },
         {
+          "sku": "34750",
+          "titulo": "40 Vaquillonas Preñadas Aberdeen Angus Negro de 460kg",
+          "score": 50,
+          "motivos": [
+            "el lead no declaró categoría",
+            "misma provincia"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/40-Vaquillonas-Prenadas-460kg-invernada-34750"
+        },
+        {
           "sku": "34749",
           "titulo": "40 Vaquillonas Preñadas Aberdeen Angus Colorado de 460kg",
           "score": 50,
@@ -629,16 +649,6 @@
             "misma provincia"
           ],
           "url": "https://www.decampoacampo.com/__dcac/145-Terneros-y-Terneras-200kg-invernada-34741"
-        },
-        {
-          "sku": "34673",
-          "titulo": "95 Vaquillonas Preñadas Aberdeen Angus Negro y Colorado de 380kg",
-          "score": 50,
-          "motivos": [
-            "el lead no declaró categoría",
-            "misma provincia"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/95-Vaquillonas-Prenadas-380kg-invernada-34673"
         }
       ]
     },
@@ -709,37 +719,37 @@
           "url": "https://www.decampoacampo.com/__dcac/75-Novillitos-360kg-invernada-34780"
         },
         {
-          "sku": "34749",
-          "titulo": "40 Vaquillonas Preñadas Aberdeen Angus Colorado de 460kg",
-          "score": 35,
-          "motivos": [
-            "el lead no declaró categoría",
-            "otra provincia (Buenos Aires)",
-            "cantidad compatible"
-          ],
-          "url": "https://www.decampoacampo.com/__dcac/40-Vaquillonas-Prenadas-460kg-invernada-34749"
-        },
-        {
-          "sku": "34715",
-          "titulo": "50 Terneros Braford de 200kg",
+          "sku": "34778",
+          "titulo": "50 Terneros Holando Argentino de 190kg",
           "score": 35,
           "motivos": [
             "el lead no declaró categoría",
             "otra provincia (Córdoba)",
             "cantidad compatible"
           ],
-          "url": "https://www.decampoacampo.com/__dcac/50-Terneros-200kg-invernada-34715"
+          "url": "https://www.decampoacampo.com/__dcac/50-Terneros-190kg-invernada-34778"
         },
         {
-          "sku": "34710",
-          "titulo": "95 Terneros Braford de 230kg",
+          "sku": "34767",
+          "titulo": "55 Novillitos Aberdeen Angus Negro y Colorado de 320kg",
           "score": 35,
           "motivos": [
             "el lead no declaró categoría",
-            "otra provincia (Córdoba)",
+            "otra provincia (Santa Fe)",
             "cantidad compatible"
           ],
-          "url": "https://www.decampoacampo.com/__dcac/95-Terneros-230kg-invernada-34710"
+          "url": "https://www.decampoacampo.com/__dcac/55-Novillitos-320kg-invernada-34767"
+        },
+        {
+          "sku": "34754",
+          "titulo": "45 Novillitos Aberdeen Angus Negro y Colorado de 370kg",
+          "score": 35,
+          "motivos": [
+            "el lead no declaró categoría",
+            "otra provincia (La Pampa)",
+            "cantidad compatible"
+          ],
+          "url": "https://www.decampoacampo.com/__dcac/45-Novillitos-370kg-invernada-34754"
         }
       ]
     },

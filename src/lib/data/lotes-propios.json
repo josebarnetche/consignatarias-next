@@ -1,5 +1,12 @@
 [
   {
+    "id": 65,
+    "categoria": "vaquillonas",
+    "cabezas": 50,
+    "provincia": "Córdoba",
+    "desde": "2026-11-18"
+  },
+  {
     "id": 56,
     "categoria": "vaquillonas",
     "cabezas": 133,
