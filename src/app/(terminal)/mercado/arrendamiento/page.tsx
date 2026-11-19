@@ -24,6 +24,7 @@ import { MarketHero, type MarketHeroStat } from '@/components/market'
 import rematesData from '@/lib/data/remates.json'
 import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
 import PuenteHacienda from '@/components/PuenteHacienda'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 const inmag = marketData.inmag
 const series = inmag.series as Array<{ date: string; value: number; volume?: number }>
@@ -1050,6 +1051,15 @@ export default async function ArrendamientoPage() {
             context="arrendamiento"
             variant="card"
           />
+        </section>
+
+        {/* Puente a MEMOLA (fase 4): bloque visible en la página #2 de tráfico; el footer solo no se ve. */}
+        <section className="max-w-6xl mx-auto px-4 pb-12">
+          <MemolaBridge placement="arrendamiento" variant="bloque" titulo="Plataforma creada y operada por MEMOLA">
+            Este índice, la calculadora y el resto de consignatarias.com.ar los desarrolla y opera MEMOLA, agencia de
+            datos y marketing para el agro. Si tu empresa necesita tableros, índices propios o comunicar con datos de
+            mercado, lo hacemos con el mismo equipo.
+          </MemolaBridge>
         </section>
       </div>
     </>
