@@ -18,6 +18,7 @@ import { frigorificoProvinceSlugs } from './_views/FrigorificoProvinceView'
 import { listadoFrigorificos } from '@/lib/frigorificos/listado'
 import SinceLastVisit from '@/components/landing/SinceLastVisit'
 import FreshnessStamp from '@/components/landing/FreshnessStamp'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 const totalFrigorificos = frigorificosData.length
 const listado = listadoFrigorificos()
@@ -319,6 +320,14 @@ export default function FrigorificosPage() {
             </details>
           ))}
         </div>
+      </section>
+
+      {/* Puente a MEMOLA (fase 4) */}
+      <section className="px-4 mb-8 max-w-4xl">
+        <MemolaBridge placement="frigorificos" variant="bloque" titulo="Plataforma creada y operada por MEMOLA">
+          Este listado, cruzado con datos públicos de SENASA y del mercado, lo mantiene MEMOLA, agencia de datos y
+          marketing para el agro. Si tu frigorífico o tu empresa necesita ordenar sus datos o comunicarlos, hablemos.
+        </MemolaBridge>
       </section>
     </>
   )

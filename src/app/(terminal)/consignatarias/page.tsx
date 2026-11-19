@@ -8,6 +8,7 @@ import { getFeaturedSlugs } from '@/lib/featured'
 import ConsignatariasDirectoryClient from './ConsignatariasDirectoryClient'
 import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import { FaqList } from '@/components/seo/FaqList'
+import { MemolaBridge } from '@/components/MemolaBridge'
 import { FECHA_DATOS, fechaLarga } from '@/lib/datos-frescura'
 import {
   PROVINCE_MAP as CONSIG_PROVINCE_MAP,
@@ -220,6 +221,19 @@ export default async function ConsignatariasDirectoryPage() {
           ]}
           gratisAca="El directorio, los perfiles y el calendario de remates siguen siendo gratis. La guía es para el que quiere estar en esta lista con firma propia."
         />
+      </div>
+
+      {/* Puente a MEMOLA (fase 4) */}
+      <div className="mx-auto max-w-5xl px-4 pb-8 sm:px-6">
+        <MemolaBridge
+          placement="consignatarias_directorio"
+          variant="bloque"
+          titulo="Plataforma creada y operada por MEMOLA"
+          cta="Hablemos con MEMOLA →"
+        >
+          Este directorio lo desarrolla y opera MEMOLA, agencia de datos y marketing para el agro. Para tu
+          consignataria hacemos sitio, pauta y comunicación de remates con los mismos datos que ves acá.
+        </MemolaBridge>
       </div>
     </>
   )
