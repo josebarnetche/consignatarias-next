@@ -93,6 +93,9 @@ export type MemolaPlacement =
   | 'arrendamiento'
   | 'frigorificos'
   | 'consignatarias_directorio'
+  | 'ficha'
+  | 'sumar'
+  | 'remates'
 
 /**
  * URL a memola.com.ar con la UTM del puente. GA4 de memola.com.ar cuenta las

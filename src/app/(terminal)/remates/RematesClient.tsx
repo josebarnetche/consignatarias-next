@@ -25,6 +25,7 @@ import { trackAuctionClick, trackFilterApply, trackOutboundClick, trackBulkIcsEx
 import { downloadBulkICSFile } from '@/lib/utils/ics'
 import { useSessionTier } from '@/lib/use-session-tier'
 import { useRouter } from 'next/navigation'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 /* ------------------------------------------------------------------ */
 /*  CONSTANTS                                                          */
@@ -668,6 +669,18 @@ export default function RematesPage({ remates }: RematesClientProps) {
           Avisanos
         </button>
       </p>
+
+      {/* Puente a MEMOLA (fase 5) */}
+      <MemolaBridge
+        placement="remates"
+        variant="bloque"
+        titulo="Plataforma creada y operada por MEMOLA"
+        cta="Hablemos con MEMOLA →"
+        className="mx-2 mb-6"
+      >
+        Este calendario lo arma y lo actualiza todos los días MEMOLA, agencia de datos y marketing para el agro. Si
+        tu consignataria quiere difundir sus remates con catálogo, video y pauta, lo hacemos con el mismo dato.
+      </MemolaBridge>
 
       {showAddModal && <AddRemateModal onClose={() => setShowAddModal(false)} />}
     </div>

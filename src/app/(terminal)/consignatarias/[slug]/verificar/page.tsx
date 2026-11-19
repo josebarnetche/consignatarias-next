@@ -6,6 +6,7 @@ import {
   getProfile,
 } from '@/lib/data/consignataria-slugs'
 import ClaimForm from '@/components/claims/ClaimForm'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 /* ------------------------------------------------------------------ */
 /*  STATIC PARAMS                                                      */
@@ -63,6 +64,11 @@ export default async function ClaimPage({ params }: Props) {
   return (
     <div className="max-w-lg mx-auto px-2 sm:px-4 py-6">
       <ClaimForm slug={canonical} displayName={profile.displayName} />
+      {/* Puente a MEMOLA (fase 5) */}
+      <MemolaBridge placement="sumar" variant="bloque" className="mt-6">
+        Mientras verificamos tu perfil: el mismo equipo que opera este directorio arma sitios, catálogos y
+        difusión de remates para consignatarias. Es MEMOLA.
+      </MemolaBridge>
     </div>
   )
 }

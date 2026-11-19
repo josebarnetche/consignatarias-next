@@ -39,6 +39,7 @@ import {
 import CountdownBadge from '@/components/CountdownBadge'
 import ProBadge, { VerifiedBadge } from '@/components/badges/ProBadge'
 import ProRemateVideo from '@/components/pro/ProRemateVideo'
+import { MemolaBridge } from '@/components/MemolaBridge'
 import { Badge, Stat, DataTable, type DataColumn } from '@/components/ui'
 import { FollowButton } from '@/components/ui/FollowButton'
 import { SEMANTIC_HEX } from '@/lib/ui/tokens'
@@ -1290,6 +1291,20 @@ export default function ConsignatariaProfileClient({ profile, auctions, tier, au
         >
           {null}
         </FeatureGate>
+      )}
+
+      {/* Puente a MEMOLA (fase 5): solo fichas free, para no venderle a una firma que ya paga PRO */}
+      {tier === 'free' && (
+        <MemolaBridge
+          placement="ficha"
+          variant="bloque"
+          titulo="¿Necesitás más que aparecer?"
+          cta="Hablemos con MEMOLA →"
+          className="mt-px"
+        >
+          Consignatarias.com.ar la creamos y la operamos en MEMOLA. Para tu firma hacemos el sitio propio, el
+          catálogo y el video del remate, y la difusión en redes.
+        </MemolaBridge>
       )}
 
       {/* ============================================================ */}
