@@ -290,7 +290,8 @@ def grilla_bandas(series: list[dict], ancho_mm: float = 180, alto_mm: float = 15
             o.append(f'<path d="{d}" fill="none" stroke="{TINTA}" stroke-width="1.75" stroke-linejoin="round"/>')
         u = pts[-1]
         o.append(texto(ox, oy + 2, nombre_cat(s["categoria"]), 8.5, TINTA, 600))
-        amp = f' · Banda {_fc(u["amplitud"])}%' if u.get("amplitud") is not None else ""
+        # Siempre un decimal: con `_fc` un 30,0 salía "30%" al lado de un "32,4%".
+        amp = (' · Banda ' + f'{float(u["amplitud"]):.1f}'.replace(".", ",") + '%') if u.get("amplitud") is not None else ""
         o.append(texto(ox, oy + 13, f'mediana {ars(u["mediana"] or 0)}{amp}', 7, TINTA_2, 500))
         o.append(texto(ox, oy + ph + 11, f'{date.fromisoformat(pts[0]["fecha"]).day}/{date.fromisoformat(pts[0]["fecha"]).month}', 6.5, TINTA_3, 500, mono=True))
         o.append(texto(ox + pw, oy + ph + 11, f'{date.fromisoformat(u["fecha"]).day}/{date.fromisoformat(u["fecha"]).month}', 6.5, TINTA_3, 500, "end", mono=True))

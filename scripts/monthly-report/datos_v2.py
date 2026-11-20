@@ -197,6 +197,15 @@ def bandas_historicas() -> D.Serie:
                    propia=True, nota="Cada punto es una ventana móvil de 30 días.")
 
 
+def hasta_corte(serie: D.Serie, corte: str) -> D.Serie:
+    """La serie por categoría recortada a `corte`, inclusive. Las categorías que quedan
+    con menos de 10 puntos se caen, igual que al cargarlas."""
+    puntos = [{**s, "puntos": [x for x in s["puntos"] if x["fecha"] <= corte]} for s in serie.puntos]
+    puntos = [s for s in puntos if len(s["puntos"]) >= 10]
+    fecha = max((s["puntos"][-1]["fecha"] for s in puntos), default=None)
+    return D.Serie(puntos, serie.fuente, fecha, propia=serie.propia, nota=serie.nota)
+
+
 def relativos(amplitud: D.Serie) -> D.Serie:
     """
     Precio de cada categoría contra el novillo, con la mediana de la banda VR de la
@@ -786,6 +795,14 @@ def cargar(ym: str) -> tuple[D.Paquete, Extra]:
         faltan.append(f"bandas históricas ({e})")
     if not len(bh) and not any(x.startswith("bandas") for x in faltan):
         faltan.append("bandas históricas")
+    # Una sola fecha de corte para la Banda. Las tablas y la portada leen vr-bandas.json
+    # y los paneles, los relativos y el "vs 4 semanas" leían vr_bandas_history hasta su
+    # último día: el ensayo de noviembre dio novillo $4.200 y 28,6% en un lado y $4.300
+    # y 30,0% en el otro, en la misma página.
+    corte = p.bandas.fecha_dato
+    if corte:
+        bh = hasta_corte(bh, corte)
+        p.amplitud = hasta_corte(p.amplitud, corte)
     # La estacionalidad va al OFICIAL: al blue, los años con brecha deforman el
     # índice (octubre daba 0,873 al blue, 0,899 al oficial y 0,926 en pesos).
     def seguro(nombre: str, fn, vacio):
@@ -804,7 +821,10 @@ def cargar(ym: str) -> tuple[D.Paquete, Extra]:
     intl = seguro("brecha internacional", lambda: internacional(p.cierre and p.cierre.get("usd_blue")), {})
     if not intl and not any(f.startswith("brecha internacional") for f in faltan):
         faltan.append("brecha internacional")
-    ultimo_usd = next((x["usd_blue"] for x in reversed(p.inmag.puntos) if x.get("usd_blue")), None)
+    # El mismo dólar que la portada y la brecha: el cierre del mes. El último punto de
+    # p.inmag cae después del cierre (la edición sale en noviembre) y daba otra cifra.
+    ultimo_usd = (p.cierre and p.cierre.get("usd_blue")) or next(
+        (x["usd_blue"] for x in reversed(p.inmag.puntos) if x.get("usd_blue")), None)
     tie = seguro("valor de la tierra", lambda: renta_tierra(ultimo_usd, p.mes), serie_vacia)
     rm = seguro("remates del mes", lambda: remates_mes(p.mes), {})
     if not rm and not any(f.startswith("remates del mes") for f in faltan):
@@ -818,7 +838,8 @@ def cargar(ym: str) -> tuple[D.Paquete, Extra]:
     if ru and ru["lotes"] and set(ru["con_indice"]) != set(ru["lotes"]):
         avisos.append(f'ruedas con Índice Novillo ({len(ru["con_indice"])}) ≠ ruedas con lotes ({len(ru["lotes"])}): '
                       f'sin índice publicado por el MAG {ru["sin_indice_mag"] or "ninguna"}; '
-                      f'sin fila en mag_inmag_history {ru["sin_fila"] or "ninguna"}')
+                      f'sin fila en mag_inmag_history {ru["sin_fila"] or "ninguna"}; '
+                      f'sin lotes {sorted(set(ru["con_indice"]) - set(ru["lotes"])) or "ninguna"}')
     mv = seguro("relación maíz/novillo", lambda: maiz_vigente(p), False)
     if p.maiz.puntos and not mv:
         u = p.maiz.puntos[-1]["ym"]

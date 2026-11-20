@@ -22,9 +22,7 @@ página del PDF.
 from __future__ import annotations
 
 import argparse
-import os
 import re
-import subprocess
 import sys
 from datetime import date
 from pathlib import Path
@@ -277,22 +275,8 @@ PIEZAS = [
 
 
 def a_png(html_path: Path, png_path: Path, tam: tuple[int, int]) -> bool:
-    candidatos = [os.environ.get("CHROME_BIN"), "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
-                  "google-chrome", "chromium", "chromium-browser"]
-    for c in candidatos:
-        if not c:
-            continue
-        try:
-            subprocess.run(
-                [c, "--headless", "--disable-gpu", "--no-sandbox", "--hide-scrollbars",
-                 "--force-device-scale-factor=1", f"--window-size={tam[0]},{tam[1]}",
-                 f"--screenshot={png_path}", html_path.as_uri()],
-                check=True, capture_output=True, timeout=120,
-            )
-            return png_path.exists()
-        except (FileNotFoundError, subprocess.CalledProcessError, subprocess.TimeoutExpired):
-            continue
-    return False
+    return I.chrome(["--hide-scrollbars", "--force-device-scale-factor=1", f"--window-size={tam[0]},{tam[1]}",
+                     f"--screenshot={png_path}"], png_path, html_path, 120)
 
 
 def generar(p: D.Paquete, x: D2.Extra, salida: Path, png: bool = True) -> list[dict]:
