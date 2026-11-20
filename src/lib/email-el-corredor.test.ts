@@ -40,3 +40,23 @@ describe('el envío de El Corredor', () => {
     expect(r.success).toBe(false)
   })
 })
+
+describe('el encabezado de los mails de El Corredor', () => {
+  beforeEach(() => {
+    process.env.RESEND_API_KEY = 're_test'
+    send.mockReset()
+    send.mockResolvedValue({ data: { id: 'em_1' }, error: null })
+  })
+
+  // El eyebrow es el del informe en el sitio; el inglés no vuelve por copiar un mail viejo.
+  it('la entrega y la corrección llevan el eyebrow en castellano', async () => {
+    const { sendElCorredorDelivery, sendElCorredorCorreccion } = await import('./email')
+    await sendElCorredorDelivery('a@ejemplo.com', 'Noviembre · 2026', 'https://x/el-corredor/noviembre-2026.pdf')
+    await sendElCorredorCorreccion('a@ejemplo.com', 'Noviembre · 2026', 'https://x/el-corredor/noviembre-2026.pdf')
+    expect(send).toHaveBeenCalledTimes(2)
+    for (const [msg] of send.mock.calls) {
+      expect(msg.html).toContain('Mesa de hacienda &middot; cierre mensual')
+      expect(msg.html).not.toMatch(/Decision Infrastructure/i)
+    }
+  })
+})

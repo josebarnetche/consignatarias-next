@@ -7,6 +7,13 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.264.6] — 2026-11-20
+
+### Corregido
+- **El Corredor v2: el anexo nombra el corte real.** Deja de decir «noviembre completo» como texto fijo: el título sale del mes y de la fecha de corte de los datos («noviembre al 13/11» cuando el mes no cerró).
+- **El Corredor v2: remates sin provincia fuera del gráfico.** Los remates del calendario sin provincia se graficaban como una barra «Sin dato»; ahora van como nota al pie y no pueden quedar en el titular.
+- **Mail de El Corredor: eyebrow en castellano** («Mesa de hacienda · cierre mensual», el mismo que usa la página), en la entrega y en la corrección.
+
 ## [1.264.5] — 2026-11-20
 
 ### Corregido
