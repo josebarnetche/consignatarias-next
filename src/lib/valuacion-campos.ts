@@ -181,7 +181,8 @@ export const ZONA_POR_PARTIDO: Record<string, Record<string, string>> = {
   // Corrientes: solo la zona que tiene serie publicada con fecha. Las localidades
   // son las que la Compañía Argentina de Tierras lista para su Zona 1 (área de
   // Cuchillas, may-2026) más Felipe Yofre y Mariano I. Loza, que son municipios
-  // del departamento Mercedes. El resto de la provincia (malezales, noroeste
+  // del departamento Mercedes (INDEC, códigos de localidad 18105010 y 18105020;
+  // georef de datos.gob.ar, depto. 18105 Mercedes, consultado el 20-11-2026). El resto de la provincia (malezales, noroeste
   // arrocero, costa del Uruguay, forestal) sigue en el valor provincial hasta
   // tener una fuente fechada por zona: preferimos el promedio a una zona inventada.
   'corrientes': {

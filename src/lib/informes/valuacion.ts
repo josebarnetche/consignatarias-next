@@ -155,8 +155,9 @@ export function armarInformeValuacion(
    *  · **Por canon** — cuántos años de arrendamiento hacen falta para recuperar la
    *    hectárea. Es lo que le importa a quien la alquila.
    *  · **Por producción** — cuántos años de la producción bruta del campo. Es lo que
-   *    viene en `anos_repago` del dataset, y en Corrientes da 10,5 contra los 19 del
-   *    canon: casi el doble.
+   *    viene en `anos_repago` del dataset; en la pampa húmeda da 6,5 contra los ~18 del
+   *    canon. (En Corrientes los dos rondan 19 desde 1.263.2, cuando la producción
+   *    provincial pasó de 62 —modelo INTA de campo de loma— a 34 kg/ha/año medidos.)
    */
   const aniosPorProduccion = t.anos_repago ?? null
   const aniosPorCanon =

@@ -201,6 +201,12 @@ export interface RentaZona {
   canonKgNovilloHaAno: number | null
   /** Si el canon salió de un relevamiento o de aplicar el 30 % sobre la producción. */
   canonRelevado: boolean
+  /**
+   * De DÓNDE salió el canon relevado, tal como lo dice la fila. Hace falta mostrarlo:
+   * una zona puede heredar el canon de su provincia (Corrientes · Cuchillas usa el
+   * rango provincial de la UNNE) y "relevado" a secas hacía creer que era de la zona.
+   */
+  canonFuente: string | null
   canonQqSojaHaAno: number | null
   rendimientoPct: number | null
   aniosRepago: number | null
@@ -299,6 +305,7 @@ export function rentaCampo(
         rentaAgricolaUsdHa: ra != null ? Number(ra.toFixed(1)) : null,
         canonKgNovilloHaAno: canonKgAno != null ? Number(canonKgAno.toFixed(1)) : null,
         canonRelevado: relevado,
+        canonFuente: relevado ? (z.canon_fuente ?? null) : null,
         canonQqSojaHaAno: z.qq_soja_ha_anio ?? null,
         rendimientoPct: renta != null ? Number(((100 * renta) / usdHa).toFixed(2)) : null,
         aniosRepago: z.anos_repago ?? null,
