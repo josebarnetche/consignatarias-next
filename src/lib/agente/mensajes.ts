@@ -10,6 +10,7 @@
  * encabezados del hilo.
  */
 import { COMISION_PCT, referencia, type DatosHacienda, type Lado } from './reglas'
+import type { PrecioReferencia } from './precio-referencia'
 
 export interface Correo {
   asunto: string
@@ -206,17 +207,38 @@ export function presentacion(o: {
 }
 
 /**
- * Un solo recordatorio a la contraparte que no contestó la oferta, en el mismo hilo.
+ * El único recordatorio a la contraparte que no contestó la oferta (día 7, en el mismo hilo).
  * `cobro` repite en corto lo que dijo la oferta (`cobroCorto` de mensajes-contacto.ts):
  * hasta v1.252 decía "comisión del 1%" aunque la oferta ya era servicio de contacto.
+ *
+ * Desde v1.260.2 no reenvía la consulta: trae UN dato nuevo. Con `precio` (referencia
+ * observada de la categoría, `precioReferencia()`), ese precio; sin precio, cuántos días
+ * lleva el caso abierto (`diasAbierto`). Es una referencia de mercado: el agente nunca
+ * propone ni acuerda precio.
  */
-export function recordatorioOferta(o: { leadId: number; ofertaId: number; lado: Lado; datos: DatosHacienda; cobro?: string }): Correo {
+export function recordatorioOferta(o: {
+  leadId: number
+  ofertaId: number
+  lado: Lado
+  datos: DatosHacienda
+  cobro?: string
+  precio?: PrecioReferencia | null
+  diasAbierto?: number | null
+}): Correo {
+  const vende = o.lado === 'vende'
+  const sigue = vende ? 'la hacienda sigue disponible' : 'el comprador sigue buscando'
+  const dias = o.diasAbierto != null && Number.isFinite(o.diasAbierto) && o.diasAbierto >= 1 ? Math.floor(o.diasAbierto) : null
+  const dato = o.precio
+    ? `Un dato para la consulta por ${resumenHacienda(o.datos)}: esta semana los ${o.precio.categoria} se pagaron en promedio ${ars(o.precio.precioKg)}/kg vivo en el Mercado Agroganadero${o.precio.fecha ? ` (observación del ${o.precio.fecha})` : ''}. Es una referencia de mercado; el precio lo acuerdan las partes. ${sigue.charAt(0).toUpperCase() + sigue.slice(1)}.`
+    : dias
+      ? `Sobre la consulta por ${resumenHacienda(o.datos)}: ${vende ? `la hacienda lleva ${dias} días ofrecida y sigue disponible` : `el comprador lleva ${dias} días buscando y todavía no cerró`}.`
+      : `Sobre la consulta por ${resumenHacienda(o.datos)}: ${sigue}.`
   return {
-    asunto: `Re: ${o.lado === 'vende' ? 'Hacienda disponible' : 'Comprador buscando'}: ${resumenHacienda(o.datos)} · Ref. ${referencia(o.leadId, o.ofertaId)}`,
+    asunto: `Re: ${vende ? 'Hacienda disponible' : 'Comprador buscando'}: ${resumenHacienda(o.datos)} · Ref. ${referencia(o.leadId, o.ofertaId)}`,
     texto: [
       'Buenas,',
       '',
-      `Les reenvío la consulta de hace unos días por ${resumenHacienda(o.datos)}: ${o.lado === 'vende' ? 'la hacienda sigue disponible' : 'el comprador sigue buscando'}.`,
+      dato,
       '',
       `Si les interesa, respondan ACEPTO y les pasamos el contacto directo (${o.cobro ?? `servicio de contacto: ${COMISION_PCT}% del bruto solo si la operación se concreta`}). Si no es para ustedes, con un "no" alcanza y no insistimos.`,
       FIRMA,

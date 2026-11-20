@@ -34,17 +34,24 @@ export const MAX_TANDAS = 3
 export const DIAS_ESPERA_CONTRAPARTE = 4
 /** Recordatorios al productor que no completó los datos antes de dormir el caso. */
 export const MAX_RECORDATORIOS = 2
-/** Días sin respuesta tras los que se manda UN recordatorio a la contraparte (antes de darla por perdida). */
 /**
- * Recordatorios a una contraparte que no contestó, en días desde la oferta: 1 inicial
- * + 3 seguimientos en 14 días. Del cuarto en adelante se disparan bajas y denuncias de
- * spam (docs/agente/investigacion-cierre-broker.md). Unificado el 22-10-2026; antes
- * era un solo recordatorio a los 2 días.
+ * Recordatorios a una contraparte que no contestó, en días desde la oferta: el correo
+ * inicial (día 0) y UN solo recordatorio el día 7.
+ *
+ * Hasta v1.260.1 era [0, 3, 7, 14] (1 inicial + 3 seguimientos). Medido el 13-11-2026:
+ * de 171 correos salientes, 77 fueron `recordatorio_oferta` y no trajeron ninguna
+ * respuesta positiva; el único ACEPTO llegó a la hora del primer correo, y las dos
+ * respuestas a recordatorios fueron negativas (una, "no insistir", terminó en baja).
+ * Para volver atrás alcanza con restaurar este arreglo: el motor y `tocaRecordatorio`
+ * leen solo de acá.
  */
-export const CADENCIA_CONTRAPARTE_DIAS = [0, 3, 7, 14] as const
-/** Una oferta sin respuesta se da por perdida 3 días después del último recordatorio. */
+export const CADENCIA_CONTRAPARTE_DIAS = [0, 7] as const
+/**
+ * Una oferta sin respuesta se da por perdida a los 17 días. Se dejó igual al pasar a un
+ * solo recordatorio: marcarla perdida antes no ahorra correos y cambiaría otra cosa.
+ */
 export const DIAS_OFERTA_VIVA = 17
-/** Primer recordatorio (compatibilidad con lo que lo importe). */
+/** El recordatorio (compatibilidad con lo que lo importe). */
 export const RECORDATORIO_CONTRAPARTE_DIAS = CADENCIA_CONTRAPARTE_DIAS[1]
 
 /** ¿Toca otro recordatorio a esta oferta? `seguimientos` = recordatorios ya enviados. */
