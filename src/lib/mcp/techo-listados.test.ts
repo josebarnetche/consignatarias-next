@@ -63,6 +63,16 @@ describe('techo de listados del MCP', () => {
     expect(enforceRateLimit).not.toHaveBeenCalled()
   })
 
+  it('sin key nunca se recibe más que con key: el tope de la tool vale para los dos', async () => {
+    for (const tope of [25, 30, 45, 50]) {
+      const comun = { tool: 'buscar_frigorifico', req, pedido: 999, tope, porDefecto: 10 }
+      const anonimo = await techoListado({ ...comun, autorizado: false })
+      const conKey = await techoListado({ ...comun, autorizado: true })
+      expect(anonimo.limite).toBe(Math.min(tope, 50))
+      expect(anonimo.limite).toBeLessThanOrEqual(conKey.limite)
+    }
+  })
+
   it('corta cuando se agota el cupo diario, y dice cuándo vuelve', async () => {
     enforceRateLimit.mockResolvedValue({ ok: false, retryAfter: 7200 })
     const v = await techoListado({
