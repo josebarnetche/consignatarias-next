@@ -13,6 +13,7 @@ import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { SiguientePaso } from '@/components/seo/SiguientePaso'
 import PuenteHacienda from '@/components/PuenteHacienda'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // daily rebuild via Vercel
 
@@ -135,6 +136,7 @@ export default function CuantoValeUnaVacaPage() {
           <strong>${fmt(vaca420)}</strong>, unos <strong>USD {fmt(Math.round(vaca420 / usdBlue))}</strong>{' '}
           al dólar blue.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="mb-4">
           Ese es el precio <strong>mayorista de referencia del animal en pie</strong> para faena —

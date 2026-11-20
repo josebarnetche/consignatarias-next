@@ -8,6 +8,7 @@ import {
   HowToSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -174,6 +175,7 @@ export default function RendimientoAlGanchoPage() {
           <strong>56-58%</strong>, es decir que de 450 kg vivos se obtienen unos{' '}
           <strong>{kgGancho} kg de carne</strong> en la media res.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="text-zinc-400 mb-8">
           Ese rinde es lo que permite convertir el precio vivo en precio gancho. Con el novillo a{' '}

@@ -9,6 +9,7 @@ import {
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
 import { terneroDato, terneroCalificador, terneroValorFrase } from '@/lib/ternero'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -182,6 +183,7 @@ export default function QueEsElDestetePage() {
           destete precoz es el mismo corte pero adelantado a los 60–90 días, para aliviar a la vaca en
           años secos.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="text-zinc-400 mb-8">
           Es una de las decisiones de manejo más importantes del rodeo de cría, porque separa dos

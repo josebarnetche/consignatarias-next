@@ -11,6 +11,7 @@ import {
   TECHO_BIOLOGICO_INDICE,
   PROPORCION_VIENTRES_NEA,
 } from '@/lib/productividad/panel'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 const APP_URL = 'https://www.consignatarias.com.ar'
 
@@ -106,6 +107,7 @@ export default function Page() {
           Es el indicador de eficiencia más directo que se puede armar con datos oficiales.
           También es el que más se malinterpreta.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mt-3" />
       </header>
 
       <section className="mt-10 space-y-4 text-base leading-relaxed text-slate-300">

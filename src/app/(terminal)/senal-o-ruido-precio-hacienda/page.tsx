@@ -2,6 +2,7 @@ import { jsonLd } from '@/lib/seo/json-ld'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { armarParteSemanal } from '@/lib/informes/semanal'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 const APP_URL = 'https://www.consignatarias.com.ar'
 
@@ -90,6 +91,7 @@ export default function Page() {
           La mayoría de los movimientos que se comentan no significan nada. Hay una forma
           simple de saber cuáles sí.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mt-3" />
       </header>
 
       <section className="mt-10 space-y-4 text-base leading-relaxed text-slate-300">

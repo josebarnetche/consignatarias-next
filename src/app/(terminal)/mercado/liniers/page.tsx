@@ -4,6 +4,7 @@ import { SectionBreadcrumbSchema, TechArticleSchema, FAQPageSchema } from '@/com
 import { FaqList } from '@/components/seo/FaqList'
 import { TrendingUp, TrendingDown, Building2, MapPin, ExternalLink, BarChart3 } from 'lucide-react'
 import marketData from '@/lib/data/market-prices.json'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const metadata: Metadata = {
   title: 'Mercado de Liniers — Precios de Hacienda Hoy',
@@ -86,6 +87,7 @@ export default function MercadoLiniersPage() {
             </Link>{' '}
             Los valores de esta página son la referencia INMAG, actualizada a diario.
           </p>
+          <MemolaBridge placement="liniers" variant="inline" className="mt-2" />
         </div>
 
         {/* Main Price Card */}

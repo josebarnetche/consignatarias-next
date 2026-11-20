@@ -11,6 +11,10 @@ import { memolaUrl, trackMemolaClick, type MemolaPlacement } from '@/lib/analyti
  * - `link`: envuelve `children` (texto en el cuerpo de una página).
  * - `linea`: la línea del footer.
  * - `bloque`: bloque con título, texto y CTA.
+ * - `inline`: línea compacta para el primer pantallazo de las plantillas de cola larga
+ *   (guías, /mercado/*, fichas de frigorífico, remates por plaza). Sin montos.
+ *   El arranque NO dice «Índice … creado por MEMOLA»: el INMAG y el índice de
+ *   arrendamiento los publica el Mercado Agroganadero; MEMOLA hace la plataforma.
  *
  * Sin `noreferrer`: así memola.com.ar ve el referrer además de la UTM.
  */
@@ -19,13 +23,15 @@ export function MemolaBridge({
   variant = 'link',
   children,
   titulo,
+  lead = 'Plataforma creada y operada por',
   cta = 'Conocé MEMOLA →',
   className = '',
 }: {
   placement: MemolaPlacement
-  variant?: 'link' | 'linea' | 'bloque'
+  variant?: 'link' | 'linea' | 'bloque' | 'inline'
   children?: ReactNode
   titulo?: string
+  lead?: string
   cta?: string
   className?: string
 }) {
@@ -45,6 +51,24 @@ export function MemolaBridge({
         Plataforma creada y operada por <span className="font-medium text-ink">MEMOLA</span>
         <span className="text-zinc-500"> · datos y marketing para el agro →</span>
       </a>
+    )
+  }
+
+  if (variant === 'inline') {
+    return (
+      <p className={`text-xs leading-relaxed text-zinc-500 ${className}`}>
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener"
+          onClick={onClick}
+          data-memola-placement={placement}
+          className="hover:text-accent motion-hover"
+        >
+          {lead} <span className="font-medium text-zinc-300">MEMOLA</span>, datos y marketing para el agro{' '}
+          <span className="text-accent">→</span>
+        </a>
+      </p>
     )
   }
 

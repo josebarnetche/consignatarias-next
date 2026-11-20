@@ -9,6 +9,7 @@ import {
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -212,6 +213,7 @@ export default function QueEsElEquivalenteVacaPage() {
           comercial: como contexto de mercado, el novillo cotiza hoy a ${fmt(novillo)}/kg vivo (
           {INMAG_DATE}), precio de referencia del mercado (INMAG/MAG), no fijado por esta página.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         {/* Qué es */}
         <h2 className="text-zinc-200 text-lg font-medium mb-3">Qué es el equivalente vaca</h2>

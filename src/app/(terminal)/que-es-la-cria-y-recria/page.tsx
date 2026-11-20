@@ -9,6 +9,7 @@ import {
 import marketPrices from '@/lib/data/market-prices.json'
 import { terneroDato, terneroCalificador, terneroFuenteFrase } from '@/lib/ternero'
 import { INMAG_DATE } from '@/lib/inmag'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -143,6 +144,7 @@ export default function QueEsLaCriaYRecriaPage() {
           hasta el destete—, y la recría es la etapa siguiente, donde ese ternero destetado se
           desarrolla hasta quedar listo para la invernada o el engorde final.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="text-zinc-400 mb-8">
           Son dos eslabones consecutivos del mismo negocio ganadero. La cría trabaja con el vientre y

@@ -7,6 +7,7 @@ import {
   SpeakableSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -167,6 +168,7 @@ export default function ImpuestoDeSellosArrendamientoPage() {
           grava el valor total del contrato (canon × todo el plazo) con una alícuota que ronda el 1% al
           1,5% según la provincia, y suele pagarse por mitades entre arrendador y arrendatario.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="text-zinc-400 mb-8">
           No es un impuesto nacional: lo fija y lo cobra cada provincia donde está ubicado el campo, con

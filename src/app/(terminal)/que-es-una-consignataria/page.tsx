@@ -10,6 +10,7 @@ import {
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -170,6 +171,7 @@ export default function QueEsUnaConsignatariaPage() {
           por cuenta y orden del productor y cobra una comisión —habitualmente 2–4% (frecuentemente
           ~3%), a veces hasta 5%, más IVA, sobre el valor de venta—.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="text-zinc-400 mb-8">
           A precio de mercado actual, la comisión es tangible: un novillo de {EJEMPLO_PESO} kg vivo a

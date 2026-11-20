@@ -9,6 +9,7 @@ import {
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // daily rebuild via Vercel
 
@@ -157,6 +158,7 @@ export default function QueEsUnaTropaDeHaciendaPage() {
           mercado de referencia (por ejemplo, el novillo a ${fmt(novillo)}/kg vivo al {INMAG_DATE},
           según el INMAG/MAG) que esta página no fija.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="mb-4">
           En lugar de negociar animal por animal, el productor arma una tropa con hacienda pareja y

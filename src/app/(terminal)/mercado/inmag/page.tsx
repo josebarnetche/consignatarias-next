@@ -24,6 +24,7 @@ import { signedTone, SEMANTIC_HEX } from '@/lib/ui/tokens'
 import SinceLastVisit from '@/components/landing/SinceLastVisit'
 import FreshnessStamp from '@/components/landing/FreshnessStamp'
 import rematesData from '@/lib/data/remates.json'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 const inmag = marketData.inmag
 const series = inmag.series as Array<{ date: string; value: number; volume?: number }>
@@ -325,6 +326,7 @@ export default function InmagPage() {
               (ex Liniers), publicado al cierre de cada día hábil, y la referencia de precio más usada del
               mercado ganadero argentino, con histórico desde 2015 y metodología abierta.
             </p>
+            <MemolaBridge placement="inmag" variant="inline" className="mt-3 mb-3 max-w-xl" />
             <CitaBlock
               citation={`INMAG (Índice Novillo del Mercado Agroganadero), vía consignatarias.com.ar, ${inmagSnapshotDate} — $${inmag.current.toLocaleString('es-AR', { maximumFractionDigits: 2 })}/kg vivo`}
               sourceUrl="https://www.consignatarias.com.ar/mercado/inmag"

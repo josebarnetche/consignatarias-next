@@ -22,6 +22,7 @@ import {
   nombrePropio,
 } from '@/lib/ui/tokens'
 import { remateAnchor, remateHref } from '@/lib/remates-enlaces'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 /* ------------------------------------------------------------------ */
 /*  PROVINCE MAPPING                                                    */
@@ -465,6 +466,7 @@ export async function RematesProvinceView({ provincia }: { provincia: string }) 
             <p className="speakable-content text-sm text-zinc-300 leading-relaxed mb-3">
               {answerFirst}
             </p>
+            <MemolaBridge placement="remates_plaza" variant="inline" className="mb-3" />
             <p className="text-sm text-zinc-400 leading-relaxed">
               {config.intro}
             </p>

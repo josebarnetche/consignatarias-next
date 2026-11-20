@@ -13,6 +13,7 @@ import {
   ZONAS_AFTOSA, FUENTES, fuentesDe, COMO_FUNCIONA, TRAMITES, FAQ_SANIDAD, VACUNADOR_2027,
 } from '@/lib/data/senasa-sanidad'
 import marketPrices from '@/lib/data/market-prices.json'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 /**
  * Sanidad del rodeo: una sola página.
@@ -235,6 +236,7 @@ export default function CalendarioSanitarioBovinoPage() {
           año, regulada por SENASA— la práctica más importante, porque de su acta depende poder mover
           y vender la hacienda.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="text-zinc-400 mb-6 max-w-3xl">
           El eje del calendario son las dos campañas anuales contra la fiebre aftosa: la primera alcanza

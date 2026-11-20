@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400
 
@@ -64,6 +65,7 @@ export default function CreditosCampoPage() {
           hipotecario rural existe, pero no es la forma habitual de comprar. Cuando aparece la palabra
           &ldquo;financiado&rdquo;, en nueve de cada diez casos financia el vendedor.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="-mt-3 mb-6" />
 
         <section className="mb-8">
           <h2 className="text-zinc-200 text-lg font-medium mb-3">El saldo de precio con hipoteca</h2>

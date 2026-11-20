@@ -8,6 +8,7 @@ import {
   HowToSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -174,6 +175,7 @@ export default function QueEsElRenspaPage() {
           obligatorio de SENASA que vincula a un productor con el campo donde tiene su hacienda; se
           tramita gratis y sin él no se puede mover ni vender ganado en Argentina.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="text-zinc-400 mb-8">
           El número es de 17 dígitos y representa la relación entre un CUIT (el productor) y un

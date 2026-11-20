@@ -9,6 +9,7 @@ import {
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -219,6 +220,7 @@ export default function QueEsLaAparceriaPage() {
           <strong>porcentaje pactado</strong> —a diferencia del arrendamiento, que paga un{' '}
           <strong>canon fijo</strong> en kilos de novillo o en pesos por hectárea.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="mb-4">
           Dicho de otro modo: en el arrendamiento el dueño del campo cobra un precio cierto y el
