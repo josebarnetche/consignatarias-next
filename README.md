@@ -18,7 +18,7 @@ Mercado Agroganadero. Con **Mi Ganado** el productor ve su rodeo valuado contra 
 
 ### Campos: el valor de la tierra, medido
 
-Relevamiento propio del **valor de la hectárea en 15 provincias y 52 zonas**, cruzando tasadores con
+Relevamiento propio del **valor de la hectárea en 15 provincias y 53 zonas**, cruzando tasadores con
 serie publicada, catastro provincial con modelo espacial y avisos de venta. Cada fila lleva su fuente,
 su fecha y su cantidad de observaciones — y su **aptitud**, porque la tierra agrícola no se valúa con
 canon ganadero: la zona núcleo vale US$18.500/ha porque produce soja, no porque críe novillos.

@@ -71,7 +71,7 @@ const TOOLS = [
   { name: 'price_dispersion_history', desc: '"¿Se está abriendo la dispersión?" — serie de la banda P10–P90 por categoría, completa y gratis. Se ve en /banda', auth: false },
   { name: 'value_cattle_lot', desc: '"¿Cuánto valen 350 novillos?" — banda observada (P10/mediana/P90) con el n de lotes, en ARS y USD', auth: false },
   { name: 'value_farmland_rent', desc: 'Canon de arrendamiento ganadero al índice oficial, anual y mensual, ARS y USD', auth: false },
-  { name: 'value_farmland', desc: 'Cuánto vale la hectárea: 15 provincias y 52 zonas, con rango, canon típico y fuente fechada', auth: false },
+  { name: 'value_farmland', desc: 'Cuánto vale la hectárea: 15 provincias y 53 zonas, con rango, canon típico y fuente fechada', auth: false },
   { name: 'animal_health_plan', desc: 'Plan sanitario bovino de SENASA, con la resolución citada', auth: false },
   { name: 'fmd_vaccination_calendar', desc: 'Calendario de vacunación antiaftosa por zona y categoría', auth: false },
   { name: 'livestock_movement_rules', desc: 'Qué hace falta para mover hacienda entre provincias', auth: false },

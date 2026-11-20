@@ -106,7 +106,7 @@ export function buildNavGroups(totales: { plantas: number; firmas: number }): Na
       match: '/campos',
       href: '/campos/valuar',
       items: [
-        { label: '¿Cuánto vale mi campo?', href: '/campos/valuar', hint: 'Tasador · 15 provincias y 52 zonas' },
+        { label: '¿Cuánto vale mi campo?', href: '/campos/valuar', hint: 'Tasador · 15 provincias y 53 zonas' },
         { label: 'Índice de arrendamiento', href: '/mercado/arrendamiento', hint: 'Kg de novillo por hectárea' },
         { label: 'Campos ofrecidos', href: '/campos', hint: 'En arrendamiento y en venta' },
         { label: 'Publicar un campo', href: '/campos/publicar', hint: 'Gratis · tu contacto no se publica' },

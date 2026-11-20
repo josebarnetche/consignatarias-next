@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.264.1] — 2026-11-20
+
+> Versión placeholder: el número final lo fija quien integre la rama.
+
+### Corregido
+- **`value_farmland` y `farmland_yield` distinguen el centro-sur de Corrientes.** «Mercedes», «Curuzú Cuatiá», «Perugorría», «Sauce», «Felipe Yofre» y «Mariano I. Loza» devolvían el promedio provincial (US$1.900/ha, rango 1.300–3.600). Ahora caen en la zona nueva **Centro-sur (Cuchillas)**: US$1.400/ha, rango US$1.200–1.600 para cría, de la Compañía Argentina de Tierras (Zona 1 Corrientes, actualizada en mayo de 2026). Con aptitud agrícola o arrocera la misma fuente da US$1.600–2.000 y queda dicho en la fuente de la fila.
+- El canon de la zona es el **provincial** (UNNE 2023, 24–48 kg/ha/año) y la fila lo aclara: no hay canon relevado por zona. La producción de 55 kg/ha/año es la del departamento Curuzú Cuatiá 2017–2021 (misma publicación).
+- El resto de Corrientes (malezales, noroeste arrocero, costa del Uruguay, forestal) sigue en el valor provincial: no hay fuente fechada por zona. Tabla `ZONA_POR_PARTIDO` con Corrientes y 14 tests (`src/lib/valuacion-campos.test.ts`).
+- Base de tierra: de 52 a **53 zonas** (descripción de `value_farmland`, `instructions`, server card, `/mcp`, `llms.txt`, nav, guías, `/mercado/arrendamiento`, README).
+
 ## [1.264.0] — 2026-11-20
 
 - **feat(datos): ternero observado de MAGyP (mensual) en lugar de INMAG × 1,10; helper único de rótulo**
