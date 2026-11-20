@@ -105,7 +105,7 @@ Available tools (${MCP_TOOL_COUNT}):
 - \`price_dispersion_history\` — "¿se está abriendo o cerrando la dispersión?": serie de la banda P10–P90 por categoría, con cuánto se movió la amplitud y en qué dirección. Es lo que el precio puntual no puede contestar. Gratis y sin techo: la serie completa, a cualquier ventana. Página: https://www.consignatarias.com.ar/banda
 - \`value_cattle_lot\` — "¿cuánto valen 350 novillos en Formosa?": la banda de precio realmente observada en las operaciones de lote del MAG (P10 / mediana / P90, VR v1.0) con los lotes y cabezas que la sostienen, en ARS y USD (blue y oficial). Sin base suficiente cae a la referencia nacional y lo declara. Metodología en /metodologia/vr
 - \`value_farmland_rent\` — "¿cuánto cuesta arrendar 3.500 has en Corrientes?": canon anual/mensual al índice oficial de arrendamientos, ARS y USD
-- \`value_farmland\` — "¿cuánto vale la hectárea en Corrientes?": valor de la tierra en USD/ha por provincia y por zona (15 provincias, 52 zonas), con rango, arrendamiento típico en kg de novillo y la fuente fechada de cada dato. Distingue campo ganadero de agrícola. Gratis y sin cupo
+- \`value_farmland\` — "¿cuánto vale la hectárea en Corrientes?": valor de la tierra en USD/ha por provincia y por zona (15 provincias, 53 zonas), con rango, arrendamiento típico en kg de novillo y la fuente fechada de cada dato. Distingue campo ganadero de agrícola. Gratis y sin cupo
 - \`farmland_yield\` — cuánto rinde un dólar en campo ganadero: USD/ha, kilos de novillo por hectárea, canon anual, rendimiento sobre el valor de la tierra y años de repago, por zona
 - \`market_match\` — **para operar**: contraparte abierta (compradores, vendedores, campos) agregada por región y anónima; con \`registrar: true\` + \`consentimiento: true\` + nombre + email/teléfono deja el pedido en la mesa para que una persona arme la operación. Gratis
 - \`cattle_buying_request\` — publicá qué hacienda buscás comprar → remates programados que matchean + aviso por email/webhook de cada remate nuevo (también en /quiero-comprar)
@@ -189,7 +189,7 @@ The site's editorial position: the INMAG is the price the market follows, but it
 
 - Extended, citable definitional dump: https://www.consignatarias.com.ar/llms-full.txt
 - Machine-readable daily price snapshot (CC-BY): https://www.consignatarias.com.ar/precios.json — INMAG del día en ARS y en USD (blue), las 6 categorías, dólar blue y la referencia de Chicago (CME live cattle y feeder en USD/kg vivo, con la brecha del novillo local contra Chicago)
-- Machine-readable land-value dataset, 15 provinces + 52 zones (CC-BY): https://www.consignatarias.com.ar/valor-tierra.json
+- Machine-readable land-value dataset, 15 provinces + 53 zones (CC-BY): https://www.consignatarias.com.ar/valor-tierra.json
 
 ## Valor de la tierra y compraventa de campos
 

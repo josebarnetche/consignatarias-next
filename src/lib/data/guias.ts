@@ -40,7 +40,7 @@ export const GUIAS: GrupoGuias[] = [
     titulo: 'Campos: comprar, vender y tasar',
     bajada: 'Lo que cuesta la tierra, los papeles de la operación y cómo se pacta un arrendamiento.',
     guias: [
-      { href: '/campos/valuar', label: '¿Cuánto vale mi campo?', hint: 'Tasador con 15 provincias y 52 zonas relevadas' },
+      { href: '/campos/valuar', label: '¿Cuánto vale mi campo?', hint: 'Tasador con 15 provincias y 53 zonas relevadas' },
       { href: '/como-comprar-un-campo', label: 'Cómo comprar un campo', hint: 'Qué papeles pedir antes de señar' },
       { href: '/como-vender-un-campo', label: 'Cómo vender un campo', hint: 'Precio, carpeta y tiempos reales' },
       { href: '/impuestos-por-la-venta-de-un-campo', label: 'Impuestos por la venta de un campo', hint: 'El ITI está derogado: qué rige hoy' },

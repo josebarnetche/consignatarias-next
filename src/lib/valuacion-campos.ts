@@ -178,6 +178,15 @@ export const ZONA_POR_PARTIDO: Record<string, Record<string, string>> = {
     'Este': 'gualeguaychu, colon, concordia, uruguay, san salvador, villaguay',
     'Norte': 'federal, feliciano, la paz, federacion, tala',
   },
+  // Corrientes: solo la zona que tiene serie publicada con fecha. Las localidades
+  // son las que la Compañía Argentina de Tierras lista para su Zona 1 (área de
+  // Cuchillas, may-2026) más Felipe Yofre y Mariano I. Loza, que son municipios
+  // del departamento Mercedes. El resto de la provincia (malezales, noroeste
+  // arrocero, costa del Uruguay, forestal) sigue en el valor provincial hasta
+  // tener una fuente fechada por zona: preferimos el promedio a una zona inventada.
+  'corrientes': {
+    'Centro-sur (Cuchillas)': 'curuzu cuatia, mercedes, perugorria, sauce, felipe yofre, mariano i. loza',
+  },
 }
 
 function zonaPorPartido(provincia: string, zona: string): string | null {

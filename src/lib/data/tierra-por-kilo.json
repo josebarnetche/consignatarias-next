@@ -1338,5 +1338,25 @@
   "aptitud": "ganadera",
   "fuente": "Agrofy (avisos), ajustado a valor de operación",
   "fecha": "2026-08"
+ },
+ {
+  "provincia": "Corrientes",
+  "region": "Centro-sur - área de Cuchillas (cría)",
+  "zona": "Centro-sur (Cuchillas)",
+  "n": 1,
+  "usd_ha": 1400.0,
+  "p25": 1200.0,
+  "p75": 1600.0,
+  "kg_ha_ano": 55,
+  "kg_ha_mes_canon": 3.0,
+  "canon_fuente": "Revista Veterinaria UNNE (2023): 24-48 kg/ha/año de pastaje en la provincia — es el rango PROVINCIAL, no hay canon relevado para la zona",
+  "rinde_soja_qq_ha": null,
+  "qq_soja_ha_anio": null,
+  "qq_fuente": null,
+  "usd_por_kg": 25.5,
+  "anos_repago": 8.7,
+  "aptitud": "ganadera",
+  "fuente": "Compañía Argentina de Tierras may-2026, Zona 1 Corrientes (Curuzú Cuatiá, Mercedes, Perugorría, Sauce): cría US$1.200-1.600/ha; con aptitud agrícola o arrocera US$1.600-2.000/ha. Producción 55 kg/ha/año: UNNE 2023, depto. Curuzú Cuatiá 2017-2021",
+  "fecha": "2026-05"
  }
 ]

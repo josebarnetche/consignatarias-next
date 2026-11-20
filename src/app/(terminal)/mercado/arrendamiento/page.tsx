@@ -1000,7 +1000,7 @@ export default async function ArrendamientoPage() {
               ¿Y cuánto vale el campo, no el arrendamiento?
             </h2>
             <p className="text-zinc-400 text-sm mb-4 max-w-2xl">
-              Relevamos el valor de la hectárea en 15 provincias y 52 zonas, con la fuente y la fecha de
+              Relevamos el valor de la hectárea en 15 provincias y 53 zonas, con la fuente y la fecha de
               cada dato. El tasador cruza lo que el campo renta con lo que se paga en su zona.
             </p>
             <div className="flex flex-wrap gap-3 mb-5">
