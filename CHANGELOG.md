@@ -7,6 +7,11 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.264.3] — 2026-11-20
+
+### Cambiado
+- **MCP: segunda pasada de descripciones para Glama (TDQS).** value_farmland_rent, inmag_history, price_dispersion_history y value_cattle_lot: sin el "GRATIS y sin cupo" (sigue en `instructions`), sin lista de parámetros que repite el schema y con el `[EN]` reducido a una frase. Derivación cruzada en los pares que Glama marca: calculate_farmland_rent ↔ value_farmland_rent (canon pactado con precio propio o por mes, contra escenarios sin canon o monto en USD), price_dispersion_history → consignatarias_band (una semana con la cita), y market_match ↔ cattle_buying_request (contrapartes abiertas en la mesa, contra remates programados con aviso). El `[EN]` de calculate_farmland_rent ya no dice USD: la tool devuelve sólo ARS. Sin cambios de schema, nombre, alias ni respuesta. Espejo en `server-card.json`.
+
 ## [1.264.2] — 2026-11-20
 
 > Versión placeholder: el número final lo fija quien integre la rama.
