@@ -8,6 +8,7 @@ import {
   TechArticleSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { terneroDato, terneroCalificador } from '@/lib/ternero'
 import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel; el JSON lo commitea el scraper 14:00 ART
@@ -23,6 +24,7 @@ const price = (key: string) => Math.round(cats[key].current)
 
 const novillo = price('novillos')
 const ternero = price('terneros')
+const T = terneroDato()
 
 /* ------------------------------------------------------------------ */
 /*  Términos definidos — fuente única para DefinedTermSet y glosario    */
@@ -281,7 +283,7 @@ export default function FeedlotVsPastorilPage() {
 
         <p className="mb-4">
           El punto de partida de ambos sistemas es la misma hacienda de reposición —el ternero, que
-          hoy se referencia en ${fmt(ternero)}/kg vivo (estimado) ({lastUpdate})— que viene de la{' '}
+          {T.observado ? 'en el último dato se referencia' : 'hoy se referencia'} en ${fmt(ternero)}/kg vivo {terneroCalificador(T)}{T.observado ? null : <> ({lastUpdate})</>}— que viene de la{' '}
           <Link href="/que-es-la-cria-y-recria" className="text-accent hover:text-accent-bright transition-colors">
             cría y recría
           </Link>

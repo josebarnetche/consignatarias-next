@@ -8,6 +8,7 @@ import {
   HowToSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { terneroDato, terneroCalificador, terneroValorFrase } from '@/lib/ternero'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -24,6 +25,7 @@ const lastUpdate = marketPrices.lastUpdate
 const fmt = (n: number) => n.toLocaleString('es-AR')
 const price = (key: string) => Math.round(cats[key].current)
 const ternero = price('terneros')
+const T = terneroDato()
 
 /* ------------------------------------------------------------------ */
 /*  Etapas del destete — mismo array para HowToSchema y HTML visible   */
@@ -112,7 +114,7 @@ const FAQ = [
   {
     question: '¿Qué se hace con el ternero después del destete?',
     answer:
-      `Después del destete el ternero pasa a recría en el mismo campo o se vende como ternero de invernada a un engordador. En los remates de invernada el ternero suele ser la categoría de mayor precio por kilo; el Mercado Agroganadero no lo opera y nuestra estimación es de $${fmt(ternero)}/kg vivo (estimado) (INMAG/MAG, no fijado por esta página). Es el ingreso principal del criador y por eso el destete se planifica en función de a qué peso y en qué momento conviene vender.`,
+      `Después del destete el ternero pasa a recría en el mismo campo o se vende como ternero de invernada a un engordador. En los remates de invernada el ternero suele ser la categoría de mayor precio por kilo; el Mercado Agroganadero no lo opera y ${terneroValorFrase(`$${fmt(ternero)}/kg vivo`, lastUpdate, T)} (no fijado por esta página). Es el ingreso principal del criador y por eso el destete se planifica en función de a qué peso y en qué momento conviene vender.`,
   },
 ]
 
@@ -249,8 +251,8 @@ export default function QueEsElDestetePage() {
         <p className="text-zinc-400 mb-8">
           Terminado el destete, el ternero pasa a recría en el mismo campo o se vende como ternero de
           invernada. El ternero es la categoría de mayor precio por kilo del mercado: el precio de
-          referencia está hoy en{' '}
-          <span className="text-zinc-300">${fmt(ternero)}/kg vivo (estimado)</span> (INMAG/MAG, precio de
+          referencia está {T.observado ? 'en el último dato' : 'hoy'} en{' '}
+          <span className="text-zinc-300">${fmt(ternero)}/kg vivo {terneroCalificador(T)}</span> ({T.observado ? '' : 'INMAG/MAG, '}precio de
           referencia del mercado, no fijado por esta página). Ese valor es el ingreso principal del
           criador, por eso el destete se planifica en función de a qué peso y en qué momento conviene
           vender el ternero.

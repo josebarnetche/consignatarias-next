@@ -1,4 +1,5 @@
 import marketData from '@/lib/data/market-prices.json'
+import { terneroDato } from '@/lib/ternero'
 import { fetchChicagoCattle } from '@/lib/markets/chicago'
 
 // Public, machine-readable daily price snapshot — a crawlable citation surface
@@ -80,8 +81,20 @@ export async function GET() {
       prev: v.prev,
       change_pct: v.change,
       moneda: 'ARS',
-      // El MAG no opera terneros: el número es INMAG × 1,10, no un precio observado.
-      ...(categoria === 'terneros' ? { estimado: true, metodo: 'INMAG × 1,10 (el Mercado Agroganadero no opera terneros)' } : {}),
+      // El MAG no opera terneros: si el número es observado (MAGyP, mensual) o estimado lo dice
+      // src/lib/ternero.ts. `estimado` se mantiene por compatibilidad con quien ya lo lee.
+      ...(categoria === 'terneros'
+        ? (() => {
+            const t = terneroDato()
+            return {
+              estimado: !t.observado,
+              observado: t.observado,
+              fuente: t.fuente,
+              mes: t.mes,
+              metodo: t.metodo ? `${t.metodo} (el Mercado Agroganadero no opera terneros)` : null,
+            }
+          })()
+        : {}),
     })),
     usd_blue: {
       value: usd.current,

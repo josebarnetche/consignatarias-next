@@ -14,7 +14,8 @@ import { Stat, Delta } from '@/components/ui'
 import SellZoneAlertSignup from '@/components/SellZoneAlertSignup'
 import SellZoneBadge from '@/components/SellZoneBadge'
 import { FAQPageSchema, DefinedTermSetSchema, SpeakableSchema, DatasetSchema } from '@/components/seo/JsonLd'
-import { DESCARGA_PRECIOS, FUENTE_MAG, LICENCIA_PROPIA } from '@/lib/seo/schemas'
+import { DESCARGA_PRECIOS, FUENTE_MAG, FUENTE_MAGYP, LICENCIA_PROPIA } from '@/lib/seo/schemas'
+import { terneroDato, terneroCalificador, terneroFuenteFrase, terneroNota, mesLargo } from '@/lib/ternero'
 import { FaqList } from '@/components/seo/FaqList'
 import { PRECIO_A_VR } from '@/components/precios/BandaVrCategoria'
 
@@ -287,20 +288,31 @@ export async function generateMetadata({
 // Dataset del precio de la categoría. Antes iba además un Product/Offer con seller
 // MAG, InStock y NewCondition: el sitio no vende hacienda (markup engañoso, riesgo de
 // acción manual), y su "Variación Diaria" contradecía el texto ("semanal"). El
-// ternero es una estimación propia (el MAG no opera terneros): no se atribuye al MAG.
+// ternero (el MAG no opera terneros) nunca se atribuye al MAG: observado de MAGyP o
+// estimación propia, según src/lib/ternero.ts.
 function CategoryPriceSchema({ config, price }: { config: CategoryConfig; price: number }) {
-  const esEstimacion = config.slug === 'terneros'
+  const esTernero = config.slug === 'terneros'
+  const T = terneroDato()
+  const fecha = esTernero && T.mes ? T.mes : INMAG_DATE
   return (
     <DatasetSchema
-      name={esEstimacion ? `Precio ${config.name} Argentina — estimación de referencia` : `Precio ${config.name} Argentina`}
-      description={`Cotización diaria de ${config.namePlural.toLowerCase()}${esEstimacion ? ' (estimación derivada del INMAG)' : ' en el Mercado Agroganadero de Cañuelas'}. ${config.definition}`}
+      name={esTernero ? `Precio ${config.name} Argentina — ${T.observado ? 'MAGyP (Entre Surcos y Corrales)' : 'estimación de referencia'}` : `Precio ${config.name} Argentina`}
+      description={
+        esTernero && T.observado
+          ? `Promedio mensual de ${config.namePlural.toLowerCase()} según MAGyP (Entre Surcos y Corrales), ${mesLargo(T.mes)}. ${config.definition}`
+          : `Cotización diaria de ${config.namePlural.toLowerCase()}${esTernero ? ' (estimación derivada del INMAG)' : ' en el Mercado Agroganadero de Cañuelas'}. ${config.definition}`
+      }
       url={`https://www.consignatarias.com.ar/mercado/${config.slug}`}
       keywords={config.keywords}
       dateModified={INMAG_DATE}
-      temporalCoverage={INMAG_DATE}
-      variableMeasured={{ name: `Precio ${config.name}`, unitText: 'ARS/kg vivo', value: price, observationDate: INMAG_DATE }}
+      temporalCoverage={fecha}
+      variableMeasured={{ name: `Precio ${config.name}`, unitText: 'ARS/kg vivo', value: price, observationDate: fecha }}
       distribution={[DESCARGA_PRECIOS]}
-      {...(esEstimacion ? { license: LICENCIA_PROPIA } : { license: null, fuente: FUENTE_MAG })}
+      {...(esTernero && T.observado
+        ? { license: null, fuente: FUENTE_MAGYP }
+        : esTernero
+          ? { license: LICENCIA_PROPIA }
+          : { license: null, fuente: FUENTE_MAG })}
     />
   )
 }
@@ -338,28 +350,35 @@ export default async function CategoriaPage({
   const nameLower = config.name.toLowerCase()
   const pluralLower = config.namePlural.toLowerCase()
   // Answer-first sentence: the exact number + date up front, optimized for featured snippet / voz.
-  // El ternero no es un precio observado (INMAG × 1,10: el MAG no opera terneros).
-  const esEstimado = categoria === 'terneros'
-  const answerFirst = esEstimado
-    ? `El Mercado Agroganadero no opera terneros, así que no hay un precio observado ahí. Nuestra estimación de hoy es $${fmt(price)} por kilo vivo (INMAG × 1,10). Actualizado el ${lastUpdate}.`
+  // El MAG no opera terneros; qué es el número (observado de MAGyP o estimación) lo dice T.
+  const esTernero = categoria === 'terneros'
+  const T = terneroDato()
+  const answerFirst = esTernero
+    ? T.observado
+      ? `El Mercado Agroganadero no opera terneros. El último dato, ${terneroFuenteFrase(T)}, es $${fmt(price)} por kilo vivo.`
+      : `El Mercado Agroganadero no opera terneros, así que no hay un precio observado ahí. Nuestra estimación de hoy es $${fmt(price)} por kilo vivo (${T.metodo}). Actualizado el ${lastUpdate}.`
     : `Hoy ${article} ${nameLower} cotiza a $${fmt(price)} por kilo vivo en el Mercado Agroganadero (${changeStr} semanal). Actualizado el ${lastUpdate}.`
   const slugVr = PRECIO_A_VR[categoria]
 
   // FAQ — questions mirror the head-query strings; answers lead with the live number + date.
+  // El ternero no "cotiza hoy en el Mercado Agroganadero": su referencia va con su procedencia.
+  const precioRef = esTernero
+    ? `$${fmt(price)}/kg vivo ${terneroCalificador(T)}`
+    : `$${fmt(price)}/kg vivo (${changeStr} semanal, ${lastUpdate})`
   const faqItems = [
     {
       question: `¿Cuánto vale ${article} ${nameLower} hoy en Argentina?`,
-      answer: esEstimado
+      answer: esTernero
         ? `${answerFirst} El precio real del ternero lo marcan los remates de invernada.`
         : `${answerFirst} Precio observado del Mercado Agroganadero de Cañuelas, en pesos por kilo vivo.`,
     },
     {
       question: `¿Qué determina el precio ${article === 'una' ? 'de la' : 'del'} ${nameLower}?`,
-      answer: `El precio ${article === 'una' ? 'de la' : 'del'} ${nameLower} lo determinan: ${config.priceFactors.join('; ')}. Hoy cotiza $${fmt(price)}/kg vivo (${changeStr} semanal, ${lastUpdate}).`,
+      answer: `El precio ${article === 'una' ? 'de la' : 'del'} ${nameLower} lo determinan: ${config.priceFactors.join('; ')}. ${esTernero ? `Referencia: ${precioRef}.` : `Hoy cotiza ${precioRef}.`}`,
     },
     {
       question: `¿Para qué se ${article === 'una' ? 'compran' : 'compran'} ${pluralLower}?`,
-      answer: `Principales destinos: ${config.useCases.join('; ')}. Referencia de precio actual: $${fmt(price)}/kg vivo (${lastUpdate}).`,
+      answer: `Principales destinos: ${config.useCases.join('; ')}. Referencia de precio actual: ${esTernero ? precioRef : `$${fmt(price)}/kg vivo (${lastUpdate})`}.`,
     },
     {
       question: `¿Qué es ${article} ${nameLower}?`,
@@ -371,7 +390,9 @@ export default async function CategoriaPage({
   const definedTerms = [
     {
       name: config.name,
-      description: `${config.definition} Precio de referencia hoy: $${fmt(price)}/kg vivo en el Mercado Agroganadero (${changeStr} semanal, ${lastUpdate}).`,
+      description: esTernero
+        ? `${config.definition} Precio de referencia: ${precioRef}; el Mercado Agroganadero no opera terneros.`
+        : `${config.definition} Precio de referencia hoy: $${fmt(price)}/kg vivo en el Mercado Agroganadero (${changeStr} semanal, ${lastUpdate}).`,
       url: `https://www.consignatarias.com.ar/mercado/${categoria}`,
     },
   ]
@@ -431,7 +452,7 @@ export default async function CategoriaPage({
         {/* Price Card */}
         <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-6 mb-6">
           <Stat
-            label={esEstimado ? `${config.name} — estimado, kg vivo` : `${config.name} — kg vivo`}
+            label={esTernero ? `${config.name} ${terneroCalificador(T)}, kg vivo` : `${config.name} — kg vivo`}
             value={`$${priceFormatted}`}
             sub="/kg vivo"
             delta={change !== 0 ? change : null}
@@ -441,8 +462,8 @@ export default async function CategoriaPage({
 
           <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-zinc-500">
             <div>
-              {esEstimado ? (
-                <>Estimación: <span className="text-zinc-400">INMAG × 1,10 — el Mercado Agroganadero no opera terneros; no es un precio observado</span></>
+              {esTernero ? (
+                <>Procedencia: <span className="text-zinc-400">{terneroNota(T)}</span></>
               ) : (
                 <>Fuente: <span className="text-zinc-400">Mercado Agroganadero</span></>
               )}
@@ -452,7 +473,7 @@ export default async function CategoriaPage({
                 Volumen: <span className="text-zinc-400">{volume.toLocaleString('es-AR')} cab.</span>
               </div>
             )}
-            {vsInmag && !esEstimado && (
+            {vsInmag && !esTernero && (
               <div className="flex items-center gap-1">
                 vs INMAG: <Delta change={Number(vsInmag)} format={(abs) => abs.toFixed(1)} />
               </div>

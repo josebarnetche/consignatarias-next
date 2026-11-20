@@ -12,7 +12,7 @@ import {
   SpeakableSchema,
   DatasetSchema,
 } from '@/components/seo/JsonLd'
-import { DESCARGA_PRECIOS, FUENTE_MAG, LICENCIA_PROPIA } from '@/lib/seo/schemas'
+import { DESCARGA_PRECIOS, FUENTE_MAG, FUENTE_MAGYP, LICENCIA_PROPIA } from '@/lib/seo/schemas'
 import { AnswerBlock } from '@/components/seo/AnswerBlock'
 import { DataStamp } from '@/components/seo/DataStamp'
 import { CitaBlock } from '@/components/seo/CitaBlock'
@@ -26,7 +26,8 @@ import SellZoneAlertSignup from '@/components/SellZoneAlertSignup'
 import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
 import PuenteHacienda from '@/components/PuenteHacienda'
 import { BandaVrCategoria, PRECIO_A_VR } from '@/components/precios/BandaVrCategoria'
-import { RematesDeInvernada, TERNERO_ESTIMADO_NOTA } from '@/components/precios/TerneroEstimado'
+import { RematesDeInvernada } from '@/components/precios/TerneroEstimado'
+import { terneroDato, terneroNota, terneroCalificador, terneroFuenteFrase, mesLargo } from '@/lib/ternero'
 
 /* ============================================================
    /precios/[categoria] — captures high-intent "precio del kilo
@@ -174,15 +175,21 @@ export async function generateMetadata({
   // GSC 09-2026: "precio ternero 180 kg hoy" (515 impr, pos 7,8, CTR 0,2 %) — el que busca quiere el
   // animal entero, no sólo el kilo. El total del promedio va en el título, no sólo en la description.
   // Esta es LA página de "precio del X hoy" (las de /mercado/[cat] y /precio-del-*-en-pie apuntan acá).
-  // El ternero no se promete como dato del Mercado Agroganadero: es una estimación (INMAG × 1,10).
+  // El ternero no se promete como dato del Mercado Agroganadero: qué es (observado de MAGyP o
+  // estimación) lo dice src/lib/ternero.ts.
+  const T = terneroDato()
   const banda = PRECIO_A_VR[categoria] ? getBandaPorSlug(PRECIO_A_VR[categoria]!) : null
   const title = categoria === 'terneros'
-    ? 'Precio del ternero hoy: estimación y remates de invernada'
+    ? T.observado
+      ? `Precio del ternero: $${fmt(price)}/kg vivo ${terneroCalificador(T)} y remates de invernada`
+      : 'Precio del ternero hoy: estimación y remates de invernada'
     : categoria === 'vacas'
       ? `Precio de la vaca hoy: $${fmt(price)} el kilo vivo y lo que se pagó`
       : `Precio del ${c.singular} hoy: $${fmt(price)}/kg vivo · ${c.promedioKg} kg ≈ $${fmt(price * c.promedioKg)}`
   const description = categoria === 'terneros'
-    ? `El Mercado Agroganadero no opera terneros: estimamos $${fmt(price)}/kg vivo (INMAG × 1,10). El precio real, en los próximos remates de invernada que te listamos.`
+    ? T.observado
+      ? `El Mercado Agroganadero no opera terneros: el último dato, ${terneroFuenteFrase(T)}, es $${fmt(price)}/kg vivo. El precio de cada lote, en los próximos remates de invernada que te listamos.`
+      : `El Mercado Agroganadero no opera terneros: estimamos $${fmt(price)}/kg vivo (${T.metodo}). El precio real, en los próximos remates de invernada que te listamos.`
     : banda
       ? `Hoy $${fmt(price)} por kilo vivo de ${c.singular}. Los lotes se vendieron de $${fmt(banda.p10)} a $${fmt(banda.p90)}; uno de ${c.promedioKg} kg ronda $${fmt(price * c.promedioKg)}.`
       : `Hoy $${fmt(price)} por kilo vivo de ${c.singular} (${changeStr} semanal). Uno de ${c.promedioKg} kg ronda los $${fmt(price * c.promedioKg)}. Actualizado ${lastUpdate}.`
@@ -227,7 +234,10 @@ export default async function PreciosCategoriaPage({
   const prev = Math.round(c.prev)
   const changeStr = `${c.change >= 0 ? '+' : ''}${c.change}%`
   const changeClass = c.change >= 0 ? 'val-positive' : 'val-negative'
-  const esEstimado = categoria === 'terneros'
+  // esTernero = "esta es la página del ternero" (remates de invernada, sin INMAG ni WhatsApp);
+  // si el número es observado o estimado lo dice T (src/lib/ternero.ts).
+  const esTernero = categoria === 'terneros'
+  const T = terneroDato()
   const lastUpdate = marketPrices.lastUpdate
   const promedioPeso = price * c.promedioKg
 
@@ -239,14 +249,16 @@ export default async function PreciosCategoriaPage({
   const cleanName = (cat: string) => (subcatPrefix ? cat.replace(new RegExp('^' + subcatPrefix, 'i'), '').trim() : cat)
 
   // Server-built citation string (CitaBlock copies it; observed/national = "precio de referencia", no estimate tag).
-  const citation = esEstimado
-    ? `Estimación de consignatarias.com.ar sobre el INMAG (× 1,10), ${INMAG_DATE} — $${fmt(price)}/kg vivo de ternero. El Mercado Agroganadero no opera terneros: no es un precio observado.`
+  const citation = esTernero
+    ? T.observado
+      ? `MAGyP (Entre Surcos y Corrales), promedio de ${mesLargo(T.mes)}, vía consignatarias.com.ar — $${fmt(price)}/kg vivo de ternero de 160-180 kg. El Mercado Agroganadero no opera terneros.`
+      : `Estimación de consignatarias.com.ar sobre el INMAG (${T.metodo}), ${INMAG_DATE} — $${fmt(price)}/kg vivo de ternero. El Mercado Agroganadero no opera terneros: no es un precio observado.`
     : `INMAG (Mercado Agroganadero Argentino), vía consignatarias.com.ar, ${INMAG_DATE} — $${fmt(price)}/kg vivo de ${c.singular} (precio de referencia)`
 
   // Sibling categories for navigation
   const others = ALL_CATEGORIES.filter((x) => x !== categoria).map((slug) => ({
     slug,
-    label: slug === 'terneros' ? 'Ternero (estimado)' : CATEGORIES[slug].title,
+    label: slug === 'terneros' ? `Ternero ${terneroCalificador(T)}` : CATEGORIES[slug].title,
     price: Math.round(
       (marketPrices.categories as Record<string, { current: number }>)[slug].current,
     ),
@@ -255,8 +267,11 @@ export default async function PreciosCategoriaPage({
   // Direct, number-first answer for each conversational phrasing, built with the
   // live price. Honest: leads with the INMAG reference, then the per-head figure.
   const convoAnswer = (q: string): string => {
-    if (esEstimado) {
-      return `No hay un precio observado del ternero en el Mercado Agroganadero, porque ahí no se operan terneros. Nuestra estimación es $${fmt(price)} por kilo vivo (INMAG × 1,10, ${INMAG_DATE}): un ternero de ${c.promedioKg} kg rondaría los $${fmt(promedioPeso)}. El precio real lo marcan los remates de invernada.`
+    if (esTernero && T.observado) {
+      return `El Mercado Agroganadero no opera terneros. El último dato, ${terneroFuenteFrase(T)}, es $${fmt(price)} por kilo vivo: un ternero de ${c.promedioKg} kg rondaría los $${fmt(promedioPeso)}. El precio de cada lote lo marcan los remates de invernada.`
+    }
+    if (esTernero) {
+      return `No hay un precio observado del ternero en el Mercado Agroganadero, porque ahí no se operan terneros. Nuestra estimación es $${fmt(price)} por kilo vivo (${T.metodo}, ${INMAG_DATE}): un ternero de ${c.promedioKg} kg rondaría los $${fmt(promedioPeso)}. El precio real lo marcan los remates de invernada.`
     }
     const head = `El kilo vivo de ${c.singular} está a $${fmt(price)} (INMAG, ${INMAG_DATE}; ${changeStr} semanal). ${c.articulo[0].toUpperCase()}${c.articulo.slice(1)} ${c.singular} ${c.vivoAdj} de ${c.promedioKg} kg ronda los $${fmt(promedioPeso)} a precio de referencia.`
     if (q.includes('en pie')) {
@@ -268,15 +283,25 @@ export default async function PreciosCategoriaPage({
     return head
   }
 
-  const faqItems = esEstimado ? [
-    {
-      question: '¿Cuánto está el kilo vivo de ternero hoy?',
-      answer: `Estimamos $${fmt(price)} por kilo vivo (INMAG × 1,10, ${INMAG_DATE}). Es una estimación, no un precio observado: el Mercado Agroganadero no opera terneros. El precio real se forma en los remates de invernada.`,
-    },
-    {
-      question: '¿Por qué el precio del ternero es una estimación?',
-      answer: 'Porque el Mercado Agroganadero de Cañuelas, que es de donde salen los precios observados del resto de las categorías, no vende terneros. El ternero es hacienda de invernada y se vende en remates y ferias de campo. Por eso lo rotulamos como estimación y mostramos los próximos remates de invernada.',
-    },
+  const faqItems = esTernero ? [
+    T.observado
+      ? {
+          question: '¿Cuánto está el kilo vivo de ternero?',
+          answer: `$${fmt(price)} por kilo vivo, ${terneroFuenteFrase(T)} (último dato mensual). El Mercado Agroganadero no opera terneros; el precio de cada lote se forma en los remates de invernada.`,
+        }
+      : {
+          question: '¿Cuánto está el kilo vivo de ternero hoy?',
+          answer: `Estimamos $${fmt(price)} por kilo vivo (${T.metodo}, ${INMAG_DATE}). Es una estimación, no un precio observado: el Mercado Agroganadero no opera terneros. El precio real se forma en los remates de invernada.`,
+        },
+    T.observado
+      ? {
+          question: '¿De dónde sale el precio del ternero?',
+          answer: 'El Mercado Agroganadero de Cañuelas, de donde salen los precios observados del resto de las categorías, no vende terneros: el ternero es hacienda de invernada y se vende en remates y ferias de campo. Por eso tomamos el promedio mensual que releva MAGyP (Entre Surcos y Corrales) y mostramos los próximos remates de invernada.',
+        }
+      : {
+          question: '¿Por qué el precio del ternero es una estimación?',
+          answer: 'Porque el Mercado Agroganadero de Cañuelas, que es de donde salen los precios observados del resto de las categorías, no vende terneros. El ternero es hacienda de invernada y se vende en remates y ferias de campo. Por eso lo rotulamos como estimación y mostramos los próximos remates de invernada.',
+        },
     ...CONVERSATIONAL_QUESTIONS[categoria].map((question) => ({ question, answer: convoAnswer(question) })),
     ...c.extraFaq,
   ] : [
@@ -309,22 +334,26 @@ export default async function PreciosCategoriaPage({
       <FAQPageSchema items={faqItems} />
       {/* Dataset, no Product/Offer: el sitio no vende hacienda (un Offer con seller
           MAG e InStock es markup engañoso). Ni Article con datePublished = fecha del
-          scrape. El ternero es una estimación propia (el MAG no opera terneros): se
-          declara como tal, sin atribuírsela al MAG. */}
+          scrape. El ternero (el MAG no opera terneros) se declara según T: observado de
+          MAGyP con su fuente, o estimación propia; nunca atribuido al MAG. */}
       <DatasetSchema
-        name={categoria === 'terneros' ? 'Precio del ternero en pie — estimación de referencia' : `Precio del kilo vivo de ${c.singular} — Mercado Agroganadero`}
+        name={esTernero ? (T.observado ? 'Precio del ternero en pie — MAGyP (Entre Surcos y Corrales)' : 'Precio del ternero en pie — estimación de referencia') : `Precio del kilo vivo de ${c.singular} — Mercado Agroganadero`}
         description={
-          categoria === 'terneros'
+          esTernero && T.observado
+            ? `Promedio mensual del kilo vivo de ternero de 160-180 kg según MAGyP (Entre Surcos y Corrales), ${mesLargo(T.mes)}: $${fmt(price)}/kg. El Mercado Agroganadero no opera terneros; el precio de cada lote, en los remates de invernada.`
+            : esTernero
             ? `Estimación del kilo vivo de ternero derivada del INMAG al ${INMAG_DATE}: $${fmt(price)}/kg. El Mercado Agroganadero no opera terneros; para precios observados, ver los remates de invernada.`
             : `Precio de referencia del kilo vivo de ${c.singular} en el Mercado Agroganadero al ${INMAG_DATE}: $${fmt(price)}/kg vivo.`
         }
         url={`https://www.consignatarias.com.ar/precios/${categoria}`}
         keywords={[`precio ${c.singular}`, `kilo vivo ${c.singular}`, 'hacienda en pie', 'INMAG']}
         dateModified={INMAG_DATE}
-        temporalCoverage={INMAG_DATE}
-        variableMeasured={{ name: `Precio del kilo vivo de ${c.singular}`, unitText: 'ARS/kg vivo', value: price, observationDate: INMAG_DATE }}
+        temporalCoverage={esTernero && T.mes ? T.mes : INMAG_DATE}
+        variableMeasured={{ name: `Precio del kilo vivo de ${c.singular}`, unitText: 'ARS/kg vivo', value: price, observationDate: esTernero && T.mes ? T.mes : INMAG_DATE }}
         distribution={[DESCARGA_PRECIOS]}
-        {...(categoria === 'terneros'
+        {...(esTernero && T.observado
+          ? { license: null, fuente: FUENTE_MAGYP }
+          : esTernero
           ? { license: LICENCIA_PROPIA }
           : { license: null, fuente: FUENTE_MAG })}
       />
@@ -350,13 +379,13 @@ export default async function PreciosCategoriaPage({
           <ImagenTema src={`/marca/glifos-color/${GLIFOS[categoria]}.png`} alt="" className="w-full h-auto" />
         </span>
         <h1 className="text-2xl md:text-3xl font-heading text-zinc-100 mb-1 leading-tight">
-          {esEstimado ? 'Precio del ternero hoy: estimación de ' : `Precio del kilo vivo de ${c.singular} hoy: `}
+          {esTernero ? (T.observado ? 'Precio del ternero: ' : 'Precio del ternero hoy: estimación de ') : `Precio del kilo vivo de ${c.singular} hoy: `}
           <span className="text-accent">${fmt(price)}</span>
-          {esEstimado && <span className="text-zinc-400 text-lg"> por kilo vivo</span>}
+          {esTernero && <span className="text-zinc-400 text-lg"> por kilo vivo{T.observado ? ` ${terneroCalificador(T)}` : ''}</span>}
         </h1>
-        {esEstimado ? (
+        {esTernero ? (
           <p className="text-zinc-400 text-sm mb-4">
-            <DataStamp isoDate={lastUpdate} /> · {TERNERO_ESTIMADO_NOTA}
+            {T.observado ? null : <><DataStamp isoDate={lastUpdate} /> · </>}{terneroNota(T)}
           </p>
         ) : (
           <p className="text-zinc-400 text-sm mb-4">
@@ -371,15 +400,24 @@ export default async function PreciosCategoriaPage({
             </Link>
           </p>
         )}
-        <BandaVrCategoria categoria={categoria} nombre={esEstimado ? 'el ternero' : `${c.articulo === 'una' ? 'la' : 'el'} ${c.singular}`} />
-        {esEstimado && <RematesDeInvernada />}
-        {esEstimado ? (
+        <BandaVrCategoria categoria={categoria} nombre={esTernero ? 'el ternero' : `${c.articulo === 'una' ? 'la' : 'el'} ${c.singular}`} />
+        {esTernero && <RematesDeInvernada />}
+        {esTernero ? (
           <AnswerBlock
-            question="Precio del kilo vivo de ternero hoy"
+            question={T.observado ? 'Precio del kilo vivo de ternero' : 'Precio del kilo vivo de ternero hoy'}
             answer={
               <>
-                No hay un precio observado: el Mercado Agroganadero no opera terneros. Nuestra estimación es{' '}
-                <strong className="text-ink">${fmt(price)}/kg</strong> (INMAG × 1,10, {INMAG_DATE}); un ternero de{' '}
+                {T.observado ? (
+                  <>
+                    El Mercado Agroganadero no opera terneros. El último dato, {terneroFuenteFrase(T)}, es{' '}
+                    <strong className="text-ink">${fmt(price)}/kg</strong>; un ternero de{' '}
+                  </>
+                ) : (
+                  <>
+                    No hay un precio observado: el Mercado Agroganadero no opera terneros. Nuestra estimación es{' '}
+                    <strong className="text-ink">${fmt(price)}/kg</strong> ({T.metodo}, {INMAG_DATE}); un ternero de{' '}
+                  </>
+                )}
                 {c.promedioKg} kg rondaría los <strong className="text-ink">${fmt(promedioPeso)}</strong>. Lo que se paga de
                 verdad se ve en los remates de invernada.
               </>
@@ -413,18 +451,18 @@ export default async function PreciosCategoriaPage({
           />
         )}
         <CitaBlock citation={citation} sourceUrl={`https://www.consignatarias.com.ar/precios/${categoria}`} />
-        {/* El mensaje para compartir dice "de referencia (INMAG)": no va con una estimación. */}
-        {!esEstimado && (
+        {/* El mensaje para compartir dice "de referencia (INMAG)": no va con el ternero (no es INMAG). */}
+        {!esTernero && (
           <PriceWhatsAppShare singular={c.singular} price={price} change={c.change} lastUpdate={lastUpdate} url={`https://www.consignatarias.com.ar/precios/${categoria}`} className="mb-6" />
         )}
 
         {/* Big number panel */}
         <div className="terminal-panel mb-6">
-          <div className="terminal-panel-header">{esEstimado ? 'Estimación de hoy (INMAG × 1,10)' : 'Cotización actual'}</div>
+          <div className="terminal-panel-header">{esTernero ? (T.observado ? `Último dato ${terneroCalificador(T)}` : `Estimación de hoy (${T.metodo})`) : 'Cotización actual'}</div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-terminal-border">
             <div className="bg-terminal-panel px-4 py-4">
               <div className="text-zinc-500 text-xxs font-terminal uppercase tracking-wider mb-1">
-                Hoy
+                {esTernero && T.observado ? 'Último dato' : 'Hoy'}
               </div>
               <div className="text-zinc-100 text-2xl font-terminal tabular-nums">
                 ${fmt(price)}
@@ -433,7 +471,7 @@ export default async function PreciosCategoriaPage({
             </div>
             <div className="bg-terminal-panel px-4 py-4">
               <div className="text-zinc-500 text-xxs font-terminal uppercase tracking-wider mb-1">
-                Semana previa
+                {esTernero && T.observado ? 'Mes previo' : 'Semana previa'}
               </div>
               <div className="text-zinc-400 text-2xl font-terminal tabular-nums">
                 ${fmt(prev)}
@@ -447,7 +485,7 @@ export default async function PreciosCategoriaPage({
               <div className={`text-2xl font-terminal tabular-nums ${changeClass}`}>
                 {changeStr}
               </div>
-              <div className="text-zinc-600 text-xxs">vs semana previa</div>
+              <div className="text-zinc-600 text-xxs">{esTernero && T.observado ? 'vs mes previo (MAGyP)' : 'vs semana previa'}</div>
             </div>
             <div className="bg-terminal-panel px-4 py-4">
               <div className="text-zinc-500 text-xxs font-terminal uppercase tracking-wider mb-1">
@@ -613,8 +651,8 @@ export default async function PreciosCategoriaPage({
         </div>
 
         <p className="text-zinc-600 text-xxs text-center">
-          {esEstimado
-            ? 'Fuente: estimación propia sobre el INMAG (× 1,10) · '
+          {esTernero
+            ? `Fuente: ${T.observado ? `MAGyP (Entre Surcos y Corrales), promedio de ${mesLargo(T.mes)}` : `estimación propia sobre el INMAG (${T.metodo})`} · `
             : 'Fuente: INMAG (Mercado Agroganadero de Buenos Aires) · '}
           Actualizado el {lastUpdate} ·{' '}
           <Link href={`/vr${PRECIO_A_VR[categoria] ? `/${PRECIO_A_VR[categoria]}` : ''}`} className="text-zinc-500 hover:text-zinc-300 underline-offset-2 hover:underline">

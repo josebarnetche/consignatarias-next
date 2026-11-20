@@ -1,6 +1,7 @@
 import { ImagenTema } from '@/components/ui/ImagenTema'
 import Link from 'next/link'
 import marketData from '@/lib/data/market-prices.json'
+import { terneroCalificador, terneroNota } from '@/lib/ternero'
 import { signedTone } from '@/lib/ui/tokens'
 import { Series, type PricePoint } from '@/components/ui/ChartCard'
 import { Stat, Delta, DataTable, PriceCell, type DataColumn } from '@/components/ui'
@@ -85,8 +86,8 @@ const categoryColumns: DataColumn<CategoryRow>[] = [
           />
         </span>
         {cat.name}
-        {/* El ternero es INMAG × 1,10 (el MAG no opera terneros): no es observado. */}
-        {cat.name === 'TERNEROS' && <span className="text-xxs font-normal text-zinc-500 normal-case" title="INMAG × 1,10. El Mercado Agroganadero no opera terneros; no es un precio observado.">estimado</span>}
+        {/* El MAG no opera terneros: el rótulo (observado de MAGyP o estimado) sale de src/lib/ternero.ts. */}
+        {cat.name === 'TERNEROS' && <span className="text-xxs font-normal text-zinc-500 normal-case" title={terneroNota()}>{terneroCalificador()}</span>}
       </Link>
     ),
   },

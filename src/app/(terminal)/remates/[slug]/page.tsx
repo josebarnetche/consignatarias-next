@@ -12,6 +12,7 @@ import {
 import Link from 'next/link'
 import rematesData from '@/lib/data/remates.json'
 import marketPrices from '@/lib/data/market-prices.json'
+import { terneroNota } from '@/lib/ternero'
 import existenciasData from '@/lib/data/existencias-bovinas.json'
 import { getAllProfiles, consignatariaProfilePath, getCanonicalSlug } from '@/lib/data/consignataria-slugs'
 import { getFeaturedSlugs } from '@/lib/featured'
@@ -788,7 +789,7 @@ export default async function RemateDetailPage({ params }: Props) {
                   <span className={catPrice.change >= 0 ? 'text-emerald-400' : 'text-red-400'}> ({catPrice.change >= 0 ? '+' : ''}{catPrice.change.toFixed(1)}%)</span>
                 )}
                 {priceKey === 'terneros' ? (
-                  <span className="text-slate-600"> · estimado: INMAG × 1,10 — el Mercado Agroganadero no opera terneros, no es un precio observado</span>
+                  <span className="text-slate-600"> · {terneroNota()}</span>
                 ) : (
                   MAG_DATE && <span className="text-slate-600"> · MAG, {MAG_DATE}</span>
                 )}

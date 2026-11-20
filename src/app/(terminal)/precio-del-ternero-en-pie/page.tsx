@@ -10,7 +10,8 @@ import {
 import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
-import { RematesDeInvernada, TERNERO_ESTIMADO_NOTA } from '@/components/precios/TerneroEstimado'
+import { RematesDeInvernada } from '@/components/precios/TerneroEstimado'
+import { terneroDato, terneroNota, terneroCalificador, terneroFuenteFrase, terneroCuando } from '@/lib/ternero'
 
 export const revalidate = 86400 // rebuild diario vía Vercel; el JSON lo commitea el scraper 14:00 ART
 
@@ -32,8 +33,9 @@ const novillo = price('novillos')
 const vaquillona = price('vaquillonas')
 const vaca = price('vacas')
 
-// `ternero` NO es un precio observado: el Mercado Agroganadero no opera terneros y el
-// scraper lo calcula como INMAG × 1,10. Toda la página lo presenta como estimación.
+// El Mercado Agroganadero no opera terneros. Qué es `ternero` (promedio mensual observado
+// de MAGyP o estimación sobre el INMAG) lo dice src/lib/ternero.ts: la página no lo afirma a mano.
+const T = terneroDato()
 // Ternero tipo de destete (180 kg de peso vivo).
 const PESO_TERNERO = 180
 const valorTernero = ternero * PESO_TERNERO
@@ -124,7 +126,9 @@ const TERMINOS = [
 const FAQ = [
   {
     question: '¿A cuánto está el kilo de ternero hoy?',
-    answer: `No hay un precio observado del ternero en el Mercado Agroganadero, porque ahí no se operan terneros. Nuestra estimación de hoy (${INMAG_DATE}) es $${fmt(ternero)} por kilo vivo, calculada como INMAG × 1,10: un ternero de destete de ${PESO_TERNERO} kg rondaría los $${fmt(valorTernero)}. El precio real lo marcan los remates de invernada, y cambia con el peso, la raza, la sanidad y la zona.`,
+    answer: `${T.observado
+      ? `El Mercado Agroganadero no opera terneros. El último dato, ${terneroFuenteFrase(T)}, es $${fmt(ternero)} por kilo vivo`
+      : `No hay un precio observado del ternero en el Mercado Agroganadero, porque ahí no se operan terneros. Nuestra estimación de hoy (${INMAG_DATE}) es $${fmt(ternero)} por kilo vivo, calculada como ${T.metodo}`}: un ternero de destete de ${PESO_TERNERO} kg rondaría los $${fmt(valorTernero)}. El precio real lo marcan los remates de invernada, y cambia con el peso, la raza, la sanidad y la zona.`,
   },
   {
     question: '¿Cuándo conviene vender terneros?',
@@ -138,7 +142,7 @@ const FAQ = [
 
 export const metadata: Metadata = {
   title: 'Precio del ternero en pie: cómo se forma, la zafra y los remates de invernada',
-  description: 'Cómo se forma el precio del ternero en pie: por qué se vende en remates de invernada y no en el Mercado Agroganadero, cómo lo mueve la zafra de marzo a mayo, una estimación diaria rotulada como tal y los próximos remates.',
+  description: `Cómo se forma el precio del ternero en pie: por qué se vende en remates de invernada y no en el Mercado Agroganadero, cómo lo mueve la zafra de marzo a mayo, ${T.observado ? 'el último precio observado' : 'una estimación diaria rotulada como tal'} y los próximos remates.`,
   keywords: [
     'cuanto esta el kilo de ternero vivo en pie',
     'cuanto esta el kilo de ternero vivo',
@@ -153,7 +157,7 @@ export const metadata: Metadata = {
   ],
   openGraph: {
     title: 'Precio del ternero en pie: cómo se forma y cuándo conviene vender',
-    description: 'Por qué el ternero se vende en remates de invernada, cómo lo mueve la zafra y una estimación diaria rotulada como tal.',
+    description: `Por qué el ternero se vende en remates de invernada, cómo lo mueve la zafra y ${T.observado ? 'el último precio observado' : 'una estimación diaria rotulada como tal'}.`,
     url: PAGE_URL,
     type: 'article',
     images: [{ url: '/og-mercado.png', width: 1200, height: 630 }],
@@ -175,7 +179,7 @@ export default function PrecioDelTerneroEnPiePage() {
       />
       <DatasetSchema
         name="Precio del ternero en pie — Mercado Agroganadero"
-        description={`Estimación del kilo vivo del ternero de invernada al ${INMAG_DATE}: $${fmt(ternero)}/kg vivo (INMAG × 1,10; el Mercado Agroganadero no opera terneros, no es un precio observado). Comparado con novillito ($${fmt(novillito)}), novillo ($${fmt(novillo)}), vaquillona ($${fmt(vaquillona)}) y vaca ($${fmt(vaca)}). Base: INMAG del Mercado Agroganadero.`}
+        description={`Kilo vivo del ternero de invernada (${terneroCuando(INMAG_DATE, T)}): $${fmt(ternero)}/kg vivo, ${terneroFuenteFrase(T)}; el Mercado Agroganadero no opera terneros. Comparado con novillito ($${fmt(novillito)}), novillo ($${fmt(novillo)}), vaquillona ($${fmt(vaquillona)}) y vaca ($${fmt(vaca)}) del Mercado Agroganadero (INMAG).`}
         url={PAGE_URL}
         keywords={['precio ternero', 'ternero en pie', 'kilo vivo', 'invernada', 'zafra de terneros', 'mercado agroganadero', 'INMAG']}
         dateModified={INMAG_DATE}
@@ -202,14 +206,22 @@ export default function PrecioDelTerneroEnPiePage() {
           Precio del ternero en pie: cómo se forma y cuándo conviene vender
         </h1>
 
-        {/* Answer-first: primera oración autocontenida y citable, sin vender la
-            estimación como dato observado. */}
+        {/* Answer-first: primera oración autocontenida y citable; la procedencia sale
+            del helper (observado de MAGyP o estimación), nunca escrita a mano. */}
         <p className="speakable-content text-zinc-200 text-base mb-4">
           El precio del ternero se forma en los remates de invernada y las ferias de campo: el Mercado
-          Agroganadero no opera terneros, así que no hay un precio observado ahí. Nuestra estimación de
-          hoy ({INMAG_DATE}) es <strong>${fmt(ternero)} por kilo vivo</strong>.
+          Agroganadero no opera terneros, así que no hay un precio observado ahí.{' '}
+          {T.observado ? (
+            <>
+              El último dato, {terneroFuenteFrase(T)}, es <strong>${fmt(ternero)} por kilo vivo</strong>.
+            </>
+          ) : (
+            <>
+              Nuestra estimación de hoy ({INMAG_DATE}) es <strong>${fmt(ternero)} por kilo vivo</strong>.
+            </>
+          )}
         </p>
-        <p className="text-xs text-zinc-500 mb-4">{TERNERO_ESTIMADO_NOTA}</p>
+        <p className="text-xs text-zinc-500 mb-4">{terneroNota(T)}</p>
 
         <p className="mb-4">
           A ese valor, un ternero de destete de {PESO_TERNERO} kg rondaría los{' '}
@@ -309,7 +321,7 @@ export default function PrecioDelTerneroEnPiePage() {
                   </Link>
                 </td>
                 <td className="px-3 py-2 text-zinc-400">Invernada (recría y engorde)</td>
-                <td className="px-3 py-2 text-right text-zinc-200">~${fmt(ternero)} (estimado)</td>
+                <td className="px-3 py-2 text-right text-zinc-200">~${fmt(ternero)} {terneroCalificador(T)}</td>
               </tr>
               <tr className="border-b border-terminal-border/60 align-top">
                 <td className="px-3 py-2 text-zinc-200 font-medium">
@@ -364,7 +376,7 @@ export default function PrecioDelTerneroEnPiePage() {
         </div>
         <p className="text-xxs text-zinc-500 mb-4">
           Precio por kilo vivo del Mercado Agroganadero (INMAG y panel de categorías, {INMAG_DATE}),
-          salvo el ternero, que es una estimación (INMAG × 1,10). Cada firma acuerda el precio final
+          salvo el ternero: {terneroFuenteFrase(T)}. Cada firma acuerda el precio final
           con el productor.
         </p>
 
@@ -419,8 +431,7 @@ export default function PrecioDelTerneroEnPiePage() {
 
         <footer className="mt-6 pt-4 border-t border-terminal-border text-xxs text-zinc-500">
           <p>
-            El valor del ternero de esta página es una estimación sobre el INMAG (× 1,10), no un precio
-            observado. El ternero se comercializa por kilo vivo y su valor final se acuerda en cada remate.
+            El valor del ternero de esta página: {terneroFuenteFrase(T)}. El ternero se comercializa por kilo vivo y su valor final se acuerda en cada remate.
           </p>
           <p className="mt-1">Actualizado: {lastUpdate} · Memola Medios S.A.S.</p>
         </footer>

@@ -40,6 +40,12 @@ export const FUENTE_MAG = {
   url: 'https://www.mercadoagroganadero.com.ar',
 } as const
 
+/** Fuente del ternero cuando es la observación mensual de MAGyP (ver src/lib/ternero.ts). */
+export const FUENTE_MAGYP = {
+  name: 'MAGyP · Entre Surcos y Corrales',
+  url: 'https://www.magyp.gob.ar/sitio/areas/ss_ganaderia/',
+} as const
+
 /** Descargas públicas para `distribution` de los Dataset. */
 export const DESCARGA_PRECIOS = {
   url: `${SITE}/precios.json`,

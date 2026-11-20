@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import marketData from '@/lib/data/market-prices.json'
+import { terneroCalificador } from '@/lib/ternero'
 import { SectionBreadcrumbSchema, DatasetSchema, FAQPageSchema, SpeakableSchema } from '@/components/seo/JsonLd'
 import { FUENTE_MAG, LICENCIA_PROPIA } from '@/lib/seo/schemas'
 import { INMAG_DATE } from '@/lib/inmag'
@@ -24,7 +25,7 @@ const BADGES = [
   { slug: 'vaquillonas', label: 'Vaquillona', value: BADGE_CATS.vaquillonas.current, href: '/mercado/vaquillonas' },
   { slug: 'vacas', label: 'Vaca', value: BADGE_CATS.vacas.current, href: '/mercado/vacas' },
   { slug: 'toros', label: 'Toro', value: BADGE_CATS.toros.current, href: '/mercado/toros' },
-  { slug: 'terneros', label: 'Ternero (estimado)', value: BADGE_CATS.terneros.current, href: '/mercado/terneros' },
+  { slug: 'terneros', label: `Ternero ${terneroCalificador()}`, value: BADGE_CATS.terneros.current, href: '/mercado/terneros' },
 ]
 
 export const metadata: Metadata = {
