@@ -27,6 +27,8 @@ function builder(table: string) {
 
 vi.mock('@/lib/supabase', () => ({ requireServiceClient: () => ({ from: builder }), createServiceClient: () => ({ from: builder }) }))
 vi.mock('@/lib/ops', () => ({ logEvent: vi.fn() }))
+// live_auctions le pregunta a YouTube por los canales del día: en el test, la pared vacía.
+vi.mock('@/lib/remates-en-vivo', async (orig) => ({ ...(await orig<typeof import('@/lib/remates-en-vivo')>()), construirPared: async () => [] }))
 vi.mock('@/lib/rate-limit-db', () => ({ enforceRateLimit: async () => ({ ok: true }), clientIp: () => '1.2.3.4' }))
 
 // Fecha fija: los snapshots dependen de "hoy" (remates próximos y la línea de cita).
@@ -113,7 +115,7 @@ function validar(v: unknown, s: Schema, ruta = '$'): string[] {
   return errores
 }
 
-const ESTRUCTURADAS = ['cattle_price_index', 'livestock_prices', 'macro_context', 'upcoming_auctions', 'value_cattle_lot', 'market_match']
+const ESTRUCTURADAS = ['cattle_price_index', 'livestock_prices', 'macro_context', 'upcoming_auctions', 'live_auctions', 'value_cattle_lot', 'market_match']
 const ALIAS: Record<string, string> = { get_indice_novillo: 'cattle_price_index', list_remates: 'upcoming_auctions' }
 
 async function schemas() {
@@ -127,7 +129,7 @@ describe('structuredContent + outputSchema', () => {
     expect(validar({ a: [1, 'x'] }, { type: 'object', properties: { a: { type: 'array', items: { type: 'number' } } } })).toHaveLength(1)
   })
 
-  it('tools/list anuncia outputSchema en las 6 y en ninguna otra', async () => {
+  it('tools/list anuncia outputSchema en las 7 y en ninguna otra', async () => {
     const tools = await schemas()
     for (const n of ESTRUCTURADAS) {
       const t = tools.find((x) => x.name === n)
@@ -142,6 +144,8 @@ describe('structuredContent + outputSchema', () => {
   const CASOS: [string, string, Record<string, unknown>][] = [
     ...CASOS_MISIONES,
     ['value_cattle_lot sin banda', 'value_cattle_lot', { categoria: 'terneros', cabezas: 100 }],
+    ['live_auctions', 'live_auctions', {}],
+    ['live_auctions Corrientes', 'live_auctions', { provincia: 'Corrientes' }],
   ]
 
   for (const [titulo, name, args] of CASOS) {

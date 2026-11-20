@@ -31,7 +31,8 @@ export function rematesDeLaRegion<R extends RemateMin>(
   const region = regionDe(pedida) ?? regionDe(remates.find((r) => normalizeGeo(r.province).includes(pedida))?.province)
   if (!region) return { region: null, nombreRegion: 'otra zona', remates: [] }
   const out = remates
-    .filter((r) => r.status === 'scheduled' && r.date >= hoy && regionDe(r.province) === region)
+    // 'live' = los de hoy (así los marca el scraper).
+    .filter((r) => (r.status === 'scheduled' || r.status === 'live') && r.date >= hoy && regionDe(r.province) === region)
     .sort((a, b) => a.date.localeCompare(b.date))
     .slice(0, limite)
   return { region, nombreRegion: lugarGenerico(pedida), remates: out }
