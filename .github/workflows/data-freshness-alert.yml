@@ -35,3 +35,13 @@ jobs:
             exit 1
           fi
           echo "✓ El pipeline corrió hoy o ayer — data fresca."
+
+      # La Banda Consignatarias (vr_bandas_history) se congeló del 13 al 20/11 con todos
+      # los workflows en verde. Esto mira la fecha del último punto de la serie: más de
+      # 2 días hábiles de atraso → falla y GitHub manda el mail.
+      - name: Check Banda Consignatarias freshness
+        if: always()
+        run: node scripts/check-vr-bandas-freshness.mjs
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}

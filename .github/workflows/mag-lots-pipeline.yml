@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
     inputs:
       date:
-        description: 'Override date YYYY-MM-DD (default: today)'
+        description: 'Override date YYYY-MM-DD (default: último día hábil de rueda en BA; antes de las 12 = ayer)'
         required: false
         default: ''
       ventana:
@@ -211,3 +211,12 @@ jobs:
           done
           echo "::error::git push falló tras 5 intentos."
           exit 1
+
+      # Mira el DATO, no el workflow: el 13/11 la banda se congeló una semana con
+      # todo en verde. Va después del push para no frenar la publicación de la banda.
+      - name: Freshness check (vr_bandas_history ≤ 2 días hábiles)
+        if: always()
+        run: node scripts/check-vr-bandas-freshness.mjs
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
