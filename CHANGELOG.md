@@ -7,6 +7,17 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.263.1] — 2026-11-20
+
+### Corregido
+- **El Corredor v2: un solo dólar de cierre.** La página de la tierra tomaba el último dólar de la serie (posterior al cierre: USD 2,69 en la edición de octubre) mientras la portada y la brecha internacional usaban el del cierre del mes (USD 2,56). Ahora las tres usan el cierre.
+- **El Corredor v2: título del precio real.** Cuando el último mes con IPC es la base, el título nombraba el mismo mes dos veces ("en pesos de septiembre… en septiembre"). Ahora lo dice una vez y aclara que la variación es descontada la inflación.
+- **Mail de El Corredor: describe el informe v2.** El mail de envío seguía describiendo el v1 ("12 páginas… 18 buckets del MAG… tesis del mes próximo") y firmaba consignatarias.com. Ahora describe lo que trae el v2, sin cantidad fija de páginas, y firma consignatarias.com.ar.
+- **El Corredor: el PDF y las piezas ya no se pierden por el código de salida de Chrome.** Con el perfil de la máquina Chrome escribe el PDF y sale con 2 ("Teardown watchdog expired"); el render lo contaba como falla, lo callaba y la publicación cortaba con "¿chromium?" (dos veces el 12 y el 13/11). Ahora corre con un perfil propio y descartable, decide por el archivo y no por el código, y si no sale nada imprime el motivo. `informe.chrome()` lo usan el PDF y las piezas.
+- **El Corredor: un rechazo de Resend ya no cuenta como envío.** `sendElCorredorDelivery` y `sendElCorredorCorreccion` usaban `resend.emails.send` sin mirar `{ error }` (el SDK no lanza). Un mail rechazado, por ejemplo por el tope de 100 por día, quedaba registrado en `el_corredor_envios` como enviado, y la continuación del día 2 nunca se lo reintentaba. Ahora pasan por `enviarOFallar`. Tiene test propio (`email-el-corredor.test.ts`). Importa el 01/12/2026, que cae martes: ese día también sale la segunda tanda del newsletter semanal (40–72 mails los martes medidos) y juntos superan el tope.
+- **El Corredor v2: una sola fecha de corte para la Banda.** Las tablas y la portada leían `vr-bandas.json` (corte al 10/11 en el ensayo de noviembre) y los paneles, los precios relativos y el "vs 4 semanas" leían `vr_bandas_history` hasta su último día (13/11). En la misma página salía novillo $4.200 y 28,6% en un lado y $4.300 y 30,0% en el otro, y la vaca en 0,69 y 0,67 del novillo. Ahora la historia se recorta al corte del JSON (`datos_v2.hasta_corte`) y el "vs 4 semanas" cuenta 28 días desde ese corte. Tiene tests propios (`test_banda_corte.py`).
+- **El Corredor v2: el aviso de ruedas nombra las que no tienen lotes** (en el ensayo de noviembre, 05/11 y 12/11), y la Banda de cada panel lleva siempre un decimal ("30,0%", no "30%").
+
 ## [1.263.0] — 2026-11-20
 
 ### Agregado
