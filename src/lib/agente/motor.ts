@@ -459,14 +459,19 @@ async function correrAgenteSinCandado(db: SupabaseClient, opts: { dryRun?: boole
     const quien: 'productor' | 'contraparte' = esProductor ? 'productor' : of ? 'contraparte' : 'productor'
 
     // La baja se respeta siempre, con o sin modelo.
-    if (pareceBaja(texto)) {
-      await registrar({ tipo: 'baja' })
+    const darDeBaja = async () => {
       await db.from('agente_bajas').upsert({ email: m.de, motivo: `respondió BAJA (caso ${lead.id})` })
       await mandar({ leadId: lead.id, para: [m.de], correo: M.bajaConfirmada(), plantilla: 'baja', enRespuestaA: m.messageId })
       bajas.add(m.de)
       if (quien === 'contraparte' && of) await guardarOferta(of.id, { estado: 'rechazo', respondida_at: new Date().toISOString() })
-      else await guardarCaso(lead.id, { estado: 'retirado', motivo: 'el productor pidió la baja' })
+      // Solo el productor retira su caso: una firma sin oferta identificada (el asunto
+      // se puede editar) se da de baja ella, no le baja el caso al productor.
+      else if (esProductor) await guardarCaso(lead.id, { estado: 'retirado', motivo: 'el productor pidió la baja' })
       await bitacora(lead.id, `${m.de} pidió la baja`, 'no_interesa')
+    }
+    if (pareceBaja(texto)) {
+      await registrar({ tipo: 'baja' })
+      await darDeBaja()
       return
     }
 
@@ -482,6 +487,13 @@ async function correrAgenteSinCandado(db: SupabaseClient, opts: { dryRun?: boole
     if (leida) intencion = { tipo: leida.tipo, escalar: leida.escalar, motivo: leida.motivo }
     else intencion = pareceAceptacion(texto) && quien === 'contraparte' ? { tipo: 'acepta' } : { tipo: 'otro', motivo: 'sin modelo' }
     await registrar({ ...intencion, quien, datos: leida?.datos ?? null, cierre: leida?.cierre ?? null })
+
+    // El modelo ve la baja que la regla no ve: "Por favor NO isistir" (una firma, caso #50,
+    // 06-11-2026) quedó clasificada como baja y nadie la cargó en agente_bajas.
+    if (intencion.tipo === 'baja') {
+      await darDeBaja()
+      return
+    }
 
     // El productor respondiendo a un traslado: su respuesta va a la contraparte.
     if (quien === 'productor' && plantillaPrevia === 'traslado_productor' && of && !debeEscalar(intencion, texto) && intencion.tipo !== 'retira') {
