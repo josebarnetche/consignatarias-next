@@ -13,6 +13,7 @@ import { SeasonalityHeatmap } from '@/components/market/SeasonalityHeatmap'
 import { ElCorredorCTA } from '@/components/ElCorredorCTA'
 import { ChicagoReference } from '@/components/market/ChicagoReference'
 import marketPrices from '@/lib/data/market-prices.json'
+import { terneroDato, terneroCalificador, terneroFuenteFrase } from '@/lib/ternero'
 import { INMAG_DATE } from '@/lib/inmag'
 import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
 import PuenteHacienda from '@/components/PuenteHacienda'
@@ -21,7 +22,8 @@ export const revalidate = 86400 // daily rebuild via Vercel
 
 // Build-time interpolated current prices for SERP snippet
 const novillo = Math.round(marketPrices.categories.novillos.current)
-const ternero = Math.round(marketPrices.categories.terneros.current)
+const T = terneroDato()
+const ternero = T.precio
 const vaquillona = Math.round(marketPrices.categories.vaquillonas.current)
 const vaca = Math.round(marketPrices.categories.vacas.current)
 const inmagChange = marketPrices.inmag.change
@@ -41,7 +43,9 @@ const MERCADO_FAQ = [
   },
   {
     question: '¿Cuánto sale un ternero vivo en Argentina 2026?',
-    answer: `No hay un precio observado del ternero en el Mercado Agroganadero, porque ahí no se operan terneros. Nuestra estimación es $${fmt(ternero)} por kilo vivo (INMAG × 1,10, ${lastUpdate}): un ternero de 180 kg rondaría los $${fmt(ternero * 180)}. El precio real lo marcan los remates de invernada.`,
+    answer: T.observado
+      ? `El Mercado Agroganadero no opera terneros. El último dato, ${terneroFuenteFrase(T)}, es $${fmt(ternero)} por kilo vivo: un ternero de 180 kg rondaría los $${fmt(ternero * 180)}. El precio de cada lote lo marcan los remates de invernada.`
+      : `No hay un precio observado del ternero en el Mercado Agroganadero, porque ahí no se operan terneros. Nuestra estimación es $${fmt(ternero)} por kilo vivo (${T.metodo}, ${lastUpdate}): un ternero de 180 kg rondaría los $${fmt(ternero * 180)}. El precio real lo marcan los remates de invernada.`,
   },
   {
     question: '¿Qué es el índice INMAG?',
@@ -113,7 +117,7 @@ export default function MercadoPage() {
         <p className="mb-2">
           Los precios por categoría (novillos, novillitos, vaquillonas, vacas, toros) son{' '}
           <strong>precios observados</strong> del Mercado Agroganadero. El ternero no: el Mercado
-          Agroganadero no lo opera, y el valor que mostramos es una estimación (INMAG × 1,10).
+          Agroganadero no lo opera; el valor que mostramos es {terneroFuenteFrase(T)}.
           Para ver a cuánto se vendió de verdad cada categoría, por peso, mirá el{' '}
           <Link href="/vr" className="text-accent hover:underline">precio por categoría y peso</Link>.
           El maíz FOB (USD/tn) se obtiene del Ministerio de Agricultura (MAGYP) y las
@@ -144,7 +148,7 @@ export default function MercadoPage() {
           </li>
           <li>
             <Link href="/precios/terneros" className="text-accent hover:underline">Precio del ternero hoy</Link>{' '}
-            <span className="text-zinc-500">(estimado)</span>
+            <span className="text-zinc-500">{terneroCalificador(T)}</span>
           </li>
           <li>
             <Link href="/mercado/inmag" className="text-accent hover:underline">INMAG hoy</Link>
@@ -197,7 +201,7 @@ export default function MercadoPage() {
             Ver precios por categoría →
           </span>
           <p className="text-zinc-300 text-data mt-1">
-            Novillo, novillito, vaquillona, vaca, toro y ternero — kilo vivo desde el MAG, actualizado a diario.
+            Novillo, novillito, vaquillona, vaca y toro — kilo vivo desde el MAG, actualizado a diario — y ternero.
           </p>
         </Link>
       </div>

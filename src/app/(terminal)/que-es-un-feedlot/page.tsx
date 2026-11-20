@@ -7,6 +7,7 @@ import {
   SpeakableSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { terneroDato, terneroCalificador } from '@/lib/ternero'
 import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
@@ -21,6 +22,7 @@ const PAGE_URL = `${BASE_URL}/que-es-un-feedlot`
 /* ------------------------------------------------------------------ */
 const novillo = Math.round(marketPrices.categories.novillos.current)
 const ternero = Math.round(marketPrices.categories.terneros.current)
+const T = terneroDato()
 const novillito = Math.round(marketPrices.categories.novillitos.current)
 const cornUsd = marketPrices.corn.current // USD/tn (MAGYP FOB)
 const usdBlue = marketPrices.usdBlue.current
@@ -163,7 +165,7 @@ export default function QueEsUnFeedlotPage() {
           economía la manda el maíz: hoy cotiza US${fmt(cornUsd)}/tn (MAGYP FOB, {lastUpdate}) —unos $
           {fmt(cornArsKg)}/kg al dólar de referencia—, mientras el novillo de salida vale $
           {fmt(novillo)}/kg vivo y el ternero de reposición que entra al corral $
-          {fmt(ternero)}/kg (INMAG del {INMAG_DATE}). Son precios de referencia del mercado, no fijados
+          {fmt(ternero)}/kg {T.observado ? terneroCalificador(T) : <>(INMAG del {INMAG_DATE})</>}. Son precios de referencia del mercado, no fijados
           por esta página.
         </p>
 
@@ -171,7 +173,7 @@ export default function QueEsUnFeedlotPage() {
         <h2 className="text-zinc-200 text-lg font-medium mb-3">Cómo funciona el engorde a corral</h2>
         <p className="text-zinc-400 mb-4">
           El circuito es simple: se compran terneros o novillitos livianos —hoy el ternero de
-          reposición ronda ${fmt(ternero)}/kg (estimado) y el novillito ${fmt(novillito)}/kg (INMAG del{' '}
+          reposición ronda ${fmt(ternero)}/kg {terneroCalificador(T)} y el novillito ${fmt(novillito)}/kg (INMAG del{' '}
           {INMAG_DATE})—, se los agrupa por peso y categoría en corrales y se los alimenta con una
           ración balanceada varias veces por día. La dieta se arranca con más fibra y se va cargando
           de grano en el período de acostumbramiento para evitar trastornos digestivos (acidosis).

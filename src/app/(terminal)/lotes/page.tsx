@@ -73,7 +73,8 @@ function referenciaCategoria(categoria: string) {
  * que la tarjeta lo dice en vez de meterlo en el número.
  *
  * Terneros y terneras quedan sin referencia a propósito: el MAG no opera terneros
- * (en `market-prices.json` son INMAG × 1,10, un ratio, no una observación) y MEJ
+ * (`market-prices.json` trae a lo sumo un promedio mensual de MAGyP o un ratio sobre el
+ * INMAG —ver src/lib/ternero.ts—, no la observación por lote que da la banda) y MEJ
  * es macho entero joven, no un ternero. Antes de inventarles un precio, no se da.
  */
 const A_CATEGORIA_VR: Record<string, { vr: string; prima?: string }> = {

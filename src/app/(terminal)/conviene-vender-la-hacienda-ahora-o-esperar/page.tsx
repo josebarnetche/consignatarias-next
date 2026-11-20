@@ -8,6 +8,7 @@ import {
   TechArticleSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { terneroDato, terneroCalificador } from '@/lib/ternero'
 import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
@@ -27,6 +28,7 @@ const price = (key: string) => Math.round(cats[key].current)
 const novillo = price('novillos')
 const vaca = price('vacas')
 const ternero = price('terneros')
+const T = terneroDato()
 
 // Serie/índice INMAG — para hablar de tendencia (dirección + variación).
 const inmag = marketPrices.inmag
@@ -230,7 +232,7 @@ export default function ConvieneVenderLaHaciendaAhoraOEsperarPage() {
                 </td>
               </tr>
               <tr className="align-top">
-                <td className="px-3 py-2 text-zinc-200 font-medium">Ternero (estimado)</td>
+                <td className="px-3 py-2 text-zinc-200 font-medium">Ternero {terneroCalificador(T)}</td>
                 <td className="px-3 py-2 text-right text-zinc-300">${fmt(ternero)}</td>
                 <td className="px-3 py-2 text-zinc-400">
                   <Link

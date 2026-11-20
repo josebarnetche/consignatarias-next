@@ -3,14 +3,12 @@ import rematesData from '@/lib/data/remates.json'
 import { getCity, nombrePropio, provinciaNombre } from '@/lib/ui/tokens'
 import { fechaCorta, remateAnchor, remateHref } from '@/lib/remates-enlaces'
 
-/**
- * El precio del ternero que publicamos NO es observado: el scraper lo calcula
- * como INMAG × 1,10 (scripts/scrape-auctions.mjs) porque el Mercado Agroganadero
- * no opera terneros. Toda superficie que lo muestre tiene que decirlo, con el
- * mismo tono de /vr: preferimos rotularlo antes que hacerlo pasar por dato.
+/*
+ * El Mercado Agroganadero no opera terneros. Qué es el número que publicamos
+ * (promedio mensual observado de MAGyP o estimación sobre el INMAG) y cómo se rotula
+ * vive en un solo lugar: src/lib/ternero.ts (terneroNota, terneroCalificador…).
+ * Este archivo solo arma el bloque de remates de invernada, que vale en ambos casos.
  */
-export const TERNERO_ESTIMADO_NOTA =
-  'Estimado: INMAG × 1,10. El Mercado Agroganadero no opera terneros; no es un precio observado.'
 
 type Remate = {
   id: number

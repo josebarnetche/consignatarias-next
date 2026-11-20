@@ -3,7 +3,7 @@
 > **For AI agents and new contributors.** This file is the *single one-screen briefing*. For depth, read in order:
 > [`README.md`](./README.md) → [`CHANGELOG.md`](./CHANGELOG.md) → [`ROADMAP.md`](./ROADMAP.md).
 
-**Current version:** v1.263.3 (2026-11-20). See [CHANGELOG.md](CHANGELOG.md) for the full history. Brand system v2.0 (desde v1.88): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
+**Current version:** v1.264.0 (2026-11-20). See [CHANGELOG.md](CHANGELOG.md) for the full history. Brand system v2.0 (desde v1.88): **identidad v2.0 aplicada a todo el sitio** — isotipo/favicons/OGs (helper `src/lib/og/brand.tsx`), consolidación de acentos (cielo único acento de marca; emerald/amber solo semánticos — doctrina de `src/lib/ui/tokens.ts`), El Corredor manifest-driven, universo gráfico dentro de las páginas (`public/marca/`: glifos e íconos COLOR en chips hueso, martillazo animado, hero-pampa) y terminal/overview bajo el manual. El sistema de marca fuente vive en `marca/` (gitignorado; manual navegable en `marca/manual/index.html`). Versioning policy: [docs/VERSIONING.md](docs/VERSIONING.md) — the Enterprise API contract (still v1.0.0) is the MAJOR boundary, so the product stays on 1.x.
 
 > **Tema claro (desde v1.217.0, Fases 1-2 de [docs/PLAN-TEMA-WHITE.md](docs/PLAN-TEMA-WHITE.md)):**
 > el sitio abre en **claro** (blanco puro, acento `blue-700`), con un botón en el header
@@ -53,8 +53,9 @@
 > del productor valuado contra esa banda, `src/lib/rodeo-vr.ts`). Decisión y evidencia:
 > `docs/strategy/DECISION-PRODUCTO-2026-09-21.md` (interno, gitignorado como todo `docs/strategy/`).
 > ⚠️ `market-prices.json → categories` NO es un precio observado confiable para valuar: los días sin rueda
-> era un ratio fijo sobre el INMAG (el scraper ahora conserva el último observado) y `terneros` es SIEMPRE
-> INMAG × 1,10 (el MAG no opera terneros). Para valuar hacienda, usar `getReferenciaPorPeso()`.
+> era un ratio fijo sobre el INMAG (el scraper ahora conserva el último observado) y `terneros` NO viene del MAG
+> (no lo opera): es la observación MENSUAL de MAGyP/ESyC (`observado: true`, `observedDate` AAAA-MM, `scripts/ternero-magyp.mjs`)
+> y, si MAGyP falla, el respaldo INMAG × 1,10 rotulado. El rótulo de toda superficie sale de `src/lib/ternero.ts`, nunca a mano. Para valuar hacienda, usar `getReferenciaPorPeso()`.
 > ⚠️ `ganado_value_snapshots` ya no se lee ni se escribe: el historial del rodeo se RECALCULA.
 > Nota: "PRO Usuario retired" de abajo quedó parcialmente viejo — existe **PRO abierto** (ARS 9.900/mes,
 > `lib/plan-pro.ts`, v1.199.0) con fecha de corte en `lib/productos-datos.ts`.

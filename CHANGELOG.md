@@ -7,6 +7,24 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.264.0] — 2026-11-20
+
+- **feat(datos): ternero observado de MAGyP (mensual) en lugar de INMAG × 1,10; helper único de rótulo**
+
+- **feat(ternero): ninguna superficie afirma a mano qué es el precio del ternero**
+  Las ~20 páginas que decían «estimado / INMAG × 1,10 / no es un precio observado»
+  ahora toman el rótulo de src/lib/ternero.ts y son correctas en los dos casos:
+  observado mensual de MAGyP (fuente y mes, «último dato», sin «hoy» ni atribución
+  al MAG/INMAG) o estimación sobre el INMAG. Se elimina TERNERO_ESTIMADO_NOTA;
+  precios.json arma estimado/observado/fuente/mes/metodo desde terneroDato();
+  Dataset del ternero observado cita FUENTE_MAGYP. Helpers nuevos: terneroCuando,
+  terneroValorFrase. De paso, la FAQ de /que-es-el-rosgan era un string con comillas
+  simples y mostraba «$${fmt(ternero)}» literal: pasa a template.
+
+- **fix(ternero): con el dato mensual de MAGyP, el panel compara contra el mes previo, no la semana**
+
+- **docs: CLAUDE.md — el ternero es observación mensual de MAGyP, rótulo desde src/lib/ternero.ts**
+
 ## [1.263.3] — 2026-11-20
 
 ### Corregido

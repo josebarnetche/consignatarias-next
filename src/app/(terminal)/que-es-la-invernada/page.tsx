@@ -7,6 +7,7 @@ import {
   SpeakableSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { terneroDato, terneroCalificador } from '@/lib/ternero'
 import { INMAG_DATE } from '@/lib/inmag'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
@@ -19,6 +20,7 @@ const PAGE_URL = `${BASE_URL}/que-es-la-invernada`
 /*  reales y fechados (compra ternero, vende novillo terminado).       */
 /* ------------------------------------------------------------------ */
 const terneroKg = Math.round(marketPrices.categories.terneros.current)
+const T = terneroDato()
 const novilloKg = Math.round(marketPrices.categories.novillos.current)
 const novillitoKg = Math.round(marketPrices.categories.novillitos.current)
 const lastUpdate = marketPrices.lastUpdate
@@ -155,7 +157,7 @@ export default function QueEsLaInvernadaPage() {
           Es la fase que agrega kilos: el productor que la realiza —el <span className="text-zinc-300">invernador</span>—
           compra o recibe el ternero flaco al destete y lo vende gordo para faena. Su negocio está en
           el valor que suma entre esos dos momentos. A precio de mercado actual, el ternero se paga
-          alrededor de ${fmt(terneroKg)}/kg vivo (estimado) y el novillo terminado ${fmt(novilloKg)}/kg
+          alrededor de ${fmt(terneroKg)}/kg vivo {terneroCalificador(T)} y el novillo terminado ${fmt(novilloKg)}/kg
           (Mercado Agroganadero, INMAG del {INMAG_DATE}); estos son valores de referencia del mercado,
           no precios fijados por esta página.
         </p>
@@ -231,7 +233,7 @@ export default function QueEsLaInvernadaPage() {
             <tbody>
               <tr className="border-b border-terminal-border/60">
                 <td className="px-3 py-2 text-zinc-300">
-                  Compra: ternero de {PESO_ENTRADA} kg a ${fmt(terneroKg)}/kg (estimado)
+                  Compra: ternero de {PESO_ENTRADA} kg a ${fmt(terneroKg)}/kg {terneroCalificador(T)}
                 </td>
                 <td className="px-3 py-2 text-right text-zinc-200">${fmt(compraTernero)}</td>
               </tr>
@@ -251,7 +253,7 @@ export default function QueEsLaInvernadaPage() {
           </table>
         </div>
         <p className="text-xxs text-zinc-500 mb-4">
-          Ternero ${fmt(terneroKg)}/kg (estimado) y novillo ${fmt(novilloKg)}/kg (Mercado Agroganadero, INMAG del{' '}
+          Ternero ${fmt(terneroKg)}/kg {terneroCalificador(T)} y novillo ${fmt(novilloKg)}/kg (Mercado Agroganadero, INMAG del{' '}
           {INMAG_DATE}). Valores de referencia del mercado.
         </p>
         <p className="text-zinc-400 mb-8">

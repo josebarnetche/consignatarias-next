@@ -21,6 +21,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { scrapeNEA } from "./scrapers/nea.mjs";
 import { scrapeLotesDcac } from "./scrapers/dcac-lotes.mjs";
 import { parseOFarrellHtml } from "./ofarrell-parse.mjs";
+import { scrapeTerneroMagyp, entradaTernero } from "./ternero-magyp.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = resolve(__dirname, "../src/lib/data");
@@ -1730,7 +1731,7 @@ async function main() {
   console.log(`\n=== Ganado Terminal Scraper — ${todayISO()} ===\n`);
 
   // Scrape all sources in parallel
-  const [cacg, colombo, ofarrell, lehmann, madelan, umchv, hkagro, entresurcos, nea, dollar, cattlePrices, cornPrice, soyPrice, categoryPrices, provinceEntry, consignatarioEntry, detailedCategories, arrendamientoOficial] = await Promise.all([
+  const [cacg, colombo, ofarrell, lehmann, madelan, umchv, hkagro, entresurcos, nea, dollar, cattlePrices, cornPrice, soyPrice, categoryPrices, provinceEntry, consignatarioEntry, detailedCategories, arrendamientoOficial, terneroMagyp] = await Promise.all([
     scrapeCACG(),
     scrapeColombo(),
     scrapeOFarrell(),
@@ -1749,6 +1750,7 @@ async function main() {
     scrapeConsignatarioEntry(), // haciinfo000006: cattle entry by consignatario
     scrapeDetailedCategoryPrices(), // haciinfo000502: detailed subcategory prices
     scrapeArrendamientoOficial(), // haciinfo000013: índice oficial de arrendamiento
+    scrapeTerneroMagyp(), // MAGyP/ESyC: ternero OBSERVADO, mensual (el MAG no opera terneros)
   ]);
 
   // Combine all scraped auctions
@@ -1977,6 +1979,13 @@ async function main() {
     }
     
     for (const [key, fallbackRatio] of Object.entries(fallbackRatios)) {
+      // Ternero: el MAG no lo opera. Va la observación mensual de MAGyP (ver
+      // scripts/ternero-magyp.mjs); el ratio queda solo de respaldo, rotulado.
+      if (key === "terneros") {
+        market.categories.terneros = entradaTernero(market.categories.terneros, terneroMagyp, inmagValue, fallbackRatio);
+        console.log(`  terneros: ${market.categories.terneros.current} (${market.categories.terneros.observado ? `MAGyP ${market.categories.terneros.observedDate}` : market.categories.terneros.metodo})`);
+        continue;
+      }
       let newVal, source;
       
       if (useReal && realCategories[key]) {
@@ -2014,6 +2023,7 @@ async function main() {
         ? parseFloat((((newVal - prevVal) / prevVal) * 100).toFixed(1))
         : 0;
       market.categories[key].source = source;
+      market.categories[key].observado = source === "mercadoagroganadero.com.ar (observed)";
     }
 
     // Calculate total volume traded in the period

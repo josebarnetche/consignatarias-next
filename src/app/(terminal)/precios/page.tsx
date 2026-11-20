@@ -6,6 +6,7 @@ import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import HerramientasCTA from '@/components/HerramientasCTA'
 import PriceThresholdAlertSignup from '@/components/PriceThresholdAlertSignup'
 import marketPrices from '@/lib/data/market-prices.json'
+import { terneroDato, terneroCalificador, terneroFuenteFrase, mesLargo } from '@/lib/ternero'
 
 // Rebuild diario: el JSON se refresca cada tarde (14:00 ART) vía scraper → git commit → Vercel.
 export const revalidate = 86400
@@ -30,9 +31,10 @@ const inmagChangeStr = `${inmagChange >= 0 ? '+' : ''}${inmagChange}%`
 const novilloLive = Math.round(marketPrices.categories.novillos.current)
 const vacaLive = Math.round(marketPrices.categories.vacas.current)
 const vaquillonaLive = Math.round(marketPrices.categories.vaquillonas.current)
-// El ternero NO va en el número citable: es INMAG × 1,10 (el MAG no opera terneros),
-// no un precio observado. En la grilla aparece rotulado como estimación.
-const terneroLive = Math.round(marketPrices.categories.terneros.current)
+// El ternero NO va en el número citable (el MAG no opera terneros). Qué es —observado
+// mensual de MAGyP o estimación— lo dice src/lib/ternero.ts; la grilla lo rotula con T.
+const T = terneroDato()
+const terneroLive = T.precio
 
 // 1ª oración citable — head-query "precios de hacienda hoy" respondida con el número exacto y su fecha.
 const ANSWER_LEAD = `Hoy en el Mercado Agroganadero: novillo $${fmt(novilloLive)}/kg, vaquillona $${fmt(vaquillonaLive)}/kg, vaca $${fmt(vacaLive)}/kg vivo. INMAG $${fmt(inmag.current)} (${inmagChangeStr}). Actualizado ${lastUpdate}.`
@@ -62,8 +64,10 @@ const FAQ_PRECIOS = [
     answer: `El kilo vivo de vaca cotiza a $${fmt(vacaLive)} en el Mercado Agroganadero. Es un promedio de plaza: las subcategorías (especial, conserva, manufactura) tienen dispersión de precio según tipificación. Actualizado el ${lastUpdate}.`,
   },
   {
-    question: '¿Cuánto vale el ternero hoy?',
-    answer: `No hay un precio observado del ternero en el Mercado Agroganadero, porque ahí no se operan terneros. Publicamos una estimación: $${fmt(terneroLive)} por kilo vivo (INMAG × 1,10, ${lastUpdate}). El precio real se forma en los remates de invernada.`,
+    question: T.observado ? '¿Cuánto vale el ternero?' : '¿Cuánto vale el ternero hoy?',
+    answer: T.observado
+      ? `El Mercado Agroganadero no opera terneros. El último dato, ${terneroFuenteFrase(T)}, es $${fmt(terneroLive)} por kilo vivo. El precio de cada lote se forma en los remates de invernada.`
+      : `No hay un precio observado del ternero en el Mercado Agroganadero, porque ahí no se operan terneros. Publicamos una estimación: $${fmt(terneroLive)} por kilo vivo (${T.metodo}, ${lastUpdate}). El precio real se forma en los remates de invernada.`,
   },
   {
     question: '¿Dónde se actualizan los precios?',
@@ -110,7 +114,7 @@ export default function PreciosHubPage() {
       />
       <DatasetSchema
         name={`Precios de hacienda por categoría — Mercado Agroganadero (${lastUpdate})`}
-        description={`Kilo vivo en ARS por categoría (novillo, novillito, vaquillona, vaca, toro) y referencia INMAG del novillo de exportación, publicados por el Mercado Agroganadero (MAG-Cañuelas); el ternero es una estimación propia (INMAG × 1,10). Unidad: $/kg vivo. Fecha: ${lastUpdate}.`}
+        description={`Kilo vivo en ARS por categoría (novillo, novillito, vaquillona, vaca, toro) y referencia INMAG del novillo de exportación, publicados por el Mercado Agroganadero (MAG-Cañuelas); el ternero, ${T.observado ? `promedio mensual de MAGyP (Entre Surcos y Corrales), ${mesLargo(T.mes)}` : `estimación propia (${T.metodo})`}. Unidad: $/kg vivo. Fecha: ${lastUpdate}.`}
         url="https://www.consignatarias.com.ar/precios"
         keywords={['precios hacienda', 'novillo', 'vaca', 'ternero', 'INMAG', 'kilo vivo', 'Mercado Agroganadero', 'MAG']}
         dateModified={INMAG_DATE}
@@ -179,7 +183,7 @@ export default function PreciosHubPage() {
             const data = cats[c.slug]
             if (!data) return null
             const positive = data.change >= 0
-            const estimado = c.slug === 'terneros'
+            const esTernero = c.slug === 'terneros'
             return (
               <Link
                 key={c.slug}
@@ -187,7 +191,7 @@ export default function PreciosHubPage() {
                 className="bg-terminal-panel p-4 hover:bg-terminal-panel/70 transition-colors group"
               >
                 <div className="flex items-baseline justify-between mb-1">
-                  <span className="text-xxs uppercase tracking-wider text-zinc-500">{c.title}{estimado ? ' (estimado)' : ''}</span>
+                  <span className="text-xxs uppercase tracking-wider text-zinc-500">{c.title}{esTernero && !T.observado ? ` ${terneroCalificador(T)}` : ''}</span>
                   <span className={`text-xxs tabular-nums font-terminal ${positive ? 'val-positive' : 'val-negative'}`}>
                     {positive ? '+' : ''}{data.change.toFixed(1)}%
                   </span>
@@ -196,7 +200,9 @@ export default function PreciosHubPage() {
                   ${fmt(data.current)}
                 </div>
                 <div className="text-xxs text-zinc-500 mt-1">
-                  {estimado ? 'INMAG × 1,10 · el Mercado Agroganadero no opera terneros' : 'por kg vivo'}
+                  {esTernero
+                    ? `${T.observado ? `MAGyP, ${mesLargo(T.mes)}` : T.metodo} · el Mercado Agroganadero no opera terneros`
+                    : 'por kg vivo'}
                 </div>
               </Link>
             )
