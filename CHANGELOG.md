@@ -7,6 +7,15 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.261.3] — 2026-11-20
+
+### Corregido
+- **Lotes del MAG: la corrida atrasada ya no encola el día siguiente.** Sin `date`, el encolado usa `fechaDeRueda()` (`src/lib/mag-lots-rueda.ts`): antes de las 12:00 de BA la rueda es la de AYER. GitHub atrasaba la corrida de 19:42 hasta 5h09; pasada la medianoche encolaba un día sin rueda y los 128 jobs quedaban `done` con 0 filas. Noviembre: 05, 11, 12, 17 y 18/11 sin lotes (22.394 de 53.975 cabezas del INMAG, 41,5%).
+- **Jueves agendado** (`'42 22 * * 2,3,4,5'`): el MAG tiene rueda de jueves (13 desde jun-2025). El lunes (9) no se agenda: lo cubre el autocurado de la corrida del martes.
+
+### Agregado
+- **Autocurado acotado del encolado por defecto.** Revisa los últimos 7 días: si un día tiene INMAG con cabezas y sus lotes no llegan al 10% de esas cabezas, encola lo que falte y vuelve a `pending` SOLO los jobs de ese día que quedaron `done` con 0/null filas. La respuesta trae `autocurado.reencoladas`. `ventana=` (1-31; input `ventana` del workflow) alarga la revisión para ponerse al día. `date=` y `backfill_month` no cambian.
+
 ## [1.261.1] — 2026-11-19
 
 ### Agregado

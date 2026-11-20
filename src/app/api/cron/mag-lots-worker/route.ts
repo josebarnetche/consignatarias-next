@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { requireServiceClient } from '@/lib/supabase'
 import { authorizeCron } from '@/lib/cron-auth'
+import {
+  VENTANA_AUTOCURADO_DIAS,
+  diasConLotesFaltantes,
+  fechaDeRueda,
+  restarDias,
+  type DiaInmag,
+} from '@/lib/mag-lots-rueda'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -43,6 +50,10 @@ function ddmmyyyy(iso: string): string {
  * seguidas, con dos días de 2 filas de residuo. Tres semanas con el workflow en verde.
  * Esa tabla alimenta `/api/lots`, uno de los dos endpoints Enterprise pagos: se estuvo
  * ofreciendo acceso a un feed vacío.
+ *
+ * Desde v1.261.3 el encolado por defecto NO usa esto sino `fechaDeRueda()` (lib/mag-lots-rueda):
+ * con atrasos de más de 4h18 la corrida arrancaba pasada la medianoche ART y volvía a
+ * encolar el día siguiente. Queda solo para `discover`, que no depende de la fecha.
  */
 function todayIso(): string {
   return new Date().toLocaleDateString('en-CA', {
@@ -212,30 +223,122 @@ async function actionDiscover(startId: number, count: number) {
 /* ============================================================
    Enqueue: create pending jobs for date × consig × tipo
    ============================================================ */
-async function actionEnqueue(date: string) {
-  const supabase = requireServiceClient()
+type Supa = ReturnType<typeof requireServiceClient>
+
+async function listarConsigsActivas(supabase: Supa): Promise<number[]> {
   const { data: consigs, error } = await supabase
     .from('mag_consignatarias')
     .select('mag_id')
     .eq('active', true)
   if (error) throw new Error(`list_consigs: ${error.message}`)
-  if (!consigs || consigs.length === 0) {
-    return { date, enqueued: 0, note: 'No active consignatarias. Run ?action=discover first.' }
-  }
+  return (consigs ?? []).map((c) => c.mag_id as number)
+}
 
+/** Idempotente: ignoreDuplicates deja intactos los jobs que ya existen (done o no). */
+async function encolarFecha(supabase: Supa, date: string, consigIds: number[]): Promise<number> {
   const jobs: Array<{ date: string; mag_consignataria_id: number; tipo: string; status: string }> = []
-  for (const c of consigs) {
+  for (const id of consigIds) {
     for (const tipo of ['FAENA', 'INVERNADA']) {
-      jobs.push({ date, mag_consignataria_id: c.mag_id as number, tipo, status: 'pending' })
+      jobs.push({ date, mag_consignataria_id: id, tipo, status: 'pending' })
     }
   }
-
   const { error: insertErr } = await supabase
     .from('mag_scrape_queue')
     .upsert(jobs, { onConflict: 'date,mag_consignataria_id,tipo', ignoreDuplicates: true })
-
   if (insertErr) throw new Error(`enqueue: ${insertErr.message}`)
-  return { date, enqueued: jobs.length, active_consignatarias: consigs.length }
+  return jobs.length
+}
+
+async function actionEnqueue(date: string) {
+  const supabase = requireServiceClient()
+  const consigIds = await listarConsigsActivas(supabase)
+  if (consigIds.length === 0) {
+    return { date, enqueued: 0, note: 'No active consignatarias. Run ?action=discover first.' }
+  }
+  const enqueued = await encolarFecha(supabase, date, consigIds)
+  return { date, enqueued, active_consignatarias: consigIds.length }
+}
+
+/**
+ * Encolado POR DEFECTO (sin `date`): la rueda de `fechaDeRueda()` + autocurado.
+ *
+ * Autocurado: el upsert con ignoreDuplicates hace que una fecha que quedó `done` vacía
+ * (cola armada antes de que el MAG publicara, o para el día equivocado) no se reprocese
+ * nunca. Acá, para cada día de la ventana con INMAG con cabezas y lotes faltantes
+ * (`diasConLotesFaltantes`), se encola lo que falte y se vuelven a `pending` SOLO los
+ * jobs de ese día que quedaron `done` con 0/null filas. Un job que trajo filas no se
+ * toca, y los lotes se upsertean por su clave natural, así que reprocesar no duplica.
+ * Costo acotado: un día que el MAG publique de verdad con pocos lotes se reintenta
+ * como mucho durante la ventana.
+ *
+ * `-f date=` y `backfill_month` NO pasan por acá: siguen encolando su fecha tal cual.
+ */
+async function actionEnqueueDefault(now: Date, ventanaDias: number) {
+  const supabase = requireServiceClient()
+  const rueda = fechaDeRueda(now)
+  const desde = restarDias(rueda, ventanaDias - 1)
+  const consigIds = await listarConsigsActivas(supabase)
+  if (consigIds.length === 0) {
+    return { date: rueda, enqueued: 0, note: 'No active consignatarias. Run ?action=discover first.' }
+  }
+  const enqueued = await encolarFecha(supabase, rueda, consigIds)
+
+  const { data: inmag, error: inmagErr } = await supabase
+    .from('mag_inmag_history')
+    .select('date, head_count')
+    .gte('date', desde)
+    .lte('date', rueda)
+    .gt('head_count', 0)
+  if (inmagErr) throw new Error(`autocurado_inmag: ${inmagErr.message}`)
+
+  const lotesPorFecha: Record<string, number> = {}
+  for (const d of (inmag ?? []) as DiaInmag[]) {
+    const { data: lots, error: lotsErr } = await supabase
+      .from('mag_consignataria_sales_lots')
+      .select('head_count')
+      .eq('date', d.date)
+      .range(0, 999)
+    if (lotsErr) throw new Error(`autocurado_lots ${d.date}: ${lotsErr.message}`)
+    // 1000 filas = el tope de PostgREST: el día está lejos de faltante, no hace falta la suma exacta.
+    lotesPorFecha[d.date] =
+      (lots ?? []).length >= 1000
+        ? Number.POSITIVE_INFINITY
+        : (lots ?? []).reduce((acc, l) => acc + ((l.head_count as number | null) ?? 0), 0)
+  }
+
+  const reencoladas: Array<{
+    date: string
+    inmag_cabezas: number
+    lotes_cabezas: number
+    jobs_reseteados: number
+  }> = []
+  for (const f of diasConLotesFaltantes((inmag ?? []) as DiaInmag[], lotesPorFecha)) {
+    if (f.date !== rueda) await encolarFecha(supabase, f.date, consigIds)
+    const { data: reset, error: resetErr } = await supabase
+      .from('mag_scrape_queue')
+      .update({ status: 'pending', attempts: 0, completed_at: null, rows_inserted: null, last_error: null })
+      .eq('date', f.date)
+      .eq('status', 'done')
+      .or('rows_inserted.is.null,rows_inserted.eq.0')
+      .select('id')
+    if (resetErr) throw new Error(`autocurado_reset ${f.date}: ${resetErr.message}`)
+    const jobsReseteados = (reset ?? []).length
+    // La rueda del día casi siempre "falta" (sus jobs recién se encolan): solo se informa
+    // si de verdad hubo que resetear algo, para que la lista sea la de días curados.
+    if (f.date !== rueda || jobsReseteados > 0) reencoladas.push({ ...f, jobs_reseteados: jobsReseteados })
+  }
+
+  return {
+    date: rueda,
+    enqueued,
+    active_consignatarias: consigIds.length,
+    autocurado: {
+      desde,
+      hasta: rueda,
+      dias_con_inmag: (inmag ?? []).length,
+      reencoladas,
+    },
+  }
 }
 
 /* ============================================================
@@ -403,7 +506,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true, action, ...result })
     }
     if (action === 'enqueue') {
-      const date = searchParams.get('date') ?? todayIso()
+      const date = searchParams.get('date')
+      if (date === null || date === '') {
+        // Sin fecha: la rueda la decide fechaDeRueda() (no "hoy al arrancar") + autocurado.
+        // `ventana` (1-31, default 7) existe para ponerse al día a mano sin UPDATEs.
+        const ventana = Math.max(
+          1,
+          Math.min(31, parseInt(searchParams.get('ventana') ?? '', 10) || VENTANA_AUTOCURADO_DIAS),
+        )
+        const result = await actionEnqueueDefault(new Date(), ventana)
+        return NextResponse.json({ ok: true, action, ...result })
+      }
       if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
         return NextResponse.json({ error: 'invalid_date' }, { status: 400 })
       }

@@ -1,16 +1,25 @@
 name: MAG Lots Pipeline (haciinfo000007)
 
-# Lote-level scraper: enqueues jobs for today, then loops through them at
+# Lote-level scraper: enqueues jobs for the rueda (fechaDeRueda: antes de las 12 BA = ayer)
+# + autocurado de los últimos 7 días con INMAG y sin lotes, then loops through them at
 # ~1 req/min (MAG agreement). 44 consigs × 2 tipos = 88 jobs per remate day.
 # ~90 minutes total. Idempotent — re-running is safe (dedup keys handle it).
 on:
   schedule:
-    - cron: '42 22 * * 2,3,5'  # Mar/Mié/Vie 19:42 ART, 5min after mag-detailed-prices
-                               # Non-round minute avoids GH Actions schedule throttling.
+    - cron: '42 22 * * 2,3,4,5'  # Mar/Mié/Jue/Vie 19:42 ART, 5min after mag-detailed-prices
+                                 # Non-round minute avoids GH Actions schedule throttling.
+                                 # Jueves desde v1.261.3: el MAG tiene rueda de jueves (13 desde
+                                 # jun-2025, ~1.545 cab.; 05 y 12/11 quedaron sin lotes). El lunes
+                                 # (9 en el mismo período) no se agenda: lo cubre el autocurado
+                                 # de 7 días de la corrida del martes.
   workflow_dispatch:
     inputs:
       date:
         description: 'Override date YYYY-MM-DD (default: today)'
+        required: false
+        default: ''
+      ventana:
+        description: 'Días hacia atrás del autocurado (1-31, default 7; solo sin date)'
         required: false
         default: ''
       backfill_month:
@@ -68,6 +77,8 @@ jobs:
             DATE_PARAM=""
             if [ -n "${{ github.event.inputs.date }}" ]; then
               DATE_PARAM="&date=${{ github.event.inputs.date }}"
+            elif [ -n "${{ github.event.inputs.ventana }}" ]; then
+              DATE_PARAM="&ventana=${{ github.event.inputs.ventana }}"
             fi
             response=$(curl -sL -w "\n%{http_code}" --max-time 60 -X POST \
               -H "x-cron-secret: ${{ secrets.CRON_SECRET }}" \
