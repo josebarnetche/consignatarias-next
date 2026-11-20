@@ -1,0 +1,970 @@
+{
+ "_doc": "Enriquecimiento de remates (pin, logo, hora) — d4, 19-11-2026. Fuentes: OSM/Georef (pines), sitio de cada firma (logos), página de la firma/CACG (horas). Se aplica al leer; remates.json lo reescribe el scraper.",
+ "lugares": {
+  "Capital Federal, Capital Federal": {
+   "lat": -34.608412,
+   "lng": -58.372144,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Rauch, Buenos Aires": {
+   "lat": -36.774415,
+   "lng": -59.088289,
+   "precision": "localidad",
+   "predio": null
+  },
+  "General Acha, La Pampa": {
+   "lat": -37.36476,
+   "lng": -64.567812,
+   "precision": "predio",
+   "predio": "Feria Ganadera"
+  },
+  "Azul, Buenos Aires": {
+   "lat": -36.810706,
+   "lng": -59.865756,
+   "precision": "predio",
+   "predio": "Sociedad Rural de Azul"
+  },
+  "Saladillo, Buenos Aires": {
+   "lat": -35.638647,
+   "lng": -59.779376,
+   "precision": "localidad",
+   "predio": null
+  },
+  "MARCOS JUAREZ, CORDOBA": {
+   "lat": -32.690636,
+   "lng": -62.101127,
+   "precision": "localidad",
+   "predio": null
+  },
+  "SAMPACHO, CORDOBA": {
+   "lat": -33.384023,
+   "lng": -64.722878,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Tandil, Buenos Aires": {
+   "lat": -37.311535,
+   "lng": -59.093555,
+   "precision": "predio",
+   "predio": "Sociedad Rural de Tandil"
+  },
+  "TOTORAS, SANTA FE": {
+   "lat": -32.584272,
+   "lng": -61.1667,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Brandsen, Buenos Aires": {
+   "lat": -35.20091,
+   "lng": -58.213257,
+   "precision": "predio",
+   "predio": "Remates Ferias de Ganado Vacuno."
+  },
+  "Villaguay, Entre Rios": {
+   "lat": -31.862808,
+   "lng": -59.013084,
+   "precision": "predio",
+   "predio": "Sociedad Rural Villaguay"
+  },
+  "Cañuelas, Buenos Aires": {
+   "lat": -35.05337,
+   "lng": -58.700906,
+   "precision": "predio",
+   "predio": "Mercado Agroganadero Cañuelas"
+  },
+  "SAN CRISTOBAL, SANTA FE": {
+   "lat": -30.311689,
+   "lng": -61.236206,
+   "precision": "localidad",
+   "predio": null
+  },
+  "CAÑUELAS, BUENOS AIRES": {
+   "lat": -35.05337,
+   "lng": -58.700906,
+   "precision": "predio",
+   "predio": "Mercado Agroganadero Cañuelas"
+  },
+  "Bahía Blanca, Buenos Aires": {
+   "lat": -38.698821,
+   "lng": -62.334845,
+   "precision": "predio",
+   "predio": "Sociedad Rural"
+  },
+  "Daireaux, Buenos Aires": {
+   "lat": -36.599633,
+   "lng": -61.747542,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Corrientes, Corrientes": {
+   "lat": -27.463345,
+   "lng": -58.839473,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Navarro, Buenos Aires": {
+   "lat": -35.005907,
+   "lng": -59.278284,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Tapalqué, Buenos Aires": {
+   "lat": -36.356236,
+   "lng": -60.025112,
+   "precision": "localidad",
+   "predio": null
+  },
+  "GENERAL ACHA, LA PAMPA": {
+   "lat": -37.36476,
+   "lng": -64.567812,
+   "precision": "predio",
+   "predio": "Feria Ganadera"
+  },
+  "HERNANDO, CORDOBA": {
+   "lat": -32.427881,
+   "lng": -63.733471,
+   "precision": "localidad",
+   "predio": null
+  },
+  "AYACUCHO, BUENOS AIRES": {
+   "lat": -37.167056,
+   "lng": -58.448807,
+   "precision": "predio",
+   "predio": "Sector de Remates de Hacienda"
+  },
+  "TOSTADO, SANTA FE": {
+   "lat": -29.241608,
+   "lng": -61.794459,
+   "precision": "predio",
+   "predio": "Sociedad Rural de Tostado"
+  },
+  "Tres Arroyos, Buenos Aires": {
+   "lat": -38.359314,
+   "lng": -60.281531,
+   "precision": "predio",
+   "predio": "Sociedad Rural"
+  },
+  "General La Madrid, Buenos Aires": {
+   "lat": -37.249667,
+   "lng": -61.262199,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Las Flores, Buenos Aires": {
+   "lat": -36.014269,
+   "lng": -59.099864,
+   "precision": "localidad",
+   "predio": null
+  },
+  "La Rural, Palermo": {
+   "lat": -34.578354,
+   "lng": -58.420662,
+   "precision": "predio",
+   "predio": "Predio Ferial de Buenos Aires"
+  },
+  "Olavarría, Buenos Aires": {
+   "lat": -36.90106,
+   "lng": -60.35679,
+   "precision": "predio",
+   "predio": "Sociedad Rural de Olavarría"
+  },
+  "Rio Cuarto, Cordoba": {
+   "lat": -33.123837,
+   "lng": -64.349003,
+   "precision": "localidad",
+   "predio": null
+  },
+  "PROVIDENCIA, SANTA FE": {
+   "lat": -30.98274,
+   "lng": -61.021127,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Huanguelen, Buenos Aires": {
+   "lat": -37.058875,
+   "lng": -61.932541,
+   "precision": "localidad",
+   "predio": null
+  },
+  "General Alvear, Buenos Aires": {
+   "lat": -36.021742,
+   "lng": -60.014505,
+   "precision": "localidad",
+   "predio": null
+  },
+  "SAN BASILIO, CORDOBA": {
+   "lat": -33.498548,
+   "lng": -64.314732,
+   "precision": "localidad",
+   "predio": null
+  },
+  "LAS FLORES, BUENOS AIRES": {
+   "lat": -36.014269,
+   "lng": -59.099864,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Lincoln, Buenos Aires": {
+   "lat": -34.859876,
+   "lng": -61.509557,
+   "precision": "predio",
+   "predio": "Sociedad Rural de Lincoln"
+  },
+  "VILLA MERCEDES, SAN LUIS": {
+   "lat": -33.69449,
+   "lng": -65.426174,
+   "precision": "predio",
+   "predio": "Sociedad Rural Rio V"
+  },
+  "CORONEL BRANDSEN, BUENOS AIRES": {
+   "lat": -35.20091,
+   "lng": -58.213257,
+   "precision": "predio",
+   "predio": "Remates Ferias de Ganado Vacuno."
+  },
+  "Chascomús, Buenos Aires": {
+   "lat": -35.549463,
+   "lng": -58.015242,
+   "precision": "predio",
+   "predio": "Sociedad Rural de Chascomús"
+  },
+  "Coronel Moldes, Córdoba": {
+   "lat": -33.622729,
+   "lng": -64.597048,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Balcarce, Buenos Aires": {
+   "lat": -37.846383,
+   "lng": -58.255491,
+   "precision": "localidad",
+   "predio": null
+  },
+  "SAN ROQUE, SAN LUIS": {
+   "lat": -28.569303,
+   "lng": -58.705135,
+   "precision": "localidad",
+   "predio": null
+  },
+  "SANTA REGINA, BUENOS AIRES": {
+   "lat": -34.549561,
+   "lng": -63.17334,
+   "precision": "localidad",
+   "predio": null
+  },
+  "LONQUIMAY, LA PAMPA": {
+   "lat": -36.466408,
+   "lng": -63.623615,
+   "precision": "localidad",
+   "predio": null
+  },
+  "CARLOS CASARES, BUENOS AIRES": {
+   "lat": -35.622474,
+   "lng": -61.365495,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Tres Isletas, Chaco": {
+   "lat": -26.340325,
+   "lng": -60.431262,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Benito Juarez, Buenos Aires": {
+   "lat": -37.674285,
+   "lng": -59.804805,
+   "precision": "localidad",
+   "predio": null
+  },
+  "SUIPACHA, BUENOS AIRES": {
+   "lat": -34.768815,
+   "lng": -59.686829,
+   "precision": "localidad",
+   "predio": null
+  },
+  "VICTORICA, LA PAMPA": {
+   "lat": -36.216537,
+   "lng": -65.437086,
+   "precision": "localidad",
+   "predio": null
+  },
+  "CORRIENTES, CORRIENTES": {
+   "lat": -27.463345,
+   "lng": -58.839473,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Sociedad Rural de Corrientes, CORRIENTES": {
+   "lat": -27.463345,
+   "lng": -58.839473,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Realicó, La Pampa": {
+   "lat": -35.037392,
+   "lng": -64.266273,
+   "precision": "predio",
+   "predio": "Predio Ferial Rural de Realicó"
+  },
+  "HUINCA RENANCO, CORDOBA": {
+   "lat": -34.841318,
+   "lng": -64.374674,
+   "precision": "localidad",
+   "predio": null
+  },
+  "VILLA IRIS, BUENOS AIRES": {
+   "lat": -38.171753,
+   "lng": -63.235343,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Belgrano, Ciudad Autonoma De Buenos Aires": {
+   "lat": -34.562073,
+   "lng": -58.456555,
+   "precision": "localidad",
+   "predio": null
+  },
+  "COLONIA ROSA, SANTA FE": {
+   "lat": -30.300383,
+   "lng": -61.983818,
+   "precision": "localidad",
+   "predio": null
+  },
+  "TANDIL, BUENOS AIRES": {
+   "lat": -37.311535,
+   "lng": -59.093555,
+   "precision": "predio",
+   "predio": "Sociedad Rural de Tandil"
+  },
+  "LA PAZ, ENTRE RIOS": {
+   "lat": -30.734126,
+   "lng": -59.575463,
+   "precision": "predio",
+   "predio": "Sociedad Rural de La Paz"
+  },
+  "LINCOLN, BUENOS AIRES": {
+   "lat": -34.859876,
+   "lng": -61.509557,
+   "precision": "predio",
+   "predio": "Sociedad Rural de Lincoln"
+  },
+  "General Ramirez, ENTRE RIOS": {
+   "lat": -32.177268,
+   "lng": -60.201647,
+   "precision": "localidad",
+   "predio": null
+  },
+  "SUARDI, SANTA FE": {
+   "lat": -30.534424,
+   "lng": -61.961005,
+   "precision": "localidad",
+   "predio": null
+  },
+  "ROSARIO DEL TALA, ENTRE RÍOS": {
+   "lat": -32.300676,
+   "lng": -59.139067,
+   "precision": "localidad",
+   "predio": null
+  },
+  "WASHINGTON, BUENOS AIRES": {
+   "lat": -33.873738,
+   "lng": -64.689594,
+   "precision": "localidad",
+   "predio": null
+  },
+  "QUIMILI, SANTIAGO DEL ESTERO": {
+   "lat": -27.644686,
+   "lng": -62.41737,
+   "precision": "localidad",
+   "predio": null
+  },
+  "CASTELLI, BUENOS AIRES": {
+   "lat": -36.090918,
+   "lng": -57.807479,
+   "precision": "localidad",
+   "predio": null
+  },
+  "SALADILLO, BUENOS AIRES": {
+   "lat": -35.638647,
+   "lng": -59.779376,
+   "precision": "localidad",
+   "predio": null
+  },
+  "PIÑERO, SANTA FE": {
+   "lat": -33.10914,
+   "lng": -60.796112,
+   "precision": "localidad",
+   "predio": null
+  },
+  "San Andrés de Giles, Buenos Aires": {
+   "lat": -34.463167,
+   "lng": -59.453799,
+   "precision": "predio",
+   "predio": "Sociedad Rural Argentina"
+  },
+  "HASENKAMP, ENTRE RÍOS": {
+   "lat": -31.512169,
+   "lng": -59.835283,
+   "precision": "localidad",
+   "predio": null
+  },
+  "MERCEDES, CORRIENTES": {
+   "lat": -29.184693,
+   "lng": -58.073532,
+   "precision": "localidad",
+   "predio": null
+  },
+  "JOAQUIN V. GONZALEZ, SALTA": {
+   "lat": -25.117391,
+   "lng": -64.124773,
+   "precision": "localidad",
+   "predio": null
+  },
+  "CORONEL SUAREZ, BUENOS AIRES": {
+   "lat": -37.44296,
+   "lng": -61.934545,
+   "precision": "predio",
+   "predio": "Sociedad Rural de Coronel Suárez"
+  },
+  "Ranchos, Buenos Aires": {
+   "lat": -35.511457,
+   "lng": -58.333573,
+   "precision": "predio",
+   "predio": "Sociedad Rural de General Paz"
+  },
+  "Luan Toro, La Pampa": {
+   "lat": -36.203953,
+   "lng": -65.099651,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Rufino, Santa Fe": {
+   "lat": -34.256493,
+   "lng": -62.680126,
+   "precision": "predio",
+   "predio": "Predio Ferial Ganadera San Jorge"
+  },
+  "25 DE MAYO, BUENOS AIRES": {
+   "lat": -35.415738,
+   "lng": -60.147939,
+   "precision": "predio",
+   "predio": "Sociedad Rural Veinticinco de Mayo"
+  },
+  "MONTE CASEROS, CORRIENTES": {
+   "lat": -30.249423,
+   "lng": -57.629482,
+   "precision": "localidad",
+   "predio": null
+  },
+  "ESQUINA, CORDOBA": {
+   "lat": -30.014607,
+   "lng": -59.529519,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Corrientes, CORRIENTES": {
+   "lat": -27.463345,
+   "lng": -58.839473,
+   "precision": "localidad",
+   "predio": null
+  },
+  "GUALEGUAY, ENTRE RÍOS": {
+   "lat": -33.15043,
+   "lng": -59.310576,
+   "precision": "localidad",
+   "predio": null
+  },
+  "CORONEL MOLDES, CORDOBA": {
+   "lat": -33.622729,
+   "lng": -64.597048,
+   "precision": "localidad",
+   "predio": null
+  },
+  "SAN CARLOS DE BOLIVAR, BUENOS AIRES": {
+   "lat": -36.220598,
+   "lng": -61.1075,
+   "precision": "predio",
+   "predio": "Sociedad Rural de Bolivar"
+  },
+  "Goya, Corrientes": {
+   "lat": -29.140076,
+   "lng": -59.259891,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Venado Tuerto, Santa Fe": {
+   "lat": -33.767738,
+   "lng": -61.96948,
+   "precision": "predio",
+   "predio": "Sociedad Rural Venado Tuerto"
+  },
+  "Olavarria, Buenos Aires": {
+   "lat": -36.90106,
+   "lng": -60.35679,
+   "precision": "predio",
+   "predio": "Sociedad Rural de Olavarría"
+  },
+  "Carhué, Buenos Aires": {
+   "lat": -37.179483,
+   "lng": -62.75999,
+   "precision": "localidad",
+   "predio": null
+  },
+  "SERRANO, CORDOBA": {
+   "lat": -34.470674,
+   "lng": -63.540286,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Santa Sylvina, Chaco": {
+   "lat": -27.831611,
+   "lng": -61.136,
+   "precision": "localidad",
+   "predio": null
+  },
+  "GENERAL LAVALLE, BUENOS AIRES": {
+   "lat": -36.408086,
+   "lng": -56.943358,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Bernasconi, La Pampa": {
+   "lat": -37.902253,
+   "lng": -63.742954,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Saavedra, Buenos Aires": {
+   "lat": -37.773512,
+   "lng": -62.35647,
+   "precision": "predio",
+   "predio": "Asociación Rural del Partido de Saavedra"
+  },
+  "Curuzú Cuatiá, CORRIENTES": {
+   "lat": -29.810208,
+   "lng": -58.037147,
+   "precision": "predio",
+   "predio": "Sociedad Rural Curuzú Cuatiá"
+  },
+  "Cachari, Buenos Aires": {
+   "lat": -36.375462,
+   "lng": -59.510734,
+   "precision": "predio",
+   "predio": "Feria de Remates de Hacienda Arístegui"
+  },
+  "Ayacucho, Buenos Aires": {
+   "lat": -37.167056,
+   "lng": -58.448807,
+   "precision": "predio",
+   "predio": "Sector de Remates de Hacienda"
+  },
+  "Claraz, Buenos Aires": {
+   "lat": -37.89343,
+   "lng": -59.29107,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Coronel Suarez, Buenos Aires": {
+   "lat": -37.44296,
+   "lng": -61.934545,
+   "precision": "predio",
+   "predio": "Sociedad Rural de Coronel Suárez"
+  },
+  "LA TOMA, SAN LUIS": {
+   "lat": -33.054497,
+   "lng": -65.621376,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Chajarí, ENTRE RIOS": {
+   "lat": -30.754073,
+   "lng": -58.006298,
+   "precision": "predio",
+   "predio": "Sociedad Rural de Chajarí"
+  },
+  "Bolivar, Buenos Aires": {
+   "lat": -36.220598,
+   "lng": -61.1075,
+   "precision": "predio",
+   "predio": "Sociedad Rural de Bolivar"
+  },
+  "CHAJARI, ENTRE RÍOS": {
+   "lat": -30.754073,
+   "lng": -58.006298,
+   "precision": "predio",
+   "predio": "Sociedad Rural de Chajarí"
+  },
+  "Salta, Salta": {
+   "lat": -24.813723,
+   "lng": -65.426129,
+   "precision": "predio",
+   "predio": "Sociedad Rural Salteña"
+  },
+  "Mercedes, Corrientes": {
+   "lat": -29.184693,
+   "lng": -58.073532,
+   "precision": "localidad",
+   "predio": null
+  },
+  "JUNIN, BUENOS AIRES": {
+   "lat": -34.611946,
+   "lng": -60.962036,
+   "precision": "predio",
+   "predio": "Sociedad Rural"
+  },
+  "Río Cuarto, Córdoba": {
+   "lat": -33.123837,
+   "lng": -64.349003,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Algarrobo del Aguila, La Pampa": {
+   "lat": -36.398084,
+   "lng": -67.144491,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Victorica, La Pampa": {
+   "lat": -36.216537,
+   "lng": -65.437086,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Rosario, Santa Fe": {
+   "lat": -32.947213,
+   "lng": -60.633176,
+   "precision": "localidad",
+   "predio": null
+  },
+  "CAÑADA ROSQUIN, SANTA FE": {
+   "lat": -32.058891,
+   "lng": -61.608484,
+   "precision": "predio",
+   "predio": "Sociedad Rural de Cañada Rosquín"
+  },
+  "CHIVILCOY, BUENOS AIRES": {
+   "lat": -34.896896,
+   "lng": -60.019091,
+   "precision": "localidad",
+   "predio": null
+  },
+  "Mercedes, CORRIENTES": {
+   "lat": -29.184693,
+   "lng": -58.073532,
+   "precision": "localidad",
+   "predio": null
+  },
+  "RIO CUARTO, CORDOBA": {
+   "lat": -33.1656562,
+   "lng": -64.3573128,
+   "precision": "predio",
+   "predio": "Predio Feriálvarez"
+  }
+ },
+ "firmas": {
+  "colombo-y-magliano": {
+   "logo": null,
+   "web": "https://www.colomboymagliano.com.ar",
+   "logo_bloqueado": "blanco: no se ve sobre el chip blanco"
+  },
+  "colombo-y-magliano-s-a": {
+   "logo": null,
+   "web": "https://www.colomboymagliano.com.ar",
+   "logo_bloqueado": "blanco: no se ve sobre el chip blanco"
+  },
+  "agricultores-federados-argentinos-soc-coop-lt": {
+   "logo": "https://www.afascl.coop/img/afahead.jpg",
+   "web": "https://www.afascl.coop/afascl/"
+  },
+  "afa": {
+   "logo": "https://www.afascl.coop/img/afahead.jpg",
+   "web": "https://www.afascl.coop/afascl/"
+  },
+  "nestor-hugo-fuentes": {
+   "logo": null,
+   "web": "https://nestorhugofuentes.com/",
+   "logo_bloqueado": "blanco: no se ve sobre el chip blanco"
+  },
+  "eduardo-a-travaglia-y-cia-s-a": {
+   "logo": "https://travagliaycia.com/assets/images/logoTravaglia.svg",
+   "web": "https://travagliaycia.com"
+  },
+  "saenz-valiente-bullrich-y-cia-s-a": {
+   "logo": "https://saenz-valiente.com/assets/img/logo-color.png?version=23",
+   "web": "https://saenz-valiente.com"
+  },
+  "ofarrell": {
+   "logo": "https://cdn.ivanofarrell.com.ar/assets/img/logo-O%27Farrell.svg",
+   "web": "https://ivanofarrell.com.ar/"
+  },
+  "ganaderos-de-ceres-cooperativa-ltda": {
+   "logo": "https://www.ganaderosdeceres.com.ar/wp-content/uploads/2026/04/logo-ganaderos-200-1.png",
+   "web": "https://www.ganaderosdeceres.com.ar"
+  },
+  "umc-haciendas-villaguay": {
+   "logo": "https://umchv.ar/img/logo-navbar.png",
+   "web": "https://umchv.ar"
+  },
+  "u-m-c-s-a": {
+   "logo": "https://umchv.ar/img/logo-navbar.png",
+   "web": "https://umchv.ar"
+  },
+  "mondino": {
+   "logo": "https://alfredosmondino.com/wp-content/plugins/asm-sitio-estatico/assets/img/logo-m.png",
+   "web": "https://alfredosmondino.com/"
+  },
+  "alfredo-s-mondino": {
+   "logo": "https://alfredosmondino.com/wp-content/plugins/asm-sitio-estatico/assets/img/logo-m.png",
+   "web": "https://alfredosmondino.com/"
+  },
+  "madelan-y-cia": {
+   "logo": "https://www.madelan.com.ar/sys/theme/img/logofull.png",
+   "web": "https://madelan.com.ar"
+  },
+  "consignataria-hasenkamp-s-r-l": {
+   "logo": "https://chsrl.com.ar/web/wp-content/uploads/2017/10/LogoConsigatariaHasenkamp.png",
+   "web": "http://chsrl.com.ar/"
+  },
+  "martin-g-lalor": {
+   "logo": "https://lalor.com.ar/assets/img/logo.png?version=7",
+   "web": "https://lalor.com.ar"
+  },
+  "monasterio": {
+   "logo": "https://www.monasterio-tattersall.com/assets/img/logo-75.png?version=33",
+   "web": "https://www.monasterio-tattersall.com"
+  },
+  "wallace-sa": {
+   "logo": "https://wallacesa.com.ar/wp-content/uploads/2019/09/logo2.png",
+   "web": "https://wallacesa.com.ar/"
+  },
+  "f-rauch": {
+   "logo": "https://feriasrauch.com.ar/wp-content/uploads/2021/08/logo-ok.png",
+   "web": "https://feriasrauch.com.ar"
+  },
+  "ferias-rauch-s-a": {
+   "logo": "https://feriasrauch.com.ar/wp-content/uploads/2021/08/logo-ok.png",
+   "web": "https://feriasrauch.com.ar"
+  },
+  "ferias-rauch": {
+   "logo": "https://feriasrauch.com.ar/wp-content/uploads/2021/08/logo-ok.png",
+   "web": "https://feriasrauch.com.ar"
+  },
+  "reggi-y-cia-s-r-l": {
+   "logo": null,
+   "web": "https://www.reggiycia.com",
+   "logo_bloqueado": "blanco: no se ve sobre el chip blanco"
+  },
+  "reggi-y-cia": {
+   "logo": null,
+   "web": "https://www.reggiycia.com",
+   "logo_bloqueado": "blanco: no se ve sobre el chip blanco"
+  },
+  "martin-y-alonso": {
+   "logo": "https://martinyalonso.com.ar/assets/img/logo.png",
+   "web": "https://martinyalonso.com.ar"
+  },
+  "pedro-noel-irey-s-r-l": {
+   "logo": null,
+   "web": "https://www.pedronoelirey.com.ar"
+  },
+  "edgar-e-pastore-y-cia-s-r-l": {
+   "logo": null,
+   "web": "http://epastore.com.ar"
+  },
+  "daniel-blanco-y-cia-s-a": {
+   "logo": "https://www.danielblancosa.com.ar/images/logo-blanco.png",
+   "web": "https://www.danielblancosa.com.ar"
+  },
+  "darwash-s-a": {
+   "logo": "https://darwash.com.ar/companies_logos/Darwash-2-sf.png",
+   "web": "https://darwash.com.ar"
+  },
+  "talano-hermanos-s-r-l": {
+   "logo": "https://www.talanohermanos.com.ar/logo-maxima.png",
+   "web": "https://www.talanohermanos.com.ar"
+  },
+  "talano-hnos-s-a": {
+   "logo": "https://www.talanohermanos.com.ar/logo-maxima.png",
+   "web": "https://www.talanohermanos.com.ar"
+  },
+  "vicar-ganadera-s-a": {
+   "logo": "https://vicar.com.ar/wp-content/uploads/2016/11/logo-vicar.png",
+   "web": "https://vicar.com.ar/"
+  },
+  "pepa-knubel-y-ferrero-s-r-l": {
+   "logo": "https://www.pkf.com.ar/wp-content/uploads/2021/07/logo-pkf.jpg",
+   "web": "https://pkf.com.ar/"
+  },
+  "jauregui-lorda-s-r-l": {
+   "logo": "https://www.jaureguilorda.com.ar/assets/img/logo.png?version=19",
+   "web": "https://www.jaureguilorda.com.ar"
+  },
+  "jauregui-lorda-haciendas": {
+   "logo": "https://www.jaureguilorda.com.ar/assets/img/logo.png?version=19",
+   "web": "https://www.jaureguilorda.com.ar"
+  },
+  "gregorio-aberasturi-s-r-l": {
+   "logo": "https://packglobal-publico.s3.amazonaws.com/APP116/plantillas_app/00081_img_logo.png",
+   "web": "https://www.gregorioaberasturi.com"
+  },
+  "colombo-y-colombo": {
+   "logo": "https://www.colomboycolombo.com.ar/assets/img/logo.png?version=22",
+   "web": "https://www.colomboycolombo.com.ar"
+  },
+  "campos-y-ganados": {
+   "logo": "https://www.camposyganados.com/assets/img/logo.png?version=1",
+   "web": "https://www.camposyganados.com"
+  },
+  "campos-y-ganados-s-a": {
+   "logo": "https://www.camposyganados.com/assets/img/logo.png?version=1",
+   "web": "https://www.camposyganados.com"
+  },
+  "lanser": {
+   "logo": "https://img1.wsimg.com/isteam/ip/a8a79985-68e2-4518-a4a4-1f2acda7cb67/Lanser%20Logo.png",
+   "web": "https://carlosjlanser-sa.com/"
+  },
+  "carlos-j-lanser-s-a": {
+   "logo": "https://img1.wsimg.com/isteam/ip/a8a79985-68e2-4518-a4a4-1f2acda7cb67/Lanser%20Logo.png",
+   "web": "https://carlosjlanser-sa.com/"
+  },
+  "gananor-pujol": {
+   "logo": "https://www.gananorpujol.com/resources/img/logo-gananor.png",
+   "web": "https://www.gananorpujol.com"
+  },
+  "lartirigoyen": {
+   "logo": "https://www.lartirigoyen.com.ar/images/2025/webp/lartirigoyen-negro.webp",
+   "web": "https://www.lartirigoyen.com.ar"
+  },
+  "pedro-y-raul-alonso": {
+   "logo": "https://www.alonsoganados.com/newlogo-trimmed.png",
+   "web": "https://www.alonsoganados.com"
+  },
+  "pedro-y-raul-alonso-ganados-s-a": {
+   "logo": "https://www.alonsoganados.com/newlogo-trimmed.png",
+   "web": "https://www.alonsoganados.com"
+  },
+  "ganadera-salliquelo-s-a": {
+   "logo": "https://www.ganaderasalliquelo.com/assets/img/logo_header.png?version=7",
+   "web": "https://www.ganaderasalliquelo.com"
+  },
+  "paz-hnos": {
+   "logo": "https://pazhnos.com/wp-content/uploads/2022/12/HightResolution-180-Logo-1.png",
+   "web": "https://pazhnos.com"
+  },
+  "casalago": {
+   "logo": "https://casalago.com.ar/img/logo-casa-lago.png",
+   "web": "https://casalago.com.ar"
+  },
+  "etchevehere-rural": {
+   "logo": null,
+   "web": "https://www.etchevehere-rural.com.ar",
+   "logo_bloqueado": "blanco: no se ve sobre el chip blanco"
+  },
+  "bressan-y-cia-srl": {
+   "logo": "https://bressanycompania.com.ar/wp-content/uploads/2025/02/logo_bressan_horizontal.png",
+   "web": "https://bressanycompania.com.ar"
+  },
+  "negocios-de-hcienda": {
+   "logo": null,
+   "web": "https://www.negociosdehacienda.com.ar",
+   "logo_bloqueado": "blanco: no se ve sobre el chip blanco"
+  },
+  "orella": {
+   "logo": null,
+   "web": "https://orella.com.ar",
+   "logo_bloqueado": "blanco: no se ve sobre el chip blanco"
+  },
+  "elordi": {
+   "logo": "https://ganaderoselordi.com.ar/wp-content/uploads/2022/03/Logo_G.png",
+   "web": "https://ganaderoselordi.com.ar"
+  },
+  "a-saenz-cia-s-a": {
+   "logo": "https://www.arielsaenzycia.com/logo_figma.png",
+   "web": "https://www.arielsaenzycia.com"
+  },
+  "consignataria-serrano-s-a": {
+   "logo": null,
+   "web": "https://consignatariaserrano.com"
+  },
+  "oregui": {
+   "logo": "https://oregui.com.ar/img/oregui-logo.png",
+   "web": "https://oregui.com.ar"
+  },
+  "hre": {
+   "logo": "https://hre.com.ar/favicon.ico",
+   "web": "https://hre.com.ar"
+  },
+  "horacio-rodriguez-egana-consignaciones-s-r-l": {
+   "logo": "https://hre.com.ar/favicon.ico",
+   "web": "https://hre.com.ar"
+  },
+  "a-mendizabal": {
+   "logo": null,
+   "web": "https://www.ajmendizabal.com.ar",
+   "logo_bloqueado": "blanco: no se ve sobre el chip blanco"
+  },
+  "rosgan": {
+   "logo": "https://www.rosgan.app/assets/rosgan-logo-blue.png",
+   "web": "https://www.rosgan.app"
+  },
+  "aguerre-srl": {
+   "logo": "https://www.aguerresrl.com.ar/wp-content/uploads/2021/06/Logo-Desktop-2-1.png",
+   "web": "https://www.aguerresrl.com.ar"
+  },
+  "ferialvarez-s-r-l": {
+   "logo": "https://www.ferialvarez.com.ar/_next/static/media/FERIA-ALVAREZ-VERDE.11dlkw-o_0tq0.png",
+   "web": "https://www.ferialvarez.com.ar"
+  }
+ },
+ "horas": {
+  "colombo-y-magliano|2026-11-25|Cañuelas, Buenos Aires": {
+   "hora": "13:30",
+   "fuente": "https://www.colomboymagliano.com.ar/remates/proximos-remates/fin-de-ano-pampa-humeda--d2768996-9d75-49d1-9a7d-58f595622c77"
+  },
+  "saenz-valiente-bullrich-y-cia-s-a|2026-11-25|CASTELLI, BUENOS AIRES": {
+   "hora": "14:00",
+   "fuente": "https://saenz-valiente.com"
+  },
+  "martin-y-alonso|2026-11-26|Huanguelen, Buenos Aires": {
+   "hora": "10:30",
+   "fuente": "https://martinyalonso-backend-production.up.railway.app/api/remates"
+  },
+  "f-rauch|2026-11-26|Las Flores, Buenos Aires": {
+   "hora": "11:30",
+   "fuente": "https://cacg.org.ar/iapi/auctions"
+  },
+  "pedro-noel-irey-s-r-l|2026-12-01|Brandsen, Buenos Aires": {
+   "hora": "14:00",
+   "fuente": "https://cacg.org.ar/iapi/auctions"
+  },
+  "colombo-y-magliano|2026-12-02|Corrientes, Corrientes": {
+   "hora": "10:00",
+   "fuente": "https://www.colomboymagliano.com.ar/remates/proximos-remates/fin-de-ano-nea--5d66a624-56e9-42ce-8c01-e884de43c518"
+  },
+  "colombo-y-magliano|2026-12-04|Lincoln, Buenos Aires": {
+   "hora": "14:30",
+   "fuente": "https://www.colomboymagliano.com.ar/remates/proximos-remates"
+  },
+  "colombo-y-magliano-s-a|2026-12-04|Brandsen, Buenos Aires": {
+   "hora": "14:00",
+   "fuente": "https://cacg.org.ar/iapi/auctions"
+  },
+  "oregui|2026-12-05|Saavedra, Buenos Aires": {
+   "hora": "10:30",
+   "fuente": "https://oregui.com.ar"
+  },
+  "colombo-y-magliano|2026-12-10|Ayacucho, Buenos Aires": {
+   "hora": "14:00",
+   "fuente": "https://www.colomboymagliano.com.ar/remates/proximos-remates"
+  },
+  "colombo-y-magliano|2026-12-11|Rauch, Buenos Aires": {
+   "hora": "14:00",
+   "fuente": "https://www.colomboymagliano.com.ar/remates/proximos-remates"
+  },
+  "a-mendizabal|2026-12-16|Capital Federal, Capital Federal": {
+   "hora": "14:00",
+   "fuente": "https://www.ajmendizabal.com.ar/remate/29672"
+  }
+ }
+}

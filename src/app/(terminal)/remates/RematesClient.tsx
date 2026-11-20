@@ -182,6 +182,12 @@ function AuctionRow({ auction, today, index }: { auction: Auction; today: string
       <div className="min-w-0 flex-1 space-y-1.5">
         <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1.5">
           <div className="flex min-w-0 items-center gap-2">
+            {auction.logoUrl && (
+              // Logo de terceros (sitio de la firma): no es imagen de marca propia.
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={auction.logoUrl} alt="" aria-hidden loading="lazy" decoding="async"
+                className="h-7 w-auto max-w-[84px] flex-shrink-0 rounded-sm bg-white object-contain p-0.5" />
+            )}
             {/* Enlace principal a la ficha. El ::after lo estira sobre toda la
                 tarjeta, así el click en cualquier lado es un enlace real (lo
                 sigue Google y funciona sin JavaScript). */}
@@ -209,6 +215,15 @@ function AuctionRow({ auction, today, index }: { auction: Auction; today: string
 
         {/* Acciones secundarias: por encima del enlace estirado (relative z-[1]) */}
         <div className="relative z-[1] flex flex-wrap items-center gap-2 pt-1.5">
+          {auction.pin && (
+            <a href={auction.pin.maps_url} target="_blank" rel="noopener noreferrer"
+              onClick={() => trackOutboundClick(auction.pin!.maps_url, 'mapa')}
+              title={auction.pin.precision === 'predio' ? (auction.pin.predio ?? 'Predio del remate') : 'Ubicación aproximada: centro de la localidad'}
+              className={`${actionBtn} text-zinc-300 hover:bg-zinc-800`}>
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden><path d="M12 21s-7-6.2-7-11a7 7 0 1 1 14 0c0 4.8-7 11-7 11z" /><circle cx="12" cy="10" r="2.5" /></svg>
+              {auction.pin.precision === 'predio' ? 'Cómo llegar' : 'Ver zona en el mapa'}
+            </a>
+          )}
           {youtube && (
             <a href={youtube} target="_blank" rel="noopener noreferrer"
               onClick={() => trackOutboundClick(youtube, 'youtube')}

@@ -60,7 +60,7 @@ const TOOLS = [
   { name: 'herd_liquidation_index', desc: '% de hembras en la faena: liquidación vs retención del rodeo', auth: false },
   { name: 'price_seasonality', desc: 'En qué mes la hacienda está típicamente cara o barata, y dónde está hoy contra esa norma — índice estacional en dólares desde 2015', auth: false },
   { name: 'farmland_yield', desc: 'Qué compra y qué renta un dólar en campo ganadero: USD/ha, kilos de novillo por hectárea, canon y años de repago por zona', auth: false },
-  { name: 'upcoming_auctions', desc: 'Calendario de remates (filtro por provincia)', auth: false },
+  { name: 'upcoming_auctions', desc: 'Calendario de remates (filtro por provincia), con pin del lugar, logo y web de la firma', auth: false },
   { name: 'live_auctions', desc: '¿Dónde hay un remate ahora? Al aire con link a la transmisión, en horario según el calendario y más tarde hoy', auth: false },
   { name: 'find_livestock_broker', desc: 'Directorio de consignatarias/casas de remate por nombre o zona (con CUIT)', auth: false },
   { name: 'broker_activity_ranking', desc: 'Ranking de cabezas y precio promedio por firma en el MAG de referencia (Cañuelas)', auth: false },

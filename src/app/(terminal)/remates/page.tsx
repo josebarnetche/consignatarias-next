@@ -11,6 +11,8 @@ import NewsletterSignup from '@/components/NewsletterSignup'
 import { Breadcrumb } from '@/components/ui'
 import { FaqList } from '@/components/seo/FaqList'
 import { remateHref } from '@/lib/remates-enlaces'
+import { conEnriq } from '@/lib/remates-enriq'
+import { getConsignatariaLogoMap } from '@/lib/dal/consignatarias'
 import { FECHA_DATOS, fechaLarga } from '@/lib/datos-frescura'
 import { EXPO, REMATES_EXPO, expoVigente, posicionNacional } from '@/lib/data/expo-mercedes'
 
@@ -94,7 +96,9 @@ const FAQ_ITEMS = [
   },
 ]
 
-export default function RematesPage() {
+export default async function RematesPage() {
+  // El logo que la firma sube desde su perfil completa el que no está en remates-enriq.json.
+  const logosPerfil = await getConsignatariaLogoMap()
   const totalProfiles = getAllProfiles().length
   const provinces = new Set(rematesData.map((r) => r.province))
   const totalProvinces = provinces.size
@@ -203,7 +207,7 @@ export default function RematesPage() {
 
       {/* RematesClient ya no usa useSearchParams → renderiza SSR (lista en el
           HTML servido, visible para crawlers). Sin Suspense/fallback. */}
-      <RematesClient remates={rematesProximos} />
+      <RematesClient remates={rematesProximos.map((a) => conEnriq(a, logosPerfil))} />
 
       {/* Pie: navegación a las páginas indexables + newsletter */}
       <section className="mx-auto max-w-5xl px-4 pb-10 sm:px-6">

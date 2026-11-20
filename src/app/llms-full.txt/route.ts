@@ -76,7 +76,7 @@ Todas gratis y sin cupo.
 - consignatarias_band — Banda Consignatarias: cuánto se abre el precio de la hacienda en la semana (indicador propio). Página: https://www.consignatarias.com.ar/banda
 - price_dispersion_history — serie de la banda P10–P90 por categoría: si la dispersión se abre o se cierra. Página: https://www.consignatarias.com.ar/banda
 - value_cattle_lot — valuación de un lote de hacienda con la banda observada (P10/mediana/P90), ARS y USD.
-- upcoming_auctions — calendario de remates, con filtro por provincia.
+- upcoming_auctions — calendario de remates, con filtro por provincia; cada remate trae pin del lugar (lat/lng + Google Maps), logo y web de la firma.
 - live_auctions — remates en vivo ahora: al aire con link a la transmisión, en horario según el calendario y más tarde hoy.
 - find_livestock_broker — directorio de consignatarias por nombre o zona, con CUIT.
 - broker_activity_ranking — ranking de cabezas operadas y precio promedio por firma en el MAG.

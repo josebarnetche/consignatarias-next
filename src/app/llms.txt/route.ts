@@ -90,7 +90,7 @@ Available tools (${MCP_TOOL_COUNT}):
 - \`international_price_gap\` — la brecha del novillo argentino contra Estados Unidos, Uruguay y Australia en USD/kg VIVO, sin estimar rendimiento de carcasa. Argentina opera por encima de Brasil: la brecha que se sostiene es contra el hemisferio norte y Uruguay
 - \`farmland_yield\` — cuánto rinde un dólar en campo argentino: USD/ha, kilos de novillo por hectárea, renta del arrendamiento (pactado en kg de novillo, no en pesos), rendimiento sobre el valor de la tierra y años de repago, por zona; reparte un presupuesto en USD en hectáreas
 - \`consignatarias_band\` — la BANDA CONSIGNATARIAS: cuánto se abre el precio de la hacienda en la semana (decil que menos cobró vs el que más, misma categoría). Indicador propio, no existe en otra fuente. Página: https://www.consignatarias.com.ar/banda
-- \`upcoming_auctions\` — calendario de remates (filtro por provincia)
+- \`upcoming_auctions\` — calendario de remates (filtro por provincia), con pin del lugar, logo y web de la firma
 - \`live_auctions\` — qué remate está en vivo AHORA: al aire con link a la transmisión (YouTube o nuestro capturador), en horario según el calendario, más tarde hoy
 - \`find_livestock_broker\` — directorio de consignatarias/casas de remate por nombre o zona (incluye CUIT)
 - \`broker_activity_ranking\` — ranking de cabezas operadas y precio promedio por firma en el MAG de Cañuelas (mercado de referencia, ~12% nacional)

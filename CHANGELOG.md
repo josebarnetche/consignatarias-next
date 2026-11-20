@@ -7,6 +7,11 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.263.0] — 2026-11-20
+
+### Agregado
+- **Remates: pin de mapa, logo de la firma y hora faltante.** `src/lib/data/remates-enriq.json` (112 lugares con pin: 41 en el predio, 71 en el centro de la localidad; 58 firmas con logo verificado; 12 horas con fuente) se cruza al leer (`src/lib/remates-enriq.ts`) y nunca pisa una hora existente. `/remates` muestra el logo y el botón «Cómo llegar» / «Ver zona en el mapa». MCP `upcoming_auctions` suma `pin`, `logo_url` y `web_firma` al structuredContent, sobre el filtro `scheduled`/`live` y la fecha argentina de 1.260.0; descripciones sincronizadas en `route.ts`, `/mcp`, `llms.txt` y `llms-full.txt`.
+
 ## [1.262.2] — 2026-11-20
 
 > Se apila después de #135 y #137; la versión se rebasea al mergear.
