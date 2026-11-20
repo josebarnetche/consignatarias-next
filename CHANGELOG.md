@@ -7,6 +7,11 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.261.4] — 2026-11-20
+
+### Corregido
+- **`vr.test.ts` deja de depender de qué provincia califica hoy para el ajuste por origen.** El test fijaba San Luis como «factor < 1»; el recálculo diario del 18/11 (`052964f7`) la sacó de `origen.VACA` (35 lotes el 14/11 → menos de 30 en 90 días) y la referencia cayó, correctamente, a la banda nacional ($2.900 = $2.900). La lógica no cambió: ahora el test verifica la regla sobre todas las filas de origen que califican (banda = nacional × factor, en la dirección del factor) y agrega un caso de regresión: una provincia sin fila cae a la nacional y lo declara. Versión placeholder: se renumera al mergear.
+
 ## [1.261.3] — 2026-11-20
 
 ### Corregido

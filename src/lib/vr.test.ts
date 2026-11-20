@@ -81,12 +81,37 @@ describe('getReferencia — regla de degradación (nunca inventar precisión)', 
     expect(r.limites.join(' ')).toContain('Ajuste por origen')
   })
 
-  it('el ajuste de origen mueve la banda en la dirección del factor', () => {
+  // No se fija ninguna provincia: el JSON se recalcula todos los días y una provincia
+  // entra o sale del ajuste según junte 30 lotes en 90 días (San Luis salió el 18/11/2026
+  // con 35 → <30 y este test, que la tenía clavada, quedó rojo sin que nada estuviera roto).
+  // Se verifica la regla sobre TODAS las filas de origen que hoy califican.
+  it('el ajuste de origen mueve la banda en la dirección del factor (toda fila con base)', () => {
     const nac = getReferencia('vacas')
-    const lpa = getReferencia('vacas', 'La Pampa') // factor > 1
-    const slu = getReferencia('vacas', 'San Luis') // factor < 1
-    expect(lpa.banda!.mediana).toBeGreaterThan(nac.banda!.mediana)
-    expect(slu.banda!.mediana).toBeLessThan(nac.banda!.mediana)
+    expect(nac.banda).not.toBeNull()
+    const filas = getOrigenPorSlug('vaca').filter((o) => o.lotes >= MIN_LOTES_AJUSTE_ORIGEN)
+    expect(filas.length).toBeGreaterThan(0)
+    for (const o of filas) {
+      const r = getReferencia('vacas', o.provincia)
+      expect(r.origen?.provincia).toBe(o.provincia)
+      const b = r.banda!
+      expect(b.mediana).toBe(Math.round(nac.banda!.mediana * o.factor))
+      expect(b.p10).toBe(Math.round(nac.banda!.p10 * o.factor))
+      expect(b.p90).toBe(Math.round(nac.banda!.p90 * o.factor))
+      if (o.factor > 1) expect(b.mediana).toBeGreaterThanOrEqual(nac.banda!.mediana)
+      if (o.factor < 1) expect(b.mediana).toBeLessThanOrEqual(nac.banda!.mediana)
+      if (o.factor === 1) expect(b.mediana).toBe(nac.banda!.mediana)
+    }
+  })
+
+  it('una provincia que salió del ajuste (sin fila de origen) cae a la banda nacional y lo declara', () => {
+    const nac = getReferencia('vacas')
+    const conFila = new Set(getOrigenPorSlug('vaca').map((o) => o.provincia))
+    const sinFila = ['SLU', 'FOR', 'CHA', 'COR', 'SGO', 'LPA', 'CBA'].find((c) => !conFila.has(c))
+    expect(sinFila).toBeDefined()
+    const r = getReferencia('vacas', sinFila!)
+    expect(r.origen).toBeNull()
+    expect(r.banda).toEqual(nac.banda)
+    expect(r.limites.join(' ')).toContain('no llega')
   })
 })
 
