@@ -15,6 +15,8 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ### Agregado
 - **Autocurado acotado del encolado por defecto.** Revisa los últimos 7 días: si un día tiene INMAG con cabezas y sus lotes no llegan al 10% de esas cabezas, encola lo que falte y vuelve a `pending` SOLO los jobs de ese día que quedaron `done` con 0/null filas. La respuesta trae `autocurado.reencoladas`. `ventana=` (1-31; input `ventana` del workflow) alarga la revisión para ponerse al día. `date=` y `backfill_month` no cambian.
+- **Nunca sábado ni domingo.** `fechaDeRueda()` corre al último día hábil (`ultimoDiaHabil`): una corrida que cae el fin de semana encola el viernes. Los feriados no se modelan: sin INMAG, el autocurado no los reintenta.
+- **Alerta de frescura de la Banda** (`scripts/check-vr-bandas-freshness.mjs`, sin deps): si el último punto de `vr_bandas_history` tiene más de 2 días hábiles de atraso, falla con `::error::`. Corre al final de `compute-vr-bandas` y en `data-freshness-alert.yml` (22:00 ART). La serie estuvo congelada del 13 al 20/11 con todo en verde.
 
 ## [1.261.1] — 2026-11-19
 

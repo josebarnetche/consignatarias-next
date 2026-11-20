@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { diasConLotesFaltantes, fechaDeRueda, restarDias } from './mag-lots-rueda'
+import { diasConLotesFaltantes, diasHabilesEntre, fechaDeRueda, restarDias, ultimoDiaHabil } from './mag-lots-rueda'
 
 // BA es UTC-3 fijo (sin horario de verano desde 2009): 19:42 BA = 22:42 UTC.
 const ba = (isoLocal: string) => new Date(`${isoLocal}-03:00`)
@@ -62,5 +62,34 @@ describe('diasConLotesFaltantes', () => {
   })
   it('sin INMAG con cabezas no hay nada que curar', () => {
     expect(diasConLotesFaltantes([{ date: '2026-11-16', head_count: 0 }, { date: '2026-11-15', head_count: null }], {})).toEqual([])
+  })
+})
+
+describe('fin de semana — nunca se encola sábado ni domingo', () => {
+  it('sábado 21/11 03:00 (atraso de la corrida del viernes) → viernes 20', () => {
+    expect(fechaDeRueda(ba('2026-11-21T03:00:00'))).toBe('2026-11-20')
+  })
+  it('sábado 21/11 15:00 (manual) → viernes 20', () => {
+    expect(fechaDeRueda(ba('2026-11-21T15:00:00'))).toBe('2026-11-20')
+  })
+  it('domingo 22/11 y lunes 23/11 09:00 → viernes 20', () => {
+    expect(fechaDeRueda(ba('2026-11-22T20:00:00'))).toBe('2026-11-20')
+    expect(fechaDeRueda(ba('2026-11-23T09:00:00'))).toBe('2026-11-20')
+  })
+  it('ultimoDiaHabil deja intactos los días de semana', () => {
+    expect(ultimoDiaHabil('2026-11-18')).toBe('2026-11-18')
+    expect(ultimoDiaHabil('2026-11-22')).toBe('2026-11-20')
+  })
+})
+
+describe('diasHabilesEntre — base de la alerta de frescura de la banda', () => {
+  it('la banda congelada del 13/11 vista el 20/11 lleva 5 días hábiles', () => {
+    expect(diasHabilesEntre('2026-11-13', '2026-11-20')).toBe(5)
+  })
+  it('viernes → lunes es 1 (el fin de semana no cuenta)', () => {
+    expect(diasHabilesEntre('2026-11-13', '2026-11-16')).toBe(1)
+  })
+  it('mismo día = 0', () => {
+    expect(diasHabilesEntre('2026-11-20', '2026-11-20')).toBe(0)
   })
 })

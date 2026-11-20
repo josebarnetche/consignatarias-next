@@ -55,7 +55,42 @@ export function restarDias(iso: string, n: number): string {
  */
 export function fechaDeRueda(now: Date): string {
   const { iso, hora } = partesBA(now)
-  return hora < HORA_CORTE_RUEDA ? restarDias(iso, 1) : iso
+  return ultimoDiaHabil(hora < HORA_CORTE_RUEDA ? restarDias(iso, 1) : iso)
+}
+
+/** 0 = domingo … 6 = sábado, de una fecha ISO de calendario. */
+function diaDeSemana(iso: string): number {
+  const [y, m, d] = iso.split('-').map(Number)
+  return new Date(Date.UTC(y, m - 1, d)).getUTCDay()
+}
+
+/**
+ * El MAG no tiene rueda sábado ni domingo: una corrida que caiga ahí (manual, o un
+ * atraso que cruce el viernes a la madrugada del sábado pasado el mediodía) encola el
+ * viernes. Los feriados NO se modelan acá: un feriado no tiene INMAG, sus jobs quedan
+ * `done` con 0 filas y el autocurado nunca los reintenta (solo cura días con INMAG).
+ */
+export function ultimoDiaHabil(iso: string): string {
+  const wd = diaDeSemana(iso)
+  if (wd === 6) return restarDias(iso, 1)
+  if (wd === 0) return restarDias(iso, 2)
+  return iso
+}
+
+/**
+ * Días hábiles (lun-vie) que pasaron DESPUÉS de `desde` hasta `hasta` inclusive.
+ * Ej.: viernes 13 → martes 17 = 2 (lun 16 y mar 17). Lo usa la alerta de frescura
+ * de la banda (scripts/check-vr-bandas-freshness.mjs replica la regla sin deps).
+ */
+export function diasHabilesEntre(desde: string, hasta: string): number {
+  let n = 0
+  let d = desde
+  while (d < hasta) {
+    d = restarDias(d, -1)
+    const wd = diaDeSemana(d)
+    if (wd !== 0 && wd !== 6) n++
+  }
+  return n
 }
 
 export interface DiaInmag {
