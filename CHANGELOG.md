@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.264.4] — 2026-11-20
+
+### Cambiado
+- **MCP: tercera pasada de descripciones para Glama (TDQS).** Las 7 tools con nota más baja entre las 17 que no tocaron las dos pasadas anteriores (fuente: subpáginas `/tools/<nombre>` de Glama, nota del 13-11-2026): price_seasonality, herd_liquidation_index, livestock_movement_rules, subscribe_broker_pro, create_price_alert, find_meat_plant y renspa_lookup. Cada una dice qué devuelve, a qué tool vecina derivar y, en el `inputSchema`, la semántica de cada parámetro (sin listas `Params:`/`Args:` en la descripción). create_price_alert documenta lo que hace el código: dispara una sola vez y se cierra, se evalúa una vez por día, no deduplica, el webhook es un intento sin reintento, y sin key tiene 3 activas y 10 creaciones por día. subscribe_broker_pro deja la lista de beneficios para la respuesta. find_meat_plant ya no dice "1.102" ni "máx 30" (son 1.123 plantas y el techo depende de la credencial). La server card vuelve a ser espejo exacto del route (create_price_alert decía "Única tool de escritura"). `/mcp`: renspa_lookup decodifica establecimiento y productor, no "titular". Sin cambios de schema (salvo textos `description`), nombre, alias ni respuesta.
+- **MCP: notas de disponibilidad sin tono de venta (decisión #3, opción B).** Cuatro líneas que quedaban con oferta pasan a decir qué hay y dónde, sin pregunta ni pitch: el cierre de `instructions` (y su espejo en `llms.txt`) ya no dice "Key Enterprise para alertas ilimitadas, históricos bulk y soporte" sino qué cambia con la key; la nota RECORTADO de price_dispersion_history; el `serie_completa` y la nota de recorte de inmag_history (`notaDeRecorte()`, que además decía "pagá esta misma consulta" cuando la consulta es gratis), y el cierre de create_price_alert sin key ("¿Más alertas + históricos bulk + soporte?"). Se mantiene la información de cómo obtener la serie completa (key Enterprise o x402, con URL). Las ramas de recorte de las dos series no se alcanzan desde el de-gateo del 03-10-2026; el texto queda corregido por si vuelven.
+
 ## [1.264.3] — 2026-11-20
 
 ### Cambiado

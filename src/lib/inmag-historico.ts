@@ -107,10 +107,9 @@ export function notaDeRecorte(recorte: Recorte, ruedasOcultas: number | null): s
   return (
     `\n\n⚠ Serie recortada al tramo abierto: se devolvieron los últimos ${VENTANA_GRATIS_DIAS} días. ` +
     `Quedan ${cuanto} anteriores, hasta el ${recorte.desdePedido} — la serie empalmada Liniers→MAG.\n` +
-    `Para la serie completa: API key Enterprise (https://www.consignatarias.com.ar/planes) o pagá esta ` +
-    `misma consulta por US$0,${String(PRECIO_SERIE_COMPLETA_USD_CENTS).padStart(2, '0')} en USDC (red Base) vía x402 — ` +
-    `GET https://www.consignatarias.com.ar/api/x402/inmag-historico con los mismos params; cualquier cliente ` +
-    `x402-aware (@x402/fetch, etc.) lo resuelve solo.\n` +
+    `La serie completa está disponible con API key Enterprise (https://www.consignatarias.com.ar/planes) o por ` +
+    `US$0,${String(PRECIO_SERIE_COMPLETA_USD_CENTS).padStart(2, '0')} en USDC (red Base) vía x402: ` +
+    `GET https://www.consignatarias.com.ar/api/x402/inmag-historico con los mismos params.\n` +
     `Sigue gratis y sin cupo: el valor de hoy (cattle_price_index), la tendencia de hasta ${VENTANA_GRATIS_DIAS} días ` +
     `y cualquier fecha puntual (desde=hasta).`
   )

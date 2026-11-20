@@ -75,7 +75,7 @@ const TOOLS = [
   { name: 'animal_health_plan', desc: 'Plan sanitario bovino de SENASA, con la resolución citada', auth: false },
   { name: 'fmd_vaccination_calendar', desc: 'Calendario de vacunación antiaftosa por zona y categoría', auth: false },
   { name: 'livestock_movement_rules', desc: 'Qué hace falta para mover hacienda entre provincias', auth: false },
-  { name: 'renspa_lookup', desc: 'Valida y decodifica un RENSPA (provincia, departamento, titular)', auth: false },
+  { name: 'renspa_lookup', desc: 'Valida y decodifica un RENSPA (provincia, departamento, establecimiento, productor)', auth: false },
   { name: 'dte_lookup', desc: 'DT-e y número de tropa: qué son y cómo se leen', auth: false },
   { name: 'good_farming_practices', desc: 'Buenas Prácticas Ganaderas: 14 temas de la Guía Red BPA', auth: false },
   { name: 'market_match', desc: '"¿Hay compradores para mis 80 terneros en Entre Ríos?" → contraparte abierta en la mesa, agregada por región y anónima. Con permiso de la persona deja el pedido para que alguien arme la operación. Gratis: la tool para OPERAR, no solo para saber el precio', auth: false },
