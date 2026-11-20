@@ -620,7 +620,7 @@ const TOOLS: Tool[] = [
             desde_pedido: recorte.desdePedido,
             ruedas_ocultas: ruedasOcultas,
             ventana_gratis_dias: VENTANA_GRATIS_DIAS,
-            serie_completa: 'https://www.consignatarias.com.ar/api/x402/inmag-historico',
+            serie_completa: 'Disponible fila por fila con API key Enterprise o por US$0,25 en USDC vía x402: GET https://www.consignatarias.com.ar/api/x402/inmag-historico con los mismos params.',
           }),
       )
     },
@@ -750,7 +750,7 @@ const TOOLS: Tool[] = [
   {
     name: 'herd_liquidation_index',
     description:
-      'Índice de Liquidación: participación de HEMBRAS (vacas + vaquillonas) en la hacienda operada en el Mercado Agroganadero (Cañuelas) — indicador ADELANTADO de liquidación (descarga de vientres) vs. retención (armado de rodeo). Sin args. Devuelve la lectura fresca de Cañuelas (mensual, 2026→), el ancla nacional actual (YTD, PDF mensual MAGyP) y el contexto histórico de la faena de hembras NACIONAL (1998-2025: mensual MAGyP + trimestral IPCVA). Ojo: Cañuelas corre estructuralmente por encima de la faena nacional — no comparar 1:1. [EN] Share of females in slaughter: tells whether the Argentine herd is liquidating or rebuilding.',
+      'Índice de Liquidación: participación de HEMBRAS (vacas + vaquillonas) en la hacienda operada en el Mercado Agroganadero (Cañuelas), indicador adelantado de liquidación (descarga de vientres) contra retención (armado de rodeo). Sin parámetros. Devuelve la lectura mensual de Cañuelas (desde 2026) con su interpretación y las últimas 4 lecturas, el ancla nacional actual si está publicada (acumulado del año, informe mensual MAGyP), el mínimo, máximo y último de la faena de hembras NACIONAL 1998-2025 (MAGyP mensual + IPCVA trimestral) y un JSON con la serie. Cañuelas corre por encima de la faena nacional: no comparar los niveles 1:1. Mide el ciclo del rodeo, no el precio: para el precio usá cattle_price_index o livestock_prices; para la época del año, price_seasonality; para dólar y maíz, macro_context. [EN] Share of females in Argentine cattle slaughter: herd liquidation vs rebuilding.',
     inputSchema: { type: 'object', properties: {}, additionalProperties: false },
     async run() {
       const { actual, canuelas, nacional, nacionalActual, interpretacion, fuenteNacional } = await getLiquidacion()
@@ -1079,11 +1079,11 @@ const TOOLS: Tool[] = [
   {
     name: 'price_seasonality',
     description:
-      'En qué mes del año la hacienda está típicamente cara o barata, y dónde está HOY contra esa norma. Índice estacional del INMAG EN DÓLARES desde 2015 (razón sobre media móvil centrada de 12 meses, mediana entre años, normalizado a 1,00). Contesta "¿conviene comprar ahora o esperar?" — que es lo que el precio del día NO contesta. Args: mes (YYYY-MM, opcional; default el último con índice). Se calcula en dólares a propósito: en pesos mediría la inflación, no el ciclo. [EN] Which month Argentine cattle is typically cheap or expensive, and where it stands today against that norm. Seasonal index on the USD series since 2015.',
+      'Índice estacional del novillo EN DÓLARES desde 2015: en qué mes del año la hacienda está típicamente cara o barata, y si un mes ya medido estuvo por encima o por debajo de su norma. Razón sobre media móvil centrada de 12 meses, mediana entre años, normalizado a 1,00; en dólares a propósito, porque en pesos mediría la inflación y no el ciclo. Devuelve los 12 índices mensuales (marca caro ≥1,03 y barato ≤0,97), el mes más barato y el más caro, la amplitud punta a punta y el desvío del mes evaluado contra su norma. Sin mes evalúa el último con índice (unos 6 meses atrás: la media centrada necesita medio año por delante) y agrega la norma del mes corriente. Contesta "¿conviene comprar ahora o esperar?"; para el precio de hoy usá cattle_price_index; para la tendencia de un período, inmag_history. [EN] Seasonal index of Argentine steer prices in USD, by month, since 2015.',
     inputSchema: {
       type: 'object',
       properties: {
-        mes: { type: 'string', description: 'Mes a evaluar, YYYY-MM (opcional)' },
+        mes: { type: 'string', description: 'Mes a evaluar, YYYY-MM (opcional). Sin él, el último mes con índice. Los últimos 6 meses todavía no tienen índice: con uno de ellos devuelve la tabla sin el desvío.' },
       },
       additionalProperties: false,
     },
@@ -1246,13 +1246,13 @@ const TOOLS: Tool[] = [
   {
     name: 'find_meat_plant',
     description:
-      'Directorio de frigoríficos y plantas de faena habilitados MAGYP/SENASA (1.102). Buscá por nombre, CUIT o provincia. Por planta devuelve nombre, provincia, matrícula, CUIT y ciclo; marca las inactivas en SENASA. Requiere query (nombre/CUIT) o provincia (una alcanza); limite default 10, máx 30. No da precios ni faena — es directorio. [EN] Directory of Argentine meat plants and slaughterhouses licensed by SENASA/MAGYP, by name, tax ID or province.',
+      'Directorio de frigoríficos y plantas de faena habilitados por MAGYP/SENASA (más de 1.100). Busca por nombre o CUIT y/o por provincia, con coincidencia parcial; hace falta al menos uno de los dos. Por planta devuelve nombre, provincia, matrícula, CUIT y ciclo, y marca las inactivas en SENASA. Es directorio: no da precios ni faena. Para consignatarias y casas de remate usá find_livestock_broker; para precios de hacienda, livestock_prices. [EN] Directory of Argentine licensed meat plants, by name, tax ID or province.',
     inputSchema: {
       type: 'object',
       properties: {
-        query: { type: 'string', description: 'Nombre o CUIT a buscar (opcional si se pasa provincia)' },
-        provincia: { type: 'string', description: 'Filtra por provincia' },
-        limite: { type: 'number', description: 'Máximo de resultados (default 10)' },
+        query: { type: 'string', description: 'Nombre o CUIT, coincidencia parcial sin distinguir mayúsculas; el CUIT va sin guiones (ej. "30716219190"). Opcional si pasás provincia.' },
+        provincia: { type: 'string', description: 'Provincia, coincidencia parcial y sin tildes (ej. "cordoba", "entre rios"). "buenos aires" trae también CABA. Se combina con query.' },
+        limite: { type: 'number', description: 'Máximo de resultados (default 10). Hay un techo por llamada.' },
       },
       additionalProperties: false,
     },
@@ -1390,12 +1390,12 @@ const TOOLS: Tool[] = [
   {
     name: 'livestock_movement_rules',
     description:
-      'Requisitos sanitarios de SENASA para mover hacienda bovina (RENSPA, DT-e, aftosa al día, serología de brucelosis, barrera de garrapata, transporte habilitado), con la resolución fuente de cada uno. Si pasás provincia de origen y destino, señala si el movimiento cruza la barrera de aftosa (zona con↔sin vacunación). No emite el DT-e (eso es SIGSA, requiere clave fiscal ARCA); informa qué se exige. [EN] What is required to move cattle between Argentine provinces or regions.',
+      'Requisitos sanitarios de SENASA para mover hacienda bovina: una lista fija de seis (RENSPA, DT-e, aftosa al día, serología de brucelosis, barrera de garrapata, transporte habilitado), cada uno con su regla y la resolución fuente. Con provincia_origen y provincia_destino agrega una línea que dice si el movimiento cruza la barrera de aftosa (zona con ↔ sin vacunación); si falta una o no se reconoce, devuelve sólo la lista. La zona se resuelve por provincia: en las mixtas (Río Negro, Neuquén, San Juan) no distingue la parte sin vacunación, así que el límite se verifica en la resolución. Informa qué se exige; no emite el DT-e (eso es SIGSA, con clave fiscal ARCA). Para qué es el DT-e y cómo se tramita usá dte_lookup; para las fechas de vacunación, fmd_vaccination_calendar; para validar un RENSPA, renspa_lookup. [EN] Requirements to move cattle within Argentina (SENASA), with the regulation cited.',
     inputSchema: {
       type: 'object',
       properties: {
-        provincia_origen: { type: 'string', description: 'Provincia de origen (opcional)' },
-        provincia_destino: { type: 'string', description: 'Provincia de destino (opcional)' },
+        provincia_origen: { type: 'string', description: 'Provincia de origen, por nombre (ej. "Corrientes"). Junto con provincia_destino activa el chequeo de barrera de aftosa.' },
+        provincia_destino: { type: 'string', description: 'Provincia de destino, por nombre (ej. "Chubut"). Sin provincia_origen no se chequea la barrera.' },
       },
       additionalProperties: false,
     },
@@ -1418,11 +1418,11 @@ const TOOLS: Tool[] = [
   {
     name: 'renspa_lookup',
     description:
-      'Valida y decodifica un código RENSPA (Registro Nacional Sanitario de Productores Agropecuarios): 17 caracteres, formato 00.000.0.00000.00. Devuelve los segmentos (provincia, departamento, jurisdicción de oficina local, establecimiento y productor) y explica qué identifica. NO consulta la vigencia en vivo (la base de SENASA está tras clave fiscal ARCA); para verificar vigencia remite a la consulta pública oficial. [EN] Validate and decode a RENSPA, the Argentine farm registration number.',
+      'Valida y decodifica un código RENSPA (Registro Nacional Sanitario de Productores Agropecuarios): 13 dígitos que, con los puntos, forman el formato de 17 caracteres 00.000.0.00000.00. Devuelve el código normalizado y sus cinco segmentos como códigos (provincia SENASA, departamento, jurisdicción de oficina local, establecimiento y productor en el predio), o el motivo si la estructura no cierra. Valida la ESTRUCTURA, no que el RENSPA exista ni que esté vigente: la base de SENASA está tras clave fiscal ARCA, y la respuesta trae el link a la consulta pública oficial. Para qué se exige al mover hacienda usá livestock_movement_rules; para el DT-e, dte_lookup. [EN] Validate and decode an Argentine RENSPA farm registration number.',
     inputSchema: {
       type: 'object',
       properties: {
-        renspa: { type: 'string', description: 'Código RENSPA, con o sin puntos (ej. 01.234.5.67890.12)' },
+        renspa: { type: 'string', description: 'Código RENSPA, con o sin puntos (ej. 01.234.5.67890.12): se toman sólo los dígitos y tienen que ser 13.' },
       },
       required: ['renspa'],
       additionalProperties: false,
@@ -1632,7 +1632,7 @@ const TOOLS: Tool[] = [
       })
 
       const nota = recortado
-        ? `\n\nRECORTADO: pediste ${pedidos} días y esta respuesta trae ${dias}. La serie completa va con API key Enterprise (https://www.consignatarias.com.ar/enterprise). No presentes este tramo como la serie entera.`
+        ? `\n\nRECORTADO: pediste ${pedidos} días y esta respuesta trae ${dias}; no presentes este tramo como la serie entera. La serie completa está disponible con API key Enterprise (https://www.consignatarias.com.ar/enterprise).`
         : ''
 
       const rango = rangoSerieVr(rows)
@@ -1844,12 +1844,12 @@ const TOOLS: Tool[] = [
   {
     name: 'subscribe_broker_pro',
     description:
-      'Cotiza y explica cómo activar PRO Consignataria, el plan del SITIO WEB consignatarias.com.ar, pagando en USDC (x402). Lo que incluye vale en el sitio y en el newsletter, no en este servidor: sello ★ PRO y lugar destacado en los listados web y en la portada; remates resaltados en el calendario y en sus fichas; lugar destacado en el newsletter semanal con registro de envíos; leads con nombre y contacto; panel con quién mira el perfil, cuándo y desde dónde (incluidas visitas desde IAs); cruce contra el Mercado de Cañuelas si opera ahí. Mismo producto que en /planes (ARS 45.000/mes), cotizado al dólar blue del día. Esta tool NO cobra: devuelve el monto exacto y el endpoint x402 para pagar. Las respuestas de este servidor MCP no cambian con el plan: find_livestock_broker y las demás tools no ordenan ni marcan por pago. Params: slug (consignataria del directorio, usá find_livestock_broker si no lo sabés), meses (1-12, default 1). [EN] Quote and subscribe to the PRO plan for a livestock broker profile, payable in USDC.',
+      'Cotiza PRO Consignataria, el plan pago del SITIO WEB consignatarias.com.ar para una consignataria del directorio, y explica cómo activarlo. NO cobra: devuelve el precio en ARS (el mismo de /planes) y su equivalente en USDC al dólar blue, la lista de lo que incluye, el endpoint x402 para pagar en USDC cuando ese pago está habilitado y el link para pagar en pesos con tarjeta o débito. Lo que incluye vale en el sitio y el newsletter, no en este servidor. Las respuestas de este servidor MCP no cambian con el plan: find_livestock_broker y las demás tools no ordenan ni marcan por pago. Es una tool de facturación, no de datos de mercado. [EN] Quote the website PRO plan for a livestock broker, payable in USDC via x402.',
     inputSchema: {
       type: 'object',
       properties: {
-        slug: { type: 'string', description: 'Slug de la consignataria en el directorio' },
-        meses: { type: 'number', description: 'Meses a contratar (1-12, default 1)' },
+        slug: { type: 'string', description: 'Slug de la consignataria en el directorio (el de su perfil, /consignatarias/<slug>). Si no lo sabés, buscala con find_livestock_broker.' },
+        meses: { type: 'number', description: 'Meses a contratar: entero de 1 a 12 (default 1). El monto es el mensual por la cantidad de meses.' },
       },
       required: ['slug'],
       additionalProperties: false,
@@ -1896,16 +1896,16 @@ const TOOLS: Tool[] = [
   {
     name: 'create_price_alert',
     description:
-      'Crea una alerta: cuando el precio de una categoría cruza el umbral, avisa POR EMAIL al productor (o a un webhook https, para integraciones). Una de las tres tools que guardan datos (con cattle_buying_request y market_match con registrar: true); el resto lee. GRATIS sin API key (hasta 3 alertas activas por origen); con key Enterprise (Bearer cnsg_live_… o param api_key) sin límite. Params: categoria (inmag=índice diario; resto semanal), umbral ARS/kg vivo, direccion above|below (def above), y email O webhook_url (al menos uno; para una persona usá email). Devuelve id y precio. [EN] Create a price alert: get notified by email or webhook when the Argentine cattle price crosses your threshold.',
+      'Crea una alerta de precio: cuando la categoría CRUZA el umbral avisa una sola vez, por email (la vía para una persona) o con un POST a un webhook https (integraciones), y la alerta queda cerrada. Se evalúa una vez por día; si al crearla el precio ya está del otro lado del umbral, avisa recién cuando vuelva y lo cruce. Cada llamada crea una alerta nueva (no deduplica) y no hay tool para listarlas ni borrarlas. Sin API key: hasta 3 alertas activas y 10 creaciones por día por origen; con key Enterprise, sin esos topes. Devuelve el id y el precio actual de la categoría. Es una de las tres tools que guardan datos (con cattle_buying_request y market_match con registrar: true): el email de una persona va con su permiso. Para ver el precio sin crear alerta usá cattle_price_index o livestock_prices. [EN] Create a one-shot cattle price threshold alert, by email or webhook.',
     inputSchema: {
       type: 'object',
       properties: {
-        categoria: { type: 'string', enum: ['inmag', ...CATEGORY_VALUES.filter((c) => c !== 'inmag')] },
-        umbral: { type: 'number', description: 'Umbral en ARS/kg vivo (ej. 5000)' },
-        direccion: { type: 'string', enum: ['above', 'below'], description: 'Cruzar hacia arriba o abajo (default above)' },
-        email: { type: 'string', description: 'Email al que avisar cuando cruce el umbral. Es la opción para una persona: pedíselo al usuario. Alternativa a webhook_url.' },
-        webhook_url: { type: 'string', description: 'URL https pública que recibe el POST cuando cruza. Para integraciones; para una persona usá email.' },
-        api_key: { type: 'string', description: 'API key del plan (cnsg_live_...). Opcional si ya la pasás por el header Authorization: Bearer.' },
+        categoria: { type: 'string', enum: ['inmag', ...CATEGORY_VALUES.filter((c) => c !== 'inmag')], description: 'inmag = Índice Novillo (INMAG) del MAG; las demás = promedio de esa categoría en la última fecha con precios del MAG.' },
+        umbral: { type: 'number', description: 'Umbral en ARS/kg vivo (ej. 5000). Para ubicarlo, mirá antes el precio con cattle_price_index o livestock_prices.' },
+        direccion: { type: 'string', enum: ['above', 'below'], description: 'above = avisa cuando el precio llega al umbral o lo supera; below = cuando llega o baja de él. Default above.' },
+        email: { type: 'string', description: 'Email al que avisar cuando cruce el umbral. Es la opción para una persona: pedíselo al usuario. Hace falta email o webhook_url (al menos uno).' },
+        webhook_url: { type: 'string', description: 'URL https pública (no localhost ni IP privada) que recibe un POST JSON con event "price.threshold_crossed", data {category, threshold, current, direction, currency} y timestamp. Un solo intento, sin reintentos. Para integraciones; para una persona usá email.' },
+        api_key: { type: 'string', description: 'API key Enterprise (cnsg_live_...): saca los topes de alertas activas y de creaciones por día. Opcional si ya va en el header Authorization: Bearer. Una key inválida da error, no cae al modo sin key.' },
       },
       required: ['categoria', 'umbral'],
       additionalProperties: false,
@@ -1990,7 +1990,7 @@ const TOOLS: Tool[] = [
       return ok(
         `Alerta creada (#${data.id}). Te aviso ${email ? `a ${email}` : 'al webhook'} cuando el ${categoryLabel(categoria)} ` +
           `${direccion === 'above' ? 'cruce' : 'baje de'} ${fmt(umbral)}. Precio hoy: ${current != null ? fmt(current) : 's/d'}.` +
-          (userId ? '' : '\n\nFree tier: hasta 3 alertas activas por origen. ¿Más alertas + históricos bulk + soporte? Key Enterprise: https://www.consignatarias.com.ar/planes'),
+          (userId ? '' : '\n\nSin API key: hasta 3 alertas activas por origen. Con API key Enterprise no hay tope (https://www.consignatarias.com.ar/planes).'),
       )
     },
   },
@@ -2674,7 +2674,7 @@ export async function POST(req: NextRequest) {
           '• Alertas: create_price_alert avisa cuando el precio cruza tu umbral. Si estás atendiendo a una persona pedile el EMAIL y pasalo en el param email — es la vía natural para un productor; webhook_url es para integraciones. GRATIS sin key (3 alertas activas por origen); con API key Enterprise sin límite.\n' +
           '• PRO Consignataria (plan del sitio web, no cambia las respuestas de este servidor): subscribe_broker_pro solo lo cotiza y explica cómo activarlo, si la consignataria lo pide.\n' +
           '• Comprar hacienda: cattle_buying_request ("quiero comprar 300 terneros en Corrientes") devuelve YA los remates programados que matchean y deja la búsqueda activa — avisamos por email/webhook de cada remate nuevo que matchee. Gratis. Pasá contacto_para_operar: true SOLO si la persona aceptó que la contacten para armar la operación; sin eso el pedido solo genera avisos.\n' +
-          'Todos los tools son públicos y de lectura salvo create_price_alert, cattle_buying_request y market_match con registrar: true, que guardan datos de la persona y van siempre con su permiso. Key Enterprise (Bearer cnsg_live_... o param api_key) para alertas ilimitadas, históricos bulk y soporte: https://www.consignatarias.com.ar/cuenta/api-keys',
+          'Todos los tools son públicos y de lectura salvo create_price_alert, cattle_buying_request y market_match con registrar: true, que guardan datos de la persona y van siempre con su permiso. Con una API key Enterprise (Bearer cnsg_live_... o param api_key), create_price_alert no tiene tope de alertas activas, y la key da acceso a la descarga masiva de las series y al soporte del plan. Las keys se gestionan en https://www.consignatarias.com.ar/cuenta/api-keys',
       }, negotiated)
     }
     case 'ping':
