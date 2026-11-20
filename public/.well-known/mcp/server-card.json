@@ -121,7 +121,7 @@
     {
       "name": "livestock_prices",
       "title": "Precios de hacienda por categoría",
-      "description": "Precios de hacienda por categoría (novillos, novillitos, vaquillonas, vacas, toros, terneros) del Mercado Agroganadero: observación SEMANAL del SIO, ARS/kg vivo. Cada una: precio actual, cabezas y aviso si <200 cab (pocos datos). categoria (enum) filtra una; sin arg, todas. NO es el INMAG diario (cattle_price_index, no comparar 1:1) ni subcategorías (livestock_prices_detailed). [EN] Argentine cattle prices by category (steer, young steer, heifer, cow, bull, calf), ARS per live kilogram.",
+      "description": "Precios de hacienda por categoría (novillos, novillitos, vaquillonas, vacas, toros) del Mercado Agroganadero: observación SEMANAL del SIO, ARS/kg vivo. terneros no lo opera el MAG: sale estimado (INMAG × 1,10, estimado: true) o, si hay dato observado de otra fuente, con esa fuente y su fecha. Cada una: precio actual, cabezas y aviso si <200 cab (pocos datos). categoria (enum) filtra una; sin arg, todas. NO es el INMAG diario (cattle_price_index, no comparar 1:1) ni subcategorías (livestock_prices_detailed). [EN] Argentine cattle prices by category (steer, young steer, heifer, cow, bull, calf), ARS per live kilogram.",
       "inputSchema": {
         "type": "object",
         "properties": {

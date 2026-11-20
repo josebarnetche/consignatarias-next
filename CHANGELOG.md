@@ -7,6 +7,11 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.263.3] — 2026-11-20
+
+### Corregido
+- MCP `livestock_prices`: las categorías que no son observadas (hoy terneros, que el MAG no opera y sale del INMAG × ratio) dicen «ESTIMADO desde el INMAG, no observado» en el texto y `observado: false` en lo estructurado. Se apoya en el `source` de cada categoría de `market-prices.json`, con `estimado` y `metodo` (INMAG × ratio) en lo estructurado y la descripción corregida (incorpora el parche de d4, 058f1dec). También le llega a la integración anónima (Misiones, el 81% de quienes reciben este número): solo cambia su línea de terneros, que suma «· ESTIMADO: INMAG × 1,10 (…)», y sigue sin structuredContent. Decisión de José, 20-11. Un precio que el scraper marca `observado: true` desde otra fuente (el ternero mensual de MAGyP) sale observado, con su fuente y fecha.
+
 ## [1.263.2] — 2026-11-20
 
 ### Cambiado
