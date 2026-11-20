@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { TIERRA } from '@/lib/valuacion-campos'
 import { armarInformeValuacion } from '@/lib/informes/valuacion'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 const APP_URL = 'https://www.consignatarias.com.ar'
 
@@ -95,6 +96,7 @@ export default function Page() {
           Hay dos caminos, y la gracia está en correr los dos. Cuando dan distinto —que es
           casi siempre— esa diferencia es la parte útil.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mt-3" />
       </header>
 
       <section className="mt-10 space-y-4 text-base leading-relaxed text-slate-300">

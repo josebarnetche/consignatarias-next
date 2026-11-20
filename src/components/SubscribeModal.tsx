@@ -306,6 +306,10 @@ export default function SubscribeModal() {
                   </button>
                 </div>
               </form>
+              {/* Puente a MEMOLA (fase 6): marca discreta, sin link, para no competir con la suscripción. */}
+              <p className="mt-4 border-t border-zinc-800/80 pt-3 text-center font-mono text-[10px] uppercase tracking-[0.18em] text-zinc-600">
+                Un producto de <span className="text-zinc-400">MEMOLA</span>
+              </p>
             </>
           )}
         </div>

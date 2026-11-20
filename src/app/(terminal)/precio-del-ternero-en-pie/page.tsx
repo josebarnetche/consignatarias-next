@@ -12,6 +12,7 @@ import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
 import { RematesDeInvernada } from '@/components/precios/TerneroEstimado'
 import { terneroDato, terneroNota, terneroCalificador, terneroFuenteFrase, terneroCuando } from '@/lib/ternero'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel; el JSON lo commitea el scraper 14:00 ART
 
@@ -221,6 +222,7 @@ export default function PrecioDelTerneroEnPiePage() {
             </>
           )}
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
         <p className="text-xs text-zinc-500 mb-4">{terneroNota(T)}</p>
 
         <p className="mb-4">

@@ -10,6 +10,7 @@ import {
   DefinedTermSetSchema,
 } from '@/components/seo/JsonLd'
 import { FUENTE_MAG } from '@/lib/seo/schemas'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 // SSG con rebuild diario — el JSON estático lo actualiza el scraper 14:00 ART → git commit → Vercel.
 export const revalidate = 86400
@@ -149,6 +150,7 @@ export default function ArrendamientoLiniersPage() {
           su <strong className="text-ink">sucesor operativo</strong>: cuando un contrato cita el
           &ldquo;índice novillo Liniers&rdquo;, en la práctica se liquida con este valor.
         </p>
+        <MemolaBridge placement="arrendamiento_plaza" variant="inline" className="-mt-3 mb-6" />
 
         <p className="text-zinc-400 leading-relaxed mb-6">
           El valor del día, la serie y la calculadora están en{' '}

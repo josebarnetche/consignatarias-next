@@ -10,6 +10,7 @@ import {
   DefinedTermSetSchema,
   type DefinedTermItem,
 } from '@/components/seo/JsonLd'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 // Rebuild diario: el scraper reescribe market-prices.json (14:00 ART → commit →
 // Vercel rebuild). SSG con revalidate para no servir un número viejo si el build
@@ -204,6 +205,7 @@ export default function ArrendamientoCanuelasPage() {
           <Link href="/mercado/inmag" className="text-accent hover:underline">INMAG</Link>{' '}
           (${fmt(inmag.current)}/kg, {inmagChangeStr}).
         </p>
+        <MemolaBridge placement="arrendamiento_plaza" variant="inline" className="mt-3 max-w-2xl" />
 
         <p className="text-zinc-400 leading-relaxed max-w-2xl mt-4">
           El valor del día con su serie y la calculadora están en{' '}

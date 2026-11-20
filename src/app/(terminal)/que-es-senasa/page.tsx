@@ -8,6 +8,7 @@ import {
   TechArticleSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -168,6 +169,7 @@ export default function QueEsSenasaPage() {
           habilitación de los establecimientos agroalimentarios; es la autoridad sanitaria sobre la
           que se apoya toda la cadena ganadera.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="text-zinc-400 mb-8">
           En la práctica, SENASA es el organismo que administra el RENSPA (el registro que vincula al

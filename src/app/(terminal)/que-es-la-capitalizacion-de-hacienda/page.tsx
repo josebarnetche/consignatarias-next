@@ -11,6 +11,7 @@ import marketPrices from '@/lib/data/market-prices.json'
 import { terneroDato, terneroCalificador } from '@/lib/ternero'
 import { INMAG_DATE } from '@/lib/inmag'
 import { SiguientePaso } from '@/components/seo/SiguientePaso'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -228,6 +229,7 @@ export default function QueEsLaCapitalizacionDeHaciendaPage() {
           su valor— según un <strong>porcentaje pactado</strong>: el capitalizador pone la hacienda y
           el dueño del campo pone el pasto y el manejo.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="mb-4">
           Dicho de otro modo, no hay compra de hacienda ni canon fijo de por medio: los animales

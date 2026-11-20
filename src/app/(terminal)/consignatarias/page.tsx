@@ -185,6 +185,19 @@ export default async function ConsignatariasDirectoryPage() {
         )}
       </header>
 
+      {/* Puente a MEMOLA (fase 6): debajo del encabezado y arriba de la lista de firmas, no al final. */}
+      <div className="mx-auto max-w-5xl px-4 pb-4 pt-2 sm:px-6">
+        <MemolaBridge
+          placement="consignatarias_directorio"
+          variant="bloque"
+          titulo="Plataforma creada y operada por MEMOLA"
+          cta="Hablemos con MEMOLA →"
+        >
+          Este directorio lo desarrolla y opera MEMOLA, agencia de datos y marketing para el agro. Para tu
+          consignataria hacemos sitio, pauta y comunicación de remates con los mismos datos que ves acá.
+        </MemolaBridge>
+      </div>
+
       <ConsignatariasDirectoryClient entries={entries} provinceLinks={provinceLinks} />
 
       {/* Texto descriptivo (SEO): abajo, para el que quiera leerlo. */}
@@ -223,18 +236,6 @@ export default async function ConsignatariasDirectoryPage() {
         />
       </div>
 
-      {/* Puente a MEMOLA (fase 4) */}
-      <div className="mx-auto max-w-5xl px-4 pb-8 sm:px-6">
-        <MemolaBridge
-          placement="consignatarias_directorio"
-          variant="bloque"
-          titulo="Plataforma creada y operada por MEMOLA"
-          cta="Hablemos con MEMOLA →"
-        >
-          Este directorio lo desarrolla y opera MEMOLA, agencia de datos y marketing para el agro. Para tu
-          consignataria hacemos sitio, pauta y comunicación de remates con los mismos datos que ves acá.
-        </MemolaBridge>
-      </div>
     </>
   )
 }

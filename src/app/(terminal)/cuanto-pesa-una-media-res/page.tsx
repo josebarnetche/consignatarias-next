@@ -9,6 +9,7 @@ import {
 } from '@/components/seo/JsonLd'
 import { LICENCIA_PROPIA } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // daily rebuild via Vercel
 
@@ -182,6 +183,7 @@ export default function CuantoPesaUnaMediaResPage() {
           <strong>200–260 kg</strong>), lo que equivale a un <strong>rinde del 56–58%</strong> sobre
           un animal de 450 kg vivos.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="mb-4">
           La media res es cada una de las dos mitades en que se parte la res —el animal faenado, sin

@@ -10,6 +10,7 @@ import {
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
 import { SiguientePaso } from '@/components/seo/SiguientePaso'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -180,6 +181,7 @@ export default function CuantoCuestaElFleteDeHaciendaPage() {
           distancia, de cuántos pisos se llenan y del precio del gasoil. Es un{' '}
           <strong>precio de referencia del mercado, no fijado por esta página</strong>.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="mb-4">
           Como referencia de magnitud, un novillo terminado de {pesoNovillo} kg vale hoy ({INMAG_DATE})

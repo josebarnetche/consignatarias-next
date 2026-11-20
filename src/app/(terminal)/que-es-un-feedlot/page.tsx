@@ -9,6 +9,7 @@ import {
 import marketPrices from '@/lib/data/market-prices.json'
 import { terneroDato, terneroCalificador } from '@/lib/ternero'
 import { INMAG_DATE } from '@/lib/inmag'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -158,6 +159,7 @@ export default function QueEsUnFeedlotPage() {
           en grano (principalmente maíz) para ganar peso rápido —entre 1 y 1,5 kg por día— y llegar en
           pocos meses al peso de faena.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="text-zinc-400 mb-8">
           En vez de terminar la hacienda a pasto, el feedlot la encierra en corrales y le da una

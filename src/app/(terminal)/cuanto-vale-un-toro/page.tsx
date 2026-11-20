@@ -11,6 +11,7 @@ import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
 import PuenteHacienda from '@/components/PuenteHacienda'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel; el JSON lo commitea el scraper 14:00 ART
 
@@ -206,6 +207,7 @@ export default function CuantoValeUnToroPage() {
           {fmt(faena700)}–${fmt(faena1000)} por cabeza de 700 a 1000 kg), según el precio de
           referencia del Mercado Agroganadero al {lastUpdate}.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="mb-4">
           El toro se cotiza en <strong>dos mercados que no hay que confundir</strong>. El{' '}

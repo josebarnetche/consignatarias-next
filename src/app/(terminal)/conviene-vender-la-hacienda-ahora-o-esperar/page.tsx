@@ -10,6 +10,7 @@ import {
 import marketPrices from '@/lib/data/market-prices.json'
 import { terneroDato, terneroCalificador } from '@/lib/ternero'
 import { INMAG_DATE } from '@/lib/inmag'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -181,6 +182,7 @@ export default function ConvieneVenderLaHaciendaAhoraOEsperarPage() {
           mercado (INMAG/MAG), no una recomendación de compraventa ni un precio fijado por esta
           página.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="mb-6">
           Esta página no dice cuándo vender: expone el marco con el que se toma esa decisión. Cada

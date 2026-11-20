@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400
 
@@ -69,6 +70,7 @@ export default function ImpuestosVentaCampoPage() {
           respuestas, la misma operación puede no pagar nada o dejar más de un tercio de la ganancia en el
           camino.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="-mt-3 mb-6" />
 
         <section className="mb-8">
           <h2 className="text-zinc-200 text-lg font-medium mb-3">El ITI ya no existe</h2>
