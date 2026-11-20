@@ -111,7 +111,9 @@ export async function techoListado(opts: {
     }
   }
 
-  return { limite: Math.min(pedidoValido, FILAS_ANONIMAS), corte: null }
+  // El tope de la tool vale también sin key: si no, el anónimo recibía más filas que
+  // quien paga (find_meat_plant 50 contra 30, find_livestock_broker 50 contra 25).
+  return { limite: Math.min(pedidoValido, tope, FILAS_ANONIMAS), corte: null }
 }
 
 /**

@@ -7,6 +7,11 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.264.5] — 2026-11-20
+
+### Corregido
+- MCP, tools de listado: sin key se devolvían hasta 50 filas aunque la tool tuviera un tope menor, así que el anónimo recibía más que quien tiene key (find_meat_plant 50 contra 30, find_livestock_broker 50 contra 25, broker_activity_ranking 50 contra 45). Ahora `techoListado()` aplica el tope de la tool en los dos casos. Hallazgo de d4.
+
 ## [1.264.4] — 2026-11-20
 
 ### Cambiado
