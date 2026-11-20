@@ -248,6 +248,31 @@ describe('structuredContent + outputSchema', () => {
       const lista = (await rpc('tools/list', {}, viejo)) as { tools: { outputSchema?: unknown }[] }
       expect(lista.tools.some((t) => t.outputSchema)).toBe(false)
     })
+
+    it('upcoming_auctions: el mapa y la web de la firma le llegan en el texto, el logo no', async () => {
+      const viejo = { 'user-agent': 'cliente-viejo/1.0', 'mcp-protocol-version': '2025-03-26' }
+      const args = { provincia: 'Buenos Aires', limite: 20 }
+      const r = (await rpc('tools/call', { name: 'upcoming_auctions', arguments: args }, viejo)) as Resultado
+      expect(r.structuredContent).toBeUndefined()
+      const texto = r.content[0].text
+      // Los mismos remates, como los ve un cliente nuevo.
+      const sc = (await llamar('upcoming_auctions', args)).structuredContent as {
+        remates: { pin: { maps_url: string; precision: string } | null; web_firma: string | null; logo_url: string | null }[]
+      }
+      const conPin = sc.remates.filter((x) => x.pin)
+      expect(conPin.length).toBeGreaterThan(0)
+      for (const x of conPin) expect(texto).toContain(x.pin!.maps_url)
+      for (const x of sc.remates) if (x.web_firma) expect(texto).toContain(`Web: ${x.web_firma}`)
+      for (const x of sc.remates) if (x.logo_url) expect(texto).not.toContain(x.logo_url)
+      expect(texto).toMatch(/Mapa \((predio|zona)/)
+    })
+  })
+
+  it('upcoming_auctions a la integración anónima: una línea por remate, sin mapa ni web', async () => {
+    const r = (await rpc('tools/call', { name: 'upcoming_auctions', arguments: { provincia: 'Buenos Aires', limite: 20 } }, {})) as Resultado
+    const texto = r.content[0].text
+    expect(texto).not.toMatch(/google\.com\/maps|Mapa \(|Web: /)
+    expect(texto.split('\n').filter((l) => l.startsWith('   '))).toEqual([])
   })
 
 

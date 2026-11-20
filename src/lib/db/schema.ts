@@ -1,6 +1,16 @@
 // Database schema for consignatarias platform
 // Currently used as TypeScript types — DB connection added later
 
+/** Pin de mapa de un remate (ver `src/lib/remates-enriq.ts`). */
+export interface PinRemate {
+  lat: number
+  lng: number
+  /** 'predio' = el lugar del remate; 'localidad' = centro del pueblo. */
+  precision: 'predio' | 'localidad'
+  predio: string | null
+  maps_url: string
+}
+
 export interface Auction {
   id: number
   title: string
@@ -24,6 +34,9 @@ export interface Auction {
   flyerUrl?: string | null
   /** id en `consignataria_auctions` cuando el remate lo cargó o corrigió la firma. */
   firmaAuctionId?: number
+  /** Enriquecido al leer (`conEnriq`): pin del lugar y logo de la firma. */
+  pin?: PinRemate | null
+  logoUrl?: string | null
 }
 
 export interface FeaturedLink {

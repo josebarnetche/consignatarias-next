@@ -17,6 +17,8 @@ import { authenticate } from '@/lib/api-auth'
 import { logEvent } from '@/lib/ops'
 import marketPrices from '@/lib/data/market-prices.json'
 import rematesData from '@/lib/data/remates.json'
+import { enriquecerRemate } from '@/lib/remates-enriq'
+import { getConsignatariaLogoMap } from '@/lib/dal/consignatarias'
 import frigorificosData from '@/lib/data/frigorificos.json'
 import { isValidCategory, categoryLabel, getCurrentPrice, CATEGORY_VALUES } from '@/lib/price-alerts'
 import {
@@ -423,6 +425,13 @@ const REMATE_SCHEMA = {
   properties: {
     date: str, time: strONull, consignataria: str, consignataria_slug: strONull,
     lugar: str, provincia: str, categoria: strONull, en_vivo: bool,
+    pin: {
+      type: ['object', 'null'],
+      description: 'Ubicación del remate. precision "predio" = el lugar del remate (Sociedad Rural, feria); "localidad" = centro del pueblo.',
+      properties: { lat: num, lng: num, precision: str, predio: strONull, maps_url: str },
+    },
+    logo_url: { type: ['string', 'null'], description: 'Logo de la consignataria (de su sitio web).' },
+    web_firma: { type: ['string', 'null'], description: 'Sitio web de la consignataria.' },
   },
   required: ['date', 'time', 'consignataria', 'lugar', 'provincia', 'categoria', 'en_vivo'],
 }
@@ -752,7 +761,7 @@ const TOOLS: Tool[] = [
   {
     name: 'upcoming_auctions',
     description:
-      'Calendario de próximos remates de hacienda en Argentina: de hoy (hora argentina) en adelante, ordenados por fecha. Devuelve fecha, hora, consignataria, localidad/provincia, categoría principal y si el remate tiene link de transmisión. Params: provincia (subcadena, opcional), limite (default 10, máx 50). Qué se está rematando AHORA → live_auctions. No da precios ni INMAG: usá livestock_prices/cattle_price_index. [EN] Calendar of upcoming Argentine cattle auctions, filterable by province.',
+      'Calendario de próximos remates de hacienda en Argentina: de hoy (hora argentina) en adelante, ordenados por fecha. Devuelve fecha, hora, consignataria, localidad/provincia, categoría principal, si el remate tiene link de transmisión, el pin del lugar (lat/lng y link a Google Maps; precision dice si es el predio o el centro del pueblo) y el logo y sitio web de la firma. Params: provincia (subcadena, opcional), limite (default 10, máx 50). Qué se está rematando AHORA → live_auctions. No da precios ni INMAG: usá livestock_prices/cattle_price_index. [EN] Calendar of upcoming Argentine cattle auctions, filterable by province.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -773,20 +782,43 @@ const TOOLS: Tool[] = [
       })
       if (techo.corte) return okData(techo.corte, { remates: [], corte: techo.corte })
       const limite = techo.limite
+      const logosPerfil = await logosPerfilCache()
       // Cada remate se arma UNA vez; la línea de texto y la fila estructurada salen de ahí.
-      const fila = (r: (typeof remates)[number]) => ({
+      const fila = (r: (typeof remates)[number]) => {
+        const e = enriquecerRemate(r, logosPerfil)
+        return {
         date: r.date,
-        time: r.time,
+        time: e.hora,
         consignataria: r.consignatariaName,
         consignataria_slug: r.consignatariaSlug ?? null,
         lugar: cleanLocation(r.location, r.province),
         provincia: r.province,
         categoria: r.mainCategory || null,
         en_vivo: !!r.youtubeUrl,
-      })
+        pin: e.pin,
+        logo_url: e.logo_url,
+        web_firma: e.web,
+        }
+      }
+      // Una integración anónima recibe EXACTAMENTE el texto de siempre (una línea por
+      // remate: su parser puede tomarlas por regex). Al resto, el mapa y la web van
+      // también en el texto: un cliente anterior a la 2025-06-18 no recibe
+      // structuredContent y era la única forma de que le llegaran. El logo no: es
+      // una URL de imagen y no le sirve a quien lee.
+      const legado = esIntegracionAnonima(reqMeta(req))
+      const enlaces = (f: ReturnType<typeof fila>) => {
+        const partes: string[] = []
+        if (f.pin) {
+          const donde = f.pin.precision === 'predio' ? `predio${f.pin.predio ? ' ' + f.pin.predio : ''}` : 'zona, centro de la localidad'
+          partes.push(`Mapa (${donde}): ${f.pin.maps_url}`)
+        }
+        if (f.web_firma) partes.push(`Web: ${f.web_firma}`)
+        return partes.length ? `\n   ${partes.join(' · ')}` : ''
+      }
       const linea = (f: ReturnType<typeof fila>) =>
         `${f.date}${f.time ? ' ' + f.time : ''} · ${f.consignataria} · ${f.lugar}` +
-        `${f.categoria ? ' · ' + f.categoria : ''}${f.en_vivo ? ' · 🔴 en vivo' : ''}`
+        `${f.categoria ? ' · ' + f.categoria : ''}${f.en_vivo ? ' · 🔴 en vivo' : ''}` +
+        (legado ? '' : enlaces(f))
       const upcoming = remates
         // 'live' también: el scraper marca así a TODOS los de hoy, y con 'scheduled' solo
         // los remates del día no aparecían (25 de 25 el 12-11-2026).
@@ -799,7 +831,6 @@ const TOOLS: Tool[] = [
         // detecta el vacío por esta frase o toma las líneas por regex, los remates de
         // otra provincia se le cargarían como propios. La región va solo en
         // structuredContent (revisión del 21-10-2026, integración de Misiones).
-        const legado = esIntegracionAnonima(reqMeta(req))
         if (!prov) return okData(legado ? TEXTO_SIN_REMATES : 'No hay remates próximos en el calendario.', { remates: [] })
         const provNombre = String(args.provincia)
         const cerca = rematesDeLaRegion(provNombre, remates, today, limite)
@@ -2298,6 +2329,15 @@ function rematesProximos(provincia?: string) {
       cabezas_estimadas: r.estimatedHeads,
       transmision: r.youtubeUrl,
     }))
+}
+
+// Logos subidos por las firmas desde su perfil: una consulta por hora, no una por llamada.
+let _logosPerfil: { t: number; m: Record<string, string> } | null = null
+async function logosPerfilCache(): Promise<Record<string, string>> {
+  if (_logosPerfil && Date.now() - _logosPerfil.t < 3_600_000) return _logosPerfil.m
+  const m = await getConsignatariaLogoMap()
+  if (Object.keys(m).length) _logosPerfil = { t: Date.now(), m }
+  return m
 }
 
 function filaTierra(t: (typeof TIERRA)[number]) {
