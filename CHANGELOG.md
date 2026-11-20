@@ -7,6 +7,12 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.264.7] — 2026-11-19
+
+### Corregido
+- **`/remates/en-vivo` y `live_auctions` no veían el canal de Néstor Hugo Fuentes.** El canal estaba mapeado (`nestor-fuentes` en `youtube-channels.json`), pero el scraper publica sus remates como `nestor-hugo-fuentes` (19 de 23 en `remates.json`), un slug que no canonicalizaba: la pared no encontraba canal y 6 remates de los próximos 30 días quedaban sin transmisión posible. El slug se suma a los `allSlugs` del perfil (`consignataria-slugs.ts`), así que también redirige 308 al perfil canónico. Test nuevo `src/lib/youtube-live.test.ts`: todo canal del mapa con `channelId` `UC…` de 24 caracteres, URL y título, sin canales repetidos, y Fuentes resuelto desde los tres slugs del scraper.
+- Medición de cobertura (ventana 20-09 → 19-12-2026): de 100 firmas con remates, 11 tienen `youtubeUrl` en algún remate y 8 de ellas están mapeadas. Las 3 que transmiten sin canal (Ganaderos de Ceres, Soc. Agrícola Ganadera de San Martín, Etchevehere Rural; más Alzaga Unzue fuera de la ventana) quedan pendientes: el repo no guarda el canal de sus videos y no se resolvió por red.
+
 ## [1.264.6] — 2026-11-20
 
 ### Corregido
