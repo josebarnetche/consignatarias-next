@@ -177,9 +177,14 @@ function toolAnnotations(t: Tool) {
   }
 }
 
+/** `source` que pone scripts/scrape-auctions.mjs cuando el precio es observado en el MAG. */
+const MAG_OBSERVADO = 'mercadoagroganadero.com.ar (observed)'
+/** Ratios del respaldo sintético de scripts/scrape-auctions.mjs (fallbackRatios). */
+const RATIO_SINTETICO: Record<string, string> = { novillos: '1,00', novillitos: '0,95', vaquillonas: '0,90', vacas: '0,72', toros: '0,65', terneros: '1,10' }
+
 const prices = marketPrices as unknown as {
   inmag: { current: number; change: number; prev: number; series?: Array<{ date: string; value: number; volume: number }> }
-  categories: Record<string, { current: number; change: number; prev?: number; sioWeek?: string; latestVolume?: number }>
+  categories: Record<string, { current: number; change: number; prev?: number; sioWeek?: string; latestVolume?: number; source?: string; observedDate?: string | null; observado?: boolean }>
   corn: { current: number; change: number; unit: string }
   usdBlue: { current: number; change: number }
   usdOficial: { current: number; change: number }
@@ -406,8 +411,8 @@ const OUTPUT_LIVESTOCK_PRICES = conFuenteSchema(
     week: strONull,
     prices: {
       type: 'object',
-      description: 'Por categoría: precio ARS/kg vivo y cabezas de la observación.',
-      additionalProperties: { type: 'object', properties: { price: num, head: numONull }, required: ['price', 'head'] },
+      description: 'Por categoría: precio ARS/kg vivo y cabezas de la observación. estimado: true = no observado, derivado del INMAG (ver metodo).',
+      additionalProperties: { type: 'object', properties: { price: num, head: numONull, estimado: bool, metodo: strONull }, required: ['price', 'head'] },
     },
   },
   ['metric', 'week', 'prices'],
@@ -623,7 +628,7 @@ const TOOLS: Tool[] = [
   {
     name: 'livestock_prices',
     description:
-      'Precios de hacienda por categoría (novillos, novillitos, vaquillonas, vacas, toros, terneros) del Mercado Agroganadero: observación SEMANAL del SIO, ARS/kg vivo. Cada una: precio actual, cabezas y aviso si <200 cab (pocos datos). categoria (enum) filtra una; sin arg, todas. NO es el INMAG diario (cattle_price_index, no comparar 1:1) ni subcategorías (livestock_prices_detailed). [EN] Argentine cattle prices by category (steer, young steer, heifer, cow, bull, calf), ARS per live kilogram.',
+      'Precios de hacienda por categoría (novillos, novillitos, vaquillonas, vacas, toros) del Mercado Agroganadero: observación SEMANAL del SIO, ARS/kg vivo. terneros no lo opera el MAG: sale estimado (INMAG × 1,10, estimado: true) o, si hay dato observado de otra fuente, con esa fuente y su fecha. Cada una: precio actual, cabezas y aviso si <200 cab (pocos datos). categoria (enum) filtra una; sin arg, todas. NO es el INMAG diario (cattle_price_index, no comparar 1:1) ni subcategorías (livestock_prices_detailed). [EN] Argentine cattle prices by category (steer, young steer, heifer, cow, bull, calf), ARS per live kilogram.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -637,14 +642,30 @@ const TOOLS: Tool[] = [
       const entries = Object.entries(prices.categories).filter(([k]) => !cat || k === cat)
       if (entries.length === 0) return fail(`Categoría desconocida. Válidas: ${Object.keys(prices.categories).join(', ')}`)
       const week = entries.map(([, v]) => v.sioWeek).find(Boolean) || null
+      // Solo es observación lo que el scraper trajo del MAG. El resto (terneros siempre:
+      // el MAG no los opera) es INMAG × ratio fijo y se declara así, nunca como dato del SIO.
+      // También a la integración anónima (Misiones): es quien más recibe este número
+      // (decisión de José, 20-11, «Misiones también»).
+      // Observado = lo dice el scraper (`observado: true`, p. ej. el ternero mensual de MAGyP) o viene del MAG.
+      const esObservado = (v: { source?: string; observado?: boolean }) => v.observado === true || v.source === MAG_OBSERVADO
+      const metodoDe = (k: string, v: { source?: string; observado?: boolean }) =>
+        esObservado(v) ? null : `INMAG × ${RATIO_SINTETICO[k] ?? 'ratio fijo'} (el MAG no opera ${k}: no es un precio observado)`
+      // Observado fuera del SIO semanal (otra fuente u otra frecuencia): se dice cuál y de cuándo.
+      const otraFuente = (v: { source?: string; observedDate?: string | null; observado?: boolean }) =>
+        esObservado(v) && v.source !== MAG_OBSERVADO ? ` · fuente: ${v.source ?? 's/d'}${v.observedDate ? ` (${v.observedDate})` : ''}` : ''
       const lines = entries.map(([k, v]) => {
         const vol = v.latestVolume
         const thin = vol != null && vol < 200
-        return `${k}: ${fmt(v.current)}/kg${vol != null ? ` · ${vol} cab` : ''}${thin ? ' (pocos datos)' : ''}`
+        const metodo = metodoDe(k, v)
+        if (metodo) return `${k}: ${fmt(v.current)}/kg · ESTIMADO: ${metodo}`
+        return `${k}: ${fmt(v.current)}/kg${vol != null ? ` · ${vol} cab` : ''}${thin ? ' (pocos datos)' : ''}${otraFuente(v)}`
       })
       const data = {
         metric: 'sio_weekly_by_category', week,
-        prices: Object.fromEntries(entries.map(([k, v]) => [k, { price: v.current, head: v.latestVolume ?? null }])),
+        prices: Object.fromEntries(entries.map(([k, v]) => {
+          const metodo = metodoDe(k, v)
+          return [k, { price: v.current, head: metodo ? null : v.latestVolume ?? null, estimado: metodo != null, metodo }]
+        })),
       }
       return okData(
         `Precios de hacienda por categoría — observación SIO ${week ? `(${week})` : 'semanal'}, ARS/kg vivo\n` +
