@@ -3205,6 +3205,52 @@ export async function sendMcpConsumptionAlert(events: McpConsumptionEvent[]) {
 }
 
 /**
+ * ALERTA INTERNA — la integración anónima de Misiones dejó de llamar.
+ * Es el único consumidor externo sostenido del MCP y entra sin nombre, así
+ * que la alerta por cliente no la ve. Se manda una vez por par de días.
+ */
+export async function sendMisionesCaidaAlert(opts: {
+  dias: { dia: string; n: number }[]
+  serie: { dia: string; n: number }[]
+  piso: number
+}): Promise<{ success: boolean; error?: string }> {
+  const resend = await getResend()
+  if (!resend) return { success: false, error: 'no_resend' }
+  const to = process.env.OPS_ALERT_EMAIL || 'agro@memola.com.ar'
+  const filas = opts.serie
+    .map(
+      (x) =>
+        `<tr><td style="padding:4px 10px;border-bottom:1px solid #eee;font-family:monospace">${escapeHtml(x.dia)}</td>` +
+        `<td align="right" style="padding:4px 10px;border-bottom:1px solid #eee;font-family:monospace">${x.n}</td></tr>`,
+    )
+    .join('')
+  const resumen = opts.dias.map((x) => `${escapeHtml(x.dia)}: ${x.n}`).join(' · ')
+  const html = `
+    <div style="font-family:system-ui,-apple-system,sans-serif;max-width:560px;margin:0 auto;color:#111">
+      <h2 style="font-size:18px">⚠️ MCP: Misiones bajó del piso dos días hábiles seguidos</h2>
+      <p style="color:#444">La integración anónima de Misiones (4 alias en castellano, sin user-agent) hizo menos de ${opts.piso} llamadas en los dos últimos días hábiles: <strong>${resumen}</strong>.</p>
+      <p style="color:#444">Antes de concluir que se cayó: ¿fueron feriados? (la regla no los conoce). ¿Cambió de alias o empezó a mandar user-agent? (en ese caso la firma ya no la reconoce y el uso sigue).</p>
+      <table style="border-collapse:collapse;font-size:13px">
+        <thead><tr><th align="left" style="padding:4px 10px;border-bottom:2px solid #111">Día (ART)</th><th align="right" style="padding:4px 10px;border-bottom:2px solid #111">Llamadas</th></tr></thead>
+        <tbody>${filas}</tbody>
+      </table>
+      <p style="color:#888;font-size:12px;margin-top:16px">Firma: get_indice_novillo / get_precios_hacienda / get_contexto_macro / list_remates, sin UA, IP fuera de 45.175.x. Últimos 7 días.</p>
+    </div>`
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM,
+      to,
+      subject: `⚠️ MCP: Misiones debajo de ${opts.piso} (${resumen})`,
+      html,
+    })
+    if (error) return { success: false, error: error.message }
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err instanceof Error ? err.message : 'Unknown error' }
+  }
+}
+
+/**
  * Alerta instantánea a la consignataria cuando entra un lead. Se dispara desde
  * /api/leads tras el insert. Solo se envía si el perfil está reclamado
  * (consignatarias.claimed_by_email). El contacto (nombre/teléfono/email/mensaje)

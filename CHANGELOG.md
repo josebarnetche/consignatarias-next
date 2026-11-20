@@ -7,6 +7,15 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.261.1] — 2026-11-19
+
+### Agregado
+- **Alerta de consumo MCP: vigila a la integración anónima de Misiones.** Cuenta sus llamadas por firma (4 alias, sin UA, fuera de IPs propias) en los últimos 7 días y avisa por mail si los dos últimos días hábiles quedan debajo de 76. Un aviso por par de días (`misiones_alerta` en el watermark).
+
+### Corregido
+- **Sin falsos positivos por tope de filas:** si la consulta de Misiones llega a 1000 filas, se reporta `error` en vez de contar de menos.
+- **Ruido:** `stork-relay`, `SignalLabTester`, `RadialScout` y `agent-index` (directorios y auditores) ya no disparan el aviso de «consumo real»; dispararon los mails del 17 y 18/11.
+
 ## [1.259.4] — 2026-11-13
 
 ### Agregado
