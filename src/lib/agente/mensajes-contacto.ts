@@ -108,3 +108,24 @@ export function ofertaServicioContacto(o: { leadId: number; ofertaId: number; la
     ].join('\n'),
   }
 }
+
+/**
+ * A la contraparte que pide el contacto (teléfono, WhatsApp, mail) sin haber
+ * respondido ACEPTO. No se le traslada al lead: el contacto se entrega solo después
+ * del ACEPTO escrito (caso #50, oferta 90, 18-11-2026). Es una respuesta dentro del
+ * hilo de la oferta, no un contacto nuevo, y no cambia nada más: la oferta sigue
+ * esperando el ACEPTO. La condición sale de `cobroCorto`, la misma línea que usa el
+ * recordatorio, para que el cobro se diga en un solo lugar.
+ */
+export function respuestaPideContacto(o: { leadId: number; ofertaId: number; lado: Lado; datos: DatosHacienda; modo?: ModoCobro; tarifaArs?: number }): Correo {
+  const vende = o.lado === 'vende'
+  return {
+    asunto: `Re: ${vende ? 'Hacienda disponible' : 'Comprador buscando'}: ${resumenHacienda(o.datos)} · Ref. ${referencia(o.leadId, o.ofertaId)}`,
+    texto: [
+      'Buenas,',
+      '',
+      `Para pasarles el contacto directo del ${vende ? 'vendedor' : 'comprador'}, respondan ACEPTO a este correo (${cobroCorto(o.modo ?? MODO_COBRO_HACIENDA, o.tarifaArs ?? TARIFA_CONTACTO_ARS)}). Apenas llegue, se lo enviamos.`,
+      FIRMA,
+    ].join('\n'),
+  }
+}
