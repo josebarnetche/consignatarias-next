@@ -7,6 +7,16 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.264.2] — 2026-11-20
+
+> Versión placeholder: el número final lo fija quien integre la rama.
+
+### Corregido
+- **Corrientes: la producción provincial pasa de 62 a 34 kg de carne/ha/año.** El 62 era el modelo de INTA EEA Mercedes para campos de **loma** con tecnología básica (Calvi y col. 2016b, citado en Calvi y col., CIEA 2019), no lo que produce la provincia: el mismo trabajo da 35 para campos bajos y 56 ponderado. El 34 es el promedio provincial medido 2017–2021 (García Olano y Schutt, *Revista Veterinaria* UNNE 34(2), oct-2023, Tabla 1, sobre superficie ganadera), la misma publicación que da el canon y los 55 de Curuzú Cuatiá. Se recalculan `usd_por_kg` (30,6 → 55,9) y `anos_repago` (10,5 → 19,1). El valor de la hectárea, el canon y la renta no cambian: en Corrientes manda el canon relevado.
+- **`farmland_yield` dice de dónde sale el canon relevado.** En Centro-sur (Cuchillas) la línea decía «36 kg novillo/ha/año» como si fuera relevado en la zona; ahora agrega la fuente, que aclara que es el rango PROVINCIAL. Nuevo campo `canonFuente` en `rentaCampo`.
+- **Recursos MCP `tierra/{provincia}` y `catalogo/provincias`:** `kg_novillo_ha_anio` traía la producción de carne (62 en Corrientes) al lado del canon mensual (3 kg); ahora es el canon anual, como en `/valor-tierra.json`. La producción va en `produccion_kg_carne_ha_anio` y los años en `anos_repago_sobre_produccion`.
+- Felipe Yofre y Mariano I. Loza verificados en el departamento Mercedes (INDEC 18105010 y 18105020, georef de datos.gob.ar).
+
 ## [1.264.1] — 2026-11-20
 
 > Versión placeholder: el número final lo fija quien integre la rama.

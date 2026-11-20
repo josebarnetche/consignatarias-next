@@ -25,7 +25,7 @@ export interface ZonaCanon {
   /**
    * Años de producción bruta de carne para repagar la tierra, tal como viene en el dataset.
    * OJO: **no** es el repago por arrendamiento — mide la producción entera del campo, no lo
-   * que cobra quien lo alquila. En Corrientes da 10,5 años contra los 19 del canon. El
+   * que cobra quien lo alquila. En la pampa húmeda da 6,5 años contra los ~18 del canon. El
    * informe calcula el de arrendamiento aparte y muestra los dos, porque son dos preguntas.
    */
   aniosRepago: number | null
@@ -84,9 +84,9 @@ export function generateInformeCanonPDF(dataCruda: InformeCanonData): jsPDF {
    * Años de canon para repagar la hectárea — el número que le importa a quien arrienda.
    *
    * NO se toma `zona.aniosRepago` del dataset: ese campo mide el repago contra la
-   * producción bruta de carne del campo entero (62 kg/ha/año en Corrientes, ~10,5 años),
-   * no contra lo que cobra el arrendador. Con un canon de 3 kg/ha/mes son ~19 años, casi
-   * el doble. Publicar el primero en un informe de arrendamiento sería contestar otra
+   * producción bruta de carne del campo entero (180 kg/ha/año en la pampa húmeda, 6,5 años),
+   * no contra lo que cobra el arrendador. Con un canon de 5,4 kg/ha/mes son ~18 años. Publicar
+   * el primero en un informe de arrendamiento sería contestar otra
    * pregunta.
    */
   const novilloUsdKg = data.usdArs ? data.novilloArsKg / data.usdArs : null

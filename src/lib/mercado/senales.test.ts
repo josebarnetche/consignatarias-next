@@ -83,6 +83,9 @@ describe('renta del campo', () => {
     // 36 kg de canon × 2,6 = 93,6. Con la producción (150) habrían sido 390.
     expect(ctes.rentaUsdHa).toBeCloseTo(93.6, 1)
     expect(ctes.canonRelevado).toBe(true)
+    // Dice de dónde sale el canon relevado; el supuesto del 30 % no trae fuente.
+    expect(ctes.canonFuente).toBe('UNNE 2023')
+    expect(r.find((x) => x.provincia === 'La Pampa')!.canonFuente).toBeNull()
   })
 
   it('⚠️ el canon NO es la producción: tomar la producción triplica el rendimiento', () => {

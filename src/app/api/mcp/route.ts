@@ -1158,13 +1158,16 @@ const TOOLS: Tool[] = [
 
       const lineas = filas.slice(0, limite).map((z) => {
         const nombre = `${z.provincia}${z.zona ? ` — ${z.zona}` : ''}`
-        // El canon va en su unidad: así se firma el contrato. El asterisco marca
-        // si fue relevado o si es el 30 % supuesto sobre la producción.
+        // El canon va en su unidad: así se firma el contrato. La marca dice si fue
+        // relevado —y dónde: una zona puede heredar el canon de su provincia— o si
+        // es el 30 % supuesto sobre la producción.
         const canon =
           z.rentaSegun === 'agrícola'
             ? `${z.canonQqSojaHaAno} qq soja/ha/año`
             : z.canonKgNovilloHaAno != null
-              ? `${z.canonKgNovilloHaAno} kg novillo/ha/año${z.canonRelevado ? '' : ' (estimado)'}`
+              ? `${z.canonKgNovilloHaAno} kg novillo/ha/año${
+                  !z.canonRelevado ? ' (estimado)' : z.canonFuente ? `; fuente del canon: ${z.canonFuente}` : ''
+                }`
               : 's/canon'
         const repago = z.rendimientoPct ? ` · repago ${Math.round(100 / z.rendimientoPct)} años` : ''
         const ha = z.hectareasPorPresupuesto != null ? ` · ${z.hectareasPorPresupuesto.toLocaleString('es-AR')} ha con tu presupuesto` : ''
@@ -1186,7 +1189,7 @@ const TOOLS: Tool[] = [
           'CÓMO LEER EL RENDIMIENTO. Es la renta anual del arrendamiento sobre el valor de la tierra: lo mismo que un yield sobre capital. ' +
           'Lo particular del caso argentino es que **el canon no se pacta en pesos ni en dólares, sino en producto**: kilos de novillo por hectárea y por año en campo ganadero, quintales de soja en campo agrícola. ' +
           'El rendimiento está nominado en carne o en grano, así que no se licúa con una devaluación — es la diferencia con cualquier renta en moneda local. El dólar de arriba es una conversión al precio de hoy, no la unidad del contrato.\n' +
-          '⚠️ El canon NO es lo que la hectárea produce: el arrendatario paga una fracción. Donde hay arrendamiento relevado (avisos o estudios) manda ese; donde no, se aplica el 30 % de la producción y la línea lo dice con "(estimado)". ' +
+          '⚠️ El canon NO es lo que la hectárea produce: el arrendatario paga una fracción. Donde hay arrendamiento relevado (avisos o estudios) manda ese y la línea dice de dónde sale —si el relevamiento es de la provincia y no de la zona, lo aclara—; donde no, se aplica el 30 % de la producción y la línea lo dice con "(estimado)". ' +
           'Cada aptitud rinde por lo suyo: la zona núcleo vale por la soja, no por los novillos. En zona mixta la renta de referencia es la mayor de las dos, porque el dueño arrienda a quien le paga más.\n' +
           'Cada fila lleva su cantidad de observaciones y la fecha del relevamiento. Fuente: relevamiento propio + Compañía Argentina de Tierras.',
       )
@@ -2371,9 +2374,14 @@ function filaTierra(t: (typeof TIERRA)[number]) {
     usd_ha_p25: t.p25 ?? null,
     usd_ha_p75: t.p75 ?? null,
     canon_kg_novillo_ha_mes: t.kg_ha_mes_canon ?? null,
+    // El canon anual, en la misma clave y con el mismo sentido que /valor-tierra.json.
+    // Hasta 1.263.2 esta clave traía `kg_ha_ano`, que es lo que la hectárea PRODUCE
+    // (kg de carne), no lo que se paga: un agente leía 62 kg de canon donde se pagan 36.
+    kg_novillo_ha_anio: t.kg_ha_mes_canon ? Math.round(t.kg_ha_mes_canon * 12) : null,
     canon_fuente: t.canon_fuente ?? null,
-    kg_novillo_ha_anio: t.kg_ha_ano ?? null,
-    anos_repago: t.anos_repago,
+    produccion_kg_carne_ha_anio: t.kg_ha_ano ?? null,
+    // Años de PRODUCCIÓN bruta para pagar la tierra, no años de canon.
+    anos_repago_sobre_produccion: t.anos_repago,
     fuente_dato: t.fuente ?? null,
     fecha_dato: t.fecha ?? null,
   }

@@ -56,6 +56,20 @@ describe('Corrientes: departamentos → zona', () => {
     expect(r.texto).toContain('Rango de referencia: US$1.200 a US$1.600')
   })
 
+  it('la producción provincial es la medida (UNNE 34), no el modelo de loma (INTA 62)', () => {
+    // Seguimiento 20-11-2026: la fila provincial decía 62 kg/ha/año, que es el modelo de
+    // INTA EEA Mercedes para campos de LOMA. Lo medido en la provincia 2017-2021 es 34,
+    // y el centro-sur (Curuzú Cuatiá, 55) produce más que el promedio, no menos.
+    const prov = tierraDe('Corrientes')!
+    const zona = tierraDe('Corrientes', 'Mercedes')!
+    expect(prov.kg_ha_ano).toBe(34)
+    expect(prov.fuente).toMatch(/UNNE 34\(2\), oct-2023, Tabla 1/)
+    expect(zona.kg_ha_ano).toBeGreaterThan(prov.kg_ha_ano)
+    // Los derivados siguen a la producción: usd_ha ÷ kg y usd_ha ÷ (kg × 2,92).
+    expect(prov.usd_por_kg).toBeCloseTo(prov.usd_ha / prov.kg_ha_ano, 0)
+    expect(prov.anos_repago).toBeCloseTo(prov.usd_ha / (prov.kg_ha_ano * 2.92), 0)
+  })
+
   it('Corrientes tiene una zona y cada fila de la base trae fuente y fecha', () => {
     expect(zonasDe('Corrientes').map((z) => z.zona)).toEqual([ZONA])
     for (const t of TIERRA.filter((x) => x.provincia === 'Corrientes')) {

@@ -99,6 +99,19 @@ describe('MCP resources', () => {
     expect((t.json?.zonas as unknown[]).length).toBeGreaterThan(0)
   })
 
+  it('tierra/{provincia}: el canon anual no se confunde con la producción de carne', async () => {
+    // Hasta 1.263.2 `kg_novillo_ha_anio` traía la producción (62 en Corrientes) al lado de
+    // un canon de 3 kg/ha/mes: un agente leía 62 kg de canon. Ahora es el canon × 12.
+    const { json } = await leer('consignatarias://tierra/Corrientes')
+    expect(json?.canon_kg_novillo_ha_mes).toBe(3)
+    expect(json?.kg_novillo_ha_anio).toBe(36)
+    expect(json?.produccion_kg_carne_ha_anio).toBe(34)
+    const zona = (json?.zonas as Record<string, unknown>[])[0]
+    expect(zona.kg_novillo_ha_anio).toBe(36)
+    expect(zona.produccion_kg_carne_ha_anio).toBe(55)
+    expect(String(zona.canon_fuente)).toMatch(/PROVINCIAL/)
+  })
+
   it('el template de remates filtra por provincia', async () => {
     const todos = (await leer('consignatarias://remates/proximos')).json?.remates as { provincia: string | null }[]
     const prov = todos.find((r) => r.provincia)?.provincia ?? 'Buenos Aires'
