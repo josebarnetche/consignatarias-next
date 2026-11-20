@@ -2377,6 +2377,11 @@ export async function sendSubscriptionInvite(
 // El Corredor — entrega del PDF al suscribirse al lead magnet
 // ----------------------------------------------------------------
 
+// El eyebrow de los mails de El Corredor es el mismo que usa el sitio para el informe
+// (SubscribeStrip, ElCorredorCTA, SubscribeModal): «Mesa de hacienda · cierre mensual».
+// Antes decía «Mercado Decision Infrastructure», en inglés, a un lector argentino.
+const EYEBROW_EL_CORREDOR = 'Mesa de hacienda &middot; cierre mensual'
+
 export async function sendElCorredorDelivery(email: string, edition: string, pdfUrl: string) {
   const resend = await getResend()
   if (!resend) return { success: false, error: 'RESEND_API_KEY no configurado' }
@@ -2391,7 +2396,7 @@ export async function sendElCorredorDelivery(email: string, edition: string, pdf
       subject: `El Corredor · ${edition} — tu copia adentro`,
       html: darkEmailShell(`
           <div style="font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #71717a; margin-bottom: 24px;">
-            Mercado Decision Infrastructure
+            ${EYEBROW_EL_CORREDOR}
           </div>
 
           <h1 style="font-size: 36px; font-weight: 700; letter-spacing: -0.02em; color: #fafafa; margin: 0 0 4px 0;">El Corredor</h1>
@@ -2449,7 +2454,7 @@ export async function sendElCorredorCorreccion(email: string, edition: string, p
       subject: `Perdón — te mandamos El Corredor equivocado. Acá va el de ${edition}`,
       html: darkEmailShell(`
           <div style="font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #71717a; margin-bottom: 24px;">
-            Mercado Decision Infrastructure
+            ${EYEBROW_EL_CORREDOR}
           </div>
 
           <h1 style="font-size: 32px; font-weight: 700; letter-spacing: -0.02em; color: #fafafa; margin: 0 0 4px 0;">El Corredor</h1>

@@ -26,6 +26,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import urllib.parse
 import urllib.request
 from dataclasses import dataclass, field
@@ -320,7 +321,25 @@ def subcategorias_mes(m: Mes) -> Serie:
             "kg_promedio": round(kg_tot / cab) if cab and kg_tot else None,
         })
     puntos.sort(key=lambda x: x.get("promedio") or 0, reverse=True)
-    return Serie(puntos, "PDF mensual del MAG (haciinfo000502) · mes cerrado", a.get("fecha") or m.hasta)
+    return Serie(puntos, "PDF mensual del MAG (haciinfo000502) · mes cerrado", a.get("fecha") or corte_categorias(a, m))
+
+
+def corte_categorias(a: dict, m: Mes) -> str:
+    """
+    Hasta qué día puede traer datos el PDF por categoría. El MAG titula con el
+    rango PEDIDO ("DESDE ... 01/11/2026 AL LUNES 30/11/2026") aunque se baje a
+    mitad de mes: el título no es el corte. Si se bajó antes de que cerrara el
+    mes, el corte es el día de la bajada (`fetched_at`); si no, el fin del rango.
+    """
+    candidatos = [m.hasta]
+    fechas = re.findall(r"(\d{2})/(\d{2})/(\d{4})", a.get("period_headline") or "")
+    if fechas:
+        d, mm, aa = fechas[-1]
+        candidatos.append(f"{aa}-{mm}-{d}")
+    bajada = str(a.get("fetched_at") or "")[:10]
+    if bajada and bajada < m.hasta:
+        candidatos.append(bajada)
+    return min(candidatos)
 
 
 def composicion_mes(m: Mes) -> Serie:

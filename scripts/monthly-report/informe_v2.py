@@ -684,22 +684,37 @@ def D2_prov(k: str) -> str:
     return tildes.get(k, k.title().replace(" Del ", " del ").replace(" De ", " de "))
 
 
+SIN_PROVINCIA = {"", "SIN DATO", "SIN PROVINCIA"}
+
+
+def provincias_remates(rm: dict) -> tuple[list[tuple[str, int]], int]:
+    """
+    Las provincias con dato, ordenadas, y cuántos remates no la tienen. "Sin dato"
+    no es una provincia: no va como barra (ni de titular), va como nota al pie.
+    """
+    con = [(k, v) for k, v in rm["por_provincia"] if (k or "").strip().upper() not in SIN_PROVINCIA]
+    sin = sum(v for k, v in rm["por_provincia"] if (k or "").strip().upper() in SIN_PROVINCIA)
+    return con, sin
+
+
 def p_remates(p: D.Paquete, x: D2.Extra) -> str:
     rm = x.remates_mes
     if not rm:
         return ""
-    prov = [(D2_prov(k), v, str(v)) for k, v in rm["por_provincia"][:10]]
+    con, sin = provincias_remates(rm)
+    prov = [(D2_prov(k), v, str(v)) for k, v in con[:10]]
     tipos = " · ".join(f"{k} {v}" for k, v in rm["por_tipo"])
-    top = rm["por_provincia"][0]
+    nota_sin = f"{sin} sin dato de provincia: no se grafican." if sin else ""
+    donde = f"; {con[0][1]} en {D2_prov(con[0][0])}" if con else ""
     return (
-        f'<h2>{rm["total"]} remates en {p.mes.nombre} en el calendario; {top[1]} en {D2_prov(top[0])}</h2>'
+        f'<h2>{rm["total"]} remates en {p.mes.nombre} en el calendario{donde}</h2>'
         f'<div class="fichas">'
         f'{I.ficha("Remates", str(rm["total"]), f"<div class=delta>{rm['jornadas']} jornadas</div>")}'
         f'{I.ficha("Firmas", str(rm["firmas"]), "<div class=delta>con al menos un remate</div>")}'
         f'{I.ficha("Cabezas anunciadas", _miles(rm["cabezas_anunciadas"]), f"<div class=delta>en {rm['con_cabezas']} de {rm['total']} remates</div>")}'
         f'</div>'
         f'<div class="dos"><div><h3>Remates por provincia</h3><figure>{G2.barras_ordenadas(prov, ancho_mm=87, titulo="Remates por provincia")}'
-        f'{pie(rm["fuente"])}</figure></div>'
+        f'{pie(rm["fuente"], nota=nota_sin)}</figure></div>'
         f'<div><h3>Por tipo</h3><p class="nota" style="font-size:8.5pt;line-height:12pt">{I.esc(tipos)}.</p>'
         f'<p class="nota">El conteo es el del calendario, que crece a medida que se suman fuentes: no se compara contra '
         f'meses anteriores como si fuera actividad del mercado. Las cabezas son las que anuncia cada firma, no las vendidas.</p></div></div>'
@@ -832,10 +847,37 @@ def p_metodologia(p: D.Paquete, x: D2.Extra) -> str:
     )
 
 
+def _ultimo_habil(m: D.Mes) -> str:
+    """Último lunes a viernes del mes. Sin feriados: si el último hábil es feriado, el anexo dice «al DD/MM», que no miente."""
+    d = date.fromisoformat(m.hasta)
+    while d.weekday() >= 5:
+        d = d.fromordinal(d.toordinal() - 1)
+    return d.isoformat()
+
+
+def periodo_anexo(p: D.Paquete) -> tuple[str, bool]:
+    """
+    «noviembre completo» o «noviembre al 13/11», y si el mes está entero. El corte
+    es la última rueda del mes que entra en el PDF (`subcategorias.fecha_dato`, el
+    día en que se bajó si fue antes del fin de mes): un PDF bajado el 16/11 no es
+    el mes completo aunque el MAG lo titule hasta el 30.
+    """
+    m = p.mes
+    tope = p.subcategorias.fecha_dato or m.hasta
+    if tope >= m.hasta:
+        return f"{m.nombre} completo", True
+    ruedas = [r["fecha"] for r in p.ruedas_mes if r["fecha"] <= tope]
+    corte = ruedas[-1] if ruedas else tope
+    if corte >= _ultimo_habil(m):
+        return f"{m.nombre} completo", True
+    return f"{m.nombre} al {D2.fecha_ddmmaaaa(corte)[:5]}", False
+
+
 def p_anexo(p: D.Paquete, x: D2.Extra) -> str:
-    """Anexo: las subcategorías del MAG del mes cerrado, la tabla completa."""
+    """Anexo: las subcategorías del MAG del mes (cerrado o al corte), la tabla completa."""
     if not len(p.subcategorias):
         return ""
+    periodo, entero = periodo_anexo(p)
     filas = "".join(
         f'<tr><td>{I.esc(s["nombre"])}</td><td class="num">{_miles(s["cabezas"])}</td>'
         f'<td class="num">{_miles(s["kg_promedio"]) if s["kg_promedio"] else "—"}</td><td class="num">{G.ars(s["minimo"] or 0)}</td>'
@@ -843,10 +885,11 @@ def p_anexo(p: D.Paquete, x: D2.Extra) -> str:
         f'<td class="num">{G.ars(s["maximo"] or 0)}</td></tr>'
         for s in p.subcategorias.puntos
     )
-    return (f'<h2>Anexo · Las {len(p.subcategorias)} subcategorías del MAG, {p.mes.nombre} completo</h2>'
+    alcance = "del mes cerrado" if entero else f"acumulado de {periodo}"
+    return (f'<h2>Anexo · Las {len(p.subcategorias)} subcategorías del MAG, {periodo}</h2>'
             f'<table class="chica apretada"><thead><tr><th>Subcategoría</th><th>Cabezas</th><th>Kg prom.</th><th>Mín.</th>'
             f'<th>Mediana</th><th>Promedio</th><th>Máx.</th></tr></thead><tbody>{filas}</tbody></table>'
-            f'<p class="nota">Fuente: Mercado Agroganadero, informe por categoría (Resol. 32/2018) del mes cerrado · '
+            f'<p class="nota">Fuente: Mercado Agroganadero, informe por categoría (Resol. 32/2018) {alcance} · '
             f'consignatarias.com.ar. Precios en $/kg vivo. El promedio es el ponderado que publica el MAG; el kilo promedio '
             f'sale de dividir los kilos totales por las cabezas.</p>')
 
