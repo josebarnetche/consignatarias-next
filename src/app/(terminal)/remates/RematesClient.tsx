@@ -644,7 +644,7 @@ export default function RematesPage({ remates }: RematesClientProps) {
             }
           />
         ) : (
-          groups.map((g) => (
+          groups.map((g, gi) => (
             <section key={g.date} aria-label={dayHeading(g.date, today)}>
               <h2 className="sticky top-0 z-[1] flex items-baseline justify-between gap-3 border-b border-terminal-border bg-terminal-bg/95 px-panel py-2.5 backdrop-blur-sm">
                 <span className={`text-sm font-semibold sm:text-base ${g.date === today ? 'text-positive' : 'text-ink'}`}>
@@ -657,6 +657,22 @@ export default function RematesPage({ remates }: RematesClientProps) {
               {g.items.map((auction) => (
                 <AuctionRow key={auction.id} auction={auction} today={today} index={rowIndex++} />
               ))}
+              {/* Puente a MEMOLA (fase 6): después del primer día del calendario, no al final
+                  de la página más larga del sitio. */}
+              {gi === 0 && (
+                <div className="border-b border-terminal-border px-2 py-4">
+                  <MemolaBridge
+                    placement="remates"
+                    variant="bloque"
+                    titulo="Plataforma creada y operada por MEMOLA"
+                    cta="Hablemos con MEMOLA →"
+                  >
+                    Este calendario lo arma y lo actualiza todos los días MEMOLA, agencia de datos y marketing para el
+                    agro. Si tu consignataria quiere difundir sus remates con catálogo, video y pauta, lo hacemos con el
+                    mismo dato.
+                  </MemolaBridge>
+                </div>
+              )}
             </section>
           ))
         )}
@@ -670,17 +686,6 @@ export default function RematesPage({ remates }: RematesClientProps) {
         </button>
       </p>
 
-      {/* Puente a MEMOLA (fase 5) */}
-      <MemolaBridge
-        placement="remates"
-        variant="bloque"
-        titulo="Plataforma creada y operada por MEMOLA"
-        cta="Hablemos con MEMOLA →"
-        className="mx-2 mb-6"
-      >
-        Este calendario lo arma y lo actualiza todos los días MEMOLA, agencia de datos y marketing para el agro. Si
-        tu consignataria quiere difundir sus remates con catálogo, video y pauta, lo hacemos con el mismo dato.
-      </MemolaBridge>
 
       {showAddModal && <AddRemateModal onClose={() => setShowAddModal(false)} />}
     </div>

@@ -11,6 +11,7 @@ import {
 import { DESCARGA_SERIE_INMAG, FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -172,6 +173,7 @@ export default function QueEsElMagPage() {
           <strong className="text-zinc-100">${inmagCurrent}/kg vivo</strong>— por oferta y demanda,
           con remate a la vista.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="text-zinc-400 mb-8">
           El mercado funciona en el partido de Cañuelas, provincia de Buenos Aires. Los productores

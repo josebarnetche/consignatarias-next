@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import { memolaUrl, trackMemolaClick, type MemolaPlacement } from '@/lib/analytics'
 import arrMensual from '@/lib/data/arrendamiento-mensual.json'
 
-const PLACEMENTS: MemolaPlacement[] = ['footer', 'quienes_somos', 'quienes_somos_cta', 'para_consignatarias', 'arrendamiento', 'frigorificos', 'consignatarias_directorio', 'ficha', 'sumar', 'remates']
+const PLACEMENTS: MemolaPlacement[] = ['footer', 'quienes_somos', 'quienes_somos_cta', 'para_consignatarias', 'arrendamiento', 'frigorificos', 'consignatarias_directorio', 'ficha', 'sumar', 'remates', 'arrendamiento_top', 'arrendamiento_plaza', 'arrendamiento_mensual', 'inmag', 'canuelas', 'liniers', 'guia', 'frigorifico_ficha', 'remates_plaza']
 
 describe('puente a MEMOLA', () => {
   afterEach(() => {

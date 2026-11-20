@@ -10,6 +10,7 @@ import {
 import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // daily rebuild via Vercel
 
@@ -246,6 +247,7 @@ export default function CategoriasDeHaciendaPage() {
           {INMAG_DATE}) van desde <strong>${fmt(vaca)}/kg</strong> (vaca) hasta{' '}
           <strong>${fmt(ternero)}/kg (estimado)</strong> (ternero) según el INMAG.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="mb-4">
           Esos son <strong>precios de referencia del mercado</strong>, medidos por kilo vivo en el

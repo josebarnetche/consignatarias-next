@@ -96,6 +96,16 @@ export type MemolaPlacement =
   | 'ficha'
   | 'sumar'
   | 'remates'
+  // Fase 6: línea compacta inline (variant="inline"), un placement por plantilla.
+  | 'arrendamiento_top'
+  | 'arrendamiento_plaza'
+  | 'arrendamiento_mensual'
+  | 'inmag'
+  | 'canuelas'
+  | 'liniers'
+  | 'guia'
+  | 'frigorifico_ficha'
+  | 'remates_plaza'
 
 /**
  * URL a memola.com.ar con la UTM del puente. GA4 de memola.com.ar cuenta las

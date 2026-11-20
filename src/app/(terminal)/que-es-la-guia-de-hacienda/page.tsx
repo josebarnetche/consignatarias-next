@@ -8,6 +8,7 @@ import {
   TechArticleSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -167,6 +168,7 @@ export default function QueEsLaGuiaDeHaciendaPage() {
           funciones diferentes: la guía responde a la autoridad comercial local; el DT-e, a la
           autoridad sanitaria nacional. Esta página es informativa y no fija precios ni tarifas.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="text-zinc-400 mb-8">
           La confusión entre guía y DT-e es frecuente porque los dos «acompañan» a la hacienda

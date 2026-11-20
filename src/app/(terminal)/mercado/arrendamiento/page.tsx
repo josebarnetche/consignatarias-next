@@ -448,6 +448,10 @@ export default async function ArrendamientoPage() {
         </MarketHero>
           </div>
         </section>
+        {/* Puente a MEMOLA (fase 6): línea compacta pegada al índice, primer pantallazo. */}
+        <div className="max-w-3xl mx-auto px-4 pt-3">
+          <MemolaBridge placement="arrendamiento_top" variant="inline" />
+        </div>
 
         {/* ── El valor MENSUAL, con encabezado propio ──────────────────────────
             De las 28.711 impresiones del cluster arrendamiento, 3.650 (13 %) piden
@@ -591,6 +595,16 @@ export default async function ArrendamientoPage() {
             ]}
             gratisAca="El índice, la serie y el histórico de esta página son gratis y van a seguir siéndolo."
           />
+        </section>
+
+        {/* Puente a MEMOLA (fase 6): subido desde el final (solo ~5,6 % de las vistas llegaba al 90 %).
+            Va después del índice, la captura y el informe: no compite con el embudo propio. */}
+        <section className="max-w-3xl mx-auto px-4 pt-6">
+          <MemolaBridge placement="arrendamiento" variant="bloque" titulo="Plataforma creada y operada por MEMOLA">
+            Este índice, la calculadora y el resto de consignatarias.com.ar los desarrolla y opera MEMOLA, agencia de
+            datos y marketing para el agro. Si tu empresa necesita tableros, índices propios o comunicar con datos de
+            mercado, lo hacemos con el mismo equipo.
+          </MemolaBridge>
         </section>
 
         {/* What is the Index */}
@@ -1053,14 +1067,6 @@ export default async function ArrendamientoPage() {
           />
         </section>
 
-        {/* Puente a MEMOLA (fase 4): bloque visible en la página #2 de tráfico; el footer solo no se ve. */}
-        <section className="max-w-6xl mx-auto px-4 pb-12">
-          <MemolaBridge placement="arrendamiento" variant="bloque" titulo="Plataforma creada y operada por MEMOLA">
-            Este índice, la calculadora y el resto de consignatarias.com.ar los desarrolla y opera MEMOLA, agencia de
-            datos y marketing para el agro. Si tu empresa necesita tableros, índices propios o comunicar con datos de
-            mercado, lo hacemos con el mismo equipo.
-          </MemolaBridge>
-        </section>
       </div>
     </>
   )

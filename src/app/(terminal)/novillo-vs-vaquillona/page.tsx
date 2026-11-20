@@ -10,6 +10,7 @@ import {
 import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel; el JSON lo commitea el scraper 14:00 ART
 
@@ -259,6 +260,7 @@ export default function NovilloVsVaquillonaPage() {
           precio de referencia por kilo vivo va desde <strong>${fmt(vaca)}/kg</strong> (vaca) hasta{' '}
           <strong>${fmt(ternero)}/kg (estimado)</strong> (ternero) según el INMAG.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="mb-4">
           En una línea: el <strong>ternero</strong> es la cría de menos de 1 año (macho o hembra,

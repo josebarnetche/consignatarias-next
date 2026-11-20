@@ -8,6 +8,7 @@ import {
   SpeakableSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -176,6 +177,7 @@ export default function ComoSacarElBoletoDeMarcaPage() {
           el establecimiento. Esta página es informativa; el trámite se realiza ante el registro
           provincial correspondiente.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <h2 className="text-zinc-100 text-lg font-medium mb-2">
           Qué es el boleto de marca (y la señal)

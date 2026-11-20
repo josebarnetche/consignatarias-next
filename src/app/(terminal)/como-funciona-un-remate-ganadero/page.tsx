@@ -10,6 +10,7 @@ import {
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -211,6 +212,7 @@ export default function ComoFuncionaUnRemateGanaderoPage() {
           cobrándose una <strong>comisión sobre el precio de venta</strong> —habitualmente del 3% al
           5% más IVA, según la firma.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="mb-4">
           El precio se forma en la pista o en la pantalla: el martillero abre cada lote con un valor

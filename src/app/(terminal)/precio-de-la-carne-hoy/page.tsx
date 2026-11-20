@@ -11,6 +11,7 @@ import {
 import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel; el scraper reescribe el JSON 14:00 ART
 
@@ -192,6 +193,7 @@ export default function PrecioDeLaCarneHoyPage() {
           vivo de referencia está en <strong>${fmt(enPie)}</strong>, y sobre ese piso se suman la
           faena, el desposte y el margen del comercio.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="mb-4">
           Son <strong>precios de referencia del mercado</strong> (INMAG / MAG), no de una góndola

@@ -11,6 +11,7 @@ import {
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -233,6 +234,7 @@ export default function ComoVenderHaciendaPage() {
           tres, el precio de referencia hoy ({INMAG_DATE}) es de ${fmt(novillo)}/kg vivo para el novillo
           según el INMAG.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="text-zinc-400 mb-8">
           Cada canal cambia quién fija el precio, cuánto se descuenta de comisión y cuándo cobrás. Sobre

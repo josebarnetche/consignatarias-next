@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import CapturaCampoForm from '@/components/campos/CapturaCampoForm'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400
 
@@ -62,6 +63,7 @@ export default function ComoVenderCampoPage() {
           plano y con el inmobiliario atrasado se quema solo: cuando el interesado serio pide papeles y no
           están, se va. Esta guía va en el orden en que conviene hacerlo.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="-mt-3 mb-6" />
 
         <section className="mb-8">
           <h2 className="text-zinc-200 text-lg font-medium mb-3">1. Poner el precio antes de contarlo</h2>

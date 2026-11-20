@@ -7,6 +7,7 @@ import { SectionBreadcrumbSchema, DatasetSchema, FAQPageSchema, SpeakableSchema 
 import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import { Delta, DataTable, PriceCell, type DataColumn } from '@/components/ui'
 import { signedTone } from '@/lib/ui/tokens'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 // SSG con rebuild diario: el scraper reescribe market-prices.json (14:00 ART → commit →
 // Vercel), y la rueda anterior sale de mag_prices_detailed (cron 15:30 ART, mar/mié/vie).
@@ -301,6 +302,7 @@ export default async function MercadoCanuelasPage() {
             {totales ? <>, sobre {fmt(totales.cabezas)} cabezas vendidas</> : null}. Abajo, el mínimo, el máximo y el
             promedio de cada categoría, y de qué provincia vino la hacienda.
           </p>
+          <MemolaBridge placement="canuelas" variant="inline" className="mt-3 max-w-2xl" />
         </div>
 
         {/* Números de cabecera */}

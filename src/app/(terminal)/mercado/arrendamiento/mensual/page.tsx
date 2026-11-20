@@ -10,6 +10,7 @@ import { Delta, DataTable, PriceCell, type DataColumn } from '@/components/ui'
 import { signedTone } from '@/lib/ui/tokens'
 import ArrendamientoLiquidacionSignup from '@/components/ArrendamientoLiquidacionSignup'
 import { OfrecerInforme } from '@/components/productos/OfrecerInforme'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 // SSG con rebuild diario: los cierres mensuales cambian una vez por mes (cron monthly-close),
 // el período vigente lo actualiza el scraper 14:00 ART → git commit → Vercel.
@@ -257,6 +258,7 @@ export default async function ArrendamientoMensualPage() {
             </>
           )}
         </p>
+        <MemolaBridge placement="arrendamiento_mensual" variant="inline" className="-mt-3 mb-6" />
 
         <div className="grid sm:grid-cols-3 gap-4 mb-10">
           <div className="bg-gradient-to-br from-sky-500/10 to-transparent border border-sky-500/20 rounded-2xl p-6">

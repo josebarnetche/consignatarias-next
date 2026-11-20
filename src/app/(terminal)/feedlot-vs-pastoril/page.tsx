@@ -9,6 +9,7 @@ import {
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel; el JSON lo commitea el scraper 14:00 ART
 
@@ -196,6 +197,7 @@ export default function FeedlotVsPastorilPage() {
           <strong>${fmt(novillo)}/kg vivo</strong> (INMAG/MAG), precio de referencia del mercado, no
           fijado por esta página.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="mb-4">
           Esta es una comparación de <strong>marco</strong>, no una recomendación financiera: qué

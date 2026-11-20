@@ -12,6 +12,7 @@ import maizNovilloHist from '@/lib/data/maiz-novillo-historico.json'
 import SpreadClient from './SpreadClient'
 import { calcularSpread } from '@/lib/market/spread'
 import CompraLeadCapture from '@/components/leads/CompraLeadCapture'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400
 
@@ -196,6 +197,7 @@ export default function SpreadPage() {
           una relación de <strong>{ratioStr}:1</strong> (a mayor valor, más margen para el
           engorde a corral).
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="text-zinc-400 text-sm leading-relaxed mt-3">
           El umbral de referencia del mercado es de <strong>{UMBRAL}:1</strong>: por encima, el

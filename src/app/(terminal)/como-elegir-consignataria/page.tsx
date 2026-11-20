@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { SectionBreadcrumbSchema, HowToSchema, FAQPageSchema } from '@/components/seo/JsonLd'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 const APP_URL = 'https://www.consignatarias.com.ar'
 
@@ -106,6 +107,7 @@ export default function ComoElegirConsignatariaPage() {
           porcentaje de comisión e ignorar <strong className="text-zinc-100">cuándo cobrás</strong> — que suele
           pesar más en el neto en mano.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <div className="space-y-6 mt-8">
           {STEPS.map((s, i) => (

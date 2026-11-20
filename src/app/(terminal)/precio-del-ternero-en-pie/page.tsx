@@ -11,6 +11,7 @@ import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
 import { RematesDeInvernada, TERNERO_ESTIMADO_NOTA } from '@/components/precios/TerneroEstimado'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel; el JSON lo commitea el scraper 14:00 ART
 
@@ -209,6 +210,7 @@ export default function PrecioDelTerneroEnPiePage() {
           Agroganadero no opera terneros, así que no hay un precio observado ahí. Nuestra estimación de
           hoy ({INMAG_DATE}) es <strong>${fmt(ternero)} por kilo vivo</strong>.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
         <p className="text-xs text-zinc-500 mb-4">{TERNERO_ESTIMADO_NOTA}</p>
 
         <p className="mb-4">

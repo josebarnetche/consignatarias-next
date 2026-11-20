@@ -8,6 +8,7 @@ import {
   TechArticleSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -256,6 +257,7 @@ export default function RazasBovinasArgentinaPage() {
           <strong>sintéticas Braford y Brangus</strong>, que se crían en el norte (NEA y NOA) porque
           su sangre índica les da resistencia al calor y a la garrapata.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="mb-4">
           Esa es la lógica del rodeo argentino: <strong>ambiente y destino definen la raza</strong>. En

@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import { PROVINCIAS_CON_DATO } from '@/lib/campos-seo'
 import CapturaCampoForm from '@/components/campos/CapturaCampoForm'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400
 
@@ -108,6 +109,7 @@ export default function ComoComprarCampoPage() {
           superficie es realmente aprovechable, si hay agua, cómo se entra cuando llueve, y qué dice el
           título. Esta guía ordena qué mirar y en qué momento.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="-mt-3 mb-6" />
 
         <section className="mb-8">
           <h2 className="text-zinc-200 text-lg font-medium mb-3">1. Saber qué se está comprando</h2>

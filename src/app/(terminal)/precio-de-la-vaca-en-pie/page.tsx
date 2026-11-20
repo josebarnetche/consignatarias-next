@@ -10,6 +10,7 @@ import {
 import { DESCARGA_PRECIOS, FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel; el JSON lo commitea el scraper 14:00 ART
 
@@ -199,6 +200,7 @@ export default function PrecioDeLaVacaEnPiePage() {
           <strong>${fmt(vacaManufactura)}/kg</strong> y la vaca buena o gorda los{' '}
           <strong>${fmt(vacaBuena)}/kg</strong>.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="mb-4">
           Es un <strong>precio de referencia del mercado (INMAG/MAG), no fijado por esta página</strong>:

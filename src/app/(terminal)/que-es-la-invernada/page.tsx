@@ -8,6 +8,7 @@ import {
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -150,6 +151,7 @@ export default function QueEsLaInvernadaPage() {
           novillito) se engorda hasta alcanzar el peso de faena, ganando de 0,5 a 1 kg por día hasta
           llegar a los 400-500 kg del novillo terminado.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="text-zinc-400 mb-8">
           Es la fase que agrega kilos: el productor que la realiza —el <span className="text-zinc-300">invernador</span>—

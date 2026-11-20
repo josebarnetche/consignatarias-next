@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { SectionBreadcrumbSchema, FAQPageSchema } from '@/components/seo/JsonLd'
 import { promedioMesAnterior } from '@/lib/valuacion-campos'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400
 
@@ -56,6 +57,7 @@ export default function ComoPublicarCampoPage() {
           Un aviso de campo compite con otros que dicen casi lo mismo. Lo que lo separa no es el adjetivo
           —&ldquo;excelente campo&rdquo; no significa nada— sino los datos que el otro no puso.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="-mt-3 mb-6" />
 
         <section className="mb-8">
           <h2 className="text-zinc-200 text-lg font-medium mb-3">Los datos que deciden</h2>

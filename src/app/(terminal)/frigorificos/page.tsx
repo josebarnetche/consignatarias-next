@@ -234,6 +234,14 @@ export default function FrigorificosPage() {
         </div>
       </section>
 
+      {/* Puente a MEMOLA (fase 6): arriba del directorio (100 filas) en vez de al final. */}
+      <section className="px-4 mb-3 max-w-6xl mx-auto">
+        <MemolaBridge placement="frigorificos" variant="bloque" titulo="Plataforma creada y operada por MEMOLA">
+          Este listado, cruzado con datos públicos de SENASA y del mercado, lo mantiene MEMOLA, agencia de datos y
+          marketing para el agro. Si tu frigorífico o tu empresa necesita ordenar sus datos o comunicarlos, hablemos.
+        </MemolaBridge>
+      </section>
+
       <FrigorificosClient filas={listado.filas} provincias={listado.provincias} />
 
       {/* Listados por provincia y suscripción, DEBAJO del directorio (02-10-2026).
@@ -322,13 +330,6 @@ export default function FrigorificosPage() {
         </div>
       </section>
 
-      {/* Puente a MEMOLA (fase 4) */}
-      <section className="px-4 mb-8 max-w-4xl">
-        <MemolaBridge placement="frigorificos" variant="bloque" titulo="Plataforma creada y operada por MEMOLA">
-          Este listado, cruzado con datos públicos de SENASA y del mercado, lo mantiene MEMOLA, agencia de datos y
-          marketing para el agro. Si tu frigorífico o tu empresa necesita ordenar sus datos o comunicarlos, hablemos.
-        </MemolaBridge>
-      </section>
     </>
   )
 }

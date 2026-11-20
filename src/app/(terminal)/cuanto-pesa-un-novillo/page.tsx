@@ -10,6 +10,7 @@ import {
 import { LICENCIA_PROPIA } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // daily rebuild via Vercel
 
@@ -159,6 +160,7 @@ export default function CuantoPesaUnNovilloPage() {
           referencia del INMAG ({INMAG_DATE}) de <strong>${fmt(novillo)}/kg vivo</strong> equivale a
           unos <strong>${fmt(novillo450)}</strong> por cabeza de 450 kg.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="mb-4">
           El <strong>peso vivo</strong> es el del animal en pie, sobre la báscula antes de la faena,

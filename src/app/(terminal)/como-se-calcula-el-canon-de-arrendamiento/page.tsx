@@ -10,6 +10,7 @@ import {
 } from '@/components/seo/JsonLd'
 import { FUENTE_MAG } from '@/lib/seo/schemas'
 import marketPrices from '@/lib/data/market-prices.json'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // daily rebuild via Vercel
 
@@ -174,6 +175,7 @@ export default function ComoSeCalculaElCanonDeArrendamientoPage() {
           referencia, que hoy (<strong>{arr.date}</strong>) es de <strong>${fmt(arrIndexR)}/kg</strong> según el
           Mercado Agroganadero (haciinfo000013). El canon anual es ese valor mensual por 12.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="mb-4">
           En fórmula: <strong>kg de novillo por hectárea por mes × hectáreas × precio del kilo de

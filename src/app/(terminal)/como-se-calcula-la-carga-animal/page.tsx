@@ -8,6 +8,7 @@ import {
   SpeakableSchema,
 } from '@/components/seo/JsonLd'
 import marketPrices from '@/lib/data/market-prices.json'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 export const revalidate = 86400 // rebuild diario vía Vercel
 
@@ -201,6 +202,7 @@ export default function ComoSeCalculaLaCargaAnimalPage() {
           <strong>indicador técnico</strong> de referencia —esta página es informativa y no fija
           precios ni tarifas.
         </p>
+        <MemolaBridge placement="guia" variant="inline" className="mb-4" />
 
         <p className="mb-4">
           El truco está en no sumar cabezas «a secas»: un ternero, una vaquillona y un toro comen

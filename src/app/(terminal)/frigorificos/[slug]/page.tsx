@@ -40,6 +40,7 @@ import {
   frigorificoProvinceCount,
   FrigorificoProvinceView,
 } from '../_views/FrigorificoProvinceView'
+import { MemolaBridge } from '@/components/MemolaBridge'
 
 interface BasicFrigorifico {
   cuit: string
@@ -509,6 +510,12 @@ export default async function FrigorificoDetailPage({
           </div>
         </div>
       </div>
+
+      {/* Puente a MEMOLA (fase 6): línea compacta debajo del encabezado de la ficha.
+          Fichas PRO excluidas: no le vendemos agencia a quien ya paga el plan. */}
+      {!ownerPlan.isPro && (
+        <MemolaBridge placement="frigorifico_ficha" variant="inline" className="px-1" />
+      )}
 
       {/* Reclamo de la ficha, arriba y medido (ver ReclamarFichaStrip). El bloque largo
           del final queda para el que lee toda la ficha; éste es para el que googleó su
