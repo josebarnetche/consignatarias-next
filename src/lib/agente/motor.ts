@@ -28,7 +28,7 @@ import { triageLead, leerRespuesta } from './ia'
 import * as M from './mensajes'
 import { ordenarCola } from './cola'
 import { puedeCorrer, soltarCandado, tomarCandado } from './candado'
-import { cobroCorto, ofertaHacienda } from './mensajes-contacto'
+import { cobroCorto, ofertaHacienda, respuestaPideContacto } from './mensajes-contacto'
 import { tomable } from './verificacion'
 import { TIPOS_CAMPO_ACTIVOS, esCasoDeHacienda, ofrecerCampos, trabajarCampos } from './campos-agente'
 import { presentacionCampo, type DatosCampo } from './mensajes-tipos'
@@ -45,7 +45,9 @@ import {
   MAX_TANDAS,
   OFERTAS_POR_TANDA,
   DIAS_OFERTA_VIVA,
-  tocaRecordatorio,
+  tocaRecordatorioOferta,
+  respondeContactoDirecto,
+  traePreguntaDeHacienda,
   SEGUIMIENTO_DIAS,
   brutoDeCierre,
   comisionArs,
@@ -112,6 +114,7 @@ interface Oferta {
   enviada_at: string
   presentada_at: string | null
   proximo_at: string | null
+  respondida_at?: string | null
 }
 
 export interface Informe {
@@ -486,12 +489,42 @@ async function correrAgenteSinCandado(db: SupabaseClient, opts: { dryRun?: boole
     let intencion: Intencion
     if (leida) intencion = { tipo: leida.tipo, escalar: leida.escalar, motivo: leida.motivo }
     else intencion = pareceAceptacion(texto) && quien === 'contraparte' ? { tipo: 'acepta' } : { tipo: 'otro', motivo: 'sin modelo' }
-    await registrar({ ...intencion, quien, datos: leida?.datos ?? null, cierre: leida?.cierre ?? null })
+    await registrar({ ...intencion, quien, datos: leida?.datos ?? null, cierre: leida?.cierre ?? null, ...(quien === 'contraparte' && of && respondeContactoDirecto(intencion, texto) ? { pide_contacto: true } : {}) })
+    // Cualquier respuesta de la contraparte pausa el recordatorio genérico de esa oferta
+    // (tocaRecordatorioOferta): "les reenvío la consulta" no va a quien ya contestó.
+    if (quien === 'contraparte' && of && !of.respondida_at) await guardarOferta(of.id, { respondida_at: new Date().toISOString() })
 
     // El modelo ve la baja que la regla no ve: "Por favor NO isistir" (una firma, caso #50,
     // 06-11-2026) quedó clasificada como baja y nadie la cargó en agente_bajas.
     if (intencion.tipo === 'baja') {
       await darDeBaja()
+      return
+    }
+
+    // La contraparte pide el contacto (teléfono, WhatsApp, mail) antes del ACEPTO: no se le
+    // traslada al lead, se le contesta a ella que el contacto sale con el ACEPTO escrito
+    // (caso #50, oferta 90, 18-11-2026). Es una respuesta en el hilo: el tope diario la deja
+    // salir porque escribió después de lo último que le mandamos (tope.ts, «respuesta
+    // directa»), y no cuenta como contacto nuevo (no crea oferta). La oferta sigue igual.
+    if (quien === 'contraparte' && of && ['enviada', 'sin_respuesta'].includes(of.estado) && respondeContactoDirecto(intencion, texto)) {
+      const id = await mandar({
+        leadId: lead.id,
+        ofertaId: of.id,
+        para: [m.de],
+        correo: respuestaPideContacto({ leadId: lead.id, ofertaId: of.id, lado: caso.lado, datos: caso.datos }),
+        plantilla: 'respuesta_contacto',
+        enRespuestaA: m.messageId,
+        conBaja: true,
+      })
+      const conPregunta = traePreguntaDeHacienda(texto)
+      if (!id || conPregunta) {
+        await escalar(
+          `${of.nombre} pidió el contacto · caso #${lead.id}${id ? ' (y pregunta algo de la hacienda)' : ': mi respuesta NO salió'}`,
+          `${id ? 'Le contesté que el contacto sale con el ACEPTO escrito. Además pregunta algo sobre la hacienda que no le trasladé al lead (el texto trae el pedido de contacto): miralo vos.' : 'No pude contestarle que el contacto sale con el ACEPTO escrito. Al lead no le trasladé nada.'}\n\nDe: ${m.de}\nAsunto: ${m.asunto}\n\n${texto}\n\nSi respondés este correo, le llega directo a ${m.de}.`,
+          m.de,
+        )
+      }
+      await bitacora(lead.id, `${of.nombre} pidió el contacto antes del ACEPTO: ${id ? 'le contesté que responda ACEPTO' : 'la respuesta no salió, escalado'} (no se trasladó al lead)`, 'contesto', { oferta_id: of.id })
       return
     }
 
@@ -502,7 +535,7 @@ async function correrAgenteSinCandado(db: SupabaseClient, opts: { dryRun?: boole
         await escalar(`Respuesta del productor #${lead.id} sin trasladar`, `No la trasladé a ${of.nombre} porque ${bloqueo}.\n\n${texto}`, m.de)
         return
       }
-      await mandar({ leadId: lead.id, ofertaId: of.id, para: [of.email], correo: M.traslado({ leadId: lead.id, ofertaId: of.id, datos: caso.datos, aQuien: 'contraparte', nombre: null, pregunta: texto }), plantilla: 'traslado_contraparte', conBaja: true })
+      await mandar({ leadId: lead.id, ofertaId: of.id, para: [of.email], correo: M.traslado({ leadId: lead.id, ofertaId: of.id, datos: caso.datos, aQuien: 'contraparte', nombre: null, pregunta: texto, lado: caso.lado, tipo: of.tipo }), plantilla: 'traslado_contraparte', conBaja: true })
       await bitacora(lead.id, `Respuesta del productor trasladada a ${of.nombre}`, 'contesto')
       return
     }
@@ -554,7 +587,7 @@ async function correrAgenteSinCandado(db: SupabaseClient, opts: { dryRun?: boole
           return
         case 'pregunta': {
           const pregunta = leida?.pregunta || texto
-          await mandar({ leadId: lead.id, ofertaId: of.id, para: [lead.email!], correo: M.traslado({ leadId: lead.id, ofertaId: of.id, datos: caso.datos, aQuien: 'productor', nombre: lead.name, pregunta }), plantilla: 'traslado_productor' })
+          await mandar({ leadId: lead.id, ofertaId: of.id, para: [lead.email!], correo: M.traslado({ leadId: lead.id, ofertaId: of.id, datos: caso.datos, aQuien: 'productor', nombre: lead.name, pregunta, lado: caso.lado, tipo: of.tipo }), plantilla: 'traslado_productor' })
           await guardarOferta(of.id, { respondida_at: ahoraIso })
           await bitacora(lead.id, `${of.nombre} preguntó: ${pregunta.slice(0, 300)} (trasladado al productor)`, 'contesto')
           return
@@ -838,8 +871,8 @@ async function correrAgenteSinCandado(db: SupabaseClient, opts: { dryRun?: boole
     const esperando = vivas.filter((o) => o.enviada_at >= limite)
 
     // Recordatorios en el mismo hilo según la cadencia 0/3/7/14.
-    const diasDesde = (iso: string) => (ahora.getTime() - new Date(iso).getTime()) / 86_400_000
-    for (const o of vivas.filter((x) => tocaRecordatorio(x.seguimientos, diasDesde(x.enviada_at)) && !bajas.has(x.email))) {
+    // Una oferta que la contraparte ya contestó (pregunta, pedido de contacto) no recibe el genérico.
+    for (const o of vivas.filter((x) => tocaRecordatorioOferta(x, ahora) && !bajas.has(x.email))) {
       // proximo_at de una oferta enviada solo lo usa el tope diario: el recordatorio espera hasta ahí.
       if (o.proximo_at && new Date(o.proximo_at) > ahora) continue
       const esperaRec = tope([o.email], 'recordatorio_oferta', lead.id)

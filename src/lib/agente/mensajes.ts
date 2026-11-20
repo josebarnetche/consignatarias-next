@@ -26,9 +26,16 @@ const ETIQUETA_DATO: Record<string, string> = {
 
 const ars = (n: number) => '$' + Math.round(n).toLocaleString('es-AR')
 
-function nombrePila(nombre: string | null | undefined): string {
+/**
+ * Rótulos que algunos formularios cargan como nombre porque la API lo exige y al
+ * lead no se le pide (`OfertaLote.tsx` manda "Oferta por lote"). El 18-11-2026 un
+ * traslado salió con "Hola Oferta,". Un nombre que es un rótulo no es un nombre.
+ */
+const ROTULO_NOMBRE = /^(oferta|consulta|pedido|lead|comprador|compradora|vendedor|vendedora|productor|productora|interesado|interesada|cliente|usuario|anonimo|anónimo|sin|n\/a|test|prueba|demanda|lote|contacto|formulario|web|mcp|un|una)$/i
+
+export function nombrePila(nombre: string | null | undefined): string {
   const n = (nombre ?? '').trim().split(/\s+/)[0] ?? ''
-  if (n.length < 2 || /@|\d/.test(n)) return ''
+  if (n.length < 2 || /@|\d/.test(n) || ROTULO_NOMBRE.test(n)) return ''
   return n.charAt(0).toUpperCase() + n.slice(1).toLowerCase()
 }
 
@@ -168,7 +175,9 @@ export function presentacion(o: {
   const c = o.contraparte
   const queEs = QUE_ES[c.tipo]
   const nombreContraparte = nombreMostrable(c.nombre)
-  const contactoProductor = [nombreMostrable(p.nombre), p.email, p.phone].filter(Boolean).join(' · ')
+  // "Oferta por lote" es el rótulo del formulario, no el nombre del productor.
+  const nombreProductor = nombrePila(p.nombre) ? nombreMostrable(p.nombre) : ''
+  const contactoProductor = [nombreProductor, p.email, p.phone].filter(Boolean).join(' · ')
   const contactoContraparte = [nombreContraparte, c.email, c.phone].filter(Boolean).join(' · ')
   const rolProductor = vende ? 'Vende' : 'Compra'
   const rolContraparte = vende ? 'Compra' : 'Vende'
@@ -266,16 +275,50 @@ export function avisoComision(o: { leadId: number; ofertaId: number; contraparte
   }
 }
 
-/** Respuesta a una pregunta de la contraparte, trasladada al productor (o al revés). */
-export function traslado(o: { leadId: number; ofertaId: number; datos: DatosHacienda; aQuien: 'productor' | 'contraparte'; nombre: string | null; pregunta: string }): Correo {
+/**
+ * Quién pregunta, en palabras del lead. El lead puede ser el que VENDE o el que COMPRA:
+ * antes de v1.262.2 siempre decía "un interesado en tu hacienda", y al comprador del caso
+ * #50 ("Comprador buscando: 65 terneros") le llegó así.
+ */
+function quienPregunta(lado: Lado, tipo?: TipoContraparte): string {
+  if (lado === 'compra') {
+    if (tipo === 'frigorifico') return 'Un frigorífico que puede cubrir tu pedido pregunta:'
+    if (tipo === 'lead') return 'Un productor que puede cubrir tu pedido pregunta:'
+    if (tipo === 'firma') return 'Una consignataria que puede cubrir tu pedido pregunta:'
+    return 'Alguien que puede cubrir tu pedido pregunta:'
+  }
+  if (tipo === 'frigorifico') return 'Un frigorífico interesado en tu hacienda pregunta:'
+  if (tipo === 'firma') return 'Una consignataria interesada en tu hacienda pregunta:'
+  if (tipo === 'lead') return 'Un comprador interesado en tu hacienda pregunta:'
+  return 'Un interesado en tu hacienda pregunta:'
+}
+
+/**
+ * Respuesta a una pregunta de la contraparte, trasladada al productor (o al revés).
+ * Un pedido de CONTACTO de la contraparte no pasa por acá: se le contesta a ella
+ * (`respuestaPideContacto` en mensajes-contacto.ts).
+ */
+export function traslado(o: {
+  leadId: number
+  ofertaId: number
+  datos: DatosHacienda
+  aQuien: 'productor' | 'contraparte'
+  nombre: string | null
+  pregunta: string
+  /** El lado del lead del caso. Sin él se asume que vende (lo de antes). */
+  lado?: Lado
+  /** Qué es la contraparte de la oferta. */
+  tipo?: TipoContraparte
+}): Correo {
+  const lado = o.lado ?? 'vende'
   return {
     asunto: `Una consulta sobre ${resumenHacienda(o.datos)} · Ref. ${referencia(o.leadId, o.ofertaId)}`,
     texto: [
       o.aQuien === 'productor' ? saludo(o.nombre) : 'Buenas,',
       '',
       o.aQuien === 'productor'
-        ? 'Un interesado en tu hacienda pregunta:'
-        : 'Le trasladamos su consulta al productor y esto es lo que respondió:',
+        ? quienPregunta(lado, o.tipo)
+        : `Le trasladamos su consulta al ${lado === 'vende' ? 'productor' : 'comprador'} y esto es lo que respondió:`,
       '',
       o.pregunta
         .split('\n')

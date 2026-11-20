@@ -7,6 +7,21 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.262.2] — 2026-11-20
+
+> Se apila después de #135 y #137; la versión se rebasea al mergear.
+
+### Corregido
+- **La firma que pedía un teléfono recibía su pregunta trasladada al lead.** El 18-11 una consignataria contestó una oferta "Comprador buscando" pidiendo "un número de teléfono de contacto". El modelo la leyó `pregunta` y el motor se la mandó al comprador con `traslado_productor`. El contacto se entrega solo después de un ACEPTO escrito, así que ahora:
+  - `pidePasarContacto` (reglas.ts) reconoce el pedido de teléfono, WhatsApp, mail, "pasame el contacto" o "con quién hablo", sin tildes; "número de cabezas/tropa/RENSPA" no cuenta;
+  - si la contraparte pide el contacto antes del ACEPTO (`pregunta` u `otro`, sin nada que escalar), el agente le contesta a ella en el mismo hilo con `respuestaPideContacto` (plantilla `respuesta_contacto`): "Para pasarles el contacto directo del comprador/vendedor, respondan ACEPTO a este correo (servicio de contacto: …). Apenas llegue, se lo enviamos." La condición sale de `cobroCorto`, así que el modo tarifa también se dice en un solo lugar. Al lead no le llega nada, la oferta sigue en `enviada` y la cadencia sigue igual;
+  - la respuesta no es un contacto nuevo (no crea oferta) y pasa el tope de 24 h por la regla de respuesta directa de `tope.ts`, igual que cualquier respuesta a quien acaba de escribir. Si además pregunta algo de la hacienda, o la respuesta no sale, lo ve José;
+  - la comisión, un tema legal o `escalar` del modelo siguen escalando como antes.
+- **"Hola Oferta,".** `OfertaLote.tsx` carga "Oferta por lote" como nombre porque la API lo exige. `nombrePila` ahora descarta los rótulos (Oferta, Consulta, Comprador, Lead…), y la presentación tampoco los muestra como nombre del productor.
+- **"Un interesado en tu hacienda" a un comprador.** `traslado` recibe el `lado` del caso y el `tipo` de la contraparte: al comprador le dice "Una consignataria que puede cubrir tu pedido pregunta:"; al vendedor, "Una consignataria interesada en tu hacienda pregunta:". La vuelta a la contraparte dice "comprador" cuando corresponde.
+- **El recordatorio genérico después de una respuesta.** `tocaRecordatorio` solo miraba los días y los recordatorios enviados. Ahora cualquier respuesta de la contraparte marca `respondida_at` en la oferta y `tocaRecordatorioOferta` no le manda "les reenvío la consulta" a quien ya contestó.
+- Tests nuevos en `pregunta-contacto.test.ts` (37), con el motor de punta a punta sobre una base en memoria.
+
 ## [1.262.1] — 2026-11-20
 
 ### Corregido

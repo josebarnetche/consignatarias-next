@@ -52,6 +52,17 @@ export function tocaRecordatorio(seguimientos: number, diasDesdeOferta: number):
   const proximo = CADENCIA_CONTRAPARTE_DIAS[seguimientos + 1]
   return proximo !== undefined && diasDesdeOferta >= proximo
 }
+/**
+ * ¿Toca el recordatorio genérico a ESTA oferta? Lo mismo que `tocaRecordatorio`, más
+ * una pausa: si la contraparte ya contestó algo en el hilo (`respondida_at`), el
+ * "les reenvío la consulta" no tiene sentido (caso #50, oferta 90, 18-11-2026: la
+ * firma pidió un teléfono y el próximo correo iba a ser el recordatorio genérico).
+ * La oferta sigue viva: un ACEPTO posterior presenta igual y vence a los 17 días.
+ */
+export function tocaRecordatorioOferta(o: { seguimientos: number; enviada_at: string; respondida_at?: string | null }, ahora: Date): boolean {
+  if (o.respondida_at) return false
+  return tocaRecordatorio(o.seguimientos, (ahora.getTime() - new Date(o.enviada_at).getTime()) / 86_400_000)
+}
 /** Seguimiento de una presentación: días después de presentar en que se pregunta. */
 export const SEGUIMIENTO_DIAS = [4, 10, 21, 35] as const
 /** Tope de correos a contactos NUEVOS (contrapartes que no escribieron) por día. */
@@ -157,6 +168,58 @@ export function debeEscalar(i: Intencion, texto: string): boolean {
   if (/abogad|denuncia|carta documento|estafa|fraude|demanda judicial/.test(t)) return true
   if (i.tipo === 'pregunta' && /(comisi[oó]n|el 1 ?%|uno por ciento)/.test(t)) return true
   return false
+}
+
+/**
+ * ¿La contraparte pide el contacto del productor/comprador (teléfono, WhatsApp, mail,
+ * "pasame el contacto", "con quién hablo")? Eso no se traslada al lead: el contacto se
+ * entrega solo después de un ACEPTO escrito, así que se le contesta a la firma (caso
+ * #50, oferta 90, 18-11-2026: "¿Pueden pasar un número de teléfono de contacto?" llegó
+ * al comprador como si fuera una pregunta sobre la hacienda).
+ * Sin tildes y en minúsculas; "número de cabezas/tropa/RENSPA" no es un pedido de contacto.
+ */
+const MEDIO_CONTACTO = String.raw`(telefono|tel\b|celular|cel\b|movil|numero(?! de (cabezas|animales|tropa|renspa|lote|guia|dt|kilos|kg|hacienda|categoria|terneros|novillos|vacas|vaquillonas))|whats ?app|whatsapp|wsp|wpp|watsap|mail|e-?mail|correo|(?<!en )contacto|datos de contacto|datos del (productor|vendedor|comprador|due(n|ñ)o))`
+const PIDE_CONTACTO: RegExp[] = [
+  // "pasame / pásenme / pueden pasar / me mandan / necesito / quisiera ... el teléfono"
+  // Verbos de pedido, no de primera persona que da ("les paso", "les mando un mail").
+  new RegExp(
+    String.raw`\b(pas(a|an|as|e|en|ame|anos|enme|ennos|ar|arme|arnos|arian|aria|aran|en)|mand(a|an|as|e|en|ame|anos|enme|ennos|ar|arme|arnos|arian|aria)|envi(a|an|as|e|en|ame|anos|enme|ennos|ar|arme|arnos|arian|aria)|dar(me|nos)?|den(me|nos)?|dame|danos|deme|facilit\w*|compart(e|an|ir|irme|irnos|irian|en)|necesit\w*|quisier\w*|quier\w*|tenes|tendr\w*|tenga\w*|tienen|tiene|podr\w*|pued\w*|indiqu\w*|indica(me|nos|r)|consegu\w*)\b.{0,60}?\b${MEDIO_CONTACTO}`,
+  ),
+  // "¿cuál es el teléfono del productor?" / "su whatsapp?"
+  new RegExp(String.raw`\b(cual es|cuales son|me das|su|el|un)\s+${MEDIO_CONTACTO}\b.{0,40}\b(productor|vendedor|comprador|due(n|ñ)o|interesado|cliente)`),
+  /\bcon quien (hablo|hablamos|me comunico|nos comunicamos|me contacto|nos contactamos|puedo hablar|podemos hablar|trato|tratamos|tengo que hablar|tenemos que hablar)\b/,
+  /\bquien es (el|la) (productor|productora|vendedor|vendedora|comprador|compradora|due(n|ñ)o|due(n|ñ)a|cliente)\b/,
+  /\b(comunicarme|comunicarnos|contactarme|contactarnos|hablar|llamar(lo|la|le)?) (directamente )?con (el|la) (productor|vendedor|comprador|due(n|ñ)o|cliente|interesado)\b/,
+]
+export function pidePasarContacto(texto: string): boolean {
+  const t = texto
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, ' ')
+  return PIDE_CONTACTO.some((re) => re.test(t))
+}
+
+/**
+ * ¿Al pedido de contacto de la contraparte se le contesta directo (sin trasladarlo al
+ * lead ni escalarlo)? Solo si no hay nada que José deba ver: mismas reglas que
+ * `debeEscalar` salvo el "otro" genérico (un pedido de teléfono que el modelo no supo
+ * rotular igual tiene una sola respuesta posible: ACEPTO primero).
+ */
+export function respondeContactoDirecto(i: Intencion, texto: string): boolean {
+  if (i.tipo !== 'pregunta' && i.tipo !== 'otro') return false
+  if (!pidePasarContacto(texto)) return false
+  return !debeEscalar({ ...i, tipo: 'pregunta' }, texto)
+}
+
+/**
+ * ¿El pedido de contacto viene con una pregunta sobre la hacienda? Entonces la firma
+ * recibe la respuesta del ACEPTO y José ve el correo para que la pregunta no se pierda
+ * (no se traslada al lead: el texto trae el pedido de contacto).
+ */
+export function traePreguntaDeHacienda(texto: string): boolean {
+  const t = texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  return /\b(peso|kilos|kg|sanidad|vacun\w*|aftosa|brucelosis|raza|pelaje|edad|denticion|plazo|entrega|flete|precio|pretend\w*|condicion corporal|destete|preñ\w*|pren\w*|categoria|cabezas|renspa|dt-?e)\b/.test(t)
 }
 
 /** ¿Dice ACEPTO? Respaldo determinista por si el modelo no está. */
