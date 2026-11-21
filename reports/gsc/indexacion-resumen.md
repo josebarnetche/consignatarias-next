@@ -1,10 +1,10 @@
-# Indexación — 2026-11-20
+# Indexación — 2026-11-21
 
-Inspeccionadas 3967 de 2972 URLs del sitemap.
+Inspeccionadas 4054 de 3041 URLs del sitemap.
 
 | Sección | Inspeccionadas | Indexadas | NO indexadas | % |
 |---|---:|---:|---:|---:|
-| /remates | 1806 | 1360 | 446 | 25% |
+| /remates | 1892 | 1411 | 481 | 25% |
 | /productividad | 479 | 168 | 311 | 65% |
 | /consignatarias | 94 | 72 | 22 | 23% |
 | /frigorificos | 1148 | 1136 | 12 | 1% |
@@ -12,7 +12,7 @@ Inspeccionadas 3967 de 2972 URLs del sitemap.
 | /precios | 117 | 114 | 3 | 3% |
 | /vr | 7 | 5 | 2 | 29% |
 | /mercado | 40 | 39 | 1 | 3% |
-| /campos | 70 | 69 | 1 | 1% |
+| /campos | 71 | 70 | 1 | 1% |
 | /informes | 5 | 4 | 1 | 20% |
 | /como-se-tasa-un-campo | 1 | 0 | 1 | 100% |
 | /valor-tierra.json | 1 | 0 | 1 | 100% |
@@ -114,9 +114,9 @@ Inspeccionadas 3967 de 2972 URLs del sitemap.
 
 | Motivo | URLs |
 |---|---:|
-| Enviada e indexada | 3153 |
-| Descubierta: actualmente sin indexar | 480 |
-| Google no reconoce esta URL | 253 |
+| Enviada e indexada | 3205 |
+| Descubierta: actualmente sin indexar | 493 |
+| Google no reconoce esta URL | 275 |
 | Rastreada: actualmente sin indexar | 41 |
 | Excluida por una etiqueta "noindex" | 22 |
 | Soft 404 | 8 |
