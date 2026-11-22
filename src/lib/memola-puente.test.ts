@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { memolaUrl, trackMemolaClick, type MemolaPlacement } from '@/lib/analytics'
+import { memolaUrl, trackMemolaBlockView, trackMemolaClick, type MemolaPlacement } from '@/lib/analytics'
 import arrMensual from '@/lib/data/arrendamiento-mensual.json'
 
 const PLACEMENTS: MemolaPlacement[] = ['footer', 'quienes_somos', 'quienes_somos_cta', 'para_consignatarias', 'arrendamiento', 'frigorificos', 'consignatarias_directorio', 'ficha', 'sumar', 'remates', 'arrendamiento_top', 'arrendamiento_plaza', 'arrendamiento_mensual', 'inmag', 'canuelas', 'liniers', 'guia', 'frigorifico_ficha', 'remates_plaza']
@@ -25,6 +25,15 @@ describe('puente a MEMOLA', () => {
     trackMemolaClick('footer')
     expect(w.__cnsgEvents).toEqual([
       { event: 'memola_click', params: { placement: 'footer', link_url: memolaUrl('footer') } },
+    ])
+  })
+
+  it('la exposición emite memola_block_view con placement y page_path', () => {
+    const w = { location: { hostname: 'localhost' }, __CNSG_TRACK_TEST__: true, __cnsgEvents: [] as Array<{ event: string; params?: Record<string, unknown> }> }
+    ;(globalThis as { window?: unknown }).window = w
+    trackMemolaBlockView({ placement: 'arrendamiento_top', page_path: '/mercado/arrendamiento' })
+    expect(w.__cnsgEvents).toEqual([
+      { event: 'memola_block_view', params: { placement: 'arrendamiento_top', page_path: '/mercado/arrendamiento' } },
     ])
   })
 })

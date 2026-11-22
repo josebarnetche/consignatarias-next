@@ -120,6 +120,14 @@ export function trackMemolaClick(placement: MemolaPlacement) {
   trackEvent('memola_click', { placement, link_url: memolaUrl(placement) })
 }
 
+/**
+ * Exposición del bloque/línea MEMOLA: se vio (≥50 % visible durante ≥1 s), una vez por
+ * bloque y por página vista. Separa «no hay clics» de «nadie lo vio» al leer `memola_click`.
+ */
+export function trackMemolaBlockView({ placement, page_path }: { placement: MemolaPlacement; page_path: string }) {
+  trackEvent('memola_block_view', { placement, page_path })
+}
+
 /* ------------------------------------------------------------------ */
 /*  DOMAIN EVENTS                                                      */
 /* ------------------------------------------------------------------ */

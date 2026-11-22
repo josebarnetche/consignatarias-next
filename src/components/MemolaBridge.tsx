@@ -1,7 +1,42 @@
 'use client'
 
-import type { ReactNode } from 'react'
-import { memolaUrl, trackMemolaClick, type MemolaPlacement } from '@/lib/analytics'
+import { useEffect, useState, type ReactNode } from 'react'
+import { usePathname } from 'next/navigation'
+import { memolaUrl, trackMemolaBlockView, trackMemolaClick, type MemolaPlacement } from '@/lib/analytics'
+
+/**
+ * `memola_block_view`: una vez por bloque y por página vista, cuando el bloque queda
+ * ≥50 % visible durante ≥1 s. Solo cliente (no toca el SSR ni el markup); no-op si el
+ * navegador no tiene IntersectionObserver. El pathname reinicia el conteo en navegación
+ * SPA (el footer no se desmonta entre páginas).
+ */
+function useMemolaBlockView(el: HTMLElement | null, placement: MemolaPlacement) {
+  const pathname = usePathname()
+  useEffect(() => {
+    if (!el || typeof IntersectionObserver === 'undefined') return
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.some((e) => e.isIntersecting && e.intersectionRatio >= 0.5)
+        if (visible && !timer) {
+          timer = setTimeout(() => {
+            trackMemolaBlockView({ placement, page_path: pathname })
+            io.disconnect()
+          }, 1000)
+        } else if (!visible && timer) {
+          clearTimeout(timer)
+          timer = undefined
+        }
+      },
+      { threshold: [0, 0.5] },
+    )
+    io.observe(el)
+    return () => {
+      if (timer) clearTimeout(timer)
+      io.disconnect()
+    }
+  }, [el, placement, pathname])
+}
 
 /**
  * Puente consignatarias.com.ar → memola.com.ar. Un solo componente para todos los
@@ -37,10 +72,13 @@ export function MemolaBridge({
 }) {
   const href = memolaUrl(placement)
   const onClick = () => trackMemolaClick(placement)
+  const [el, setEl] = useState<HTMLElement | null>(null)
+  useMemolaBlockView(el, placement)
 
   if (variant === 'linea') {
     return (
       <a
+        ref={setEl}
         href={href}
         target="_blank"
         rel="noopener"
@@ -56,7 +94,7 @@ export function MemolaBridge({
 
   if (variant === 'inline') {
     return (
-      <p className={`text-xs leading-relaxed text-zinc-500 ${className}`}>
+      <p ref={setEl} className={`text-xs leading-relaxed text-zinc-500 ${className}`}>
         <a
           href={href}
           target="_blank"
@@ -75,6 +113,7 @@ export function MemolaBridge({
   if (variant === 'bloque') {
     return (
       <div
+        ref={setEl}
         className={`rounded-xl border border-terminal-border bg-terminal-panel/60 p-5 ${className}`}
         data-memola-placement={placement}
       >
@@ -95,6 +134,7 @@ export function MemolaBridge({
 
   return (
     <a
+      ref={setEl}
       href={href}
       target="_blank"
       rel="noopener"
