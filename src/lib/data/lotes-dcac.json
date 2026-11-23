@@ -1,18 +1,18 @@
 [
   {
-    "sku": "34822",
-    "titulo": "45 Novillos Aberdeen Angus Negro y Colorado de 420kg",
-    "categoria": "novillos",
-    "cabezas": 45,
-    "kg_promedio": 420,
-    "raza": "Novillos Aberdeen Angus Negro y Colorado - Careta",
-    "provincia": "Buenos Aires",
-    "descripcion": "Tropa de invernada de 45 Novillos de 420kg, raza Aberdeen Angus Negro y Colorado de la zona de Buenos Aires muy buena calidad y estado corporal regular.",
-    "imagen_url": "https://decampoacampo.s3-sa-east-1.amazonaws.com/storage/produccion/videos/imagenes/638121a770134f30b803925a6ed54c91cec27b9a.0000004.jpg",
-    "url": "https://www.decampoacampo.com/__dcac/45-Novillos-420kg-invernada-34822",
+    "sku": "34835",
+    "titulo": "130 Terneros Braford de 200kg",
+    "categoria": "terneros",
+    "cabezas": 130,
+    "kg_promedio": 200,
+    "raza": "Terneros Braford - Brangus Negro y Colorado - Careta",
+    "provincia": "Salta",
+    "descripcion": "Lote de invernada de 130 Terneros de 200kg, raza Braford de la zona de Salta muy buena calidad y estado corporal muy bueno.",
+    "imagen_url": "https://decampoacampo.s3-sa-east-1.amazonaws.com/storage/produccion/videos/imagenes/130b035b781a50780b8b31aa4ad393c02ee2f18c.0000001.jpg",
+    "url": "https://www.decampoacampo.com/__dcac/130-Terneros-200kg-invernada-34835",
     "fuente": "deCampoaCampo",
-    "primera_vez": "2026-11-20",
-    "ultima_vez": "2026-11-22",
+    "primera_vez": "2026-11-21",
+    "ultima_vez": "2026-11-23",
     "activo": true
   },
   {
@@ -28,7 +28,7 @@
     "url": "https://www.decampoacampo.com/__dcac/80-Terneros-215kg-invernada-34814",
     "fuente": "deCampoaCampo",
     "primera_vez": "2026-11-20",
-    "ultima_vez": "2026-11-22",
+    "ultima_vez": "2026-11-23",
     "activo": true
   },
   {
@@ -42,6 +42,134 @@
     "descripcion": "Lote de invernada de 115 Terneras de 210kg, raza Aberdeen Angus Negro y Colorado de la zona de Buenos Aires muy buena calidad y estado corporal muy bueno.",
     "imagen_url": "https://decampoacampo.s3-sa-east-1.amazonaws.com/storage/produccion/videos/imagenes/5c43636454ca630ea94ed9fa83da7280cc188f28.0000001.jpg",
     "url": "https://www.decampoacampo.com/__dcac/115-Terneras-210kg-invernada-34813",
+    "fuente": "deCampoaCampo",
+    "primera_vez": "2026-11-20",
+    "ultima_vez": "2026-11-23",
+    "activo": true
+  },
+  {
+    "sku": "34784",
+    "titulo": "1 Toros Hereford de 500kg",
+    "categoria": "toros",
+    "cabezas": 1,
+    "kg_promedio": 500,
+    "raza": "Toros Hereford",
+    "provincia": "Córdoba",
+    "descripcion": "Tropa de invernada de 1 Toros de 500kg, raza Hereford de la zona de Cordoba muy buena calidad y estado corporal muy bueno.",
+    "imagen_url": "https://decampoacampo.s3-sa-east-1.amazonaws.com/storage/produccion/videos/imagenes/b6c77ad8f924fa42cd867544cae6e05776b52218.0000001.jpg",
+    "url": "https://www.decampoacampo.com/__dcac/1-Toros-500kg-invernada-34784",
+    "fuente": "deCampoaCampo",
+    "primera_vez": "2026-11-18",
+    "ultima_vez": "2026-11-23",
+    "activo": true
+  },
+  {
+    "sku": "34768",
+    "titulo": "120 Terneros y Terneras Braford de 210kg",
+    "categoria": "terneros",
+    "cabezas": 120,
+    "kg_promedio": 210,
+    "raza": "Terneros y Terneras Braford - Brangus Negro y Colorado",
+    "provincia": "Corrientes",
+    "descripcion": "Lote de invernada de 120 Terneros y Terneras de 210kg, raza Braford de la zona de Corrientes muy buena calidad y estado corporal muy bueno.",
+    "imagen_url": "https://decampoacampo.s3-sa-east-1.amazonaws.com/storage/produccion/videos/imagenes/3d21dcfad8c028c53911625dd362d200.0000001.jpg",
+    "url": "https://www.decampoacampo.com/__dcac/120-Terneros-y-Terneras-210kg-invernada-34768",
+    "fuente": "deCampoaCampo",
+    "primera_vez": "2026-11-18",
+    "ultima_vez": "2026-11-23",
+    "activo": true
+  },
+  {
+    "sku": "34708",
+    "titulo": "50 Vacas preñadas Aberdeen Angus Negro de 430kg",
+    "categoria": "vacas_prenadas",
+    "cabezas": 50,
+    "kg_promedio": 430,
+    "raza": "Vacas preñadas Aberdeen Angus Negro",
+    "provincia": "Buenos Aires",
+    "descripcion": "Tropa de invernada de 50 Vacas preñadas de 430kg, raza Aberdeen Angus Negro de la zona de Buenos Aires muy buena calidad y estado corporal muy bueno.",
+    "imagen_url": "https://decampoacampo.s3-sa-east-1.amazonaws.com/storage/produccion/videos/imagenes/8f4b0aecbe50e4cd1d7db41a0d478186.0000001.jpg",
+    "url": "https://www.decampoacampo.com/__dcac/50-Vacas-prenadas-430kg-invernada-34708",
+    "fuente": "deCampoaCampo",
+    "primera_vez": "2026-11-13",
+    "ultima_vez": "2026-11-23",
+    "activo": true
+  },
+  {
+    "sku": "34693",
+    "titulo": "100 Terneros Aberdeen Angus Negro y Colorado de 220kg",
+    "categoria": "terneros",
+    "cabezas": 100,
+    "kg_promedio": 220,
+    "raza": "Terneros Aberdeen Angus Negro y Colorado - Careta",
+    "provincia": "Buenos Aires",
+    "descripcion": "Tropa de invernada de 100 Terneros de 220kg, raza Aberdeen Angus Negro y Colorado de la zona de Buenos Aires muy buena calidad y estado corporal muy bueno.",
+    "imagen_url": "https://decampoacampo.s3-sa-east-1.amazonaws.com/storage/produccion/videos/imagenes/6d75102dee149e790d64e79d90781aaee9398320.0000001.jpg",
+    "url": "https://www.decampoacampo.com/__dcac/100-Terneros-220kg-invernada-34693",
+    "fuente": "deCampoaCampo",
+    "primera_vez": "2026-11-14",
+    "ultima_vez": "2026-11-23",
+    "activo": true
+  },
+  {
+    "sku": "34581",
+    "titulo": "60 Vaquillonas Preñadas Aberdeen Angus Negro y Colorado de 420kg",
+    "categoria": "vaquillonas_prenadas",
+    "cabezas": 60,
+    "kg_promedio": 420,
+    "raza": "Vaquillonas Preñadas Aberdeen Angus Negro y Colorado",
+    "provincia": "Buenos Aires",
+    "descripcion": "Tropa de invernada de 60 Vaquillonas Preñadas de 420kg, raza Aberdeen Angus Negro y Colorado de la zona de Buenos Aires muy buena calidad y estado corporal muy bueno.",
+    "imagen_url": "https://decampoacampo.s3-sa-east-1.amazonaws.com/storage/produccion/videos/imagenes/aebaf84c375d9526ed0cb9901bc0fa46e82c82cb.0000001.jpg",
+    "url": "https://www.decampoacampo.com/__dcac/60-Vaquillonas-Prenadas-420kg-invernada-34581",
+    "fuente": "deCampoaCampo",
+    "primera_vez": "2026-11-15",
+    "ultima_vez": "2026-11-23",
+    "activo": true
+  },
+  {
+    "sku": "34573",
+    "titulo": "40 Vaquillonas Preñadas Aberdeen Angus Colorado de 380kg",
+    "categoria": "vaquillonas_prenadas",
+    "cabezas": 40,
+    "kg_promedio": 380,
+    "raza": "Vaquillonas Preñadas Aberdeen Angus Colorado",
+    "provincia": "Buenos Aires",
+    "descripcion": "Tropa de invernada de 40 Vaquillonas Preñadas de 380kg, raza Aberdeen Angus Colorado de la zona de Buenos Aires muy buena calidad y estado corporal muy bueno.",
+    "imagen_url": "https://decampoacampo.s3-sa-east-1.amazonaws.com/storage/produccion/videos/imagenes/54ff2e7e0942ea99a7832912e16c6830fa7c36d1.0000001.jpg",
+    "url": "https://www.decampoacampo.com/__dcac/40-Vaquillonas-Prenadas-380kg-invernada-34573",
+    "fuente": "deCampoaCampo",
+    "primera_vez": "2026-11-21",
+    "ultima_vez": "2026-11-23",
+    "activo": true
+  },
+  {
+    "sku": "34413",
+    "titulo": "230 Vaquillonas Preñadas Aberdeen Angus Negro y Colorado 400kg",
+    "categoria": "vaquillonas_prenadas",
+    "cabezas": 230,
+    "kg_promedio": 400,
+    "raza": "Vaquillonas Preñadas Aberdeen Angus Negro y Colorado",
+    "provincia": "La Pampa",
+    "descripcion": "Lote de invernada de 230 Vaquillonas Preñadas de 400kg, raza Aberdeen Angus Negro y Colorado de la zona de La Pampa excelente calidad y estado corporal muy bueno.",
+    "imagen_url": "https://decampoacampo.s3-sa-east-1.amazonaws.com/storage/produccion/videos/imagenes/fd64b4f19235c2a86999c8cf1b0a3a74df24d712.0000001.jpg",
+    "url": "https://www.decampoacampo.com/__dcac/230-Vaquillonas-Prenadas-400kg-invernada-34413",
+    "fuente": "deCampoaCampo",
+    "primera_vez": "2026-10-30",
+    "ultima_vez": "2026-11-23",
+    "activo": true
+  },
+  {
+    "sku": "34822",
+    "titulo": "45 Novillos Aberdeen Angus Negro y Colorado de 420kg",
+    "categoria": "novillos",
+    "cabezas": 45,
+    "kg_promedio": 420,
+    "raza": "Novillos Aberdeen Angus Negro y Colorado - Careta",
+    "provincia": "Buenos Aires",
+    "descripcion": "Tropa de invernada de 45 Novillos de 420kg, raza Aberdeen Angus Negro y Colorado de la zona de Buenos Aires muy buena calidad y estado corporal regular.",
+    "imagen_url": "https://decampoacampo.s3-sa-east-1.amazonaws.com/storage/produccion/videos/imagenes/638121a770134f30b803925a6ed54c91cec27b9a.0000004.jpg",
+    "url": "https://www.decampoacampo.com/__dcac/45-Novillos-420kg-invernada-34822",
     "fuente": "deCampoaCampo",
     "primera_vez": "2026-11-20",
     "ultima_vez": "2026-11-22",
@@ -208,22 +336,6 @@
     "activo": true
   },
   {
-    "sku": "34581",
-    "titulo": "60 Vaquillonas Preñadas Aberdeen Angus Negro y Colorado de 420kg",
-    "categoria": "vaquillonas_prenadas",
-    "cabezas": 60,
-    "kg_promedio": 420,
-    "raza": "Vaquillonas Preñadas Aberdeen Angus Negro y Colorado",
-    "provincia": "Buenos Aires",
-    "descripcion": "Tropa de invernada de 60 Vaquillonas Preñadas de 420kg, raza Aberdeen Angus Negro y Colorado de la zona de Buenos Aires muy buena calidad y estado corporal muy bueno.",
-    "imagen_url": "https://decampoacampo.s3-sa-east-1.amazonaws.com/storage/produccion/videos/imagenes/aebaf84c375d9526ed0cb9901bc0fa46e82c82cb.0000001.jpg",
-    "url": "https://www.decampoacampo.com/__dcac/60-Vaquillonas-Prenadas-420kg-invernada-34581",
-    "fuente": "deCampoaCampo",
-    "primera_vez": "2026-11-15",
-    "ultima_vez": "2026-11-22",
-    "activo": true
-  },
-  {
     "sku": "34540",
     "titulo": "35 Vaquillonas Preñadas Hereford de 370kg",
     "categoria": "vaquillonas_prenadas",
@@ -272,22 +384,6 @@
     "activo": true
   },
   {
-    "sku": "34413",
-    "titulo": "230 Vaquillonas Preñadas Aberdeen Angus Negro y Colorado 400kg",
-    "categoria": "vaquillonas_prenadas",
-    "cabezas": 230,
-    "kg_promedio": 400,
-    "raza": "Vaquillonas Preñadas Aberdeen Angus Negro y Colorado",
-    "provincia": "La Pampa",
-    "descripcion": "Tropa de invernada de 230 Vaquillonas Preñadas de 400kg, raza Aberdeen Angus Negro y Colorado de la zona de La Pampa excelente calidad y estado corporal muy bueno.",
-    "imagen_url": "https://decampoacampo.s3-sa-east-1.amazonaws.com/storage/produccion/videos/imagenes/fd64b4f19235c2a86999c8cf1b0a3a74df24d712.0000001.jpg",
-    "url": "https://www.decampoacampo.com/__dcac/230-Vaquillonas-Prenadas-400kg-invernada-34413",
-    "fuente": "deCampoaCampo",
-    "primera_vez": "2026-10-30",
-    "ultima_vez": "2026-11-22",
-    "activo": true
-  },
-  {
     "sku": "34231",
     "titulo": "75 Vacas preñadas Aberdeen Angus Negro y Colorado de 470kg",
     "categoria": "vacas_prenadas",
@@ -301,22 +397,6 @@
     "fuente": "deCampoaCampo",
     "primera_vez": "2026-10-18",
     "ultima_vez": "2026-11-22",
-    "activo": true
-  },
-  {
-    "sku": "34835",
-    "titulo": "130 Terneros Braford de 200kg",
-    "categoria": "terneros",
-    "cabezas": 130,
-    "kg_promedio": 200,
-    "raza": "Terneros Braford - Brangus Negro y Colorado - Careta",
-    "provincia": "Salta",
-    "descripcion": "Tropa de invernada de 130 Terneros de 200kg, raza Braford de la zona de Salta muy buena calidad y estado corporal muy bueno.",
-    "imagen_url": "https://decampoacampo.s3-sa-east-1.amazonaws.com/storage/produccion/videos/imagenes/130b035b781a50780b8b31aa4ad393c02ee2f18c.0000001.jpg",
-    "url": "https://www.decampoacampo.com/__dcac/130-Terneros-200kg-invernada-34835",
-    "fuente": "deCampoaCampo",
-    "primera_vez": "2026-11-21",
-    "ultima_vez": "2026-11-21",
     "activo": true
   },
   {
@@ -496,22 +576,6 @@
     "activo": true
   },
   {
-    "sku": "34693",
-    "titulo": "100 Terneros Aberdeen Angus Negro y Colorado de 220kg",
-    "categoria": "terneros",
-    "cabezas": 100,
-    "kg_promedio": 220,
-    "raza": "Terneros Aberdeen Angus Negro y Colorado - Careta",
-    "provincia": "Buenos Aires",
-    "descripcion": "Lote de invernada de 100 Terneros de 220kg, raza Aberdeen Angus Negro y Colorado de la zona de Buenos Aires muy buena calidad y estado corporal muy bueno.",
-    "imagen_url": "https://decampoacampo.s3-sa-east-1.amazonaws.com/storage/produccion/videos/imagenes/6d75102dee149e790d64e79d90781aaee9398320.0000001.jpg",
-    "url": "https://www.decampoacampo.com/__dcac/100-Terneros-220kg-invernada-34693",
-    "fuente": "deCampoaCampo",
-    "primera_vez": "2026-11-14",
-    "ultima_vez": "2026-11-21",
-    "activo": true
-  },
-  {
     "sku": "34673",
     "titulo": "95 Vaquillonas Preñadas Aberdeen Angus Negro y Colorado de 380kg",
     "categoria": "vaquillonas_prenadas",
@@ -524,22 +588,6 @@
     "url": "https://www.decampoacampo.com/__dcac/95-Vaquillonas-Prenadas-380kg-invernada-34673",
     "fuente": "deCampoaCampo",
     "primera_vez": "2026-11-13",
-    "ultima_vez": "2026-11-21",
-    "activo": true
-  },
-  {
-    "sku": "34573",
-    "titulo": "40 Vaquillonas Preñadas Aberdeen Angus Colorado de 380kg",
-    "categoria": "vaquillonas_prenadas",
-    "cabezas": 40,
-    "kg_promedio": 380,
-    "raza": "Vaquillonas Preñadas Aberdeen Angus Colorado",
-    "provincia": "Buenos Aires",
-    "descripcion": "Lote de invernada de 40 Vaquillonas Preñadas de 380kg, raza Aberdeen Angus Colorado de la zona de Buenos Aires muy buena calidad y estado corporal muy bueno.",
-    "imagen_url": "https://decampoacampo.s3-sa-east-1.amazonaws.com/storage/produccion/videos/imagenes/54ff2e7e0942ea99a7832912e16c6830fa7c36d1.0000001.jpg",
-    "url": "https://www.decampoacampo.com/__dcac/40-Vaquillonas-Prenadas-380kg-invernada-34573",
-    "fuente": "deCampoaCampo",
-    "primera_vez": "2026-11-21",
     "ultima_vez": "2026-11-21",
     "activo": true
   },
@@ -608,22 +656,6 @@
     "activo": true
   },
   {
-    "sku": "34768",
-    "titulo": "120 Terneros y Terneras Braford de 210kg",
-    "categoria": "terneros",
-    "cabezas": 120,
-    "kg_promedio": 210,
-    "raza": "Terneros y Terneras Braford - Brangus Negro y Colorado",
-    "provincia": "Corrientes",
-    "descripcion": "Lote de invernada de 120 Terneros y Terneras de 210kg, raza Braford de la zona de Corrientes muy buena calidad y estado corporal muy bueno.",
-    "imagen_url": "https://decampoacampo.s3-sa-east-1.amazonaws.com/storage/produccion/videos/imagenes/3d21dcfad8c028c53911625dd362d200.0000001.jpg",
-    "url": "https://www.decampoacampo.com/__dcac/120-Terneros-y-Terneras-210kg-invernada-34768",
-    "fuente": "deCampoaCampo",
-    "primera_vez": "2026-11-18",
-    "ultima_vez": "2026-11-20",
-    "activo": true
-  },
-  {
     "sku": "34760",
     "titulo": "80 Vaquillonas Preñadas Aberdeen Angus Negro de 400kg",
     "categoria": "vaquillonas_prenadas",
@@ -656,22 +688,6 @@
     "activo": true
   },
   {
-    "sku": "34708",
-    "titulo": "50 Vacas preñadas Aberdeen Angus Negro de 430kg",
-    "categoria": "vacas_prenadas",
-    "cabezas": 50,
-    "kg_promedio": 430,
-    "raza": "Vacas preñadas Aberdeen Angus Negro",
-    "provincia": "Buenos Aires",
-    "descripcion": "Lote de invernada de 50 Vacas preñadas de 430kg, raza Aberdeen Angus Negro de la zona de Buenos Aires muy buena calidad y estado corporal muy bueno.",
-    "imagen_url": "https://decampoacampo.s3-sa-east-1.amazonaws.com/storage/produccion/videos/imagenes/8f4b0aecbe50e4cd1d7db41a0d478186.0000001.jpg",
-    "url": "https://www.decampoacampo.com/__dcac/50-Vacas-prenadas-430kg-invernada-34708",
-    "fuente": "deCampoaCampo",
-    "primera_vez": "2026-11-13",
-    "ultima_vez": "2026-11-20",
-    "activo": true
-  },
-  {
     "sku": "34792",
     "titulo": "70 Vaquillonas Aberdeen Angus Negro y Colorado de 250kg",
     "categoria": "vaquillonas",
@@ -698,22 +714,6 @@
     "descripcion": "Tropa de invernada de 60 Terneros y Terneras de 210kg, raza Aberdeen Angus Negro y Colorado de la zona de Buenos Aires muy buena calidad y estado corporal muy bueno.",
     "imagen_url": "https://decampoacampo.s3-sa-east-1.amazonaws.com/storage/produccion/videos/imagenes/f752df749dfea993d712b6dd98c24c7c7e587008.0000001.jpg",
     "url": "https://www.decampoacampo.com/__dcac/60-Terneros-y-Terneras-210kg-invernada-34790",
-    "fuente": "deCampoaCampo",
-    "primera_vez": "2026-11-18",
-    "ultima_vez": "2026-11-19",
-    "activo": true
-  },
-  {
-    "sku": "34784",
-    "titulo": "1 Toros Hereford de 500kg",
-    "categoria": "toros",
-    "cabezas": 1,
-    "kg_promedio": 500,
-    "raza": "Toros Hereford",
-    "provincia": "Córdoba",
-    "descripcion": "Tropa de invernada de 1 Toros de 500kg, raza Hereford de la zona de Cordoba muy buena calidad y estado corporal muy bueno.",
-    "imagen_url": "https://decampoacampo.s3-sa-east-1.amazonaws.com/storage/produccion/videos/imagenes/b6c77ad8f924fa42cd867544cae6e05776b52218.0000001.jpg",
-    "url": "https://www.decampoacampo.com/__dcac/1-Toros-500kg-invernada-34784",
     "fuente": "deCampoaCampo",
     "primera_vez": "2026-11-18",
     "ultima_vez": "2026-11-19",
@@ -3405,7 +3405,7 @@
     "fuente": "deCampoaCampo",
     "primera_vez": "2026-10-30",
     "ultima_vez": "2026-11-01",
-    "activo": true
+    "activo": false
   },
   {
     "sku": "34453",
@@ -3421,7 +3421,7 @@
     "fuente": "deCampoaCampo",
     "primera_vez": "2026-10-30",
     "ultima_vez": "2026-11-01",
-    "activo": true
+    "activo": false
   },
   {
     "sku": "34438",
@@ -3437,7 +3437,7 @@
     "fuente": "deCampoaCampo",
     "primera_vez": "2026-10-28",
     "ultima_vez": "2026-11-01",
-    "activo": true
+    "activo": false
   },
   {
     "sku": "34437",
@@ -3453,7 +3453,7 @@
     "fuente": "deCampoaCampo",
     "primera_vez": "2026-10-29",
     "ultima_vez": "2026-11-01",
-    "activo": true
+    "activo": false
   },
   {
     "sku": "34425",
@@ -3469,7 +3469,7 @@
     "fuente": "deCampoaCampo",
     "primera_vez": "2026-10-27",
     "ultima_vez": "2026-11-01",
-    "activo": true
+    "activo": false
   },
   {
     "sku": "34087",
@@ -3485,7 +3485,7 @@
     "fuente": "deCampoaCampo",
     "primera_vez": "2026-10-31",
     "ultima_vez": "2026-11-01",
-    "activo": true
+    "activo": false
   },
   {
     "sku": "34488",
