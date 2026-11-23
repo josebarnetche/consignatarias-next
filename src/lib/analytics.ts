@@ -106,12 +106,22 @@ export type MemolaPlacement =
   | 'guia'
   | 'frigorifico_ficha'
   | 'remates_plaza'
+  // Oferta B2B de MEMOLA para consignatarias (corrida 228): junto a la burbuja «Sumá tu
+  // consignataria». Va a /servicios/ con su propia campaña, no a la del puente.
+  | 'oferta_sumar'
 
 /**
  * URL a memola.com.ar con la UTM del puente. GA4 de memola.com.ar cuenta las
  * sesiones por utm_campaign=puente_memola y utm_medium=<placement>.
+ *
+ * Los placements `oferta_*` son la oferta B2B para firmas del rubro: van a
+ * /servicios/ con utm_medium=referral, utm_campaign=oferta_consignatarias y
+ * utm_content=<placement>, para leerlos aparte del puente.
  */
 export function memolaUrl(placement: MemolaPlacement | 'newsletter_digest'): string {
+  if (placement.startsWith('oferta_')) {
+    return `https://memola.com.ar/servicios/?utm_source=consignatarias&utm_medium=referral&utm_campaign=oferta_consignatarias&utm_content=${placement}`
+  }
   return `https://memola.com.ar/?utm_source=consignatarias&utm_medium=${placement}&utm_campaign=puente_memola`
 }
 

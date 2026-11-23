@@ -50,6 +50,8 @@ function useMemolaBlockView(el: HTMLElement | null, placement: MemolaPlacement) 
  *   (guías, /mercado/*, fichas de frigorífico, remates por plaza). Sin montos.
  *   El arranque NO dice «Índice … creado por MEMOLA»: el INMAG y el índice de
  *   arrendamiento los publica el Mercado Agroganadero; MEMOLA hace la plataforma.
+ * - `oferta`: tarjeta compacta de la oferta B2B (placements `oferta_*`), con botón de
+ *   cerrar opcional (`onClose`). Sin montos ni nombres de clientes.
  *
  * Sin `noreferrer`: así memola.com.ar ve el referrer además de la UTM.
  */
@@ -61,14 +63,16 @@ export function MemolaBridge({
   lead = 'Plataforma creada y operada por',
   cta = 'Conocé MEMOLA →',
   className = '',
+  onClose,
 }: {
   placement: MemolaPlacement
-  variant?: 'link' | 'linea' | 'bloque' | 'inline'
+  variant?: 'link' | 'linea' | 'bloque' | 'inline' | 'oferta'
   children?: ReactNode
   titulo?: string
   lead?: string
   cta?: string
   className?: string
+  onClose?: () => void
 }) {
   const href = memolaUrl(placement)
   const onClick = () => trackMemolaClick(placement)
@@ -107,6 +111,38 @@ export function MemolaBridge({
           <span className="text-accent">→</span>
         </a>
       </p>
+    )
+  }
+
+  if (variant === 'oferta') {
+    return (
+      <div
+        ref={setEl}
+        data-memola-placement={placement}
+        className={`relative rounded-xl border border-terminal-border bg-terminal-panel p-4 pr-8 shadow-lg ${className}`}
+      >
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Cerrar"
+            className="absolute right-2 top-2 px-1.5 text-base leading-none text-zinc-500 hover:text-zinc-200 motion-hover"
+          >
+            ×
+          </button>
+        )}
+        {titulo && <p className="mb-1 text-sm font-medium leading-snug text-ink">{titulo}</p>}
+        <p className="mb-3 text-xs leading-relaxed text-zinc-400">{children}</p>
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener"
+          onClick={onClick}
+          className="text-sm font-medium text-accent hover:underline"
+        >
+          {cta}
+        </a>
+      </div>
     )
   }
 
