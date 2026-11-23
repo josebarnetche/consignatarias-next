@@ -19,6 +19,27 @@ describe('puente a MEMOLA', () => {
     }
   })
 
+  it('la oferta B2B (oferta_sumar) va a /servicios/ con su campaña y el placement en utm_content', () => {
+    const u = new URL(memolaUrl('oferta_sumar'))
+    expect(u.origin + u.pathname).toBe('https://memola.com.ar/servicios/')
+    expect(Object.fromEntries(u.searchParams)).toEqual({
+      utm_source: 'consignatarias',
+      utm_medium: 'referral',
+      utm_campaign: 'oferta_consignatarias',
+      utm_content: 'oferta_sumar',
+    })
+  })
+
+  it('el click en la oferta emite memola_click con placement y link_url de la oferta', () => {
+    const w = { location: { hostname: 'localhost' }, __CNSG_TRACK_TEST__: true, __cnsgEvents: [] as Array<{ event: string; params?: Record<string, unknown> }> }
+    ;(globalThis as { window?: unknown }).window = w
+    trackMemolaClick('oferta_sumar')
+    expect(w.__cnsgEvents).toEqual([
+      { event: 'memola_click', params: { placement: 'oferta_sumar', link_url: memolaUrl('oferta_sumar') } },
+    ])
+    expect(String(w.__cnsgEvents[0].params?.link_url)).toContain('utm_campaign=oferta_consignatarias')
+  })
+
   it('el click emite memola_click con el placement', () => {
     const w = { location: { hostname: 'localhost' }, __CNSG_TRACK_TEST__: true, __cnsgEvents: [] as Array<{ event: string; params?: Record<string, unknown> }> }
     ;(globalThis as { window?: unknown }).window = w
