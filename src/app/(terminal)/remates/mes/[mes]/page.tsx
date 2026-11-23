@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import remates from '@/lib/data/remates.json'
+import remates from '@/lib/data/remates-calendario'
 import { RematesListSchema, BreadcrumbSchema } from '@/components/seo/JsonLd'
 import { Calendar, ArrowLeft, ArrowRight, ChevronRight } from 'lucide-react'
 import { RemateFila } from '@/components/remates/RemateFila'

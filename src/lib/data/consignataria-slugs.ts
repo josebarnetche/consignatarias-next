@@ -292,6 +292,59 @@ function colapsarDuplicadosDeFuente(filas: Auction[]): Auction[] {
   return descartadas.size === 0 ? filas : filas.filter(a => !descartadas.has(a))
 }
 
+/**
+ * La misma regla angosta de `colapsarDuplicadosDeFuente`, aplicada al calendario
+ * COMPLETO (todas las firmas mezcladas), para /remates, sus vistas y el MCP.
+ *
+ * POR QUÉ. La ficha ya colapsaba la misma subasta publicada por dos sitios de la
+ * misma firma, pero el calendario leía `remates.json` directo y la mostraba dos
+ * veces con dos razones sociales distintas. Caso real (22-nov-2026): UMC publica
+ * en `umcsa.net` («U.M.C. S.A.», sin hora) y en `umchv.ar` («UMC SA - Haciendas
+ * Villaguay SRL», 14:00) el remate del 01-dic en Goya, el del 10-dic en Mercedes y
+ * el del 18-dic en Villaguay. El scraper no los une porque `deduplicateAuctions`
+ * compara slugs normalizados y `u-m-c` ≠ `umc-haciendas-villaguay`.
+ *
+ * Agrupa por firma canónica (perfil curado; un slug sin perfil sólo se agrupa
+ * consigo mismo, y dos filas del mismo slug nunca se colapsan) y dentro de cada
+ * firma aplica exactamente la regla de la ficha: slugs variante distintos, misma
+ * fecha y localidad, horas a menos de `TOLERANCIA_MINUTOS` o una sin hora. Sobrevive
+ * la fila con más datos, con la razón social canónica del perfil. Conserva el orden
+ * original. No muta las filas, no toca la base ni el JSON.
+ */
+export function colapsarDuplicadosDelCalendario<T extends Auction>(filas: T[]): T[] {
+  const porFirma = new Map<string, T[]>()
+  for (const a of filas) {
+    const firma = slugToCanonical.get(a.consignatariaSlug) ?? a.consignatariaSlug
+    const grupo = porFirma.get(firma)
+    if (grupo) grupo.push(a)
+    else porFirma.set(firma, [a])
+  }
+  const reemplazo = new Map<T, T | null>() // null = descartada; otra fila = sobreviviente renombrada
+  for (const [firma, grupo] of porFirma) {
+    if (grupo.length < 2) continue
+    const salida = new Set(colapsarDuplicadosDeFuente(grupo) as T[])
+    if (salida.size === grupo.length) continue
+    const lugarDia = (a: T) => `${a.date}|${normalizarLocalidad(a.location)}`
+    const conGemela = new Set<string>()
+    for (const a of grupo) if (!salida.has(a)) { reemplazo.set(a, null); conGemela.add(lugarDia(a)) }
+    // La que sobrevive a un colapso lleva la razón social canónica del perfil: si no,
+    // queda la que trajo la fuente más rica («F Rauch», «Cyg N Hacienda»).
+    const nombre = canonicalToProfile.get(firma)?.displayName
+    if (!nombre) continue
+    for (const a of salida) {
+      if (conGemela.has(lugarDia(a)) && a.consignatariaName !== nombre) reemplazo.set(a, { ...a, consignatariaName: nombre })
+    }
+  }
+  if (reemplazo.size === 0) return filas
+  const out: T[] = []
+  for (const a of filas) {
+    const r = reemplazo.get(a)
+    if (r === null) continue
+    out.push(r ?? a)
+  }
+  return out
+}
+
 /** Get all auctions that belong to a canonical slug (merges all variant slugs). */
 export function getAuctionsForProfile(auctions: Auction[], canonicalSlug: string): Auction[] {
   const profile = canonicalToProfile.get(canonicalSlug)

@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import remates from '@/lib/data/remates.json'
+import remates from '@/lib/data/remates-calendario'
 import { consignatariaProfilePath } from '@/lib/data/consignataria-slugs'
 import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/JsonLd'
 import { Calendar, History } from 'lucide-react'

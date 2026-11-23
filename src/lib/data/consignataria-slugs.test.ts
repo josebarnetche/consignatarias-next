@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { getAuctionsForProfile } from './consignataria-slugs'
+import { getAuctionsForProfile, colapsarDuplicadosDelCalendario } from './consignataria-slugs'
 import type { Auction } from '@/lib/db/schema'
 
 /**
@@ -92,5 +92,75 @@ describe('getAuctionsForProfile: la misma subasta publicada por dos sitios de la
     expect(otro).toHaveLength(1)
     expect(uno[0].id).toBe(otro[0].id)
     expect(uno[0].id).toBe(3) // a igual información, gana el id menor
+  })
+})
+
+/**
+ * El calendario (/remates, sus vistas y el MCP) mezcla todas las firmas. Casos reales
+ * del 22-nov-2026: UMC publica en umcsa.net («U.M.C. S.A.», sin hora) y en umchv.ar
+ * («UMC SA - Haciendas Villaguay SRL», 14:00) el remate del 01-dic en Goya; HRE y
+ * «Horacio Rodríguez Egaña Consignaciones SRL» publican el 10-dic en Chajarí a las
+ * 11:00 y a las 14:00 (horas lejanas: lo resuelve una persona, no el código).
+ */
+describe('colapsarDuplicadosDelCalendario: el calendario completo, todas las firmas', () => {
+  it('colapsa el caso real de UMC en Goya y deja la fila con hora y la razón social canónica', () => {
+    const filas = [
+      remate({ id: 1294, consignatariaSlug: 'u-m-c-s-a', consignatariaName: 'U.M.C. S.A.', date: '2026-12-01', time: null, location: 'GOYA, CORRIENTES', title: 'PEQUEÑOS PRODUCTORES Remate de Invernada' }),
+      remate({ id: 1300, consignatariaSlug: 'umc-haciendas-villaguay', consignatariaName: 'UMC SA - Haciendas Villaguay SRL', date: '2026-12-01', time: '14:00', location: 'Goya, Corrientes', title: 'UMC HV — Remate Feria' }),
+    ]
+    const out = colapsarDuplicadosDelCalendario(filas)
+    expect(out).toHaveLength(1)
+    expect(out[0].id).toBe(1300)
+    expect(out[0].consignatariaName).toBe('UMC SA - Haciendas Villaguay SRL')
+  })
+
+  it('a la sobreviviente le pone el nombre del perfil sin mutar la fila original', () => {
+    const navarro = { date: '2026-11-24', location: 'NAVARRO, BUENOS AIRES' }
+    const rica = remate({ id: 1230, consignatariaSlug: 'f-rauch', consignatariaName: 'F Rauch', time: '12:00', estimatedHeads: 400, ...navarro })
+    const filas = [
+      remate({ id: 1229, consignatariaSlug: 'ferias-rauch-s-a', consignatariaName: 'FERIAS RAUCH S.A.', time: '11:30', ...navarro }),
+      rica,
+    ]
+    const out = colapsarDuplicadosDelCalendario(filas)
+    expect(out.map(a => a.id)).toEqual([1230])
+    expect(out[0].consignatariaName).toBe('Ferias Rauch SA')
+    expect(rica.consignatariaName).toBe('F Rauch')
+  })
+
+  it('NO colapsa horas conocidas y lejanas de la misma firma (HRE en Chajarí, 11:00 y 14:00)', () => {
+    const chajari = { date: '2026-12-10', location: 'CHAJARI, ENTRE RÍOS' }
+    const filas = [
+      remate({ id: 1351, consignatariaSlug: 'hre', consignatariaName: 'HRE', time: '11:00', ...chajari }),
+      remate({ id: 1354, consignatariaSlug: 'horacio-rodriguez-egana-consignaciones-s-r-l', time: '14:00', ...chajari }),
+    ]
+    expect(colapsarDuplicadosDelCalendario(filas)).toBe(filas)
+  })
+
+  it('NO colapsa firmas distintas el mismo día en el mismo pueblo', () => {
+    const filas = [
+      remate({ id: 1, consignatariaSlug: 'u-m-c-s-a', time: null }),
+      remate({ id: 2, consignatariaSlug: 'reggi-y-cia', time: '14:00' }),
+    ]
+    expect(colapsarDuplicadosDelCalendario(filas)).toBe(filas)
+  })
+
+  it('NO colapsa dos filas del mismo slug ni firmas sin perfil', () => {
+    const filas = [
+      remate({ id: 1, consignatariaSlug: 'firma-sin-perfil' }),
+      remate({ id: 2, consignatariaSlug: 'firma-sin-perfil' }),
+      remate({ id: 3, consignatariaSlug: 'umc-haciendas-villaguay' }),
+      remate({ id: 4, consignatariaSlug: 'umc-haciendas-villaguay' }),
+    ]
+    expect(colapsarDuplicadosDelCalendario(filas)).toHaveLength(4)
+  })
+
+  it('conserva el orden del calendario', () => {
+    const filas = [
+      remate({ id: 10, consignatariaSlug: 'reggi-y-cia', date: '2026-11-26' }),
+      remate({ id: 11, consignatariaSlug: 'u-m-c-s-a', date: '2026-12-10', time: null }),
+      remate({ id: 12, consignatariaSlug: 'aguerre-srl', date: '2026-12-17' }),
+      remate({ id: 13, consignatariaSlug: 'umc-haciendas-villaguay', date: '2026-12-10', time: '14:00' }),
+    ]
+    expect(colapsarDuplicadosDelCalendario(filas).map(a => a.id)).toEqual([10, 12, 13])
   })
 })
