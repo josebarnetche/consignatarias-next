@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
-import remates from '@/lib/data/remates.json'
+import remates from '@/lib/data/remates-calendario'
 import { consignatariaProfilePath } from '@/lib/data/consignataria-slugs'
 import { normalizeUrl } from '@/lib/utils/url'
 import { SectionBreadcrumbSchema, RematesListSchema } from '@/components/seo/JsonLd'

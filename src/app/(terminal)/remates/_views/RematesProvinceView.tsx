@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ciudadEnSitemap } from '@/lib/seo/indexacion'
-import rematesData from '@/lib/data/remates.json'
+import rematesData from '@/lib/data/remates-calendario'
 import marketPrices from '@/lib/data/market-prices.json'
 import { INMAG_DATE } from '@/lib/inmag'
 import type { Auction } from '@/lib/db/schema'
