@@ -73,7 +73,7 @@ export default function WhatsAppLeadFAB() {
         <MemolaBridge
           placement="oferta_sumar"
           variant="oferta"
-          titulo="¿Querés que tu remate se vea y se venda más?"
+          titulo="¿Querés que tu remate llegue a más gente?"
           cta="Ver qué hace MEMOLA →"
           onClose={() => guardarOferta('cerrada')}
         >
