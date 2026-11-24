@@ -2,7 +2,10 @@
 
 import { useEffect, useState, type ReactNode } from 'react'
 import { usePathname } from 'next/navigation'
-import { memolaUrl, trackMemolaBlockView, trackMemolaClick, type MemolaPlacement } from '@/lib/analytics'
+import { memolaUrl, trackMemolaBlockView, trackMemolaClick, type MemolaPlacement, type MemolaVariant } from '@/lib/analytics'
+
+/** Placements inline en prueba con la variante B (copy con la cifra del caso, destino /caso-consignatarias/). */
+const INLINE_B: ReadonlySet<MemolaPlacement> = new Set<MemolaPlacement>(['guia', 'frigorifico_ficha', 'arrendamiento_top'])
 
 /**
  * `memola_block_view`: una vez por bloque y por página vista, cuando el bloque queda
@@ -10,7 +13,7 @@ import { memolaUrl, trackMemolaBlockView, trackMemolaClick, type MemolaPlacement
  * navegador no tiene IntersectionObserver. El pathname reinicia el conteo en navegación
  * SPA (el footer no se desmonta entre páginas).
  */
-function useMemolaBlockView(el: HTMLElement | null, placement: MemolaPlacement) {
+function useMemolaBlockView(el: HTMLElement | null, placement: MemolaPlacement, abVariant?: MemolaVariant) {
   const pathname = usePathname()
   useEffect(() => {
     if (!el || typeof IntersectionObserver === 'undefined') return
@@ -20,7 +23,7 @@ function useMemolaBlockView(el: HTMLElement | null, placement: MemolaPlacement) 
         const visible = entries.some((e) => e.isIntersecting && e.intersectionRatio >= 0.5)
         if (visible && !timer) {
           timer = setTimeout(() => {
-            trackMemolaBlockView({ placement, page_path: pathname })
+            trackMemolaBlockView({ placement, page_path: pathname, variant: abVariant })
             io.disconnect()
           }, 1000)
         } else if (!visible && timer) {
@@ -35,7 +38,7 @@ function useMemolaBlockView(el: HTMLElement | null, placement: MemolaPlacement) 
       if (timer) clearTimeout(timer)
       io.disconnect()
     }
-  }, [el, placement, pathname])
+  }, [el, placement, pathname, abVariant])
 }
 
 /**
@@ -74,10 +77,11 @@ export function MemolaBridge({
   className?: string
   onClose?: () => void
 }) {
-  const href = memolaUrl(placement)
-  const onClick = () => trackMemolaClick(placement)
+  const abVariant: MemolaVariant | undefined = variant === 'inline' && INLINE_B.has(placement) ? 'b' : undefined
+  const href = memolaUrl(placement, abVariant)
+  const onClick = () => trackMemolaClick(placement, abVariant)
   const [el, setEl] = useState<HTMLElement | null>(null)
-  useMemolaBlockView(el, placement)
+  useMemolaBlockView(el, placement, abVariant)
 
   if (variant === 'linea') {
     return (
@@ -93,6 +97,26 @@ export function MemolaBridge({
         Plataforma creada y operada por <span className="font-medium text-ink">MEMOLA</span>
         <span className="text-zinc-500"> · datos y marketing para el agro →</span>
       </a>
+    )
+  }
+
+  if (variant === 'inline' && abVariant === 'b') {
+    return (
+      <p ref={setEl} className={`text-xs leading-relaxed text-zinc-400 ${className}`}>
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener"
+          onClick={onClick}
+          data-memola-placement={placement}
+          data-memola-variant="b"
+          className="hover:text-accent motion-hover"
+        >
+          ¿Tu empresa del agro también tiene datos? Así armamos esta plataforma en{' '}
+          <span className="font-medium text-accent">MEMOLA</span>: 1,3 millones de impresiones en Google en 8 meses{' '}
+          <span className="text-accent">→</span>
+        </a>
+      </p>
     )
   }
 
