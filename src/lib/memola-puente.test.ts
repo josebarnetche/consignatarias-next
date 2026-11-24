@@ -49,6 +49,30 @@ describe('puente a MEMOLA', () => {
     ])
   })
 
+  it('variante B: va a /caso-consignatarias/ con la UTM del puente y utm_content=b', () => {
+    for (const p of ['guia', 'frigorifico_ficha', 'arrendamiento_top'] as MemolaPlacement[]) {
+      const u = new URL(memolaUrl(p, 'b'))
+      expect(u.origin + u.pathname).toBe('https://memola.com.ar/caso-consignatarias/')
+      expect(Object.fromEntries(u.searchParams)).toEqual({
+        utm_source: 'consignatarias',
+        utm_medium: p,
+        utm_campaign: 'puente_memola',
+        utm_content: 'b',
+      })
+    }
+  })
+
+  it('variante B: click y exposición llevan variant=b', () => {
+    const w = { location: { hostname: 'localhost' }, __CNSG_TRACK_TEST__: true, __cnsgEvents: [] as Array<{ event: string; params?: Record<string, unknown> }> }
+    ;(globalThis as { window?: unknown }).window = w
+    trackMemolaClick('guia', 'b')
+    trackMemolaBlockView({ placement: 'guia', page_path: '/que-es-la-invernada', variant: 'b' })
+    expect(w.__cnsgEvents).toEqual([
+      { event: 'memola_click', params: { placement: 'guia', link_url: memolaUrl('guia', 'b'), variant: 'b' } },
+      { event: 'memola_block_view', params: { placement: 'guia', page_path: '/que-es-la-invernada', variant: 'b' } },
+    ])
+  })
+
   it('la exposición emite memola_block_view con placement y page_path', () => {
     const w = { location: { hostname: 'localhost' }, __CNSG_TRACK_TEST__: true, __cnsgEvents: [] as Array<{ event: string; params?: Record<string, unknown> }> }
     ;(globalThis as { window?: unknown }).window = w

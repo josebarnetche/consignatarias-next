@@ -118,24 +118,30 @@ export type MemolaPlacement =
  * /servicios/ con utm_medium=referral, utm_campaign=oferta_consignatarias y
  * utm_content=<placement>, para leerlos aparte del puente.
  */
-export function memolaUrl(placement: MemolaPlacement | 'newsletter_digest'): string {
+/** Variante de copy/destino del puente en prueba (sin variante = línea original). */
+export type MemolaVariant = 'b'
+
+export function memolaUrl(placement: MemolaPlacement | 'newsletter_digest', variant?: MemolaVariant): string {
   if (placement.startsWith('oferta_')) {
     return `https://memola.com.ar/servicios/?utm_source=consignatarias&utm_medium=referral&utm_campaign=oferta_consignatarias&utm_content=${placement}`
+  }
+  if (variant === 'b') {
+    return `https://memola.com.ar/caso-consignatarias/?utm_source=consignatarias&utm_medium=${placement}&utm_campaign=puente_memola&utm_content=b`
   }
   return `https://memola.com.ar/?utm_source=consignatarias&utm_medium=${placement}&utm_campaign=puente_memola`
 }
 
 /** Click hacia memola.com.ar (evento `memola_click` en GA4 de consignatarias). */
-export function trackMemolaClick(placement: MemolaPlacement) {
-  trackEvent('memola_click', { placement, link_url: memolaUrl(placement) })
+export function trackMemolaClick(placement: MemolaPlacement, variant?: MemolaVariant) {
+  trackEvent('memola_click', { placement, link_url: memolaUrl(placement, variant), ...(variant ? { variant } : {}) })
 }
 
 /**
  * Exposición del bloque/línea MEMOLA: se vio (≥50 % visible durante ≥1 s), una vez por
  * bloque y por página vista. Separa «no hay clics» de «nadie lo vio» al leer `memola_click`.
  */
-export function trackMemolaBlockView({ placement, page_path }: { placement: MemolaPlacement; page_path: string }) {
-  trackEvent('memola_block_view', { placement, page_path })
+export function trackMemolaBlockView({ placement, page_path, variant }: { placement: MemolaPlacement; page_path: string; variant?: MemolaVariant }) {
+  trackEvent('memola_block_view', { placement, page_path, ...(variant ? { variant } : {}) })
 }
 
 /* ------------------------------------------------------------------ */
