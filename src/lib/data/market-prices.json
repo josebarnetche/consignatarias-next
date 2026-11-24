@@ -1916,46 +1916,40 @@
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
-  "lastUpdate": "2026-11-23",
+  "lastUpdate": "2026-11-24",
   "provinceEntry": {
-    "date": "2026-11-21",
-    "totalCabezas": 4709,
+    "date": "2026-11-24",
+    "totalCabezas": 5281,
     "provinces": [
       {
         "province": "BUENOS AIRES",
-        "enPie": 4065,
-        "total": 4073,
-        "percentage": 86.49
-      },
-      {
-        "province": "SANTA FE",
-        "enPie": 203,
-        "total": 203,
-        "percentage": 4.31
+        "enPie": 4259,
+        "total": 4266,
+        "percentage": 80.78
       },
       {
         "province": "LA PAMPA",
-        "enPie": 160,
-        "total": 161,
-        "percentage": 3.42
-      },
-      {
-        "province": "ENTRE RIOS",
-        "enPie": 120,
-        "total": 121,
-        "percentage": 2.57
+        "enPie": 340,
+        "total": 340,
+        "percentage": 6.44
       },
       {
         "province": "CORDOBA",
-        "enPie": 119,
-        "total": 119,
-        "percentage": 2.53
+        "enPie": 270,
+        "total": 270,
+        "percentage": 5.11
       },
       {
-        "province": "RIO NEGRO",
-        "enPie": 30,
-        "total": 32,
-        "percentage": 0.68
+        "province": "SANTA FE",
+        "enPie": 215,
+        "total": 215,
+        "percentage": 4.07
+      },
+      {
+        "province": "ENTRE RIOS",
+        "enPie": 190,
+        "total": 190,
+        "percentage": 3.6
       }
     ]
   },
@@ -2355,9 +2349,9 @@
   "arrendamientoOficial": {
     "date": "2026-11-20",
     "index": 3981.757,
-    "periodStart": "2026-11-13",
+    "periodStart": "2026-11-17",
     "periodEnd": "2026-11-20",
-    "periodIndex": 4054.752,
+    "periodIndex": 4080.845,
     "source": "Mercado Agroganadero — haciinfo000013 (índice sugerido para arrendamientos rurales)"
   },
   "soy": {
