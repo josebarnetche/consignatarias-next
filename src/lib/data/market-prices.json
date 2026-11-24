@@ -1919,43 +1919,43 @@
   "lastUpdate": "2026-11-24",
   "provinceEntry": {
     "date": "2026-11-24",
-    "totalCabezas": 5447,
+    "totalCabezas": 5482,
     "provinces": [
       {
         "province": "BUENOS AIRES",
-        "enPie": 4339,
-        "total": 4346,
-        "percentage": 79.79
+        "enPie": 4374,
+        "total": 4381,
+        "percentage": 79.92
       },
       {
         "province": "LA PAMPA",
         "enPie": 340,
         "total": 340,
-        "percentage": 6.24
+        "percentage": 6.2
       },
       {
         "province": "CORDOBA",
         "enPie": 335,
         "total": 335,
-        "percentage": 6.15
+        "percentage": 6.11
       },
       {
         "province": "SANTA FE",
         "enPie": 215,
         "total": 215,
-        "percentage": 3.95
+        "percentage": 3.92
       },
       {
         "province": "ENTRE RIOS",
         "enPie": 190,
         "total": 190,
-        "percentage": 3.49
+        "percentage": 3.47
       },
       {
         "province": "RIO NEGRO",
         "enPie": 21,
         "total": 21,
-        "percentage": 0.39
+        "percentage": 0.38
       }
     ]
   },
