@@ -29,6 +29,7 @@ import * as M from './mensajes'
 import { ordenarCola } from './cola'
 import { puedeCorrer, soltarCandado, tomarCandado } from './candado'
 import { cobroCorto, ofertaHacienda, respuestaPideContacto } from './mensajes-contacto'
+import { precioReferencia } from './precio-referencia'
 import { tomable } from './verificacion'
 import { TIPOS_CAMPO_ACTIVOS, esCasoDeHacienda, ofrecerCampos, trabajarCampos } from './campos-agente'
 import { presentacionCampo, type DatosCampo } from './mensajes-tipos'
@@ -89,6 +90,8 @@ interface Lead {
   source: string | null
   desired_price_ars: number | null
   status: string
+  /** Para el recordatorio sin precio: cuántos días lleva abierto el caso. */
+  created_at?: string | null
 }
 
 interface Caso {
@@ -128,7 +131,7 @@ export interface Informe {
   notas: string[]
 }
 
-const LEAD_COLS = 'id,intent,category,head_count,province,zona,name,email,phone,message,source,desired_price_ars,status'
+const LEAD_COLS = 'id,intent,category,head_count,province,zona,name,email,phone,message,source,desired_price_ars,status,created_at'
 
 /**
  * Una corrida, con candado: si otra corrida está viva, esta sale sin leer ni
@@ -861,7 +864,7 @@ async function correrAgenteSinCandado(db: SupabaseClient, opts: { dryRun?: boole
     const { data: ofs } = await db.from('agente_ofertas').select('*').eq('lead_id', lead.id)
     const ofertas = (ofs ?? []) as Oferta[]
     if (ofertas.some((o) => ['acepto', 'presentada'].includes(o.estado))) continue
-    // Una oferta vive DIAS_OFERTA_VIVA (17) días: recordatorios a los 3, 7 y 14 (reglas.ts).
+    // Una oferta vive DIAS_OFERTA_VIVA (17) días, con UN recordatorio el día 7 (CADENCIA_CONTRAPARTE_DIAS, reglas.ts).
     // La tanda siguiente no espera a eso: sale cuando ninguna oferta tiene menos de
     // DIAS_ESPERA_CONTRAPARTE (4) días, como antes.
     const muerta = enDias(ahora, -DIAS_OFERTA_VIVA).toISOString()
@@ -870,8 +873,9 @@ async function correrAgenteSinCandado(db: SupabaseClient, opts: { dryRun?: boole
     const limite = enDias(ahora, -DIAS_ESPERA_CONTRAPARTE).toISOString()
     const esperando = vivas.filter((o) => o.enviada_at >= limite)
 
-    // Recordatorios en el mismo hilo según la cadencia 0/3/7/14.
+    // El recordatorio va en el mismo hilo, según CADENCIA_CONTRAPARTE_DIAS (hoy 0/7).
     // Una oferta que la contraparte ya contestó (pregunta, pedido de contacto) no recibe el genérico.
+    const diasDesde = (iso: string) => (ahora.getTime() - new Date(iso).getTime()) / 86_400_000
     for (const o of vivas.filter((x) => tocaRecordatorioOferta(x, ahora) && !bajas.has(x.email))) {
       // proximo_at de una oferta enviada solo lo usa el tope diario: el recordatorio espera hasta ahí.
       if (o.proximo_at && new Date(o.proximo_at) > ahora) continue
@@ -882,7 +886,7 @@ async function correrAgenteSinCandado(db: SupabaseClient, opts: { dryRun?: boole
         continue
       }
       const { data: orig } = await db.from('agente_mensajes').select('message_id').eq('oferta_id', o.id).eq('dir', 'out').order('creado_at').limit(1)
-      const id = await mandar({ leadId: lead.id, ofertaId: o.id, para: [o.email], correo: M.recordatorioOferta({ leadId: lead.id, ofertaId: o.id, lado: caso.lado, datos: caso.datos, cobro: cobroCorto() }), plantilla: 'recordatorio_oferta', enRespuestaA: orig?.[0]?.message_id ?? null, conBaja: true })
+      const id = await mandar({ leadId: lead.id, ofertaId: o.id, para: [o.email], correo: M.recordatorioOferta({ leadId: lead.id, ofertaId: o.id, lado: caso.lado, datos: caso.datos, cobro: cobroCorto(), precio: precioReferencia(caso.datos.categoria), diasAbierto: lead.created_at ? diasDesde(lead.created_at) : null }), plantilla: 'recordatorio_oferta', enRespuestaA: orig?.[0]?.message_id ?? null, conBaja: true })
       if (id) {
         await guardarOferta(o.id, { seguimientos: o.seguimientos + 1 })
         await bitacora(lead.id, `Recordatorio ${o.seguimientos + 1} a ${o.nombre}`, 'pendiente', { oferta_id: o.id })

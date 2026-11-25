@@ -61,14 +61,14 @@ describe('primerCorreo', () => {
 })
 
 describe('cadencia a contrapartes', () => {
-  it('es 1 inicial + 3 seguimientos en 14 días', () => {
-    expect(CADENCIA_CONTRAPARTE_DIAS).toEqual([0, 3, 7, 14])
+  it('es 1 inicial + 1 recordatorio el día 7', () => {
+    expect(CADENCIA_CONTRAPARTE_DIAS).toEqual([0, 7])
   })
-  it('respeta los días y corta después del cuarto correo', () => {
-    expect(tocaSeguimiento(1, 2)).toBe(false)
-    expect(tocaSeguimiento(1, 3)).toBe(true)
-    expect(tocaSeguimiento(3, 14)).toBe(true)
-    expect(tocaSeguimiento(4, 60)).toBe(false)
+  it('respeta los días y corta después del segundo correo', () => {
+    expect(tocaSeguimiento(1, 3)).toBe(false)
+    expect(tocaSeguimiento(1, 7)).toBe(true)
+    expect(tocaSeguimiento(2, 14)).toBe(false)
+    expect(tocaSeguimiento(2, 60)).toBe(false)
   })
 })
 

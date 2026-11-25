@@ -7,6 +7,17 @@ Versioning policy: [`docs/VERSIONING.md`](docs/VERSIONING.md). Releases are git-
 
 ---
 
+## [1.264.8] — 2026-11-20
+
+> Va después de los PRs #135 (1.260.0) y #137 (1.260.1), todavía sin mergear: se rebasea sobre ellos al entrar.
+
+### Cambiado
+- **Agente cerrador: un solo recordatorio a la contraparte, el día 7.** `CADENCIA_CONTRAPARTE_DIAS` (`src/lib/agente/reglas.ts`) pasa de `[0, 3, 7, 14]` a `[0, 7]`. Medido el 13-11-2026: de 171 correos salientes, 77 fueron `recordatorio_oferta` y ninguno trajo una respuesta positiva; el único ACEPTO llegó a la hora del primer correo y las dos respuestas a recordatorios fueron negativas (una terminó en baja definitiva). El único efecto es mandar menos: no cambia ninguna regla de envío (días hábiles 8–19, tope de 20 contactos nuevos por día, BAJA para siempre, contacto solo después de un ACEPTO por escrito, el agente nunca acuerda precio ni comisión). `DIAS_OFERTA_VIVA` sigue en 17. Para volver atrás alcanza con restaurar el arreglo.
+- **El recordatorio trae un dato nuevo en vez de «les reenvío la consulta».** Con precio observado de la categoría esta semana (`precioReferencia()`, nuevo en `src/lib/agente/precio-referencia.ts`, lee el mismo `market-prices.json` que la tool MCP `livestock_prices` y descarta los valores derivados por ratio, como terneros), dice ese precio como referencia de mercado y aclara que el precio lo acuerdan las partes. Sin precio, dice cuántos días lleva abierto el caso (el comprador buscando o la hacienda ofrecida). Mantiene ACEPTO, el cobro solo si se concreta y «con un "no" alcanza y no insistimos». El motor lee `created_at` del lead para ese conteo.
+
+### Tests
+- `cadencia.test.ts` y `mensajes-tipos.test.ts`: 0 y 1 recordatorios, nada después del día 7. `recordatorio.test.ts` (nuevo): `precioReferencia` con fuente inyectada y la plantilla con y sin precio.
+
 ## [1.264.7] — 2026-11-19
 
 ### Corregido
