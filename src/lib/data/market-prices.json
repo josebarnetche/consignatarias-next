@@ -1838,8 +1838,8 @@
   "categories": {
     "novillos": {
       "current": 4091.35,
-      "prev": 3948.61,
-      "change": 3.6,
+      "prev": 4091.35,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 643,
@@ -1848,8 +1848,8 @@
     },
     "novillitos": {
       "current": 4434.03,
-      "prev": 4107.66,
-      "change": 7.9,
+      "prev": 4434.03,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 1230,
@@ -1858,8 +1858,8 @@
     },
     "vaquillonas": {
       "current": 4110.85,
-      "prev": 3944.45,
-      "change": 4.2,
+      "prev": 4110.85,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 1393,
@@ -1868,8 +1868,8 @@
     },
     "vacas": {
       "current": 2765.08,
-      "prev": 2709.29,
-      "change": 2.1,
+      "prev": 2765.08,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "latestVolume": 1974,
       "observedDate": "24/11/2026",
@@ -1877,8 +1877,8 @@
     },
     "toros": {
       "current": 3255.67,
-      "prev": 3311.06,
-      "change": -1.7,
+      "prev": 3255.67,
+      "change": 0,
       "source": "mercadoagroganadero.com.ar (observed)",
       "sioWeek": "Sem 9",
       "latestVolume": 234,
@@ -1897,22 +1897,22 @@
   },
   "corn": {
     "current": 215.83,
-    "prev": 216.9,
-    "change": -0.5,
+    "prev": 215.83,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API"
   },
   "usdBlue": {
     "current": 1700,
-    "prev": 1675,
-    "change": 1.5,
+    "prev": 1700,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/blue"
   },
   "usdOficial": {
     "current": 1615,
-    "prev": 1600,
-    "change": 0.9,
+    "prev": 1615,
+    "change": 0,
     "unit": "ARS",
     "source": "dolarapi.com/v1/dolares/oficial"
   },
@@ -2230,38 +2230,101 @@
     }
   },
   "consignatarioEntry": {
-    "date": "18/11/2026",
+    "date": "25/11/2026",
     "entries": [
       {
-        "remitente": "CANTIZANO EMANUEL GASTON",
-        "localidad": "CASILDA      S.FE",
-        "provincia": "SFE",
-        "enPie": 25,
-        "muertos": 0,
-        "caidos": 0,
-        "total": 25
-      },
-      {
-        "remitente": "CANTIZANO EMANUEL GASTON",
-        "localidad": "CASILDA      S.FE",
-        "provincia": "SFE",
-        "enPie": 25,
-        "muertos": 0,
-        "caidos": 0,
-        "total": 25
-      },
-      {
-        "remitente": "SUC DE SESAREGO HECTOR NAHUEL",
-        "localidad": "LINCOLN",
+        "remitente": "CAMPIELA S.A.",
+        "localidad": "25 DE MAYO",
         "provincia": "BUE",
-        "enPie": 15,
+        "enPie": 40,
         "muertos": 0,
         "caidos": 0,
-        "total": 15
+        "total": 40
       },
       {
-        "remitente": "LACAU Y CIA.S.A.",
-        "localidad": "LINCOLN",
+        "remitente": "CAMPO ADENTRO S.A.",
+        "localidad": "CAPITAN SARMIENTO",
+        "provincia": "BUE",
+        "enPie": 35,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 35
+      },
+      {
+        "remitente": "AGROP CONQUES S.R.L",
+        "localidad": "TRENQUE LAUQUEN",
+        "provincia": "BUE",
+        "enPie": 16,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 16
+      },
+      {
+        "remitente": "CASADO CARLOS",
+        "localidad": "BOLIVAR",
+        "provincia": "BUE",
+        "enPie": 16,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 16
+      },
+      {
+        "remitente": "HIJOS DE PEDRO VINCENTI SA",
+        "localidad": "CA�UELAS",
+        "provincia": "BUE",
+        "enPie": 14,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 14
+      },
+      {
+        "remitente": "LEANDRO EMANUEL VAQUERO",
+        "localidad": "BOLIVAR",
+        "provincia": "BUE",
+        "enPie": 14,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 14
+      },
+      {
+        "remitente": "CURA CESAR G.",
+        "localidad": "VILLARINO",
+        "provincia": "BUE",
+        "enPie": 12,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 12
+      },
+      {
+        "remitente": "ROSSELLO JUAN SEBASTIAN",
+        "localidad": "VILLARINO",
+        "provincia": "BUE",
+        "enPie": 12,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 12
+      },
+      {
+        "remitente": "YARZA LUIS MARIA",
+        "localidad": "TRENQUE LAUQUEN",
+        "provincia": "BUE",
+        "enPie": 12,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 12
+      },
+      {
+        "remitente": "LOS EUCALIPTUS SA",
+        "localidad": "MONTE",
+        "provincia": "BUE",
+        "enPie": 9,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 9
+      },
+      {
+        "remitente": "CARDOSO JOSE LUIS",
+        "localidad": "9 DE JULIO",
         "provincia": "BUE",
         "enPie": 7,
         "muertos": 0,
@@ -2269,8 +2332,8 @@
         "total": 7
       },
       {
-        "remitente": "LACAU Y CIA.S.A.",
-        "localidad": "LINCOLN",
+        "remitente": "BLUE LOT S.A.",
+        "localidad": "CA�UELAS",
         "provincia": "BUE",
         "enPie": 5,
         "muertos": 0,
@@ -2278,17 +2341,71 @@
         "total": 5
       },
       {
-        "remitente": "RIZZI HERNAN CRUZ",
-        "localidad": "JESUS MARIA",
-        "provincia": "CBA",
-        "enPie": 0,
-        "muertos": 2,
+        "remitente": "GARCIA JORGE ALBERTO",
+        "localidad": "PATAGONES",
+        "provincia": "BUE",
+        "enPie": 5,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 5
+      },
+      {
+        "remitente": "LAUTRE HORACIO",
+        "localidad": "BOLIVAR",
+        "provincia": "BUE",
+        "enPie": 5,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 5
+      },
+      {
+        "remitente": "LOS REDOMONES S.A.",
+        "localidad": "BOLIVAR",
+        "provincia": "BUE",
+        "enPie": 5,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 5
+      },
+      {
+        "remitente": "DISPROME S.R.L.",
+        "localidad": "PATAGONES",
+        "provincia": "BUE",
+        "enPie": 4,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 4
+      },
+      {
+        "remitente": "VAQUERO JUAN CARLOS",
+        "localidad": "BOLIVAR",
+        "provincia": "BUE",
+        "enPie": 4,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 4
+      },
+      {
+        "remitente": "HIJOS DE PEDRO VINCENTI SA",
+        "localidad": "CA�UELAS",
+        "provincia": "BUE",
+        "enPie": 2,
+        "muertos": 0,
         "caidos": 0,
         "total": 2
       },
       {
-        "remitente": "USANDIZAGA ALEJANDRO",
-        "localidad": "LINCOLN",
+        "remitente": "ANTONIUK LUIS MARIO",
+        "localidad": "MARCOS PAZ",
+        "provincia": "BUE",
+        "enPie": 1,
+        "muertos": 0,
+        "caidos": 0,
+        "total": 1
+      },
+      {
+        "remitente": "ROSSELLO JUAN SEBASTIAN",
+        "localidad": "VILLARINO",
         "provincia": "BUE",
         "enPie": 1,
         "muertos": 0,
@@ -2307,8 +2424,8 @@
   },
   "soy": {
     "current": 472.5,
-    "prev": 467,
-    "change": 1.2,
+    "prev": 472.5,
+    "change": 0,
     "unit": "USD/tn",
     "source": "MAGYP FOB API",
     "date": "2026-11-24"
