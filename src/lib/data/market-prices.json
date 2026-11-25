@@ -1919,43 +1919,49 @@
   "lastUpdate": "2026-11-25",
   "provinceEntry": {
     "date": "2026-11-25",
-    "totalCabezas": 5622,
+    "totalCabezas": 5837,
     "provinces": [
       {
         "province": "BUENOS AIRES",
-        "enPie": 4513,
-        "total": 4520,
-        "percentage": 80.4
+        "enPie": 5172,
+        "total": 5177,
+        "percentage": 88.69
       },
       {
         "province": "LA PAMPA",
-        "enPie": 340,
-        "total": 340,
-        "percentage": 6.05
-      },
-      {
-        "province": "CORDOBA",
-        "enPie": 335,
-        "total": 335,
-        "percentage": 5.96
-      },
-      {
-        "province": "SANTA FE",
-        "enPie": 216,
-        "total": 216,
-        "percentage": 3.84
+        "enPie": 304,
+        "total": 304,
+        "percentage": 5.21
       },
       {
         "province": "ENTRE RIOS",
-        "enPie": 190,
-        "total": 190,
-        "percentage": 3.38
+        "enPie": 116,
+        "total": 116,
+        "percentage": 1.99
       },
       {
-        "province": "RIO NEGRO",
-        "enPie": 21,
-        "total": 21,
-        "percentage": 0.37
+        "province": "SANTA FE",
+        "enPie": 83,
+        "total": 83,
+        "percentage": 1.42
+      },
+      {
+        "province": "CORRIENTES",
+        "enPie": 60,
+        "total": 60,
+        "percentage": 1.03
+      },
+      {
+        "province": "CORDOBA",
+        "enPie": 50,
+        "total": 50,
+        "percentage": 0.86
+      },
+      {
+        "province": "SAN LUIS",
+        "enPie": 47,
+        "total": 47,
+        "percentage": 0.81
       }
     ]
   },
@@ -2102,127 +2108,295 @@
     "consignatarias": {
       "colombo-y-magliano": {
         "magId": "165",
-        "totalCabezas": 219,
+        "totalCabezas": 1277,
         "entries": [
           {
-            "remitente": "AGROP CONQUES S.R.L",
-            "localidad": "TRENQUE LAUQUEN",
+            "remitente": "AGROPEMAR S.R.L.",
+            "localidad": "SAN A. DE ARECO",
             "provincia": "BUE",
-            "cabezas": 16
+            "cabezas": 15
           },
           {
-            "remitente": "ANTONIUK LUIS MARIO",
-            "localidad": "MARCOS PAZ",
+            "remitente": "ALBERCA RAUL",
+            "localidad": "TRES ARROYOS",
             "provincia": "BUE",
-            "cabezas": 1
+            "cabezas": 3
           },
           {
-            "remitente": "BLUE LOT S.A.",
-            "localidad": "CA�UELAS",
+            "remitente": "AVESTRUZ S.A.S.",
+            "localidad": "SAN A. DE ARECO",
             "provincia": "BUE",
-            "cabezas": 5
+            "cabezas": 21
           },
           {
-            "remitente": "CAMPIELA S.A.",
-            "localidad": "25 DE MAYO",
+            "remitente": "BRAVO JORGE OSCAR",
+            "localidad": "RIVADAVIA         B",
             "provincia": "BUE",
-            "cabezas": 40
+            "cabezas": 85
           },
           {
-            "remitente": "CAMPO ADENTRO S.A.",
-            "localidad": "CAPITAN SARMIENTO",
-            "provincia": "BUE",
-            "cabezas": 35
+            "remitente": "CIA. CENTRAL PAMPEANA S.A.",
+            "localidad": "CONCORDIA",
+            "provincia": "ERI",
+            "cabezas": 56
           },
           {
-            "remitente": "CARDOSO JOSE LUIS",
-            "localidad": "9 DE JULIO",
-            "provincia": "BUE",
-            "cabezas": 7
+            "remitente": "CIA. CENTRAL PAMPEANA S.A.",
+            "localidad": "CONCORDIA",
+            "provincia": "ERI",
+            "cabezas": 60
           },
           {
-            "remitente": "CASADO CARLOS",
-            "localidad": "BOLIVAR",
+            "remitente": "CIMERO S.A",
+            "localidad": "GRAL. VILLEGAS",
             "provincia": "BUE",
-            "cabezas": 16
+            "cabezas": 74
           },
           {
-            "remitente": "CURA CESAR G.",
-            "localidad": "VILLARINO",
-            "provincia": "BUE",
-            "cabezas": 12
-          },
-          {
-            "remitente": "DISPROME S.R.L.",
-            "localidad": "PATAGONES",
+            "remitente": "COLOMBO CARLOS JOSE",
+            "localidad": "SAN A. DE ARECO",
             "provincia": "BUE",
             "cabezas": 4
           },
           {
-            "remitente": "GARCIA JORGE ALBERTO",
-            "localidad": "PATAGONES",
+            "remitente": "COLOMBO Y MAGLIANO S.A.",
+            "localidad": "LEZAMA",
             "provincia": "BUE",
-            "cabezas": 5
+            "cabezas": 25
           },
           {
-            "remitente": "HIJOS DE PEDRO VINCENTI SA",
-            "localidad": "CA�UELAS",
-            "provincia": "BUE",
-            "cabezas": 2
+            "remitente": "COLOMBO Y MAGLIANO SA AGRICOLA",
+            "localidad": "CURUZU CUATIA",
+            "provincia": "COR",
+            "cabezas": 60
           },
           {
-            "remitente": "HIJOS DE PEDRO VINCENTI SA",
-            "localidad": "CA�UELAS",
+            "remitente": "DI FRANCESCO ALBANO JESUS",
+            "localidad": "TRES ARROYOS",
             "provincia": "BUE",
-            "cabezas": 14
+            "cabezas": 13
           },
           {
-            "remitente": "LAUTRE HORACIO",
-            "localidad": "BOLIVAR",
-            "provincia": "BUE",
-            "cabezas": 5
-          },
-          {
-            "remitente": "LEANDRO EMANUEL VAQUERO",
-            "localidad": "BOLIVAR",
-            "provincia": "BUE",
-            "cabezas": 14
-          },
-          {
-            "remitente": "LOS EUCALIPTUS SA",
+            "remitente": "ESTABLECIMIENTO EL ESCONDIDO S",
             "localidad": "MONTE",
             "provincia": "BUE",
             "cabezas": 9
           },
           {
-            "remitente": "LOS REDOMONES S.A.",
-            "localidad": "BOLIVAR",
+            "remitente": "ESTABLECIMIENTOGANADERO SAN",
+            "localidad": "CNEL. SUAREZ",
             "provincia": "BUE",
-            "cabezas": 5
+            "cabezas": 50
           },
           {
-            "remitente": "ROSSELLO JUAN SEBASTIAN",
-            "localidad": "VILLARINO",
+            "remitente": "FUND. UNIV. CATOLICA ARGENTINA",
+            "localidad": "CHIVILCOY",
+            "provincia": "BUE",
+            "cabezas": 21
+          },
+          {
+            "remitente": "GALLO MARCELO Y ADRIANA",
+            "localidad": "CHAPALEUFU",
+            "provincia": "LPA",
+            "cabezas": 26
+          },
+          {
+            "remitente": "GALLO RAMIRO",
+            "localidad": "CHAPALEUFU",
+            "provincia": "LPA",
+            "cabezas": 2
+          },
+          {
+            "remitente": "GALLO TOSSO CONSULTORES",
+            "localidad": "CHAPALEUFU",
+            "provincia": "LPA",
+            "cabezas": 18
+          },
+          {
+            "remitente": "GARRUCHOS S.A.",
+            "localidad": "GRAL. BELGRANO",
+            "provincia": "BUE",
+            "cabezas": 10
+          },
+          {
+            "remitente": "GOLPE DE AGUA S.C.A.",
+            "localidad": "TRENQUE LAUQUEN",
+            "provincia": "BUE",
+            "cabezas": 11
+          },
+          {
+            "remitente": "GOLPE DE AGUA S.C.A.",
+            "localidad": "TRENQUE LAUQUEN",
+            "provincia": "BUE",
+            "cabezas": 35
+          },
+          {
+            "remitente": "GRANJA Y EST. DO�A SARA S.A.",
+            "localidad": "ZARATE",
+            "provincia": "BUE",
+            "cabezas": 35
+          },
+          {
+            "remitente": "HELLERE ALICIA HELENA",
+            "localidad": "CNEL. DORREGO",
+            "provincia": "BUE",
+            "cabezas": 21
+          },
+          {
+            "remitente": "HELLERE FEDERICO",
+            "localidad": "CNEL. DORREGO",
+            "provincia": "BUE",
+            "cabezas": 13
+          },
+          {
+            "remitente": "HIJOS DE EMILIO BARRETO S.A.",
+            "localidad": "BALCARCE",
+            "provincia": "BUE",
+            "cabezas": 11
+          },
+          {
+            "remitente": "INDA EDUARDO Y ROBERTO SH.",
+            "localidad": "GRAL. ARENALES",
+            "provincia": "BUE",
+            "cabezas": 29
+          },
+          {
+            "remitente": "LA �ATA S.A.",
+            "localidad": "INGENIERO LUIGGI",
+            "provincia": "LPA",
+            "cabezas": 14
+          },
+          {
+            "remitente": "LA ROPA S.A",
+            "localidad": "LEZAMA",
+            "provincia": "BUE",
+            "cabezas": 15
+          },
+          {
+            "remitente": "LITOMAR S.A.A.I. Y C.",
+            "localidad": "INGENIERO LUIGGI",
+            "provincia": "LPA",
+            "cabezas": 30
+          },
+          {
+            "remitente": "LOS GALENICOS S.A.",
+            "localidad": "GRAL. VIAMONTE",
             "provincia": "BUE",
             "cabezas": 1
           },
           {
-            "remitente": "ROSSELLO JUAN SEBASTIAN",
-            "localidad": "VILLARINO",
+            "remitente": "LOS LOPEZ S.A.",
+            "localidad": "GRAL. VIAMONTE",
+            "provincia": "BUE",
+            "cabezas": 50
+          },
+          {
+            "remitente": "LOVIZIO S.A.",
+            "localidad": "AYACUCHO           B",
+            "provincia": "BUE",
+            "cabezas": 42
+          },
+          {
+            "remitente": "LUCRECIA M ESCOBAR DE CAMPOMAR",
+            "localidad": "GRAL. ALVARADO",
+            "provincia": "BUE",
+            "cabezas": 37
+          },
+          {
+            "remitente": "MAC GOEY SANTIAGO JOSE",
+            "localidad": "MONTE",
+            "provincia": "BUE",
+            "cabezas": 6
+          },
+          {
+            "remitente": "MARIA TERESA GAZTAMBIDE S.A.",
+            "localidad": "GONZALES CHAVES",
+            "provincia": "BUE",
+            "cabezas": 45
+          },
+          {
+            "remitente": "MILGUS S.R.L.",
+            "localidad": "AZUL",
+            "provincia": "BUE",
+            "cabezas": 18
+          },
+          {
+            "remitente": "MILGUS S.R.L.",
+            "localidad": "AZUL",
+            "provincia": "BUE",
+            "cabezas": 32
+          },
+          {
+            "remitente": "OXAGRO S.A.",
+            "localidad": "BALCARCE",
+            "provincia": "BUE",
+            "cabezas": 15
+          },
+          {
+            "remitente": "PAREJAS ORLANDO H.",
+            "localidad": "LINCOLN",
+            "provincia": "BUE",
+            "cabezas": 24
+          },
+          {
+            "remitente": "PIRAY MINI S.A.",
+            "localidad": "LOBERIA",
+            "provincia": "BUE",
+            "cabezas": 33
+          },
+          {
+            "remitente": "PIRAY MINI S.A.",
+            "localidad": "LOBERIA",
+            "provincia": "BUE",
+            "cabezas": 31
+          },
+          {
+            "remitente": "SOPROGA S.A.",
+            "localidad": "BALCARCE",
+            "provincia": "BUE",
+            "cabezas": 37
+          },
+          {
+            "remitente": "TRAMONTINI RICARDO CRISOLOGO",
+            "localidad": "DOLORES",
+            "provincia": "BUE",
+            "cabezas": 1
+          },
+          {
+            "remitente": "TRAMONTINI RICARDO CRISOLOGO",
+            "localidad": "DOLORES",
             "provincia": "BUE",
             "cabezas": 12
           },
           {
-            "remitente": "VAQUERO JUAN CARLOS",
-            "localidad": "BOLIVAR",
+            "remitente": "TRAPALCO S.A.",
+            "localidad": "TRENQUE LAUQUEN",
+            "provincia": "BUE",
+            "cabezas": 50
+          },
+          {
+            "remitente": "TRESARG S.A.",
+            "localidad": "BARADERO",
+            "provincia": "BUE",
+            "cabezas": 21
+          },
+          {
+            "remitente": "URBISAGLIA OMAR",
+            "localidad": "25 DE MAYO",
+            "provincia": "BUE",
+            "cabezas": 12
+          },
+          {
+            "remitente": "VIDELA JOSE CEFERINO",
+            "localidad": "TRES ARROYOS",
             "provincia": "BUE",
             "cabezas": 4
           },
           {
-            "remitente": "YARZA LUIS MARIA",
-            "localidad": "TRENQUE LAUQUEN",
-            "provincia": "BUE",
-            "cabezas": 12
+            "remitente": "VIEJO ROBLE S.A.",
+            "localidad": "SANTA ISABEL (SANTA",
+            "provincia": "SFE",
+            "cabezas": 40
           }
         ],
         "period": "26/10/2026 - 25/11/2026"
