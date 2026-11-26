@@ -23314,25 +23314,6 @@
     "status": "completed"
   },
   {
-    "title": "Abasto e Invernada",
-    "consignatariaName": "GANADEROS DE CERES COOPERATIVA LTDA.",
-    "consignatariaSlug": "ganaderos-de-ceres-cooperativa-ltda",
-    "date": "2026-11-25",
-    "time": null,
-    "location": "QUIMILI, SANTIAGO DEL ESTERO",
-    "province": "SANTIAGO DEL ESTERO",
-    "type": "invernada",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Abasto e Invernada",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "ganaderosdeceres.com.ar",
-    "id": 1231,
-    "status": "completed"
-  },
-  {
     "title": "Invernada y Faena",
     "consignatariaName": "EDGAR E. PASTORE Y CIA. S.R.L.",
     "consignatariaSlug": "edgar-e-pastore-y-cia-s-r-l",
@@ -23348,11 +23329,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "epastore.com.ar",
-    "id": 1232,
+    "id": 1231,
     "status": "completed"
   },
   {
-    "id": 1233,
+    "id": 1232,
     "title": "Abasto y Consumo",
     "consignatariaName": "Bressan y Cia. SRL",
     "consignatariaSlug": "bressan-y-cia-srl",
@@ -23386,7 +23367,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1234,
+    "id": 1233,
     "status": "completed"
   },
   {
@@ -23406,7 +23387,7 @@
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
     "status": "completed",
-    "id": 1235
+    "id": 1234
   },
   {
     "title": ". Televisado Pampa Humeda. - 10.00HS.",
@@ -23424,26 +23405,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6764-colombo-y-magliano-invernada-y-cria",
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1236,
-    "status": "completed"
-  },
-  {
-    "title": "GORDOS, CONSERVA e INVERNADA",
-    "consignatariaName": "AGRICULTORES FEDERADOS ARGENTINOS SOC COOP LT",
-    "consignatariaSlug": "agricultores-federados-argentinos-soc-coop-lt",
-    "date": "2026-11-25",
-    "time": "10:00",
-    "location": "PROVIDENCIA, SANTA FE",
-    "province": "SANTA FE",
-    "type": "invernada",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": null,
-    "description": "GORDOS, CONSERVA e INVERNADA",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.afascl.com",
-    "id": 1237,
+    "id": 1235,
     "status": "completed"
   },
   {
@@ -23462,7 +23424,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1238,
+    "id": 1236,
     "status": "completed"
   },
   {
@@ -23481,7 +23443,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1239,
+    "id": 1237,
     "status": "completed"
   },
   {
@@ -23500,7 +23462,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1240,
+    "id": 1238,
     "status": "completed"
   },
   {
@@ -23519,26 +23481,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1241,
-    "status": "completed"
-  },
-  {
-    "title": "Feria Mensual Olavarría Gordo, Invernada y Cría",
-    "consignatariaName": "ALFREDO SEBASTIÁN MONDINO",
-    "consignatariaSlug": "alfredo-sebastian-mondino",
-    "date": "2026-11-25",
-    "time": "11:00",
-    "location": "OLAVARRIA, BUENOS AIRES",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": null,
-    "description": "Feria Mensual Olavarría\r\nGordo, Invernada y Cría",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "alfredosmondino.com",
-    "id": 1242,
+    "id": 1239,
     "status": "completed"
   },
   {
@@ -23557,7 +23500,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.instagram.com/sucesoresdebrivio",
-    "id": 1243,
+    "id": 1240,
     "status": "completed"
   },
   {
@@ -23576,7 +23519,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1244,
+    "id": 1241,
     "status": "completed"
   },
   {
@@ -23595,26 +23538,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1245,
-    "status": "completed"
-  },
-  {
-    "title": "INVERNADA, CRÍA y GORDO",
-    "consignatariaName": "SÁENZ VALIENTE, BULLRICH Y CIA. S.A.",
-    "consignatariaSlug": "saenz-valiente-bullrich-y-cia-s-a",
-    "date": "2026-11-25",
-    "time": "14:00",
-    "location": "CASTELLI, BUENOS AIRES",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": 500,
-    "description": "INVERNADA, CRÍA y GORDO",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1246,
+    "id": 1242,
     "status": "completed"
   },
   {
@@ -23633,46 +23557,27 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1247,
+    "id": 1243,
     "status": "completed"
   },
   {
-    "title": "GORDO, INVERNADA y CRÍA",
-    "consignatariaName": "CONSIGNATARIA HASENKAMP S.R.L.",
-    "consignatariaSlug": "consignataria-hasenkamp-s-r-l",
-    "date": "2026-11-25",
-    "time": "15:00",
-    "location": "HASENKAMP, ENTRE RÍOS",
-    "province": "ENTRE RIOS",
-    "type": "invernada",
-    "mainCategory": "vaca_gorda",
-    "estimatedHeads": null,
-    "description": "GORDO, INVERNADA y CRÍA",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.chsrl.com.ar",
-    "id": 1248,
-    "status": "completed"
-  },
-  {
-    "title": "Remate Aguay de Antillas S.A. - La Calera de Carlos Pietrantueno - El Quebracho de Edgardo Rivero.",
-    "consignatariaName": "REGGI Y CIA. S.R.L.",
-    "consignatariaSlug": "reggi-y-cia-s-r-l",
+    "title": "Remate Aguay de Antillas S.A.",
+    "consignatariaName": "Reggi & Cía",
+    "consignatariaSlug": "reggi-y-cia",
     "date": "2026-11-25",
     "time": "18:00",
-    "location": "MERCEDES, CORRIENTES",
+    "location": "Mercedes, CORRIENTES",
     "province": "CORRIENTES",
     "type": "general",
     "mainCategory": "mixto",
     "estimatedHeads": null,
-    "description": "Remate Aguay de Antillas S.A. - La Calera de Carlos Pietrantueno - El Quebracho de Edgardo Rivero.",
+    "description": "Rte. Físico — Remate Aguay de Antillas S.A.",
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
-    "sourceUrl": "www.reggiycia-srl.com.ar",
-    "id": 1249,
-    "status": "completed"
+    "sourceUrl": "https://reggiycia.com/remate/32075",
+    "status": "completed",
+    "id": 1244
   },
   {
     "title": "Haciendas Generales",
@@ -23690,7 +23595,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1250,
+    "id": 1245,
     "status": "live"
   },
   {
@@ -23709,7 +23614,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1251,
+    "id": 1246,
     "status": "live"
   },
   {
@@ -23728,7 +23633,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1252,
+    "id": 1247,
     "status": "live"
   },
   {
@@ -23747,7 +23652,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1253,
+    "id": 1248,
     "status": "live"
   },
   {
@@ -23766,7 +23671,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "ganaderosdeceres.com.ar",
-    "id": 1254,
+    "id": 1249,
     "status": "live"
   },
   {
@@ -23785,7 +23690,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1255,
+    "id": 1250,
     "status": "live"
   },
   {
@@ -23805,7 +23710,7 @@
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
     "status": "live",
-    "id": 1256
+    "id": 1251
   },
   {
     "title": "Esteban Abelenda | La Guampita",
@@ -23824,7 +23729,7 @@
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
     "status": "live",
-    "id": 1257
+    "id": 1252
   },
   {
     "title": "Haciendas Generales - 11.00hs",
@@ -23842,7 +23747,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1258,
+    "id": 1253,
     "status": "live"
   },
   {
@@ -23861,7 +23766,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1259,
+    "id": 1254,
     "status": "live"
   },
   {
@@ -23880,7 +23785,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1260,
+    "id": 1255,
     "status": "live"
   },
   {
@@ -23899,7 +23804,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1261,
+    "id": 1256,
     "status": "live"
   },
   {
@@ -23918,7 +23823,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.danielblancosa.com.ar",
-    "id": 1262,
+    "id": 1257,
     "status": "live"
   },
   {
@@ -23937,7 +23842,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.feriasrauch.com",
-    "id": 1263,
+    "id": 1258,
     "status": "live"
   },
   {
@@ -23956,7 +23861,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1264,
+    "id": 1259,
     "status": "live"
   },
   {
@@ -23975,7 +23880,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.reggiycia-srl.com.ar",
-    "id": 1265,
+    "id": 1260,
     "status": "live"
   },
   {
@@ -23994,7 +23899,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1266,
+    "id": 1261,
     "status": "live"
   },
   {
@@ -24013,7 +23918,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.umcsa.net/",
-    "id": 1267,
+    "id": 1262,
     "status": "live"
   },
   {
@@ -24032,7 +23937,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.vicar.com.ar",
-    "id": 1268,
+    "id": 1263,
     "status": "live"
   },
   {
@@ -24051,7 +23956,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6765-umc-y-haciendas-villaguay-invernada-y-cria",
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/4a4d8c3d-7be3-4178-92cf-11c1e52dff0c",
-    "id": 1269,
+    "id": 1264,
     "status": "live"
   },
   {
@@ -24070,7 +23975,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1270,
+    "id": 1265,
     "status": "live"
   },
   {
@@ -24090,7 +23995,7 @@
     "source": "web",
     "sourceUrl": "https://reggiycia.com/remate/32076",
     "status": "live",
-    "id": 1271
+    "id": 1266
   },
   {
     "title": "Invernada - 14.30hs.",
@@ -24108,7 +24013,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1272,
+    "id": 1267,
     "status": "live"
   },
   {
@@ -24127,7 +24032,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://cacg.org.ar/remates",
-    "id": 1273,
+    "id": 1268,
     "status": "live"
   },
   {
@@ -24146,7 +24051,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1274,
+    "id": 1269,
     "status": "live"
   },
   {
@@ -24165,7 +24070,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.chsrl.com.ar",
-    "id": 1275,
+    "id": 1270,
     "status": "live"
   },
   {
@@ -24184,7 +24089,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6827-carlos-j-lanser-coronel-moldes",
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1276,
+    "id": 1271,
     "status": "live"
   },
   {
@@ -24203,7 +24108,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "ganaderosdeceres.com.ar",
-    "id": 1277,
+    "id": 1272,
     "status": "scheduled"
   },
   {
@@ -24222,7 +24127,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "id": 1278,
+    "id": 1273,
     "status": "scheduled"
   },
   {
@@ -24241,7 +24146,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1279,
+    "id": 1274,
     "status": "scheduled"
   },
   {
@@ -24260,7 +24165,7 @@
     "catalogUrl": "https://remates.elrural.com/remate/6766-alfredo-s-mondino-especial-rusticos-fin-de-ano",
     "source": "web",
     "sourceUrl": "alfredosmondino.com",
-    "id": 1280,
+    "id": 1275,
     "status": "scheduled"
   },
   {
@@ -24279,7 +24184,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1281,
+    "id": 1276,
     "status": "scheduled"
   },
   {
@@ -24299,7 +24204,7 @@
     "source": "tv",
     "sourceUrl": "https://remates.elrural.com/",
     "status": "scheduled",
-    "id": 1282
+    "id": 1277
   },
   {
     "title": "Remate Televisado O'Farrell",
@@ -24317,7 +24222,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 1283,
+    "id": 1278,
     "status": "scheduled"
   },
   {
@@ -24336,7 +24241,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1284,
+    "id": 1279,
     "status": "scheduled"
   },
   {
@@ -24355,7 +24260,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1285,
+    "id": 1280,
     "status": "scheduled"
   },
   {
@@ -24374,7 +24279,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1286,
+    "id": 1281,
     "status": "scheduled"
   },
   {
@@ -24393,7 +24298,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1287,
+    "id": 1282,
     "status": "scheduled"
   },
   {
@@ -24412,7 +24317,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.umcsa.net/",
-    "id": 1288,
+    "id": 1283,
     "status": "scheduled"
   },
   {
@@ -24431,7 +24336,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.umcsa.net/",
-    "id": 1289,
+    "id": 1284,
     "status": "scheduled"
   },
   {
@@ -24450,7 +24355,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1290,
+    "id": 1285,
     "status": "scheduled"
   },
   {
@@ -24469,7 +24374,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1291,
+    "id": 1286,
     "status": "scheduled"
   },
   {
@@ -24488,7 +24393,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1292,
+    "id": 1287,
     "status": "scheduled"
   },
   {
@@ -24507,7 +24412,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.pedronoelireysrl.com.ar",
-    "id": 1293,
+    "id": 1288,
     "status": "scheduled"
   },
   {
@@ -24526,7 +24431,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/fa117ce6-bc1f-433b-9008-9ddeb9aa9d51",
-    "id": 1294,
+    "id": 1289,
     "status": "scheduled"
   },
   {
@@ -24545,7 +24450,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1295,
+    "id": 1290,
     "status": "scheduled"
   },
   {
@@ -24564,7 +24469,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1296,
+    "id": 1291,
     "status": "scheduled"
   },
   {
@@ -24583,7 +24488,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1297,
+    "id": 1292,
     "status": "scheduled"
   },
   {
@@ -24602,7 +24507,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1298,
+    "id": 1293,
     "status": "scheduled"
   },
   {
@@ -24621,7 +24526,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1299,
+    "id": 1294,
     "status": "scheduled"
   },
   {
@@ -24640,7 +24545,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1300,
+    "id": 1295,
     "status": "scheduled"
   },
   {
@@ -24659,7 +24564,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
-    "id": 1301,
+    "id": 1296,
     "status": "scheduled"
   },
   {
@@ -24678,7 +24583,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1302,
+    "id": 1297,
     "status": "scheduled"
   },
   {
@@ -24697,7 +24602,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1303,
+    "id": 1298,
     "status": "scheduled"
   },
   {
@@ -24716,7 +24621,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "consignatariaserrano.com",
-    "id": 1304,
+    "id": 1299,
     "status": "scheduled"
   },
   {
@@ -24735,7 +24640,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/fraccarollironconi",
-    "id": 1305,
+    "id": 1300,
     "status": "scheduled"
   },
   {
@@ -24754,7 +24659,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1306,
+    "id": 1301,
     "status": "scheduled"
   },
   {
@@ -24773,7 +24678,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 1307,
+    "id": 1302,
     "status": "scheduled"
   },
   {
@@ -24793,7 +24698,7 @@
     "source": "tv",
     "sourceUrl": "https://reggiycia.com/remate/32210",
     "status": "scheduled",
-    "id": 1308
+    "id": 1303
   },
   {
     "title": "Especial Fin de Año",
@@ -24811,7 +24716,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1309,
+    "id": 1304,
     "status": "scheduled"
   },
   {
@@ -24830,7 +24735,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1310,
+    "id": 1305,
     "status": "scheduled"
   },
   {
@@ -24849,7 +24754,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1311,
+    "id": 1306,
     "status": "scheduled"
   },
   {
@@ -24868,7 +24773,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1312,
+    "id": 1307,
     "status": "scheduled"
   },
   {
@@ -24887,7 +24792,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1313,
+    "id": 1308,
     "status": "scheduled"
   },
   {
@@ -24906,7 +24811,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.umcsa.net/",
-    "id": 1314,
+    "id": 1309,
     "status": "scheduled"
   },
   {
@@ -24925,7 +24830,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1315,
+    "id": 1310,
     "status": "scheduled"
   },
   {
@@ -24944,7 +24849,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.edgardovittori.com.ar",
-    "id": 1316,
+    "id": 1311,
     "status": "scheduled"
   },
   {
@@ -24963,7 +24868,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.afascl.com",
-    "id": 1317,
+    "id": 1312,
     "status": "scheduled"
   },
   {
@@ -24982,7 +24887,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1318,
+    "id": 1313,
     "status": "scheduled"
   },
   {
@@ -25001,7 +24906,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/54d14227-1da1-475f-a402-b641b10cfc5c",
-    "id": 1319,
+    "id": 1314,
     "status": "scheduled"
   },
   {
@@ -25020,7 +24925,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1320,
+    "id": 1315,
     "status": "scheduled"
   },
   {
@@ -25039,7 +24944,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.pedronoelireysrl.com.ar",
-    "id": 1321,
+    "id": 1316,
     "status": "scheduled"
   },
   {
@@ -25059,7 +24964,7 @@
     "source": "web",
     "sourceUrl": "https://reggiycia.com/remate/32211",
     "status": "scheduled",
-    "id": 1322
+    "id": 1317
   },
   {
     "title": "Subasta Integral Premium - Especial Overos - 16.00hs.",
@@ -25077,7 +24982,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1323,
+    "id": 1318,
     "status": "scheduled"
   },
   {
@@ -25096,7 +25001,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1324,
+    "id": 1319,
     "status": "scheduled"
   },
   {
@@ -25115,7 +25020,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1325,
+    "id": 1320,
     "status": "scheduled"
   },
   {
@@ -25134,7 +25039,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1326,
+    "id": 1321,
     "status": "scheduled"
   },
   {
@@ -25153,7 +25058,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1327,
+    "id": 1322,
     "status": "scheduled"
   },
   {
@@ -25172,7 +25077,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "alfredosmondino.com",
-    "id": 1328,
+    "id": 1323,
     "status": "scheduled"
   },
   {
@@ -25191,7 +25096,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.jaureguilorda.com.ar",
-    "id": 1329,
+    "id": 1324,
     "status": "scheduled"
   },
   {
@@ -25210,7 +25115,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 1330,
+    "id": 1325,
     "status": "scheduled"
   },
   {
@@ -25229,7 +25134,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.arielsaenzycia.com",
-    "id": 1331,
+    "id": 1326,
     "status": "scheduled"
   },
   {
@@ -25248,7 +25153,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1332,
+    "id": 1327,
     "status": "scheduled"
   },
   {
@@ -25268,7 +25173,7 @@
     "source": "tv",
     "sourceUrl": "https://reggiycia.com/remate/32143",
     "status": "scheduled",
-    "id": 1333
+    "id": 1328
   },
   {
     "title": ". Faena, invernada y cria.",
@@ -25286,7 +25191,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1334,
+    "id": 1329,
     "status": "scheduled"
   },
   {
@@ -25305,7 +25210,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1335,
+    "id": 1330,
     "status": "scheduled"
   },
   {
@@ -25324,7 +25229,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1336,
+    "id": 1331,
     "status": "scheduled"
   },
   {
@@ -25343,7 +25248,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1337,
+    "id": 1332,
     "status": "scheduled"
   },
   {
@@ -25362,11 +25267,11 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1338,
+    "id": 1333,
     "status": "scheduled"
   },
   {
-    "id": 1339,
+    "id": 1334,
     "title": "Gordo, Invernada y Cria",
     "consignatariaName": "Ferias Rauch SA",
     "consignatariaSlug": "ferias-rauch",
@@ -25400,7 +25305,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1340,
+    "id": 1335,
     "status": "scheduled"
   },
   {
@@ -25419,7 +25324,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "alfredosmondino.com",
-    "id": 1341,
+    "id": 1336,
     "status": "scheduled"
   },
   {
@@ -25438,7 +25343,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1342,
+    "id": 1337,
     "status": "scheduled"
   },
   {
@@ -25457,7 +25362,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1343,
+    "id": 1338,
     "status": "scheduled"
   },
   {
@@ -25476,7 +25381,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.umcsa.net/",
-    "id": 1344,
+    "id": 1339,
     "status": "scheduled"
   },
   {
@@ -25495,7 +25400,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.afascl.com",
-    "id": 1345,
+    "id": 1340,
     "status": "scheduled"
   },
   {
@@ -25514,7 +25419,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1346,
+    "id": 1341,
     "status": "scheduled"
   },
   {
@@ -25533,7 +25438,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1347,
+    "id": 1342,
     "status": "scheduled"
   },
   {
@@ -25552,7 +25457,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1348,
+    "id": 1343,
     "status": "scheduled"
   },
   {
@@ -25572,7 +25477,7 @@
     "source": "tv",
     "sourceUrl": "https://www.hre.com.ar",
     "status": "scheduled",
-    "id": 1349
+    "id": 1344
   },
   {
     "title": "GORDO, INVERNADA Y CRÍA",
@@ -25590,7 +25495,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.feriasrauch.com",
-    "id": 1350,
+    "id": 1345,
     "status": "scheduled"
   },
   {
@@ -25609,7 +25514,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1351,
+    "id": 1346,
     "status": "scheduled"
   },
   {
@@ -25628,7 +25533,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.hre.com.ar",
-    "id": 1352,
+    "id": 1347,
     "status": "scheduled"
   },
   {
@@ -25647,7 +25552,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 1353,
+    "id": 1348,
     "status": "scheduled"
   },
   {
@@ -25666,7 +25571,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/1862fb6f-e837-4adc-b73f-56ef9e4aa97d",
-    "id": 1354,
+    "id": 1349,
     "status": "scheduled"
   },
   {
@@ -25685,7 +25590,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1355,
+    "id": 1350,
     "status": "scheduled"
   },
   {
@@ -25704,6 +25609,101 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1351,
+    "status": "scheduled"
+  },
+  {
+    "title": "Especial de Invernada y Cria",
+    "consignatariaName": "Fontana",
+    "consignatariaSlug": "fontana",
+    "date": "2026-12-11",
+    "time": null,
+    "location": "Balcarce, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": 980,
+    "description": "Balcarce Especial de Invernada y Cria",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1352,
+    "status": "scheduled"
+  },
+  {
+    "title": "Remate Fín de Año",
+    "consignatariaName": "Ledesma",
+    "consignatariaSlug": "ledesma",
+    "date": "2026-12-11",
+    "time": null,
+    "location": "Tandil, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Tandil Remate Fín de Año",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1353,
+    "status": "scheduled"
+  },
+  {
+    "title": "Faena, Invernada y Cria",
+    "consignatariaName": "Colombo y Magliano SA",
+    "consignatariaSlug": "colombo-y-magliano",
+    "date": "2026-12-11",
+    "time": null,
+    "location": "Rauch, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Rauch Faena, Invernada y Cria",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1354,
+    "status": "scheduled"
+  },
+  {
+    "title": "Remate Fín de Año",
+    "consignatariaName": "Bermejo Y Cia",
+    "consignatariaSlug": "bermejo-y-cia",
+    "date": "2026-12-11",
+    "time": null,
+    "location": "Salliqueló, Buenos Aires",
+    "province": "BUENOS AIRES",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Salliqueló Remate Fín de Año",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
+    "id": 1355,
+    "status": "scheduled"
+  },
+  {
+    "title": "Remate de Invernada",
+    "consignatariaName": "U.M.C. S.A.",
+    "consignatariaSlug": "u-m-c-s-a",
+    "date": "2026-12-11",
+    "time": null,
+    "location": "DURAZNO, CATAMARCA",
+    "province": "CATAMARCA",
+    "type": "invernada",
+    "mainCategory": "mixto",
+    "estimatedHeads": null,
+    "description": "Remate de Invernada",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "www.umcsa.net/",
     "id": 1356,
     "status": "scheduled"
   },
@@ -25728,116 +25728,21 @@
   },
   {
     "title": "Remate Fín de Año",
-    "consignatariaName": "Ledesma",
-    "consignatariaSlug": "ledesma",
+    "consignatariaName": "Bermejo Y Cia",
+    "consignatariaSlug": "bermejo-y-cia",
     "date": "2026-12-11",
     "time": null,
-    "location": "Tandil, Buenos Aires",
+    "location": "Salliqueló, Buenos Aires",
     "province": "BUENOS AIRES",
     "type": "general",
     "mainCategory": "mixto",
     "estimatedHeads": null,
-    "description": "Tandil Remate Fín de Año",
+    "description": "Salliqueló Remate Fín de Año",
     "youtubeUrl": null,
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1358,
-    "status": "scheduled"
-  },
-  {
-    "title": "Faena, Invernada y Cria",
-    "consignatariaName": "Colombo y Magliano SA",
-    "consignatariaSlug": "colombo-y-magliano",
-    "date": "2026-12-11",
-    "time": null,
-    "location": "Rauch, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Rauch Faena, Invernada y Cria",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1359,
-    "status": "scheduled"
-  },
-  {
-    "title": "Remate Fín de Año",
-    "consignatariaName": "Bermejo Y Cia",
-    "consignatariaSlug": "bermejo-y-cia",
-    "date": "2026-12-11",
-    "time": null,
-    "location": "Salliqueló, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Salliqueló Remate Fín de Año",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1360,
-    "status": "scheduled"
-  },
-  {
-    "title": "Remate de Invernada",
-    "consignatariaName": "U.M.C. S.A.",
-    "consignatariaSlug": "u-m-c-s-a",
-    "date": "2026-12-11",
-    "time": null,
-    "location": "DURAZNO, CATAMARCA",
-    "province": "CATAMARCA",
-    "type": "invernada",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Remate de Invernada",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "www.umcsa.net/",
-    "id": 1361,
-    "status": "scheduled"
-  },
-  {
-    "title": "Especial de Invernada y Cria",
-    "consignatariaName": "Fontana",
-    "consignatariaSlug": "fontana",
-    "date": "2026-12-11",
-    "time": null,
-    "location": "Balcarce, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "invernada",
-    "mainCategory": "mixto",
-    "estimatedHeads": 980,
-    "description": "Balcarce Especial de Invernada y Cria",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1362,
-    "status": "scheduled"
-  },
-  {
-    "title": "Remate Fín de Año",
-    "consignatariaName": "Bermejo Y Cia",
-    "consignatariaSlug": "bermejo-y-cia",
-    "date": "2026-12-11",
-    "time": null,
-    "location": "Salliqueló, Buenos Aires",
-    "province": "BUENOS AIRES",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": null,
-    "description": "Salliqueló Remate Fín de Año",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1363,
     "status": "scheduled"
   },
   {
@@ -25856,7 +25761,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.afascl.com",
-    "id": 1364,
+    "id": 1359,
     "status": "scheduled"
   },
   {
@@ -25875,7 +25780,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "alfredosmondino.com",
-    "id": 1365,
+    "id": 1360,
     "status": "scheduled"
   },
   {
@@ -25894,7 +25799,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1366,
+    "id": 1361,
     "status": "scheduled"
   },
   {
@@ -25913,7 +25818,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1367,
+    "id": 1362,
     "status": "scheduled"
   },
   {
@@ -25932,7 +25837,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1368,
+    "id": 1363,
     "status": "scheduled"
   },
   {
@@ -25951,7 +25856,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/Carlosjlansersa",
-    "id": 1369,
+    "id": 1364,
     "status": "scheduled"
   },
   {
@@ -25970,7 +25875,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.afascl.com",
-    "id": 1370,
+    "id": 1365,
     "status": "scheduled"
   },
   {
@@ -25989,7 +25894,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1371,
+    "id": 1366,
     "status": "scheduled"
   },
   {
@@ -26008,7 +25913,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "alfredosmondino.com",
-    "id": 1372,
+    "id": 1367,
     "status": "scheduled"
   },
   {
@@ -26027,7 +25932,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.talanohermanos.com.ar",
-    "id": 1373,
+    "id": 1368,
     "status": "scheduled"
   },
   {
@@ -26046,7 +25951,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1374,
+    "id": 1369,
     "status": "scheduled"
   },
   {
@@ -26065,7 +25970,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1375,
+    "id": 1370,
     "status": "scheduled"
   },
   {
@@ -26084,7 +25989,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "alfredosmondino.com",
-    "id": 1376,
+    "id": 1371,
     "status": "scheduled"
   },
   {
@@ -26103,7 +26008,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.afascl.com",
-    "id": 1377,
+    "id": 1372,
     "status": "scheduled"
   },
   {
@@ -26122,7 +26027,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1378,
+    "id": 1373,
     "status": "scheduled"
   },
   {
@@ -26141,7 +26046,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1379,
+    "id": 1374,
     "status": "scheduled"
   },
   {
@@ -26160,7 +26065,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1380,
+    "id": 1375,
     "status": "scheduled"
   },
   {
@@ -26179,7 +26084,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.pedronoelireysrl.com.ar",
-    "id": 1381,
+    "id": 1376,
     "status": "scheduled"
   },
   {
@@ -26198,7 +26103,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.ivanofarrell.com.ar/remates",
-    "id": 1382,
+    "id": 1377,
     "status": "scheduled"
   },
   {
@@ -26217,7 +26122,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1383,
+    "id": 1378,
     "status": "scheduled"
   },
   {
@@ -26236,7 +26141,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1384,
+    "id": 1379,
     "status": "scheduled"
   },
   {
@@ -26255,7 +26160,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1385,
+    "id": 1380,
     "status": "scheduled"
   },
   {
@@ -26274,7 +26179,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1386,
+    "id": 1381,
     "status": "scheduled"
   },
   {
@@ -26293,7 +26198,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1387,
+    "id": 1382,
     "status": "scheduled"
   },
   {
@@ -26312,7 +26217,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1388,
+    "id": 1383,
     "status": "scheduled"
   },
   {
@@ -26331,7 +26236,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1389,
+    "id": 1384,
     "status": "scheduled"
   },
   {
@@ -26350,7 +26255,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.afascl.com",
-    "id": 1390,
+    "id": 1385,
     "status": "scheduled"
   },
   {
@@ -26369,7 +26274,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1391,
+    "id": 1386,
     "status": "scheduled"
   },
   {
@@ -26388,7 +26293,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1392,
+    "id": 1387,
     "status": "scheduled"
   },
   {
@@ -26407,7 +26312,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1393,
+    "id": 1388,
     "status": "scheduled"
   },
   {
@@ -26426,7 +26331,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1394,
+    "id": 1389,
     "status": "scheduled"
   },
   {
@@ -26445,7 +26350,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1395,
+    "id": 1390,
     "status": "scheduled"
   },
   {
@@ -26464,7 +26369,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1396,
+    "id": 1391,
     "status": "scheduled"
   },
   {
@@ -26483,7 +26388,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.afascl.com",
-    "id": 1397,
+    "id": 1392,
     "status": "scheduled"
   },
   {
@@ -26502,7 +26407,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1398,
+    "id": 1393,
     "status": "scheduled"
   },
   {
@@ -26521,7 +26426,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1399,
+    "id": 1394,
     "status": "scheduled"
   },
   {
@@ -26540,7 +26445,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1400,
+    "id": 1395,
     "status": "scheduled"
   },
   {
@@ -26559,7 +26464,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://cacg.org.ar/remates",
-    "id": 1401,
+    "id": 1396,
     "status": "scheduled"
   },
   {
@@ -26579,7 +26484,7 @@
     "source": "tv",
     "sourceUrl": "https://www.aguerresrl.com.ar/event/93-remate-por-pantalla/",
     "status": "scheduled",
-    "id": 1402
+    "id": 1397
   },
   {
     "title": "GORDO, INVERNADA y CRÍA",
@@ -26597,7 +26502,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1403,
+    "id": 1398,
     "status": "scheduled"
   },
   {
@@ -26616,7 +26521,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.umcsa.net/",
-    "id": 1404,
+    "id": 1399,
     "status": "scheduled"
   },
   {
@@ -26635,7 +26540,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1405,
+    "id": 1400,
     "status": "scheduled"
   },
   {
@@ -26654,7 +26559,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://umchv.ar/auctions/view/1d3dcdf8-7f0c-47f6-8623-a2b2ec7af182",
-    "id": 1406,
+    "id": 1401,
     "status": "scheduled"
   },
   {
@@ -26674,7 +26579,7 @@
     "source": "web",
     "sourceUrl": "https://reggiycia.com/remate/32212",
     "status": "scheduled",
-    "id": 1407
+    "id": 1402
   },
   {
     "title": "hacienda gorda",
@@ -26692,7 +26597,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.facebook.com/TravagliayCiaSA/",
-    "id": 1408,
+    "id": 1403,
     "status": "scheduled"
   },
   {
@@ -26711,7 +26616,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1409,
+    "id": 1404,
     "status": "scheduled"
   },
   {
@@ -26730,7 +26635,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1410,
+    "id": 1405,
     "status": "scheduled"
   },
   {
@@ -26750,7 +26655,7 @@
     "source": "tv",
     "sourceUrl": "https://reggiycia.com/remate/32215",
     "status": "scheduled",
-    "id": 1411
+    "id": 1406
   },
   {
     "title": "HACIENDAS GENERALES",
@@ -26768,7 +26673,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1412,
+    "id": 1407,
     "status": "scheduled"
   },
   {
@@ -26787,7 +26692,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1413,
+    "id": 1408,
     "status": "scheduled"
   },
   {
@@ -26806,7 +26711,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1414,
+    "id": 1409,
     "status": "scheduled"
   },
   {
@@ -26825,7 +26730,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1415,
+    "id": 1410,
     "status": "scheduled"
   },
   {
@@ -26844,7 +26749,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1416,
+    "id": 1411,
     "status": "scheduled"
   },
   {
@@ -26863,7 +26768,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1417,
+    "id": 1412,
     "status": "scheduled"
   },
   {
@@ -26882,7 +26787,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1418,
+    "id": 1413,
     "status": "scheduled"
   },
   {
@@ -26901,7 +26806,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1419,
+    "id": 1414,
     "status": "scheduled"
   },
   {
@@ -26920,7 +26825,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1420,
+    "id": 1415,
     "status": "scheduled"
   },
   {
@@ -26939,7 +26844,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1421,
+    "id": 1416,
     "status": "scheduled"
   },
   {
@@ -26958,7 +26863,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1422,
+    "id": 1417,
     "status": "scheduled"
   },
   {
@@ -26977,7 +26882,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1423,
+    "id": 1418,
     "status": "scheduled"
   },
   {
@@ -26996,7 +26901,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1424,
+    "id": 1419,
     "status": "scheduled"
   },
   {
@@ -27015,7 +26920,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1425,
+    "id": 1420,
     "status": "scheduled"
   },
   {
@@ -27034,7 +26939,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1426,
+    "id": 1421,
     "status": "scheduled"
   },
   {
@@ -27053,7 +26958,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1427,
+    "id": 1422,
     "status": "scheduled"
   },
   {
@@ -27072,7 +26977,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1428,
+    "id": 1423,
     "status": "scheduled"
   },
   {
@@ -27091,7 +26996,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1429,
+    "id": 1424,
     "status": "scheduled"
   },
   {
@@ -27110,7 +27015,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1430,
+    "id": 1425,
     "status": "scheduled"
   },
   {
@@ -27129,7 +27034,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1431,
+    "id": 1426,
     "status": "scheduled"
   },
   {
@@ -27148,7 +27053,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1432,
+    "id": 1427,
     "status": "scheduled"
   },
   {
@@ -27167,7 +27072,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1433,
+    "id": 1428,
     "status": "scheduled"
   },
   {
@@ -27186,7 +27091,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1434,
+    "id": 1429,
     "status": "scheduled"
   },
   {
@@ -27205,7 +27110,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1435,
+    "id": 1430,
     "status": "scheduled"
   },
   {
@@ -27224,7 +27129,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1436,
+    "id": 1431,
     "status": "scheduled"
   },
   {
@@ -27243,7 +27148,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1437,
+    "id": 1432,
     "status": "scheduled"
   },
   {
@@ -27262,7 +27167,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1438,
+    "id": 1433,
     "status": "scheduled"
   },
   {
@@ -27281,7 +27186,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1439,
+    "id": 1434,
     "status": "scheduled"
   },
   {
@@ -27300,7 +27205,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1440,
+    "id": 1435,
     "status": "scheduled"
   },
   {
@@ -27319,7 +27224,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1441,
+    "id": 1436,
     "status": "scheduled"
   },
   {
@@ -27338,7 +27243,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1442,
+    "id": 1437,
     "status": "scheduled"
   },
   {
@@ -27357,7 +27262,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1443,
+    "id": 1438,
     "status": "scheduled"
   },
   {
@@ -27376,7 +27281,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.ferialvarez.com.ar",
-    "id": 1444,
+    "id": 1439,
     "status": "scheduled"
   },
   {
@@ -27395,7 +27300,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1445,
+    "id": 1440,
     "status": "scheduled"
   },
   {
@@ -27414,7 +27319,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1446,
+    "id": 1441,
     "status": "scheduled"
   },
   {
@@ -27433,7 +27338,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1447,
+    "id": 1442,
     "status": "scheduled"
   },
   {
@@ -27452,7 +27357,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1448,
+    "id": 1443,
     "status": "scheduled"
   },
   {
@@ -27471,7 +27376,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1449,
+    "id": 1444,
     "status": "scheduled"
   },
   {
@@ -27490,7 +27395,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1450,
+    "id": 1445,
     "status": "scheduled"
   },
   {
@@ -27509,7 +27414,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1451,
+    "id": 1446,
     "status": "scheduled"
   },
   {
@@ -27528,7 +27433,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1452,
+    "id": 1447,
     "status": "scheduled"
   },
   {
@@ -27547,7 +27452,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1453,
+    "id": 1448,
     "status": "scheduled"
   },
   {
@@ -27566,7 +27471,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1454,
+    "id": 1449,
     "status": "scheduled"
   },
   {
@@ -27585,7 +27490,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1455,
+    "id": 1450,
     "status": "scheduled"
   },
   {
@@ -27604,7 +27509,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1456,
+    "id": 1451,
     "status": "scheduled"
   },
   {
@@ -27623,7 +27528,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1457,
+    "id": 1452,
     "status": "scheduled"
   },
   {
@@ -27642,7 +27547,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1458,
+    "id": 1453,
     "status": "scheduled"
   },
   {
@@ -27661,7 +27566,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1459,
+    "id": 1454,
     "status": "scheduled"
   },
   {
@@ -27680,7 +27585,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1460,
+    "id": 1455,
     "status": "scheduled"
   },
   {
@@ -27699,7 +27604,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1461,
+    "id": 1456,
     "status": "scheduled"
   },
   {
@@ -27718,7 +27623,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1462,
+    "id": 1457,
     "status": "scheduled"
   },
   {
@@ -27737,7 +27642,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1463,
+    "id": 1458,
     "status": "scheduled"
   },
   {
@@ -27756,7 +27661,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1464,
+    "id": 1459,
     "status": "scheduled"
   },
   {
@@ -27775,7 +27680,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1465,
+    "id": 1460,
     "status": "scheduled"
   },
   {
@@ -27794,7 +27699,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1466,
+    "id": 1461,
     "status": "scheduled"
   },
   {
@@ -27813,7 +27718,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1467,
+    "id": 1462,
     "status": "scheduled"
   },
   {
@@ -27832,7 +27737,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1468,
+    "id": 1463,
     "status": "scheduled"
   },
   {
@@ -27851,7 +27756,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1469,
+    "id": 1464,
     "status": "scheduled"
   },
   {
@@ -27870,7 +27775,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1470,
+    "id": 1465,
     "status": "scheduled"
   },
   {
@@ -27889,7 +27794,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1471,
+    "id": 1466,
     "status": "scheduled"
   },
   {
@@ -27908,7 +27813,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1472,
+    "id": 1467,
     "status": "scheduled"
   },
   {
@@ -27927,7 +27832,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1473,
+    "id": 1468,
     "status": "scheduled"
   },
   {
@@ -27946,7 +27851,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1474,
+    "id": 1469,
     "status": "scheduled"
   },
   {
@@ -27965,7 +27870,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1475,
+    "id": 1470,
     "status": "scheduled"
   },
   {
@@ -27984,7 +27889,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1476,
+    "id": 1471,
     "status": "scheduled"
   },
   {
@@ -28003,7 +27908,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1477,
+    "id": 1472,
     "status": "scheduled"
   },
   {
@@ -28022,7 +27927,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.bressanycompania.com.ar",
-    "id": 1478,
+    "id": 1473,
     "status": "scheduled"
   },
   {
