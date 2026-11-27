@@ -24473,25 +24473,6 @@
     "status": "scheduled"
   },
   {
-    "title": ". Televisado NEA.",
-    "consignatariaName": "Colombo y Magliano SA",
-    "consignatariaSlug": "colombo-y-magliano",
-    "date": "2026-12-02",
-    "time": "13:30",
-    "location": "Corrientes, Corrientes",
-    "province": "CORRIENTES",
-    "type": "general",
-    "mainCategory": "mixto",
-    "estimatedHeads": 8000,
-    "description": "Corrientes. Televisado NEA.",
-    "youtubeUrl": null,
-    "catalogUrl": null,
-    "source": "web",
-    "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1292,
-    "status": "scheduled"
-  },
-  {
     "title": ". Faena, invernada y cria.",
     "consignatariaName": "Colombo y Magliano SA",
     "consignatariaSlug": "colombo-y-magliano",
@@ -24507,7 +24488,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1293,
+    "id": 1292,
     "status": "scheduled"
   },
   {
@@ -24526,7 +24507,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.entresurcosycorrales.com",
-    "id": 1294,
+    "id": 1293,
     "status": "scheduled"
   },
   {
@@ -24545,7 +24526,7 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "www.saenz-valiente.com.ar",
-    "id": 1295,
+    "id": 1294,
     "status": "scheduled"
   },
   {
@@ -24564,6 +24545,25 @@
     "catalogUrl": null,
     "source": "web",
     "sourceUrl": "https://www.colomboycolombo.com.ar/remates",
+    "id": 1295,
+    "status": "scheduled"
+  },
+  {
+    "title": ". Televisado NEA.",
+    "consignatariaName": "Colombo y Magliano SA",
+    "consignatariaSlug": "colombo-y-magliano",
+    "date": "2026-12-02",
+    "time": "13:30",
+    "location": "Corrientes, Corrientes",
+    "province": "CORRIENTES",
+    "type": "general",
+    "mainCategory": "mixto",
+    "estimatedHeads": 8000,
+    "description": "Corrientes. Televisado NEA.",
+    "youtubeUrl": null,
+    "catalogUrl": null,
+    "source": "web",
+    "sourceUrl": "https://www.entresurcosycorrales.com",
     "id": 1296,
     "status": "scheduled"
   },
