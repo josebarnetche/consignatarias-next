@@ -1,9 +1,9 @@
 name: Arrendamiento — cierre mensual
 
-# 3 de cada mes, 12:00 UTC (09:00 ART). Baja del MAG el cierre OFICIAL del INMAG
-# del mes que cerró, lo guarda en inmag_monthly_close y lo manda por email a los
-# suscriptos de /mercado/arrendamiento (con su canon calculado). El 3 da tiempo a
-# que el MAG tenga cargados los últimos días del mes.
+# 2 de cada mes, 12:00 UTC (09:00 ART). Guarda el INMAG del mes que cerró en
+# inmag_monthly_close y manda por email el ÍNDICE ARRENDAMIENTO (haciinfo000013) a los
+# suscriptos de /mercado/arrendamiento (con su canon calculado). Si el índice no está,
+# no sale ningún mail. arrendamiento-mensual.yml actualiza el JSON de la página 1 h antes.
 on:
   schedule:
     - cron: '0 12 2 * *'

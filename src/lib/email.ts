@@ -3104,46 +3104,74 @@ export async function sendTrialNudge(p: TrialNudgeParams) {
 }
 
 /**
- * Cierre mensual del INMAG para el arrendamiento — se envía a principio de cada
- * mes a los suscriptos de /mercado/arrendamiento (source arrendamiento-liquidacion).
- * Trae el promedio ponderado OFICIAL del mes que cerró (el número para la factura)
- * y, si el suscripto guardó su contrato (kg/ha × ha), su canon ya calculado.
+ * Cierre mensual del ÍNDICE ARRENDAMIENTO — se envía a principio de cada mes a los
+ * suscriptos de /mercado/arrendamiento (source arrendamiento-liquidacion).
+ * El número principal y el canon salen del Índice Arrendamiento del MAG
+ * (haciinfo000013, fila Totales del mes; src/lib/mag/arrendamiento-index.ts), el
+ * mismo que muestra /mercado/arrendamiento. El INMAG del mes (haciinfo000011) va
+ * solo como referencia: NO es el índice de arrendamiento (oct-2026: 4.186,564 vs.
+ * 4.122,039). La variación se calcula sobre el mismo índice.
  */
-export async function sendArrendamientoCierre(opts: {
+export interface ArrendamientoCierreOpts {
   to: string
   mesLabel: string
-  inmag: number
+  /** Índice Arrendamiento del mes ($/kg, haciinfo000013). */
+  indice: number
+  /** Mes anterior, para rotular la variación (ej. "septiembre 2026"). */
+  prevMesLabel?: string | null
+  /** Variación % vs. el mes anterior, del MISMO índice. */
   change?: number | null
+  /** INMAG del mes (haciinfo000011) — solo referencia; null si no está. */
+  inmagRef?: number | null
   kgHa?: number | null
   hectareas?: number | null
-}): Promise<{ success: boolean; error?: string }> {
+}
+
+const fmtKg = (n: number) => n.toLocaleString('es-AR', { minimumFractionDigits: 3, maximumFractionDigits: 3 })
+
+/** Arma asunto + HTML del mail (puro, sin enviar) — lo usan el envío y los renders de QA. */
+export function buildArrendamientoCierreEmail(opts: ArrendamientoCierreOpts): { subject: string; html: string } {
+  const indiceFmt = fmtKg(opts.indice)
+  const changeStr =
+    opts.change != null && Number.isFinite(opts.change)
+      ? `${opts.change >= 0 ? '+' : ''}${opts.change.toLocaleString('es-AR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}% vs. ${opts.prevMesLabel ? escapeHtml(opts.prevMesLabel) : 'el mes anterior'} (mismo índice)`
+      : ''
+  const canon = opts.kgHa && opts.hectareas ? opts.kgHa * opts.hectareas * opts.indice : null
+  const canonBlock = canon
+    ? `<p style="margin:18px 0 0 0;font-size:15px;color:#a1a1aa">Con tu contrato (<strong style="color:#fafafa">${escapeHtml(String(opts.kgHa))} kg/ha × ${escapeHtml(String(opts.hectareas))} ha</strong>), el canon de ${escapeHtml(opts.mesLabel)} con este índice es <strong style="color:#38bdf8">$${Math.round(canon).toLocaleString('es-AR')}</strong>.</p>`
+    : ''
+  const inmagLine =
+    opts.inmagRef != null && opts.inmagRef > 0
+      ? `<p style="margin:14px 0 0 0;font-size:12px;color:#71717a">Referencia — INMAG del mes (no se usa para arrendamientos): $${fmtKg(opts.inmagRef)}/kg</p>`
+      : ''
+
+  return {
+    subject: `Índice Arrendamiento ${opts.mesLabel}: $${indiceFmt}/kg — cierre del mes`,
+    html: darkEmailShell(`
+        <p style="font-size:15px;line-height:1.6;color:#a1a1aa;margin:0 0 6px 0">El Índice Arrendamiento del Mercado Agroganadero (sugerido para arrendamientos rurales) cerró <strong style="color:#fafafa">${escapeHtml(opts.mesLabel)}</strong> en:</p>
+        <div style="font-size:34px;font-weight:700;color:#38bdf8;margin:14px 0 2px 0">$${indiceFmt}<span style="font-size:15px;color:#71717a;font-weight:400"> /kg</span></div>
+        ${changeStr ? `<p style="margin:0;font-size:13px;color:#71717a">${changeStr}</p>` : ''}
+        ${canonBlock}
+        ${inmagLine}
+        <p style="margin:24px 0 8px"><a href="${APP_URL}/mercado/arrendamiento" style="display:inline-block;background:#38bdf8;color:#09090b;padding:12px 22px;text-decoration:none;font-weight:600;font-size:13px;border-radius:2px">Ver el detalle y la serie &rarr;</a></p>
+        <p style="font-size:13px;color:#a1a1aa;margin:0 0 8px;line-height:1.6">¿Querés que te ayudemos con el contrato o tenés alguna consulta? <a href="mailto:agro@memola.com.ar?subject=Consulta%20arrendamiento%20${encodeURIComponent(opts.mesLabel)}" style="color:#38bdf8;text-decoration:none;white-space:nowrap">Escribinos a agro@memola.com.ar &rarr;</a></p>
+        <p style="font-size:12px;color:#a1a1aa;margin:0;line-height:1.6">Fuente: Mercado Agroganadero, índice de arrendamiento (fila Totales del mes). Si tu contrato pacta otro índice, vale el de tu contrato. Un mail por mes, al cierre.</p>
+        <p style="font-family:${EMAIL_MONO};color:#52525b;font-size:10px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px;line-height:1.6">consignatarias<span style="color:#38bdf8">.</span>com &mdash; el precio de referencia del ganado argentino &middot; <a href="${APP_URL}" style="color:#71717a">consignatarias.com.ar</a> &middot; <a href="${urlBaja(opts.to)}" style="color:#52525b">Desuscribirme</a></p>
+      `),
+  }
+}
+
+export async function sendArrendamientoCierre(opts: ArrendamientoCierreOpts): Promise<{ success: boolean; error?: string }> {
   const resend = await getResend()
   if (!resend) return { success: false, error: 'RESEND_API_KEY no configurada' }
-
-  const inmagFmt = opts.inmag.toLocaleString('es-AR', { minimumFractionDigits: 3, maximumFractionDigits: 3 })
-  const changeStr =
-    opts.change != null ? `${opts.change >= 0 ? '+' : ''}${opts.change.toFixed(1)}% vs. el mes anterior` : ''
-  const canon = opts.kgHa && opts.hectareas ? opts.kgHa * opts.hectareas * opts.inmag : null
-  const canonBlock = canon
-    ? `<p style="margin:18px 0 0 0;font-size:15px;color:#a1a1aa">Con tu contrato (<strong style="color:#fafafa">${escapeHtml(String(opts.kgHa))} kg/ha × ${escapeHtml(String(opts.hectareas))} ha</strong>), el canon de ${escapeHtml(opts.mesLabel)} es <strong style="color:#38bdf8">$${Math.round(canon).toLocaleString('es-AR')}</strong>.</p>`
-    : ''
-
+  const { subject, html } = buildArrendamientoCierreEmail(opts)
   try {
     const { error } = await resend.emails.send({
       from: FROM,
       to: opts.to,
-      subject: `Cierre INMAG ${opts.mesLabel}: $${inmagFmt}/kg — para tu arrendamiento`,
+      subject,
       headers: listUnsubHeaders(opts.to, 'arrendamiento-cierre'),
-      html: darkEmailShell(`
-        <p style="font-size:15px;line-height:1.6;color:#a1a1aa;margin:0 0 6px 0">El cierre del INMAG de <strong style="color:#fafafa">${escapeHtml(opts.mesLabel)}</strong> — el promedio oficial del Mercado Agroganadero para liquidar tu arrendamiento del mes:</p>
-        <div style="font-size:34px;font-weight:700;color:#38bdf8;margin:14px 0 2px 0">$${inmagFmt}<span style="font-size:15px;color:#71717a;font-weight:400"> /kg</span></div>
-        ${changeStr ? `<p style="margin:0;font-size:13px;color:#71717a">${changeStr}</p>` : ''}
-        ${canonBlock}
-        <p style="margin:24px 0 8px"><a href="${APP_URL}/mercado/arrendamiento" style="display:inline-block;background:#38bdf8;color:#09090b;padding:12px 22px;text-decoration:none;font-weight:600;font-size:13px;border-radius:2px">Ver el detalle y la serie &rarr;</a></p>
-        <p style="font-size:13px;color:#a1a1aa;margin:0 0 8px;line-height:1.6">¿Querés que te ayudemos con el contrato o tenés alguna consulta? <a href="mailto:agro@memola.com.ar?subject=Consulta%20arrendamiento%20${encodeURIComponent(opts.mesLabel)}" style="color:#38bdf8;text-decoration:none;white-space:nowrap">Escribinos a agro@memola.com.ar &rarr;</a></p>
-        <p style="font-size:12px;color:#a1a1aa;margin:0">Es el mismo número que publica el MAG. Un mail por mes, al cierre.</p>
-        <p style="font-family:${EMAIL_MONO};color:#52525b;font-size:10px;margin:22px 0 0;border-top:1px solid #27272a;padding-top:12px;line-height:1.6">consignatarias<span style="color:#38bdf8">.</span>com &mdash; el precio de referencia del ganado argentino &middot; <a href="${APP_URL}" style="color:#71717a">consignatarias.com.ar</a> &middot; <a href="${urlBaja(opts.to)}" style="color:#52525b">Desuscribirme</a></p>
-      `),
+      html,
     })
     if (error) return { success: false, error: error.message }
     return { success: true }

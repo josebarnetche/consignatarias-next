@@ -1,0 +1,54 @@
+name: arrendamiento-mensual
+
+# Regenera src/lib/data/arrendamiento-mensual.json (cierres mensuales del Índice
+# Arrendamiento del MAG, haciinfo000013, fila Totales) y lo commitea. Ese JSON es lo que
+# muestra /mercado/arrendamiento como "último cierre mensual"; hasta ahora se
+# actualizaba a mano (el 18-11-2026 quedó en octubre).
+#
+# Corre el 2 de cada mes a las 11:00 UTC (08:00 ART), UNA HORA ANTES del mail de
+# arrendamiento-cierre.yml (12:00 UTC): el commit dispara el rebuild de Vercel y la página
+# ya muestra el mes nuevo cuando llega el mail, con el mismo número (mismo parser:
+# src/lib/mag/arrendamiento-index.ts). El 3 reintenta por si el MAG cargó tarde; el script
+# no reescribe el JSON si no cambió ningún mes, así que una corrida sin novedades no commitea.
+# No toca Supabase ni manda mails.
+
+on:
+  schedule:
+    - cron: '0 11 2,3 * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: arrendamiento-mensual
+  cancel-in-progress: false
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Bajar cierres mensuales del Índice Arrendamiento
+        run: npx tsx scripts/arrendamiento-mensual.mjs 13
+
+      - name: Commitear el JSON
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/lib/data/arrendamiento-mensual.json
+          if git diff --staged --quiet; then
+            echo "sin cambios"
+          else
+            git commit -m "data: índice arrendamiento mensual (MAG haciinfo000013)"
+            git pull --rebase --autostash origin main
+            git push
+          fi

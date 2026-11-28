@@ -4,38 +4,17 @@
 // mensual (haciinfo000011, todas las categorías): ej. octubre 2026 INMAG $4.122,039 vs.
 // índice arrendamiento $4.186,564, ambos sobre 80.045 cab. ingresadas.
 // Pide cada mes completo y guarda la fila "Totales" (índice del período = el mes).
-// Uso: node scripts/arrendamiento-mensual.mjs [meses=13]
-import { writeFileSync } from 'node:fs'
+// El parser vive en src/lib/mag/arrendamiento-index.ts (con test) y es el MISMO que usa
+// el cron arrendamiento-cierre para el mail → página y mail no pueden divergir.
+// Solo reescribe el JSON si cambió algún mes (sin commits de ruido por el campo "updated").
+// Uso: npx tsx scripts/arrendamiento-mensual.mjs [meses=13]
+//      (lo corre .github/workflows/arrendamiento-mensual.yml el 2 de cada mes)
+import { readFileSync, writeFileSync } from 'node:fs'
+import { fetchArrendamientoMonthClose } from '../src/lib/mag/arrendamiento-index.ts'
 
 const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
 const N = Number(process.argv[2] || 13)
-const pad = (n) => String(n).padStart(2, '0')
-const parseNum = (s) => parseFloat(String(s).replace(/\./g, '').replace(',', '.'))
-
-async function totalesDelMes(y, m) {
-  const last = new Date(y, m, 0).getDate()
-  const url =
-    'https://www.mercadoagroganadero.com.ar/dll/hacienda2.dll/haciinfo000013' +
-    `?txtFECHAINI=${encodeURIComponent(`01/${pad(m)}/${y}`)}&txtFECHAFIN=${encodeURIComponent(`${pad(last)}/${pad(m)}/${y}`)}`
-  const res = await fetch(url)
-  if (!res.ok) throw new Error(`HTTP ${res.status} ${url}`)
-  const html = await res.text()
-  const rows = [...html.matchAll(/<TR[^>]*>([\s\S]*?)<\/TR>/gi)].map((r) =>
-    [...r[1].matchAll(/<T[DH][^>]*>([\s\S]*?)<\/T[DH]>/gi)].map((c) =>
-      c[1].replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').trim(),
-    ),
-  )
-  for (const cells of rows) {
-    const ne = cells.filter(Boolean)
-    if (ne.length < 4 || !/Totales/i.test(ne[0])) continue
-    // Totales | Cab | Importe | Índice
-    const idx = ne.find((c, i) => i >= 1 && /\d,\d{3}$/.test(c))
-    const cab = parseNum(ne[1])
-    if (!idx) continue
-    return { index: Math.round(parseNum(idx) * 1000) / 1000, cabezas: Number.isFinite(cab) ? cab : null, url }
-  }
-  return null
-}
+const FILE = new URL('../src/lib/data/arrendamiento-mensual.json', import.meta.url)
 
 const now = new Date()
 const out = []
@@ -44,7 +23,7 @@ for (let k = 1; k <= N; k++) {
   const y = d.getFullYear()
   const m = d.getMonth() + 1
   try {
-    const t = await totalesDelMes(y, m)
+    const t = await fetchArrendamientoMonthClose(y, m)
     if (t) out.push({ year: y, month: m, label: `${MESES[m - 1]} ${y}`, index: t.index, cabezas: t.cabezas })
     console.log(y, m, t ? t.index : '—', t ? t.cabezas : '')
   } catch (e) {
@@ -55,8 +34,30 @@ if (out.length === 0) {
   console.error('Sin datos: no se escribe el archivo')
   process.exit(1)
 }
+
+let prevMonths = null
+try {
+  prevMonths = JSON.parse(readFileSync(FILE, 'utf8')).months
+} catch {
+  /* primer corrida o JSON roto: se escribe */
+}
+if (prevMonths && JSON.stringify(prevMonths) === JSON.stringify(out)) {
+  console.log('Sin cambios en los cierres: no se reescribe el archivo')
+  process.exit(0)
+}
+// Si el MAG falló en algún mes de la ventana, no achicar la serie: se completa con lo que ya había.
+if (prevMonths) {
+  const have = new Set(out.map((r) => `${r.year}-${r.month}`))
+  const desde = new Date(now.getFullYear(), now.getMonth() - N, 1)
+  const desdeKey = desde.getFullYear() * 12 + desde.getMonth() + 1
+  for (const r of prevMonths) {
+    if (!have.has(`${r.year}-${r.month}`) && r.year * 12 + r.month >= desdeKey) out.push(r)
+  }
+  out.sort((a, b) => b.year * 12 + b.month - (a.year * 12 + a.month))
+}
+
 writeFileSync(
-  new URL('../src/lib/data/arrendamiento-mensual.json', import.meta.url),
+  FILE,
   JSON.stringify(
     {
       updated: now.toISOString().slice(0, 10),
@@ -67,3 +68,4 @@ writeFileSync(
     2,
   ) + '\n',
 )
+console.log(`Escrito: ${out.length} meses (último: ${out[0].label} ${out[0].index})`)

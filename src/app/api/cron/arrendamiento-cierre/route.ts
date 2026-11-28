@@ -6,6 +6,8 @@ import { capForFreePlan } from '@/lib/email-limits'
 import { trackCron } from '@/lib/ops'
 import { authorizeCron } from '@/lib/cron-auth'
 import { fetchMonthClose } from '@/lib/mag/monthly-close'
+import { fetchArrendamientoMonthClose } from '@/lib/mag/arrendamiento-index'
+import arrMensualData from '@/lib/data/arrendamiento-mensual.json'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -13,13 +15,19 @@ export const maxDuration = 300
 
 /**
  * Cierre mensual de arrendamiento — a principio de cada mes:
- *  1) baja del MAG el cierre OFICIAL del mes que cerró (haciinfo000011, fila Totales)
- *     y lo guarda en inmag_monthly_close (idempotente);
- *  2) le manda ese número por email a los suscriptos de /mercado/arrendamiento
- *     (source arrendamiento-liquidacion), con su canon ya calculado si guardaron
- *     su contrato (kg/ha × ha).
+ *  1) baja del MAG el INMAG del mes que cerró (haciinfo000011, fila Totales) y lo
+ *     guarda en inmag_monthly_close (idempotente; sin cambios — lo leen otras páginas);
+ *  2) baja el ÍNDICE ARRENDAMIENTO del mes (haciinfo000013, fila Totales) — el índice
+ *     sugerido para arrendamientos rurales y el que muestra /mercado/arrendamiento —
+ *     y lo manda por email a los suscriptos (source arrendamiento-liquidacion), con su
+ *     canon calculado sobre ESE índice si guardaron su contrato (kg/ha × ha).
+ *     Si el índice arrendamiento no está disponible, NO sale ningún mail (no se cae al
+ *     INMAG: son números distintos, oct-2026 4.186,564 vs. 4.122,039).
  * Auth: authorizeCron. Se puede forzar un mes con ?month=YYYY-MM.
  */
+
+type ArrMes = { year: number; month: number; index: number }
+const arrMensual = (arrMensualData as { months: ArrMes[] }).months
 
 const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
 
@@ -43,26 +51,41 @@ export async function POST(req: NextRequest) {
       }
       const mesLabel = `${MESES[m - 1]} ${y}`
 
-      // 1) Bajar + guardar el cierre oficial.
+      // 1) INMAG del mes → inmag_monthly_close, igual que antes (otros lo leen). En el
+      //    mail va solo como referencia, así que su falta no frena el envío.
       const close = await fetchMonthClose(y, m)
-      if (!close) {
-        return { status: 'error' as const, message: `MAG sin cierre para ${mesLabel}`, metadata: { _status: 502, sent: 0 } }
-      }
       const db = requireServiceClient() as unknown as SupabaseClient
-      await db
-        .from('inmag_monthly_close')
-        .upsert(
-          { year: y, month: m, inmag: close.inmag, cabezas: close.cabezas, importe: close.importe, scraped_at: new Date().toISOString() },
-          { onConflict: 'year,month' },
-        )
+      if (close) {
+        await db
+          .from('inmag_monthly_close')
+          .upsert(
+            { year: y, month: m, inmag: close.inmag, cabezas: close.cabezas, importe: close.importe, scraped_at: new Date().toISOString() },
+            { onConflict: 'year,month' },
+          )
+      }
 
-      // Variación vs. el mes anterior (para el mail).
+      // 2) Índice Arrendamiento del mes: número principal y canon del mail. Sin él, no hay mail.
+      const arr = await fetchArrendamientoMonthClose(y, m)
+      if (!arr) {
+        return {
+          status: 'error' as const,
+          message: `MAG sin Índice Arrendamiento (haciinfo000013) para ${mesLabel} — no se envían mails`,
+          metadata: { _status: 502, sent: 0, inmag: close?.inmag ?? null },
+        }
+      }
+
+      // Variación vs. el mes anterior, sobre el MISMO índice: MAG primero, si no el JSON
+      // committeado (src/lib/data/arrendamiento-mensual.json). Si no hay ninguno, sin variación.
       const pm = m === 1 ? 12 : m - 1
       const py = m === 1 ? y - 1 : y
-      const { data: prev } = await db.from('inmag_monthly_close').select('inmag').eq('year', py).eq('month', pm).maybeSingle()
-      const change = prev?.inmag ? ((close.inmag - Number(prev.inmag)) / Number(prev.inmag)) * 100 : null
+      const prevIndex =
+        (await fetchArrendamientoMonthClose(py, pm).catch(() => null))?.index ??
+        arrMensual.find((r) => r.year === py && r.month === pm)?.index ??
+        null
+      const change = prevIndex ? ((arr.index - prevIndex) / prevIndex) * 100 : null
+      const prevMesLabel = `${MESES[pm - 1]} ${py}`
 
-      // 2) Suscriptos de arrendamiento (con su contrato guardado).
+      // 3) Suscriptos de arrendamiento (con su contrato guardado).
       const { data: subs } = await requireServiceClient()
         .from('newsletter_subscribers')
         .select('email, lease_kg_ha, lease_hectareas')
@@ -70,7 +93,10 @@ export async function POST(req: NextRequest) {
         .eq('source', 'arrendamiento-liquidacion')
 
       if (!subs || subs.length === 0) {
-        return { message: `Cierre ${mesLabel} guardado ($${close.inmag}); sin suscriptos`, metadata: { inmag: close.inmag, sent: 0 } }
+        return {
+          message: `Índice Arrendamiento ${mesLabel} $${arr.index}; sin suscriptos`,
+          metadata: { indice: arr.index, inmag: close?.inmag ?? null, sent: 0 },
+        }
       }
 
       const { toSend, skipped } = capForFreePlan(subs)
@@ -86,8 +112,10 @@ export async function POST(req: NextRequest) {
           const r = await sendArrendamientoCierre({
             to: sub.email,
             mesLabel,
-            inmag: close.inmag,
+            indice: arr.index,
+            prevMesLabel,
             change,
+            inmagRef: close?.inmag ?? null,
             kgHa,
             hectareas: kgHa != null ? (sub.lease_hectareas as number | null) : null,
           })
@@ -99,8 +127,8 @@ export async function POST(req: NextRequest) {
         }
       }
       return {
-        message: `Cierre ${mesLabel} ($${close.inmag}) → ${sent} mails`,
-        metadata: { inmag: close.inmag, sent, skipped, errors: errors.slice(0, 5) },
+        message: `Índice Arrendamiento ${mesLabel} ($${arr.index}) → ${sent} mails`,
+        metadata: { indice: arr.index, inmag: close?.inmag ?? null, change, sent, skipped, errors: errors.slice(0, 5) },
       }
     }),
   )
